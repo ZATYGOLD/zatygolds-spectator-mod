@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Zatygold's Spectator - Observer icons (UpdateIcons, game and shell).
-  The leader portrait is the eye badge, padded so it sits inside the frames the
-  UI draws around portraits; the civilization symbol is the eye in white.
+  The leader portrait is the hooded Spectator cutout, sized to sit inside the
+  UI's hex frames; the civilization symbol is the eye emblem in white.
+  Built from images/ by tools/build_art.py.
   Files come from ImportFiles (icons/*.png) and are served under fs://game/icons/.
 -->
 <Database>

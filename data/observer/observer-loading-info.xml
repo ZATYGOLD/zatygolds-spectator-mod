@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Zatygold's Spectator - Observer loading screen (gameplay database, every Age).
+  The background is also the backdrop of the civilization's Government,
+  Unlocks, Resources and Legacies screens. Images are built by tools/build_art.py.
+-->
+<Database>
+  <LoadingInfo_Civilizations>
+    <Row CivilizationType="CIVILIZATION_ZOM_OBSERVER_ANTIQUITY" CivilizationText="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" BackgroundImageHigh="fs://game/backgrounds/lsbg_zom_observer_1080.png" BackgroundImageLow="fs://game/backgrounds/lsbg_zom_observer_720.png"/>
+    <Row CivilizationType="CIVILIZATION_ZOM_OBSERVER_EXPLORATION" CivilizationText="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" BackgroundImageHigh="fs://game/backgrounds/lsbg_zom_observer_1080.png" BackgroundImageLow="fs://game/backgrounds/lsbg_zom_observer_720.png"/>
+    <Row CivilizationType="CIVILIZATION_ZOM_OBSERVER_MODERN" CivilizationText="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" BackgroundImageHigh="fs://game/backgrounds/lsbg_zom_observer_1080.png" BackgroundImageLow="fs://game/backgrounds/lsbg_zom_observer_720.png"/>
+  </LoadingInfo_Civilizations>
+</Database>

@@ -87,7 +87,9 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 zatygolds-observer-mode.modinfo   # manifest, zom-observer-in-game criteria
 ├─ config/                       # lobby DB: Spectator leader / civs, hidden "Spectator in game" option
 ├─ data/observer/                # gameplay DB: Spectator leader, civs, Eye, Triumph / defeat exemptions
-├─ icons/                        # Spectator art
+├─ icons/, backgrounds/          # Spectator art and loading screen (built by tools/build_art.py)
+├─ images/                       # source art (not loaded by the game)
+├─ tools/                        # build_art.py: images/ -> icons/, backgrounds/
 ├─ maps/, scripts/               # base-game overrides: Spectator start and Eye each Age
 ├─ ui-next/screens/, ui/policies/, ui/great-works/,
 │  ui/tech-tree/, ui/culture-tree/, ui/tree-grid/   # base-game overrides: screens for a picked leader

@@ -99,10 +99,13 @@
             <Actions>
                 <ImportFiles>
                     <Item>maps/zom-observer-eye.js</Item>
+                    <Item>backgrounds/lsbg_zom_observer_1080.png</Item>
+                    <Item>backgrounds/lsbg_zom_observer_720.png</Item>
                 </ImportFiles>
                 <UpdateDatabase>
                     <Item>data/observer/observer-leader.xml</Item>
                     <Item>data/observer/observer-civilizations.xml</Item>
+                    <Item>data/observer/observer-loading-info.xml</Item>
                     <Item>data/observer/observer-units-gameeffects.xml</Item>
                     <Item>data/observer/observer-units.xml</Item>
                     <Item>data/observer/observer-legacies.sql</Item>
