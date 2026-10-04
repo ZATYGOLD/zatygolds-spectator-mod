@@ -43,16 +43,18 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
 - Left-click a leader to jump to their capital; right-click also opens their
   leader panel (wars listed, no actions). Settlement banners and city centers
   open the owner's panel.
-- Allies share a hex-border colour (no glow); leaders at war glow red with a pip per
-  war; celebrations glow gold. Antiquity cards show the leader's pantheon.
+- Allies share a hex-border colour (no glow); leaders at war glow red with a
+  pip per war; celebrations glow gold. Antiquity cards show the leader's
+  pantheon.
 
 **Perspective:** the eye button under Victories on your card. Turn it on and
 left-click a leader to see the map as they see it: tiles they see now look
 normal, tiles they explored earlier are dark grey (with greyed resource
-icons), tiles they never explored are black, and unit flags, settlement banners and floating map texts follow what
-they can see. The camera keeps the game's normal zoom range meanwhile. Their portrait carries the eye. Left-click another leader to
-switch; click the button or your own portrait to see the whole map again.
-It only changes what you see, never the game.
+icons), tiles they never explored are black, and unit flags, settlement
+banners and floating map texts follow what they can see. The camera keeps
+the game's normal zoom range meanwhile. Their portrait carries the eye.
+Left-click another leader to switch; click the button or your own portrait
+to see the whole map again. It only changes what you see, never the game.
 
 **Yield Graphs:** a button in the HUD's screen dock opens line graphs of
 every leader's science, culture, gold, influence, food and production per

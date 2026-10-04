@@ -178,10 +178,10 @@ function drawSeenResources(plots) {
   for (const plot of plots) {
     const loc = GameplayMap.getLocationFromIndex(plot);
     const resource = GameplayMap.getResourceType(loc.x, loc.y);
-    if (resource == ResourceTypes.NO_RESOURCE) continue;
+    if (resource === ResourceTypes.NO_RESOURCE) continue;
     const def = GameInfo.Resources.lookup(resource);
     if (!def) continue;
-    const fleet = def.ResourceClassType == 'RESOURCECLASS_TREASURE' && !!player?.isDistantLands?.(loc);
+    const fleet = def.ResourceClassType === 'RESOURCECLASS_TREASURE' && !!player?.isDistantLands?.(loc);
     seenResources.addSprite(loc, UI.getIconBLP(def.ResourceType, 'FOW'), RESOURCE_POSITION, { scale: RESOURCE_SIZE });
     seenResourceTypes.addSprite(loc, UI.getIconBLP(fleet ? 'RESOURCECLASS_TREASURE_FLEET' : def.ResourceClassType, 'FOW'), RESOURCE_POSITION, {
       scale: RESOURCE_TYPE_SIZE,

@@ -128,7 +128,7 @@ const isLocalObserver = () => playerLeader(GameContext.localPlayerID) === OBSERV
  * for a player without mementos.
  */
 function syncRowMementos(dropdown) {
-  const playerID = parseInt(dropdown.Root.getAttribute('data-player-id') ?? '');
+  const playerID = parseInt(dropdown.Root.getAttribute('data-player-id') ?? '', 10);
   if (Number.isInteger(playerID) && isObserverRow(playerID) && dropdown.Root.getAttribute('mementos')) {
     dropdown.Root.setAttribute('mementos', '');
   }
