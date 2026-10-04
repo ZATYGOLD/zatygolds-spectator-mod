@@ -114,19 +114,19 @@
       <Text>{1_Leader} has not founded a religion yet.</Text>
     </Row>
     <Row Tag="LOC_ZOM_OBSERVER_IN_GAME">
-      <Text>Observer in game</Text>
+      <Text>Spectator in game</Text>
     </Row>
     <Row Tag="LOC_ZOM_TEAM_OBSERVER">
-      <Text>Observer</Text>
+      <Text>Spectator</Text>
     </Row>
     <Row Tag="LOC_ZOM_TEAM_OBSERVER_DESC">
-      <Text>Observers have no team. Pick another leader to play.</Text>
+      <Text>Spectators have no team. Pick another leader to play.</Text>
     </Row>
     <Row Tag="LOC_LEADER_ZOM_OBSERVER_NAME">
-      <Text>Observer</Text>
+      <Text>Spectator</Text>
     </Row>
     <Row Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION">
-      <Text>Watch the game without playing. The Observer has no abilities, founds no settlement and sees the whole map. Pair with the Observer civilization.</Text>
+      <Text>Watch the game without playing. The Spectator has no abilities, founds no settlement and sees the whole map. Pair with the Spectator civilization.</Text>
     </Row>
     <Row Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE">
       <Text>"To see everything, hold nothing."</Text>
@@ -141,16 +141,16 @@
       <Text>Never eliminated for having no settlements.</Text>
     </Row>
     <Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME">
-      <Text>Observer</Text>
+      <Text>Spectator</Text>
     </Row>
     <Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME">
-      <Text>Observer</Text>
+      <Text>Spectator</Text>
     </Row>
     <Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE">
-      <Text>Observer</Text>
+      <Text>Spectator</Text>
     </Row>
     <Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION">
-      <Text>A civilization that never settles. In place of a Founder it starts with the Observer's Eye, which sees every plot and every unit. Added by Zatygold's Spectator.</Text>
+      <Text>A civilization that never settles. In place of a Founder it starts with the Spectator's Eye, which sees every plot and every unit. Added by Zatygold's Spectator.</Text>
     </Row>
     <Row Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER">
       <Text>No cities, no score - only the view.</Text>
@@ -162,19 +162,19 @@
       <Text>Spectator</Text>
     </Row>
     <Row Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION">
-      <Text>Starts with the Observer's Eye in place of a Founder. No bonuses.</Text>
+      <Text>Starts with the Spectator's Eye in place of a Founder. No bonuses.</Text>
     </Row>
     <Row Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME">
-      <Text>Observer's Eye</Text>
+      <Text>Spectator's Eye</Text>
     </Row>
     <Row Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION">
       <Text>Sees the whole map through terrain and vegetation, and keeps every unit in sight. Hidden from other players; cannot found a city or be damaged.</Text>
     </Row>
     <Row Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION">
-      <Text>Play as [B]Observer[/B].</Text>
+      <Text>Play as [B]Spectator[/B].</Text>
     </Row>
     <Row Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP">
-      <Text>The [B]Observer[/B] watches as the [B]Observer[/B] civilization in every Age.</Text>
+      <Text>The [B]Spectator[/B] watches as the [B]Spectator[/B] civilization in every Age.</Text>
     </Row>
   </EnglishText>
 </Database>

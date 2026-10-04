@@ -5,7 +5,7 @@
 			<Text>Zatygold's Spectator</Text>
 		</Row>
 		<Row Tag="LOC_MOD_ZOM_DESCRIPTION">
-			<Text>A playable Observer for multiplayer Civilization VII: pick the Observer leader to watch the whole game as a real player with no empire - whole-map vision, every leader's stats, screens and yield graphs, and every Age.</Text>
+			<Text>A playable Spectator for multiplayer Civilization VII: pick the Spectator leader to watch the whole game as a real player with no empire - whole-map vision, every leader's stats, screens and yield graphs, and every Age.</Text>
 		</Row>
 	</EnglishText>
 </Database>

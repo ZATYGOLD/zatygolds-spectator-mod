@@ -157,8 +157,8 @@
 
         <!-- Copies of base-game files (changes marked "ZOM:"), loaded only in a
              game with an Observer: every other game runs the untouched files,
-             or another mod's versions of them. Loaded after Multiplayer
-             Toolkit's copies (LoadOrder), so these win in this mod's games. -->
+             or another mod's versions of them. LoadOrder 1100 lets these win over
+             other mods' copies in this mod's games. -->
         <ActionGroup id="zom-observer-overrides" scope="game" criteria="zom-observer-in-game">
             <Properties><LoadOrder>1100</LoadOrder></Properties>
             <Actions>
