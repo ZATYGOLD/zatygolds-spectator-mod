@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,8 +30,7 @@
  */
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import { PanelYieldBanner } from 'fs://game/base-standard/ui/diplo-ribbon/panel-yield-banner.js';
-import { createLogger, wrapMethod } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
 import { inLeaderPanel, isObserverSeat } from './observer-core.js';
 
 const log = createLogger('observer-yields');
@@ -49,17 +48,23 @@ const REPAINT_EVENTS = [
   'TradeRouteRemovedFromMap', 'NarrativeChoiceMade', 'AdvancedStartEffectUsed'
 ];
 
-/** The leader whose yields the bar shows: the leader panel's leader, else the Observer. */
+/** The leader whose yields the bar shows: the leader panel's leader, else the Observer (the bar's own player id). */
 function shownPlayer() {
   const selected = inLeaderPanel() ? DiplomacyManager.selectedPlayerID : PlayerIds.NO_PLAYER;
   return Players.get(Players.isValid(selected) ? selected : GameContext.localObserverID);
 }
 
+/** Write a data attribute only when it changes (every write re-renders the entry). */
+function setData(element, key, value) {
+  const text = String(value);
+  if (element.dataset[key] !== text) element.dataset[key] = text;
+}
+
 function setEntry(element, value, extra = {}) {
   if (!element) return;
-  element.dataset.value = String(value);
-  if (extra.stored !== undefined) element.dataset.stored = String(extra.stored);
-  if (extra.max !== undefined) element.dataset.max = String(extra.max);
+  setData(element, 'value', value);
+  if (extra.stored !== undefined) setData(element, 'stored', extra.stored);
+  if (extra.max !== undefined) setData(element, 'max', extra.max);
 }
 
 /** Food and production entries, placed before the settlement limit (once per bar). */
@@ -97,31 +102,32 @@ function refreshBanner(banner) {
   } catch (e) { log(`yield bar refresh failed: ${e}`); }
 }
 
-let refreshQueued = false;
-
 /** Repaint every yield bar after the current handlers (and the bar's own) have run. */
+const repaintBanners = deferOnce(() => {
+  for (const el of document.querySelectorAll(BANNER_TAG)) {
+    const banner = el.maybeComponent ?? el.component;
+    if (banner) refreshBanner(banner);
+  }
+});
+
 function queueRefresh() {
-  if (refreshQueued || !isObserverSeat()) return;
-  refreshQueued = true;
-  setTimeout(() => {
-    refreshQueued = false;
-    for (const el of document.querySelectorAll(BANNER_TAG)) {
-      const banner = el.maybeComponent ?? el.component;
-      if (banner) refreshBanner(banner);
-    }
-  }, 0);
+  if (isObserverSeat()) repaintBanners();
 }
 
-if (CONFIG.enabled) {
-  wrapMethod(PanelYieldBanner.prototype, 'render', function (base, ...args) {
-    const result = base(...args);
-    queueRefresh();
-    return result;
-  });
-  engine.whenReady.then(() => {
-    if (!isObserverSeat()) return;
-    for (const event of REPAINT_EVENTS) engine.on(event, queueRefresh);
-    for (const event of ['interface-mode-changed', 'diplomacy-selected-player-changed']) window.addEventListener(event, queueRefresh);
-    queueRefresh();
-  });
+/** An engine event concerns the bar when the bar repainted itself (the Observer's) or it is the shown leader's. */
+function onRepaintEvent(data) {
+  const player = data?.player;
+  if (player == null || player === GameContext.localObserverID || player === shownPlayer()?.id) queueRefresh();
 }
+
+wrapMethod(PanelYieldBanner.prototype, 'render', function (base, ...args) {
+  const result = base(...args);
+  queueRefresh();
+  return result;
+});
+engine.whenReady.then(() => {
+  if (!isObserverSeat()) return;
+  for (const event of REPAINT_EVENTS) engine.on(event, onRepaintEvent);
+  for (const event of ['interface-mode-changed', 'diplomacy-selected-player-changed']) window.addEventListener(event, queueRefresh);
+  queueRefresh();
+});

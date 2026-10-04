@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<EnglishText>
+		<Row Tag="LOC_MOD_ZOM_NAME">
+			<Text>Zatygold's Spectator</Text>
+		</Row>
+		<Row Tag="LOC_MOD_ZOM_DESCRIPTION">
+			<Text>A playable Spectator for Civilization VII, single player and multiplayer: pick the Spectator leader to watch the whole game as a real player with no empire - whole-map vision, every leader's stats, screens and yield graphs, and every Age.</Text>
+		</Row>
+	</EnglishText>
+</Database>

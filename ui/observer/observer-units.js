@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 /**
  * Zatygold's Spectator - Observer units (in-game scope).
  *
- * The Observer's Eye (data/observer/observer-units.xml) keeps the whole map
+ * The Observer's Eye (data/units.xml) keeps the whole map
  * and every unit in sight. For the Observer seat, other players' units are
  * selected with the game's own selection so the base unit panel shows them
  * (combat preview: observer-combat.js). The base game only ever selects

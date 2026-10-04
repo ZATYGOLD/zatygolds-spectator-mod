@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@
  */
 import { CivUnlocksModel, createCivUnlocksModel } from 'fs://game/core/ui-next/screens/unlocks/civ-unlocks-model.js';
 import { ModelRegistry, ModelLifecycle } from 'fs://game/core/ui-next/services/model-registry.js';
-import { createLogger, isObserverCiv, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
+import { configLeader, createLogger, filterParamValues, isObserverCiv, leaderTypeOf, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
 import { viewedPlayerID } from './observer-leader-view.js';
 
 const log = createLogger('observer-civ-lists');
@@ -40,21 +40,16 @@ const MODEL_OVERRIDE_PRIORITY = 1;
 
 // ============================ Age-transition choice ============================
 
-function isObserverLeaderSlot(playerId) {
-  try { return Configuration.getPlayer(playerId)?.leaderTypeName === OBSERVER_LEADER; } catch (e) { return false; }
-}
-
 /** Civilization choices without the other role's civilizations (Observer vs. real leader). */
 function filterCivChoices() {
   wrapMethod(GameSetup, 'findPlayerParameter', (base, playerId, paramName, ...rest) => {
     const param = base(playerId, paramName, ...rest);
-    const values = param?.domain?.possibleValues;
-    if (!CIV_PARAMS.has(paramName) || !Array.isArray(values)) return param;
+    if (!CIV_PARAMS.has(paramName)) return param;
     try {
-      const observer = isObserverLeaderSlot(playerId);
-      const kept = values.filter((v) => isObserverCiv(v.value?.toString()) === observer);
-      if (kept.length === 0 || kept.length === values.length) return param;
-      return { ...param, domain: { ...param.domain, possibleValues: kept } };
+      const observer = configLeader(playerId) === OBSERVER_LEADER;
+      const kept = filterParamValues(param, (civ) => isObserverCiv(civ) === observer);
+      const count = kept?.domain?.possibleValues?.length;
+      return !count || count === param.domain.possibleValues.length ? param : kept;
     } catch (e) { return param; }
   });
 }
@@ -89,8 +84,8 @@ function retarget(model, player) {
   }
   model.civInfo.sort((a, b) => Number(!a.isPreviousCiv) - Number(!b.isPreviousCiv) || Number(!a.isCurrentCiv) - Number(!b.isCurrentCiv) || Number(a.isLocked) - Number(b.isLocked));
   model.currentCivType = current;
-  const leader = GameInfo.Leaders.lookup(player.leaderType);
-  if (leader) model.leaderIcon = UI.getIconCSS(leader.LeaderType);
+  const leader = leaderTypeOf(player.leaderType, null);
+  if (leader) model.leaderIcon = UI.getIconCSS(leader);
 }
 
 function createCivUnlocksModelForView() {

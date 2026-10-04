@@ -2,7 +2,7 @@
 <!--
   Zatygold's Spectator - Observer loading screen (gameplay database, every Age).
   The background is also the backdrop of the civilization's Government,
-  Unlocks, Resources and Legacies screens. Images are built by art/build_art.py.
+  Unlocks, Resources and Legacies screens.
 -->
 <Database>
   <LoadingInfo_Civilizations>

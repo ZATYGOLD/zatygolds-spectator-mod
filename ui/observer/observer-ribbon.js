@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,8 +52,12 @@ const VIEW_ITEMS = {
   [OBSERVER_VIEW.SCORE]: scoreItems
 };
 
+const METER_VIEWS = new Set([OBSERVER_VIEW.RESEARCH, OBSERVER_VIEW.PRODUCTION]);
+
 let viewMode = CONFIG.defaultView;
-let lastMeterRefresh = 0;
+const meterRows = new Map(); // player id -> meter markup of the latest model update
+let shownMeters = '';        // meters the ribbon was last rebuilt with
+let refreshing = false;      // refreshRibbon rebuilds itself after the model update
 
 // ============================ Moods ============================
 
@@ -108,6 +112,7 @@ function rebuildRibbon() {
     const panel = hudPanel();
     const component = panel?.maybeComponent ?? panel?.component;
     if (!component) return;
+    shownMeters = meterSignature();
     const first = component.firstLeaderIndex;
     component.populateFlags?.();   // decorated by the populateFlags wrapper
     if (first != null && component.firstLeaderIndex !== first) {
@@ -121,7 +126,10 @@ function rebuildRibbon() {
 /** Refresh the model and repaint the cards. */
 function refreshRibbon() {
   if (!isObserverSeat()) return;
-  try { DiploRibbonData.updateAll(); rebuildRibbon(); } catch (e) { log(`ribbon refresh failed: ${e}`); }
+  refreshing = true;
+  try { DiploRibbonData.updateAll(); } catch (e) { log(`ribbon refresh failed: ${e}`); }
+  finally { refreshing = false; }
+  rebuildRibbon();
 }
 
 function setView(view) {
@@ -130,15 +138,14 @@ function setView(view) {
   refreshRibbon();
 }
 
+const meterSignature = () => [...meterRows].join('|');
+
 /**
  * Research / Production meters live in each row's `img`, which the base
- * incremental refresh never repaints; rebuild at most once per meterRefreshMs.
+ * incremental refresh never repaints; rebuild when a meter changed.
  */
 function refreshMeters() {
-  if (viewMode !== OBSERVER_VIEW.RESEARCH && viewMode !== OBSERVER_VIEW.PRODUCTION) return;
-  const now = Date.now();
-  if (now - lastMeterRefresh < CONFIG.meterRefreshMs) return;
-  lastMeterRefresh = now;
+  if (refreshing || !METER_VIEWS.has(viewMode) || meterSignature() === shownMeters) return;
   rebuildRibbon();
 }
 
@@ -149,8 +156,11 @@ function patchModel() {
   wrapMethod(DiploRibbonData, 'createPlayerYieldsData', (base, player, ...rest) => {
     if (!isObserverSeat() || !player) return base(player, ...rest);
     if (player.id === GameContext.localPlayerID) return [];   // the Observer's card holds the view buttons
-    try { return VIEW_ITEMS[viewMode](player, () => base(player, ...rest)); }
-    catch (e) { return base(player, ...rest); }
+    try {
+      const items = VIEW_ITEMS[viewMode](player, () => base(player, ...rest));
+      if (METER_VIEWS.has(viewMode)) meterRows.set(player.id, items.map((item) => item.img).join(''));
+      return items;
+    } catch (e) { return base(player, ...rest); }
   });
   // No religion yet (Antiquity): the pantheon fills the card's religion slot.
   wrapMethod(DiploRibbonData, 'createPlayerData', (base, player, ...rest) => {
@@ -222,10 +232,8 @@ function seedRibbon(attempts) {
   if (!hudPanel() && attempts > 0) setTimeout(() => seedRibbon(attempts - 1), CONFIG.ribbonSeedIntervalMs);
 }
 
-if (CONFIG.enabled) {
-  patchModel();
-  patchPanel();
-  for (const event of ['DiplomacyDeclareWar', 'DiplomacyMakePeace']) engine.on(event, refreshRibbon);
-  window.addEventListener(DETAILS_CHANGED_EVENT, refreshRibbon);
-  engine.whenReady.then(() => seedRibbon(CONFIG.ribbonSeedAttempts));
-}
+patchModel();
+patchPanel();
+for (const event of ['DiplomacyDeclareWar', 'DiplomacyMakePeace']) engine.on(event, refreshRibbon);
+window.addEventListener(DETAILS_CHANGED_EVENT, refreshRibbon);
+engine.whenReady.then(() => seedRibbon(CONFIG.ribbonSeedAttempts));

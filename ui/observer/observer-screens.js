@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,12 +35,11 @@
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import PopupSequencer from 'fs://game/base-standard/ui/popup-sequencer/popup-sequencer.js';
 import { wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
 import { CHOOSER_TAGS, openFullTree } from './observer-leader-screens.js';
 import { OVERVIEW_PANEL_TAG, setOverviewSource } from './observer-overview.js';
 
 const BLOCKED = new Set(['screen-advisor-council', 'advisor-council-popup', 'screen-dedication-selection', 'screen-advanced-start']);
-const OVERVIEW_PROPS = { singleton: true, createMouseGuard: true };
 /** Screen -> what opens instead: an overview source, or another screen. */
 const REDIRECTS = {
   'screen-pantheon-chooser': { overview: 'pantheons' },
@@ -56,7 +55,7 @@ wrapMethod(ContextManager, 'push', (base, target, ...rest) => {
   if (!redirect) return base(target, ...rest);
   if (redirect.screen) return base(redirect.screen, ...rest);
   setOverviewSource(redirect.overview);
-  return base(OVERVIEW_PANEL_TAG, OVERVIEW_PROPS);
+  return base(OVERVIEW_PANEL_TAG, SCREEN_PROPS);
 });
 
 // Blocked popups never enter the queue, so nothing waits on a screen that will not open.

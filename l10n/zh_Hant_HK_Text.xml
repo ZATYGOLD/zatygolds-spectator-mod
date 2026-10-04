@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="zh_Hant_HK">
+			<Text>觀戰者在遊戲中</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="zh_Hant_HK">
+			<Text>觀戰者</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>不參與遊戲，只觀看對局。觀戰者沒有任何能力，不建立聚落，並能看到整張地圖。請搭配觀戰者文明。</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="zh_Hant_HK">
+			<Text>「欲觀萬物，須一無所持。」</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="zh_Hant_HK">
+			<Text>全知之眼</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>不會因沒有聚落而被淘汰。</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="zh_Hant_HK">
+			<Text>觀戰者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="zh_Hant_HK">
+			<Text>觀戰者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="zh_Hant_HK">
+			<Text>觀戰者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>一個從不定居的文明。它以觀戰者之眼代替創立者開局，能看到每個格子和每個單位。由 Zatygold's Spectator 新增。</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="zh_Hant_HK">
+			<Text>觀戰者</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>以觀戰者之眼代替創立者開局。無加成。</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="zh_Hant_HK">
+			<Text>瞭望台</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="zh_Hant_HK">
+			<Text>觀戰者之眼</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>可透過地形與植被看到整張地圖，並始終看到每個單位。對其他玩家隱藏；無法建立城市，也不會受到傷害。</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="zh_Hant_HK">
+			<Text>你在此只為觀戰。由 Zatygold's Spectator 新增。</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="zh_Hant_HK">
+			<Text>沒有城市，沒有分數——只有風景。</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>以[B]觀戰者[/B]身分遊玩。</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="zh_Hant_HK">
+			<Text>[B]觀戰者[/B]在每個時代都以[B]觀戰者[/B]文明觀戰。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="zh_Hant_HK">
+			<Text>觀戰者</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="zh_Hant_HK">
+			<Text>觀戰者沒有隊伍。如要遊玩，請選擇其他領袖。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="zh_Hant_HK">
+			<Text>隱藏領袖詳情</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="zh_Hant_HK">
+			<Text>顯示領袖詳情</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="zh_Hant_HK">
+			<Text>{1_Leader}[N]右鍵：{2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="zh_Hant_HK">
+			<Text>自動結束回合：開</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="zh_Hant_HK">
+			<Text>自動結束回合：關</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="zh_Hant_HK">
+			<Text>收益</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="zh_Hant_HK">
+			<Text>生產</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="zh_Hant_HK">
+			<Text>分數</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="zh_Hant_HK">
+			<Text>科技與市政</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="zh_Hant_HK">
+			<Text>正在研究</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="zh_Hant_HK">
+			<Text>目前市政</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="zh_Hant_HK">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="zh_Hant_HK">
+			<Text>市民</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="zh_Hant_HK">
+			<Text>已完成科技</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="zh_Hant_HK">
+			<Text>已完成市政</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="zh_Hant_HK">
+			<Text>已建奇觀</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="zh_Hant_HK">
+			<Text>軍事力量</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="zh_Hant_HK">
+			<Text>尚無萬神殿。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="zh_Hant_HK">
+			<Text>{1_Leader}尚未創立宗教。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="zh_Hant_HK">
+			<Text>正與{1_Leader}交戰</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="zh_Hant_HK">
+			<Text>未處於戰爭狀態。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="zh_Hant_HK">
+			<Text>估算：僅基礎戰鬥力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hant_HK">
+			<Text>收益圖表</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>每位領袖每回合的{1_Yield}，於遊戲的每個回合記錄。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="zh_Hant_HK">
+			<Text>尚未記錄任何回合。收益會在每回合開始時記錄。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="zh_Hant_HK">
+			<Text>每回合{1_Yield}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="zh_Hant_HK">
+			<Text>每回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hant_HK">
+			<Text>總體</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="zh_Hant_HK">
+			<Text>點擊以隱藏此領袖的曲線。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="zh_Hant_HK">
+			<Text>點擊以顯示此領袖的曲線。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="zh_Hant_HK">
+			<Text>科技</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="zh_Hant_HK">
+			<Text>文化</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="zh_Hant_HK">
+			<Text>金幣</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="zh_Hant_HK">
+			<Text>影響力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="zh_Hant_HK">
+			<Text>食物</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="zh_Hant_HK">
+			<Text>生產力</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

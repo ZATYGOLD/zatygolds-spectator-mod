@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,15 +31,15 @@
  *   - The hidden game option ZOMObserverInGame follows whether any player is
  *     the Observer (the multiplayer host, or the single player); the modinfo
  *     loads the Observer's base-game overrides only in such a game.
- *   - Computer players never become the Observer: their leader list omits it
- *     and, when a single-player game starts, a Random leader is resolved here
- *     to a valid leader nobody else plays.
+ *   - Computer players never become the Observer: their leader list omits it.
+ *     When a single-player game starts, every Random leader is resolved here
+ *     to a valid leader nobody else plays, so Random never picks the Observer.
  *   - The leader-select 3D models use the game's stand-ins for the Observer.
  * Wraps GameSetup's parameter lookup / setter and engine.call; no base file edits.
  */
 import LeaderSelectModelManager from 'fs://game/core/ui/shell/leader-select/leader-select-model-manager.js';
 import { installAssetAliases } from '../shared/zom-assets.js';
-import { createLogger, isObserverCiv, OBSERVER_CIV_PREFIX, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
+import { configLeader, createLogger, deferOnce, filterParamValues, isObserverCiv, OBSERVER_LEADER, observerCivForAge, paramValue, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
 
 const PARAM_LEADER = 'PlayerLeader';
@@ -48,9 +48,9 @@ const PARAM_OBSERVER_IN_GAME = 'ZOMObserverInGame';
 const RANDOM = 'RANDOM';
 const NO_TEAM = -1;
 
-const log = CONFIG.debug ? createLogger('setup-observer') : () => {};
+const log = createLogger('setup-observer', CONFIG.debug);
 const logged = new Set();
-const logOnce = (key, message) => { if (!logged.has(key)) { logged.add(key); log(message); } };
+const debugOnce = (key, message) => { if (!logged.has(key)) { logged.add(key); log.debug(message); } };
 
 // ============================ Game state ============================
 
@@ -70,9 +70,7 @@ function startAgeType() {
   return lastStartAge;
 }
 
-function observerCivForStartAge() {
-  return OBSERVER_CIV_PREFIX + startAgeType().replace(/^AGE_/, '');
-}
+const observerCivForStartAge = () => observerCivForAge(startAgeType());
 
 function isMultiplayerSetup() {
   try { return !!Configuration.getGame().isAnyMultiplayer; } catch (e) { return true; }   // unknown: leave single-player rules off
@@ -80,9 +78,7 @@ function isMultiplayerSetup() {
 
 // ============================ Players ============================
 
-function playerLeader(playerID) {
-  try { return Configuration.getPlayer(playerID)?.leaderTypeName ?? ''; } catch (e) { return ''; }
-}
+const playerLeader = configLeader;
 
 function playerCiv(playerID) {
   try { return Configuration.getPlayer(playerID)?.civilizationTypeName ?? ''; } catch (e) { return ''; }
@@ -116,27 +112,25 @@ function syncSelection(playerID, param, value) {
     if (value === OBSERVER_LEADER) {
       if (playerCiv(playerID) !== civ) setParam(playerID, PARAM_CIV, civ);
       setTeam(playerID, NO_TEAM);
-      log(`player ${playerID} -> observer (${civ})`);
+      log.debug(`player ${playerID} -> observer (${civ})`);
     } else if (isObserverCiv(playerCiv(playerID))) {
       setParam(playerID, PARAM_CIV, RANDOM);
-      log(`player ${playerID} left observer; civ reset`);
+      log.debug(`player ${playerID} left observer; civ reset`);
     }
   } else if (param === PARAM_CIV) {
     if (isObserverCiv(value)) {
       if (value !== civ) setParam(playerID, PARAM_CIV, civ);
       if (playerLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
       setTeam(playerID, NO_TEAM);
-      log(`player ${playerID} -> observer via civ`);
+      log.debug(`player ${playerID} -> observer via civ`);
     } else if (playerLeader(playerID) === OBSERVER_LEADER) {
       setParam(playerID, PARAM_LEADER, RANDOM);
-      log(`player ${playerID} left observer via civ; leader reset`);
+      log.debug(`player ${playerID} left observer via civ; leader reset`);
     }
   }
 }
 
 // ============================ Observer-in-game flag ============================
-
-let flagQueued = false;
 
 /** Only the multiplayer host writes game options; a single player always can. */
 function canWriteGameOptions() {
@@ -146,7 +140,6 @@ function canWriteGameOptions() {
 
 /** The hidden game option follows whether any player is the Observer. */
 function syncObserverFlag() {
-  flagQueued = false;
   if (!canWriteGameOptions()) return;
   try {
     const slots = Configuration.getMap().maxMajorPlayers ?? 0;
@@ -155,62 +148,49 @@ function syncObserverFlag() {
     const current = !!GameSetup.findGameParameter(PARAM_OBSERVER_IN_GAME)?.value?.value;
     if (current !== anyObserver) {
       GameSetup.setGameParameterValue(PARAM_OBSERVER_IN_GAME, anyObserver);
-      log(`observer-in-game flag -> ${anyObserver}`);
+      log.debug(`observer-in-game flag -> ${anyObserver}`);
     }
   } catch (e) { log(`observer flag sync failed: ${e}`); }
 }
 
-function queueObserverFlag() {
-  if (flagQueued) return;
-  flagQueued = true;
-  setTimeout(syncObserverFlag, 0);
-}
+const queueObserverFlag = deferOnce(syncObserverFlag);
 
 // ============================ Parameter lists ============================
 
-const valueOf = (entry) => entry?.value?.toString() ?? '';
-
-/** keep(value) applied to a parameter's possible values, as a copy. */
-function filterValues(param, keep) {
-  const values = param?.domain?.possibleValues;
-  if (!Array.isArray(values)) return param;
-  return { ...param, domain: { ...param.domain, possibleValues: values.filter((v) => keep(valueOf(v))) } };
-}
-
 function shapeParameter(playerID, paramName, param) {
   if (paramName === PARAM_LEADER && isComputerSlot(playerID)) {
-    logOnce(`leader-${playerID}`, `Spectator hidden from computer player ${playerID}`);
-    return filterValues(param, (v) => v !== OBSERVER_LEADER);
+    debugOnce(`leader-${playerID}`, `Spectator hidden from computer player ${playerID}`);
+    return filterParamValues(param, (v) => v !== OBSERVER_LEADER);
   }
   if (paramName === PARAM_LEADER && playerID === GameContext.localPlayerID) {
-    const entry = param?.domain?.possibleValues?.find((v) => valueOf(v) === OBSERVER_LEADER);
-    logOnce('leader-local', entry ? `Spectator offered to the local player (invalidReason ${entry.invalidReason})` : 'Spectator missing from the local leader list');
+    const entry = param?.domain?.possibleValues?.find((v) => paramValue(v) === OBSERVER_LEADER);
+    debugOnce('leader-local', entry ? `Spectator offered to the local player (invalidReason ${entry.invalidReason})` : 'Spectator missing from the local leader list');
   }
   if (paramName !== PARAM_CIV || isMultiplayerSetup()) return param;
   if (playerLeader(playerID) === OBSERVER_LEADER) {
     const civ = observerCivForStartAge();
-    const shaped = filterValues(param, (v) => v === civ);
-    return shaped?.domain?.possibleValues?.length ? shaped : filterValues(param, isObserverCiv);   // unknown Age: any Observer civ
+    const shaped = filterParamValues(param, (v) => v === civ);
+    return shaped?.domain?.possibleValues?.length ? shaped : filterParamValues(param, isObserverCiv);   // unknown Age: any Observer civ
   }
-  return filterValues(param, (v) => !isObserverCiv(v));
+  return filterParamValues(param, (v) => !isObserverCiv(v));
 }
 
-// ============================ Computer leaders ============================
+// ============================ Random leaders ============================
 
-/** Single player, at game start: every computer player on Random gets a concrete leader, never the Observer. */
-function resolveComputerLeaders() {
+/** Single player, at game start: every player on Random (computer or not) gets a concrete leader, never the Observer. */
+function resolveRandomLeaders() {
   const ids = [...(Configuration.getGame().participatingPlayerIDs ?? [])];
   const taken = new Set(ids.map(playerLeader).filter((leader) => leader && leader !== RANDOM));
   for (const id of ids) {
-    if (!isComputerSlot(id) || playerLeader(id) !== RANDOM) continue;
+    if (playerLeader(id) !== RANDOM) continue;
     const pool = (GameSetup.findPlayerParameter(id, PARAM_LEADER)?.domain?.possibleValues ?? [])
       .filter((v) => v.invalidReason === GameSetupDomainValueInvalidReason.Valid)
-      .map(valueOf)
+      .map(paramValue)
       .filter((leader) => leader && leader !== RANDOM && leader !== OBSERVER_LEADER && !taken.has(leader));
     if (pool.length === 0) continue;
     const leader = pool[Math.floor(Math.random() * pool.length)];
     if (setParam(id, PARAM_LEADER, leader)) taken.add(leader);
-    log(`computer player ${id}: Random -> ${leader}`);
+    log.debug(`player ${id}: Random -> ${leader}`);
   }
 }
 
@@ -238,19 +218,19 @@ function install() {
 
   wrapMethod(engine, 'call', (base, name, ...args) => {
     if (name === 'startGame' && !isMultiplayerSetup()) {
-      if (CONFIG.resolveComputerLeaders) {
-        try { resolveComputerLeaders(); } catch (e) { log(`computer leaders failed: ${e}`); }
+      if (CONFIG.resolveRandomLeaders) {
+        try { resolveRandomLeaders(); } catch (e) { log(`random leaders failed: ${e}`); }
       }
       syncObserverFlag();
     }
     return base(name, ...args);
   });
 
-  log(`setup rules installed (start-age civ: ${observerCivForStartAge()})`);
+  log.debug(`setup rules installed (start-age civ: ${observerCivForStartAge()})`);
 }
 
 if (CONFIG.observerRole !== false) {
   try { install(); } catch (e) { log(`install failed: ${e}`); }
 }
 
-export { isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection };
+export { isComputerSlot, isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection };

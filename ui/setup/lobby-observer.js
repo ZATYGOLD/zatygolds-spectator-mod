@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 /**
  * Zatygold's Spectator - Observer in the multiplayer lobby (shell scope).
  *
- * The Observer is a real leader + civilization (config/observer-config.xml);
+ * The Observer is a real leader + civilization (config/config.xml);
  * setup-observer.js holds the rules shared with single player. This module
  * makes the lobby treat them as one role:
  *   - The civilization list shows a single "Observer" entry - the one for the
@@ -31,6 +31,7 @@
  *   - While observing, the civilization and team dropdowns are locked and the
  *     team column shows the eye badge. The leader dropdown stays open so the
  *     player can switch back.
+ *   - Computer players are never offered the team "Observer" entry.
  *   - Rebuilding the leader list re-checks the hidden ZOMObserverInGame option
  *     (setup-observer.js; written by the host).
  * Wraps the lobby model's dropdown builders and callbacks; no base file edits.
@@ -39,7 +40,7 @@ import MPLobbyModel, { MPLobbyDataModel } from 'fs://game/core/ui/shell/mp-stagi
 import { MPStagingTeamDropdown } from 'fs://game/core/ui/shell/mp-staging/mp-staging-team-dropdown.js';
 import { createLogger, isObserverCiv, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
-import { isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
+import { isComputerSlot, isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
 
 const OBSERVER_ICON = 'fs://game/art/icons/zom_observer.png';
 const OBSERVER_CIV_ICON = 'fs://game/art/icons/zom_observer_civ.png';
@@ -48,7 +49,7 @@ const DROPDOWN_PARAM = 'DROPDOWN_TYPE_PLAYER_PARAM';
 const DROPDOWN_TEAM = 'DROPDOWN_TYPE_TEAM';
 const NO_TEAM = -1;
 
-const log = CONFIG.debug ? createLogger('lobby-observer') : () => {};
+const log = createLogger('lobby-observer', CONFIG.debug);
 
 // ============================ Dropdown shaping ============================
 
@@ -88,13 +89,14 @@ function shapeLeaderDropdown(dropdown, playerID) {
 }
 
 /**
- * Team column: an "Observer" entry is appended to the team list (picking it
- * makes the row an observer). While observing it is the selection, the eye
+ * Team column: an "Observer" entry is appended to a human player's team list
+ * (picking it makes the row an observer). While observing it is the selection, the eye
  * badge is shown and the numbered teams are disabled.
  */
 function shapeTeamDropdown(dropdown, playerID) {
   const observing = isObserverRow(playerID);
   const items = (dropdown.itemList ?? []).filter((it) => !it.zomObserver);
+  if (isComputerSlot(playerID)) { dropdown.itemList = items; return; }
   if (observing) for (const it of items) it.disabled = true;
   items.push({
     label: Locale.compose('LOC_ZOM_TEAM_OBSERVER'),
@@ -150,7 +152,7 @@ function install() {
     try {
       const playerID = parseInt(event?.target?.getAttribute?.('data-player-id') ?? '');
       if (Number.isInteger(playerID)) {
-        if (event?.detail?.selectedItem?.zomObserver) {
+        if (event?.detail?.selectedItem?.zomObserver && !isComputerSlot(playerID)) {
           if (playerLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
           syncSelection(playerID, PARAM_LEADER, OBSERVER_LEADER);
           return;
@@ -177,7 +179,7 @@ function install() {
     } catch (e) { /* keep base visuals */ }
   });
 
-  log('lobby role installed');
+  log.debug('lobby role installed');
 }
 
 if (CONFIG.observerRole !== false) {

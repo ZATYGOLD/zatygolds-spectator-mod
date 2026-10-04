@@ -1,13 +1,14 @@
 import { g_MinLandmassSizeForIslandBias, g_DesiredBufferBetweenMajorStarts, g_RequiredBufferBetweenMajorStarts } from './map-globals.js';
 import { getSectorRegion, shuffle, isOceanAccess } from './map-utilities.js';
 import { profileScope } from '../scripts/profiling.js';
-import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-observer-eye.js';   // ZOM
+import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-observer-eye.js';   // ZOM: the Observer's Eye
 
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/maps/assign-starting-plots.js
- * (build dated 2026-09-16); the ONLY changes are the "ZOM:" import and block
- * below, which wrap StartPositioner.setStartPosition. Re-apply after game updates.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": an import and
+ * a block that wraps StartPositioner.setStartPosition.
+ * Re-apply after game updates; see maps/zom-observer-eye.js.
  *
  * ZOM: Observer players (leader LEADER_ZOM_OBSERVER) never start on land with
  * the other majors: their start plot becomes the marine ice tile chosen by

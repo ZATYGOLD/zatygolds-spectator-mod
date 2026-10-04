@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="de_DE">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="de_DE">
+			<Text>Ein spielbarer Zuschauer für Civilization VII, im Einzel- und Mehrspielermodus: Wähle den Anführer Zuschauer, um das ganze Spiel als echter Spieler ohne Reich zu verfolgen – Sicht auf die ganze Karte, Werte, Bildschirme und Ertragsdiagramme jedes Anführers, durch jedes Zeitalter.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="es_ES">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="es_ES">
+			<Text>Un Espectador jugable para Civilization VII, en partidas individuales y multijugador: elige al líder Espectador para seguir toda la partida como un jugador real sin imperio; visión de todo el mapa, estadísticas, pantallas y gráficos de rendimientos de cada líder, en todas las eras.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="fr_FR">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="fr_FR">
+			<Text>Un Spectateur jouable pour Civilization VII, en solo et en multijoueur : choisissez le dirigeant Spectateur pour suivre toute la partie comme un vrai joueur sans empire - vision de toute la carte, statistiques, écrans et graphiques de rendements de chaque dirigeant, à chaque Âge.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="it_IT">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="it_IT">
+			<Text>Uno Spettatore giocabile per Civilization VII, in giocatore singolo e multigiocatore: scegli il leader Spettatore per seguire l'intera partita come un vero giocatore senza impero - visuale su tutta la mappa, statistiche, schermate e grafici delle rese di ogni leader, in ogni epoca.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="ja_JP">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="ja_JP">
+			<Text>Civilization VII用のプレイ可能な観戦者。シングルプレイとマルチプレイに対応。観戦者を指導者に選ぶと、帝国を持たないプレイヤーとしてゲーム全体を観戦できます。マップ全体の視界、全指導者の統計・画面・産出グラフ、すべての時代に対応。</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="ko_KR">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="ko_KR">
+			<Text>싱글플레이와 멀티플레이를 지원하는 Civilization VII용 플레이 가능한 관전자: 관전자 지도자를 선택해 제국 없는 플레이어로서 게임 전체를 관전하세요. 지도 전체 시야, 모든 지도자의 통계·화면·산출량 그래프, 모든 시대를 지원합니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="pl_PL">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="pl_PL">
+			<Text>Grywalny Widz do Civilization VII, w grze jednoosobowej i wieloosobowej: wybierz przywódcę Widz, aby śledzić całą grę jako gracz bez imperium – widok całej mapy, statystyki, ekrany i wykresy dochodów każdego przywódcy, w każdej epoce.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="pt_BR">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="pt_BR">
+			<Text>Um Espectador jogável para Civilization VII, em um jogador e multijogador: escolha o líder Espectador para acompanhar a partida inteira como um jogador sem império - visão do mapa inteiro, estatísticas, telas e gráficos de rendimentos de cada líder, em todas as Eras.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="ru_RU">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="ru_RU">
+			<Text>Наблюдатель для Civilization VII, в одиночной и сетевой игре: выберите лидера «Наблюдатель», чтобы следить за всей игрой как игрок без империи - обзор всей карты, статистика, экраны и графики доходов каждого лидера, во всех эпохах.</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="zh_Hans_CN">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>适用于《文明VII》的可游玩观战者，支持单人和多人游戏：选择观战者领袖，以没有帝国的玩家身份观看整局游戏——全图视野、每位领袖的数据、界面和产出图表，贯穿每个时代。</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_NAME" Language="zh_Hant_HK">
+			<Text>Zatygold's Spectator</Text>
+		</Replace>
+		<Replace Tag="LOC_MOD_ZOM_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>適用於《文明帝國VII》的可遊玩觀戰者，支援單人與多人遊戲：選擇觀戰者領袖，以沒有帝國的玩家身分觀看整局遊戲——全圖視野、每位領袖的數據、介面和收益圖表，貫穿每個時代。</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

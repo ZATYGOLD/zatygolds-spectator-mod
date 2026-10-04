@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@
 import { RaiseDiplomacyEvent } from 'fs://game/base-standard/ui/diplomacy/diplomacy-events.js';
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import { createLogger, findAncestor, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
 import { isObserverSeat, watchedPlayers } from './observer-core.js';
 import { isDetailsHidden, setDetailsHidden } from './observer-ribbon-style.js';
 
@@ -102,7 +101,5 @@ function patchCityCenterClicks() {
   });
 }
 
-if (CONFIG.enabled) {
-  patchCityCenterClicks();
-  window.addEventListener('engine-input', onEngineInput, true);
-}
+patchCityCenterClicks();
+window.addEventListener('engine-input', onEngineInput, true);

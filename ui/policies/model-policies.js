@@ -472,15 +472,15 @@ function createPoliciesModel() {
     policySlots: _policySlots,
     tradSlots: _tradSlots,
     crisisSlots: _crisisSlots,
-    canSwapPolicies: !zomReadOnly && canSwapNormalPolicies,   // ZOM
-    canSwapCrisis: !zomReadOnly && canSwapCrisisPolicies,   // ZOM
+    canSwapPolicies: !zomReadOnly && canSwapNormalPolicies,   // ZOM: read-only for the Observer
+    canSwapCrisis: !zomReadOnly && canSwapCrisisPolicies,   // ZOM: read-only for the Observer
     confirmDisable: false,
     isSmallScreen: isSmallScreenSize,
-    onCardClick: zomReadOnly ? () => {} : handleOnCardClick,   // ZOM
-    onConfirmClick: zomReadOnly ? handleOnClose : handleOnConfirmClick,   // ZOM
+    onCardClick: zomReadOnly ? () => {} : handleOnCardClick,   // ZOM: read-only for the Observer
+    onConfirmClick: zomReadOnly ? handleOnClose : handleOnConfirmClick,   // ZOM: read-only for the Observer
     onCloseClick: handleOnClose,
     clearArrays,
-    canSlotCard: zomReadOnly ? () => false : handleCanSlotCard,   // ZOM
+    canSlotCard: zomReadOnly ? () => false : handleCanSlotCard,   // ZOM: read-only for the Observer
     autoFocusCard: getAvailablePolicies()[0] != void 0 ? getAvailablePolicies()[0].$index : -1
   });
   return model;

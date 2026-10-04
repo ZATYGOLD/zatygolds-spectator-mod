@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,12 +33,11 @@ const OBSERVER_VIEW = {
 /** Tunable settings. */
 const CONFIG = {
   enabled: true,                        // master switch for the Observer's in-game features
-  debug: true,                          // extra UI.log diagnostics (e.g. the Eye's vision each turn)
+  debug: false,                         // extra UI.log diagnostics (e.g. the Eye's vision each turn)
   defaultView: OBSERVER_VIEW.YIELDS,
   autoEndTurn: false,                   // initial state of the auto end turn toggle
   autoEndTurnDelayMs: 1000,             // wait after the turn starts (prompts are answered first)
   autoEndTurnRetryMs: 1000,             // retry while something still blocks the turn
-  meterRefreshMs: 2000,                 // minimum gap between Research / Production meter repaints
   historyRecordDelayMs: 500,            // wait after a turn starts before recording yields (graphs)
   ribbonSeedAttempts: 30,               // tries to populate the ribbon once the HUD exists
   ribbonSeedIntervalMs: 500,
@@ -76,4 +75,27 @@ const ROW_COLORS = {
   wonders: '#f0c040'
 };
 
-export { CONFIG, HIGHLIGHT, OBSERVER_VIEW, ROW_COLORS };
+/** Progress bar colour of each Research / Production meter. */
+const METER_COLORS = {
+  tech: ROW_COLORS.techs,
+  civic: ROW_COLORS.civics,
+  production: '#7fc77f'
+};
+
+/** Game icons shared by the ribbon's rows and buttons. */
+const ICONS = {
+  gold: 'blp:fi_Yield_Gold_64',
+  science: 'blp:fi_Yield_Science_64',
+  culture: 'blp:fi_Yield_Culture_64',
+  happiness: 'blp:fi_Yield_Happiness_64',
+  influence: 'blp:fi_yield_diplomacy_64',
+  production: 'blp:fi_Yield_Production_64',
+  military: 'blp:fi_nar_rew_combat_64',
+  tech: 'blp:fi_radial_tech_64',
+  civic: 'blp:fi_radial_civics_64',
+  wonders: 'blp:ntf_wonder_completed',
+  victories: 'blp:radial_victories',
+  endTurn: 'blp:fi_next_turn_64'
+};
+
+export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, ROW_COLORS };

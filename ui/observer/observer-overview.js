@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import Panel from 'fs://game/core/ui/panel-support.js';
 import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
 import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
 import { clearChildren } from '../shared/zom-util.js';
-import { watchedPlayers } from './observer-core.js';
+import { leaderPortrait, watchedPlayers } from './observer-core.js';
 
 const PANEL_TAG = 'zom-observer-overview';
 const PANTHEON_STYLES = 'fs://game/base-standard/ui/pantheon-complete/panel-pantheon-complete.css';
@@ -113,10 +113,7 @@ function leaderHeader(player) {
   const row = document.createElement('div');
   row.classList.value = 'flex flex-row items-center self-stretch mt-6 pb-1';
   row.style.borderBottom = '0.0555555556rem solid rgba(140, 126, 98, 0.6)';
-  const portrait = document.createElement('fxs-icon');
-  portrait.classList.value = 'size-12 mr-2';
-  portrait.setAttribute('data-icon-id', GameInfo.Leaders.lookup(player.leaderType)?.LeaderType ?? 'UNKNOWN_LEADER');
-  portrait.setAttribute('data-icon-context', 'CIRCLE_MASK');
+  const portrait = leaderPortrait(player, 'size-12 mr-2');
   const name = document.createElement('p');
   name.classList.value = 'font-title-base text-accent-2';
   name.textContent = Locale.compose(player.name);
@@ -158,7 +155,7 @@ function emptyLine(loc) {
 
 Controls.define(PANEL_TAG, {
   createInstance: ObserverOverviewPanel,
-  description: 'Observer Mode overview (every leader).',
+  description: 'Spectator overview (every leader).',
   classNames: ['screen-pantheon-complete', 'absolute', 'pointer-events-none', 'flex'],
   innerHTML: [CONTENT],
   styles: [PANTHEON_STYLES],

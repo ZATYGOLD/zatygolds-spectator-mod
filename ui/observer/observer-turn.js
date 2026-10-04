@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@
  * game would wait on the Observer forever. After every unpause the Observer's
  * still-active, "ended" turn is sent again.
  */
-import { createLogger, isAgeEnding } from '../shared/zom-util.js';
+import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat } from './observer-core.js';
 
@@ -50,6 +50,10 @@ const log = createLogger('observer-turn');
 const HIDE_CLASS = 'zom-observer-auto-turn';
 const STYLE_ID = 'zom-observer-turn-style';
 const SLIDE = '0.35s ease';
+const STYLE = [
+  `panel-action { transition: transform ${SLIDE}, opacity ${SLIDE}; }`,
+  `.${HIDE_CLASS} panel-action { transform: translateY(120%); opacity: 0; pointer-events: none; }`
+].join('\n');
 
 let autoEnd = CONFIG.autoEndTurn;
 let retryTimer = null;
@@ -59,8 +63,8 @@ const turnActive = () => !!Players.get(GameContext.localPlayerID)?.isTurnActive;
 const blocked = () => Game.Notifications.getEndTurnBlockingType(GameContext.localPlayerID) !== EndTurnBlockingTypes.NONE;
 /** The Age has ended (after its last turn) and the next one has not begun. */
 function ageOver() {
+  if (isAgeTransitionInProgress()) return true;
   try {
-    if (Modding.getTransitionInProgress?.() === TransitionType.Age) return true;
     const ages = Game.AgeProgressManager;
     return !!ages?.isAgeOver && !ages.isFinalAge && !ages.isExtendedGame;
   } catch (e) { return false; }
@@ -102,15 +106,7 @@ const later = (fn) => () => setTimeout(fn, CONFIG.autoEndTurnDelayMs);
 /** Hide the End Turn button while the turn ends automatically (shown again when paused or off). */
 function updateEndTurnButton() {
   if (!isObserverSeat()) return;
-  if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = [
-      `panel-action { transition: transform ${SLIDE}, opacity ${SLIDE}; }`,
-      `.${HIDE_CLASS} panel-action { transform: translateY(120%); opacity: 0; pointer-events: none; }`
-    ].join('\n');
-    document.head.appendChild(style);
-  }
+  setStyle(STYLE_ID, STYLE);
   document.body.classList.toggle(HIDE_CLASS, endsAutomatically() && !isPaused());
 }
 
@@ -136,10 +132,8 @@ function setAutoEndTurn(on) {
   catch (e) { log(`unready failed: ${e}`); }
 }
 
-if (CONFIG.enabled) {
-  for (const event of ['LocalPlayerTurnBegin', 'GameAgeEnded']) engine.on(event, later(onTurnState));
-  engine.on('GamePauseStateChanged', () => { setTimeout(updateEndTurnButton, 0); later(recoverAfterPause)(); });
-  engine.whenReady.then(later(onTurnState));
-}
+for (const event of ['LocalPlayerTurnBegin', 'GameAgeEnded']) engine.on(event, later(onTurnState));
+engine.on('GamePauseStateChanged', () => { setTimeout(updateEndTurnButton, 0); later(recoverAfterPause)(); });
+engine.whenReady.then(later(onTurnState));
 
 export { isAutoEndTurn, setAutoEndTurn };

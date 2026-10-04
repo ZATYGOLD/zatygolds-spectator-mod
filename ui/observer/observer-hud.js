@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,25 +34,26 @@
 import CameraController from 'fs://game/core/ui/camera/camera-controller.js';
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import ViewManager from 'fs://game/core/ui/views/view-manager.js';
-import { createLogger, wrapMethod } from '../shared/zom-util.js';
+import { clamp, createLogger, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat } from './observer-core.js';
 
-const log = createLogger('observer-hud');
+const log = createLogger('observer-hud', CONFIG.debug);
 const ZOOM_RATE = 0.3;              // camera-controller.js zoomRate
 const DEFAULT_FOV = 45;             // degrees, if the camera does not report its own
 const FOV_KEYS = ['verticalFoV', 'verticalFov', 'fov', 'FoV', 'fieldOfView'];
 const FOV_HOLD_MS = 250;            // re-apply interval while the view is widened or narrowed
 const STYLE_ID = 'zom-observer-hud-style';
+const HOOK_RETRIES = 40;
+const HOOK_RETRY_MS = 250;
 
 // ============================ Camera ============================
 
 let baseFov = null;
-let reportedFov = false;            // one diagnostic line per session (CONFIG.debug)
+let reportedFov = false;            // one diagnostic line per session
+let reportedInput = false;
 let zoom = null;                    // -zoomIn .. 1 + zoomOut; 0..1 is the game's own range
 let holdTimer = null;
-
-const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 function readFov() {
   try {
@@ -74,9 +75,9 @@ function applyFov() {
   const wanted = fovFor(zoom);
   try { Camera.setVerticalFoV(wanted); }
   catch (e) { log(`field of view not settable: ${e}`); return; }
-  if (CONFIG.debug && !reportedFov && viewScale(zoom) !== 1) {
+  if (!reportedFov && viewScale(zoom) !== 1) {
     reportedFov = true;
-    log(`zoom ${zoom.toFixed(2)}: field of view ${baseFov.toFixed(1)} -> ${wanted.toFixed(1)}, camera reports ${readFov() ?? 'nothing'}`);
+    log.debug(`zoom ${zoom.toFixed(2)}: field of view ${baseFov.toFixed(1)} -> ${wanted.toFixed(1)}, camera reports ${readFov() ?? 'nothing'}`);
   }
 }
 
@@ -98,10 +99,8 @@ function currentZoom() {
 }
 
 /** One zoom input along the single axis; true when handled (the base zoom must not run). */
-let reportedInput = false;
-
 function zoomBy(direction, status, x) {
-  if (CONFIG.debug && !reportedInput) { reportedInput = true; log(`first zoom input: world input ${ViewManager.isWorldInputAllowed ? 'allowed' : 'blocked'}, zoom ${Camera.getState().zoomLevel}`); }
+  if (!reportedInput) { reportedInput = true; log.debug(`first zoom input: world input ${ViewManager.isWorldInputAllowed ? 'allowed' : 'blocked'}, zoom ${Camera.getState().zoomLevel}`); }
   if (!isObserverSeat() || !ViewManager.isWorldInputAllowed) return false;
   if (typeof Camera.setVerticalFoV !== 'function') {
     if (!reportedFov) { reportedFov = true; log('Camera.setVerticalFoV is not available: the game zoom range is kept'); }
@@ -117,8 +116,6 @@ function zoomBy(direction, status, x) {
   return true;
 }
 
-const HOOK_RETRIES = 40;
-const HOOK_RETRY_MS = 250;
 const hookedControllers = new WeakSet();
 
 /**
@@ -144,25 +141,19 @@ function patchCamera(attempts = HOOK_RETRIES) {
   if (controllers.some((c) => typeof c.applyZoomTarget === 'function')) { log('Zoom+ camera controller found; zoom left to it'); return; }
   const hooked = controllers.filter(hookController).length;
   const registered = (ContextManager.engineInputEventHandlers ?? []).some((h) => hookedControllers.has(h));
-  if (hooked && CONFIG.debug) log(`camera zoom hooked (${hooked} controller(s), input handler ${registered ? 'found' : 'not yet found'})`);
+  if (hooked) log.debug(`camera zoom hooked (${hooked} controller(s), input handler ${registered ? 'found' : 'not yet found'})`);
   if (!registered && attempts > 0) setTimeout(() => patchCamera(attempts - 1), HOOK_RETRY_MS);
 }
 
 // ============================ Notification bar ============================
 
 function scaleNotifications() {
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = STYLE_ID;
-  style.textContent = `panel-notification-train { transform: scale(${CONFIG.notificationScale}); transform-origin: bottom right; }`;
-  document.head.appendChild(style);
+  setStyle(STYLE_ID, `panel-notification-train { transform: scale(${CONFIG.notificationScale}); transform-origin: bottom right; }`);
 }
 
-if (CONFIG.enabled) {
-  engine.whenReady.then(() => { if (isObserverSeat()) patchCamera(); });
-  engine.whenReady.then(() => {
-    if (!isObserverSeat()) return;
-    scaleNotifications();
-    if (CONFIG.debug) log(`zoom range ${-CONFIG.zoomIn}..${1 + CONFIG.zoomOut}, step x${CONFIG.zoomStepScale}`);
-  });
-}
+engine.whenReady.then(() => {
+  if (!isObserverSeat()) return;
+  patchCamera();
+  scaleNotifications();
+  log.debug(`zoom range ${-CONFIG.zoomIn}..${1 + CONFIG.zoomOut}, step x${CONFIG.zoomStepScale}`);
+});

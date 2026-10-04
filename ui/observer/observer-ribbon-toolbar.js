@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
  * Right-clicking the card's portrait hides or shows every card's details
  * (observer-navigation.js); its tooltip says so.
  */
-import { OBSERVER_VIEW } from './observer-config.js';
+import { ICONS, OBSERVER_VIEW } from './observer-config.js';
 import { isDetailsHidden, markOwnCard } from './observer-ribbon-style.js';
 import { isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
 
@@ -47,19 +47,6 @@ const BANNER_TOP = `${COLUMN_TOP_REM}rem`;
 const SYMBOL_TOP = `${COLUMN_TOP_REM + TOGGLE_SIZE_REM + SYMBOL_GAP_REM}rem`;
 const GLYPH_INSET = '0.2rem';   // same glyph area on every button (the lens button's own inset is larger)
 
-const ICON = {
-  gold: 'blp:fi_Yield_Gold_64',
-  science: 'blp:fi_Yield_Science_64',
-  culture: 'blp:fi_Yield_Culture_64',
-  happiness: 'blp:fi_Yield_Happiness_64',
-  influence: 'blp:fi_yield_diplomacy_64',
-  production: 'blp:fi_Yield_Production_64',
-  tech: 'blp:fi_radial_tech_64',
-  civic: 'blp:fi_radial_civics_64',
-  victories: 'blp:radial_victories',
-  endTurn: 'blp:fi_next_turn_64'
-};
-
 function iconDiv(url, cssText) {
   const d = document.createElement('div');
   d.style.cssText = `position: absolute; background-image: url("${url}"); background-size: contain; background-repeat: no-repeat; background-position: center; ${cssText}`;
@@ -69,21 +56,21 @@ function iconDiv(url, cssText) {
 /** Five yield glyphs on the points of a pentagram: gold, science, happiness, influence, culture. */
 function yieldsGlyph(icon) {
   const size = 38;   // percent of the button
-  const points = [[ICON.gold, 50, 12], [ICON.science, 86, 40], [ICON.happiness, 72, 84], [ICON.influence, 28, 84], [ICON.culture, 14, 40]];
+  const points = [[ICONS.gold, 50, 12], [ICONS.science, 86, 40], [ICONS.happiness, 72, 84], [ICONS.influence, 28, 84], [ICONS.culture, 14, 40]];
   for (const [url, cx, cy] of points) icon.appendChild(iconDiv(url, `width: ${size}%; height: ${size}%; left: ${cx - size / 2}%; top: ${cy - size / 2}%;`));
 }
 
 /** The tech and civic glyphs side by side. */
 function researchGlyph(icon) {
-  icon.appendChild(iconDiv(ICON.tech, 'width: 58%; height: 58%; left: -4%; top: 21%;'));
-  icon.appendChild(iconDiv(ICON.civic, 'width: 58%; height: 58%; right: -4%; top: 21%;'));
+  icon.appendChild(iconDiv(ICONS.tech, 'width: 58%; height: 58%; left: -4%; top: 21%;'));
+  icon.appendChild(iconDiv(ICONS.civic, 'width: 58%; height: 58%; right: -4%; top: 21%;'));
 }
 
 const GLYPHS = {
   [OBSERVER_VIEW.YIELDS]: yieldsGlyph,
   [OBSERVER_VIEW.RESEARCH]: researchGlyph,
-  [OBSERVER_VIEW.PRODUCTION]: (icon) => { icon.style.backgroundImage = `url("${ICON.production}")`; },
-  [OBSERVER_VIEW.SCORE]: (icon) => { icon.style.backgroundImage = `url("${ICON.victories}")`; }
+  [OBSERVER_VIEW.PRODUCTION]: (icon) => { icon.style.backgroundImage = `url("${ICONS.production}")`; },
+  [OBSERVER_VIEW.SCORE]: (icon) => { icon.style.backgroundImage = `url("${ICONS.victories}")`; }
 };
 
 /** View buttons by row. */
@@ -125,7 +112,7 @@ function viewButton(item, currentView, onSelect) {
 
 /** The banner toggles, top to bottom; each is pressed while on. */
 const BANNER_TOGGLES = [
-  { cls: 'zom-observer-auto-end', icon: ICON.endTurn, isOn: isAutoEndTurn, set: setAutoEndTurn,
+  { cls: 'zom-observer-auto-end', icon: ICONS.endTurn, isOn: isAutoEndTurn, set: setAutoEndTurn,
     tooltip: (on) => (on ? 'LOC_ZOM_OBSERVER_AUTO_END_TURN_ON' : 'LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF') }
 ];
 

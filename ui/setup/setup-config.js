@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 /** Tunable settings. */
 const CONFIG = {
   observerRole: true,               // Observer leader/civ act as one locked role in the lobby
-  resolveComputerLeaders: true,     // single player: computer players on Random never become the Observer
-  debug: true
+  resolveRandomLeaders: true,       // single player: a Random leader never becomes the Observer
+  debug: false                      // extra UI.log diagnostics
 };
 
 export { CONFIG };

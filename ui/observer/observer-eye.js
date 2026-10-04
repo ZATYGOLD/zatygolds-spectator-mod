@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 /**
  * Zatygold's Spectator - Observer's Eye (in-game scope).
  *
- * The Observer's only unit is the Eye (data/observer/observer-units.xml),
+ * The Observer's only unit is the Eye (data/units.xml),
  * created on marine ice by the map script. Its sight covers the whole map, so
  * every unit shows live (revealing the map alone never shows units). For the
  * Observer seat its flag is hidden, and it is kept asleep: it has 1 move, so
@@ -33,7 +33,7 @@ import { createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.j
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat } from './observer-core.js';
 
-const log = createLogger('observer-eye');
+const log = createLogger('observer-eye', CONFIG.debug);
 const SLEEP_OPERATION = 'UNITOPERATION_SLEEP';
 
 const ownUnits = () => Players.get(GameContext.localPlayerID)?.Units?.getUnits?.() ?? [];
@@ -69,7 +69,7 @@ function logVision() {
       if (loc && GameplayMap.getRevealedState(me, loc.x, loc.y) === RevealedStates.VISIBLE) visible++;
     }
   }
-  log(`eye at [${eyes}], units on visible plots: ${visible}/${total}`);
+  log.debug(`eye at [${eyes}], units on visible plots: ${visible}/${total}`);
 }
 
 hideOwnFlags();

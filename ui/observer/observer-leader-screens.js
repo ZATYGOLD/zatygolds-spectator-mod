@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
 import { createLogger, whenDefined, wrapMethod } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { SCREEN_PROPS } from './observer-core.js';
 import { BAR_CLASS, setRefresh, viewedPlayerID } from './observer-leader-view.js';
 
 const log = createLogger('observer-leader-screens');
@@ -77,7 +77,6 @@ const TREES = [
     }
   }
 ];
-const TREE_SCREEN_PROPS = { singleton: true, createMouseGuard: true };
 const CHOOSER_TAGS = new Set(TREES.map((t) => t.chooser));
 const NOTE_CLASS = 'zom-observer-no-religion';
 const GREAT_WORKS_BAR_STYLE = { marginTop: '-1rem', marginBottom: '1.5rem' };   // clear of the frame's top border
@@ -183,7 +182,7 @@ function patchTree(proto, tree) {
     return result;
   });
   wrapMethod(proto, 'refreshProgressionTree', function (base, treesCSV, ...rest) {
-    try { resetTreePanels(this, treesCSV); } catch (e) { log(`${tree.tag} panel reset failed: ${e}`); }
+    try { if (viewedPlayer()) resetTreePanels(this, treesCSV); } catch (e) { log(`${tree.tag} panel reset failed: ${e}`); }
     return base(treesCSV, ...rest);
   });
   if (tree.defaultTab) {
@@ -213,16 +212,14 @@ function openFullTree(chooserTag) {
   const detail = tree && player ? tree.detail(player) : null;
   if (!detail) return false;
   try {
-    ContextManager.push(tree.tag, { ...TREE_SCREEN_PROPS, targetParent: document.querySelector('.fxs-trees') ?? undefined });
+    ContextManager.push(tree.tag, { ...SCREEN_PROPS, targetParent: document.querySelector('.fxs-trees') ?? undefined });
     window.dispatchEvent(new CustomEvent(tree.event, { detail }));
     return true;
   } catch (e) { log(`${tree.tag} open failed: ${e}`); return false; }
 }
 
-if (CONFIG.enabled) {
-  for (const tree of TREES) whenDefined(tree.tag, (definition) => patchTree(definition.createInstance.prototype, tree), { log });
-  whenDefined(RELIGION_TAG, (definition) => patchReligion(definition.createInstance.prototype), { log });
-  whenDefined(GREAT_WORKS_TAG, (definition) => patchGreatWorks(definition.createInstance.prototype), { log });
-}
+for (const tree of TREES) whenDefined(tree.tag, (definition) => patchTree(definition.createInstance.prototype, tree), { log });
+whenDefined(RELIGION_TAG, (definition) => patchReligion(definition.createInstance.prototype), { log });
+whenDefined(GREAT_WORKS_TAG, (definition) => patchGreatWorks(definition.createInstance.prototype), { log });
 
 export { CHOOSER_TAGS, openFullTree };

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<EnglishText>
+		<Row Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER">
+			<Text>You are here to watch. Added by Zatygold's Spectator.</Text>
+		</Row>
+		<Row Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER">
+			<Text>No cities, no score - only the view.</Text>
+		</Row>
+	</EnglishText>
+</Database>

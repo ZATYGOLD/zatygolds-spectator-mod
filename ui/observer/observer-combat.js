@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import 'fs://game/base-standard/ui/unit-combat-preview/panel-unit-combat-preview
 import { PlotCursor } from 'fs://game/core/ui/input/plot-cursor.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
-import { createLogger, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, leaderTypeOf, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { meleeStrength, rangedStrength } from './observer-core.js';
 import { inspectableUnits, isForeign } from './observer-units.js';
@@ -88,7 +88,7 @@ function setOwnerIcon(icon, unitId) {
   if (!icon || !owner) return;
   if (owner.isMajor) {
     icon.style.backgroundImage = '';
-    icon.setAttribute('data-icon-id', GameInfo.Leaders.lookup(owner.leaderType)?.LeaderType ?? 'UNKNOWN_LEADER');
+    icon.setAttribute('data-icon-id', leaderTypeOf(owner.leaderType));
     return;
   }
   let civOwner = owner;

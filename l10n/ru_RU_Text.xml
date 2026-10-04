@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="ru_RU">
+			<Text>Наблюдатель в игре</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="ru_RU">
+			<Text>Наблюдатель</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="ru_RU">
+			<Text>Наблюдайте за игрой, не участвуя в ней. У Наблюдателя нет способностей, он не основывает поселений и видит всю карту. Выбирайте вместе с цивилизацией «Наблюдатель».</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="ru_RU">
+			<Text>«Чтобы видеть всё, не держись ни за что».</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="ru_RU">
+			<Text>Всевидящий</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="ru_RU">
+			<Text>Никогда не выбывает из игры из-за отсутствия поселений.</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="ru_RU">
+			<Text>Наблюдатель</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="ru_RU">
+			<Text>Наблюдатель</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="ru_RU">
+			<Text>Наблюдатель</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="ru_RU">
+			<Text>Цивилизация, которая никогда не оседает. Вместо Основателя она начинает с Оком Наблюдателя, которое видит каждую клетку и каждый юнит. Добавлено модом Zatygold's Spectator.</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="ru_RU">
+			<Text>Наблюдатель</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="ru_RU">
+			<Text>Начинает с Оком Наблюдателя вместо Основателя. Без бонусов.</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="ru_RU">
+			<Text>Смотровая</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="ru_RU">
+			<Text>Око Наблюдателя</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="ru_RU">
+			<Text>Видит всю карту сквозь рельеф и растительность и держит в поле зрения каждый юнит. Скрыто от других игроков; не может основывать города и получать урон.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="ru_RU">
+			<Text>Вы здесь, чтобы наблюдать. Добавлено модом Zatygold's Spectator.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="ru_RU">
+			<Text>Ни городов, ни очков - только вид.</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="ru_RU">
+			<Text>Играть за [B]Наблюдателя[/B].</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="ru_RU">
+			<Text>[B]Наблюдатель[/B] наблюдает за цивилизацию [B]Наблюдатель[/B] в каждой эпохе.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="ru_RU">
+			<Text>Наблюдатель</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="ru_RU">
+			<Text>У наблюдателей нет команды. Чтобы играть, выберите другого лидера.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="ru_RU">
+			<Text>Скрыть сведения о лидерах</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="ru_RU">
+			<Text>Показать сведения о лидерах</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="ru_RU">
+			<Text>{1_Leader}[N]Правый щелчок: {2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="ru_RU">
+			<Text>Автоматическое завершение хода: вкл.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ru_RU">
+			<Text>Автоматическое завершение хода: выкл.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ru_RU">
+			<Text>Доходы</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="ru_RU">
+			<Text>Производство</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="ru_RU">
+			<Text>Счет</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="ru_RU">
+			<Text>Технологии и институты</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="ru_RU">
+			<Text>Исследуется</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="ru_RU">
+			<Text>Текущий институт</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="ru_RU">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="ru_RU">
+			<Text>Горожане</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="ru_RU">
+			<Text>Изучено технологий</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="ru_RU">
+			<Text>Изучено социальных институтов</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="ru_RU">
+			<Text>Построено чудес</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="ru_RU">
+			<Text>Военная мощь</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="ru_RU">
+			<Text>Пантеона пока нет.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="ru_RU">
+			<Text>{1_Leader}: религия еще не основана.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="ru_RU">
+			<Text>В состоянии войны: {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="ru_RU">
+			<Text>Не воюет.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ru_RU">
+			<Text>Оценка: только базовая сила</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ru_RU">
+			<Text>Графики доходов</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ru_RU">
+			<Text>{1_Yield} за ход у каждого лидера, записывается каждый ход игры.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="ru_RU">
+			<Text>Пока не записано ни одного хода. Доходы записываются в начале каждого хода.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ru_RU">
+			<Text>{1_Yield} за ход</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="ru_RU">
+			<Text>За ход</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ru_RU">
+			<Text>Общее</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="ru_RU">
+			<Text>Нажмите, чтобы скрыть линию этого лидера.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ru_RU">
+			<Text>Нажмите, чтобы показать линию этого лидера.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="ru_RU">
+			<Text>Наука</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="ru_RU">
+			<Text>Культура</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="ru_RU">
+			<Text>Золото</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="ru_RU">
+			<Text>Влияние</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="ru_RU">
+			<Text>Пища</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ru_RU">
+			<Text>Производство</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

@@ -14,11 +14,12 @@ import { createEngineEvent } from '../../../../core/ui-next/utilities/game-core-
 
 /*
  * Zatygold's Spectator - base-game override.
- * Copied verbatim from the game's base-standard/ui-next/screens/victories/
- * victories-screen-model.js (build dated 2026-09-16). The only changes are
- * marked "ZOM:": Observer players (LEADER_ZOM_OBSERVER) are left out of every
- * player list on the Victories screens, and an Observer sees every leader's
- * real name instead of "An unmet Player". Re-apply after game updates.
+ * Copied verbatim from the game's base-standard/ui-next/screens/victories/victories-screen-model.js
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": Observer
+ * players (LEADER_ZOM_OBSERVER) are left out of every player list on the
+ * Victories screens, and an Observer sees every leader's real name instead of
+ * "An unmet Player".
+ * Re-apply after game updates; see ui/observer/observer-victory.js.
  */
 const ZOM_OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
 function zomIsObserver(playerId) {

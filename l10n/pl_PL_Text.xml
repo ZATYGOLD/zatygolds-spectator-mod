@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="pl_PL">
+			<Text>Widz w grze</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="pl_PL">
+			<Text>Widz</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
+			<Text>Oglądaj grę bez grania. Widz nie ma zdolności, nie zakłada osiedli i widzi całą mapę. Połącz z cywilizacją Widz.</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="pl_PL">
+			<Text>„Aby widzieć wszystko, nie trzymaj niczego.”</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="pl_PL">
+			<Text>Wszechwidzący</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="pl_PL">
+			<Text>Nigdy nie zostaje wyeliminowany z powodu braku osiedli.</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="pl_PL">
+			<Text>Widz</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="pl_PL">
+			<Text>Widz</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="pl_PL">
+			<Text>Widz</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
+			<Text>Cywilizacja, która nigdy nie osiada. Zamiast Założyciela zaczyna z Okiem Widza, które widzi każde pole i każdą jednostkę. Dodane przez Zatygold's Spectator.</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="pl_PL">
+			<Text>Widz</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
+			<Text>Zaczyna z Okiem Widza zamiast Założyciela. Brak premii.</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="pl_PL">
+			<Text>Punkt Widokowy</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="pl_PL">
+			<Text>Oko Widza</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="pl_PL">
+			<Text>Widzi całą mapę przez teren i roślinność oraz utrzymuje w polu widzenia każdą jednostkę. Ukryte przed innymi graczami; nie może zakładać miast ani otrzymywać obrażeń.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="pl_PL">
+			<Text>Jesteś tu, by obserwować. Dodane przez Zatygold's Spectator.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="pl_PL">
+			<Text>Bez miast, bez wyniku – tylko widok.</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
+			<Text>Graj jako [B]Widz[/B].</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="pl_PL">
+			<Text>[B]Widz[/B] obserwuje jako cywilizacja [B]Widz[/B] w każdej epoce.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="pl_PL">
+			<Text>Widz</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="pl_PL">
+			<Text>Widzowie nie należą do drużyn. Wybierz innego przywódcę, aby grać.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="pl_PL">
+			<Text>Ukryj szczegóły przywódców</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="pl_PL">
+			<Text>Pokaż szczegóły przywódców</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="pl_PL">
+			<Text>{1_Leader}[N]Prawy przycisk: {2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="pl_PL">
+			<Text>Automatyczny koniec tury: wł.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="pl_PL">
+			<Text>Automatyczny koniec tury: wył.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="pl_PL">
+			<Text>Dochody</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="pl_PL">
+			<Text>Produkcja</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="pl_PL">
+			<Text>Wynik</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="pl_PL">
+			<Text>Technologie i idee</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="pl_PL">
+			<Text>Badania</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="pl_PL">
+			<Text>Bieżąca idea</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="pl_PL">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="pl_PL">
+			<Text>Obywatele</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="pl_PL">
+			<Text>Ukończone technologie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="pl_PL">
+			<Text>Ukończone idee</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="pl_PL">
+			<Text>Zbudowane cuda</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="pl_PL">
+			<Text>Siła militarna</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="pl_PL">
+			<Text>Brak panteonu.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="pl_PL">
+			<Text>{1_Leader}: religia nie została jeszcze założona.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="pl_PL">
+			<Text>W stanie wojny z: {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="pl_PL">
+			<Text>Nie prowadzi wojny.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="pl_PL">
+			<Text>Szacunek: tylko siła bazowa</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="pl_PL">
+			<Text>Wykresy dochodów</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="pl_PL">
+			<Text>{1_Yield} na turę każdego przywódcy, zapisywane w każdej turze gry.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="pl_PL">
+			<Text>Nie zapisano jeszcze żadnych tur. Dochody są zapisywane na początku każdej tury.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="pl_PL">
+			<Text>{1_Yield} na turę</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="pl_PL">
+			<Text>Na turę</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="pl_PL">
+			<Text>Całość</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="pl_PL">
+			<Text>Kliknij, aby ukryć linię tego przywódcy.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="pl_PL">
+			<Text>Kliknij, aby pokazać linię tego przywódcy.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="pl_PL">
+			<Text>Nauka</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="pl_PL">
+			<Text>Kultura</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="pl_PL">
+			<Text>Złoto</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="pl_PL">
+			<Text>Wpływy</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="pl_PL">
+			<Text>Żywność</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="pl_PL">
+			<Text>Produkcja</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

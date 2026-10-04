@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,11 +25,15 @@
  * unless isObserverSeat() - other players are untouched.
  */
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { isObserverPlayer } from '../shared/zom-util.js';
+import { isObserverPlayer, leaderTypeOf } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
 
-/** True when this client plays the Observer. */
+/** ContextManager.push options for the Observer's full screens. */
+const SCREEN_PROPS = { singleton: true, createMouseGuard: true };
+
+/** True when this client plays the Observer (and the Observer's features are on). */
 function isObserverSeat() {
-  try { return isObserverPlayer(GameContext.localPlayerID); } catch (e) { return false; }
+  try { return CONFIG.enabled && isObserverPlayer(GameContext.localPlayerID); } catch (e) { return false; }
 }
 
 /** Living major players, Observers excluded. */
@@ -91,6 +95,15 @@ const meleeStrength = (unit) => unit?.Combat?.getMeleeStrength?.(false) ?? 0;
 const rangedStrength = (unit) => Math.max(unit?.Combat?.rangedStrength ?? 0, unit?.Combat?.bombardStrength ?? 0);
 const unitStrength = (unit) => Math.max(meleeStrength(unit), rangedStrength(unit));
 
+/** A circular leader portrait (fxs-icon) for a player. */
+function leaderPortrait(player, sizeClass) {
+  const icon = document.createElement('fxs-icon');
+  icon.classList.value = sizeClass;
+  icon.setAttribute('data-icon-id', leaderTypeOf(player.leaderType));
+  icon.setAttribute('data-icon-context', 'CIRCLE_MASK');
+  return icon;
+}
+
 /** True in any diplomacy screen (leader panel, dialogs, call to arms, peace deal). */
 function inDiplomacyMode() {
   try { return /DIPLOMACY|CALL_TO_ARMS|PEACE_DEAL/.test(InterfaceMode.getCurrent() ?? ''); } catch (e) { return false; }
@@ -101,4 +114,4 @@ function inLeaderPanel() {
   try { return /DIPLOMACY_HUB/.test(InterfaceMode.getCurrent() ?? ''); } catch (e) { return false; }
 }
 
-export { isObserverPlayer, isObserverSeat, watchedPlayers, diplomacySnapshot, meleeStrength, rangedStrength, unitStrength, inDiplomacyMode, inLeaderPanel };
+export { SCREEN_PROPS, diplomacySnapshot, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, rangedStrength, unitStrength, watchedPlayers };

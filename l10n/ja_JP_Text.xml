@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="ja_JP">
+			<Text>観戦者が参加中</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="ja_JP">
+			<Text>観戦者</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="ja_JP">
+			<Text>プレイせずにゲームを観戦します。観戦者には能力がなく、居住地を建設せず、マップ全体を見渡せます。観戦者文明と組み合わせてください。</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="ja_JP">
+			<Text>「すべてを見るには、何も持たぬこと。」</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="ja_JP">
+			<Text>千里眼</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="ja_JP">
+			<Text>居住地がなくても脱落しない。</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="ja_JP">
+			<Text>観戦者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="ja_JP">
+			<Text>観戦者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="ja_JP">
+			<Text>観戦者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="ja_JP">
+			<Text>決して定住しない文明。創始者の代わりに観戦者の眼を持って開始し、すべてのタイルとすべてのユニットを見通す。Zatygold's Spectatorにより追加。</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="ja_JP">
+			<Text>観戦者</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="ja_JP">
+			<Text>創始者の代わりに観戦者の眼を持って開始する。ボーナスなし。</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="ja_JP">
+			<Text>展望台</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="ja_JP">
+			<Text>観戦者の眼</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="ja_JP">
+			<Text>地形や植生を越えてマップ全体を見通し、すべてのユニットを視界に捉え続ける。他のプレイヤーには見えない。都市を建設できず、ダメージを受けない。</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="ja_JP">
+			<Text>あなたは観戦するためにここにいます。Zatygold's Spectatorにより追加。</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="ja_JP">
+			<Text>都市もスコアもない。あるのは眺めだけ。</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="ja_JP">
+			<Text>[B]観戦者[/B]としてプレイ。</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="ja_JP">
+			<Text>[B]観戦者[/B]はすべての時代で[B]観戦者[/B]文明として観戦します。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="ja_JP">
+			<Text>観戦者</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="ja_JP">
+			<Text>観戦者はチームに所属しません。プレイするには別の指導者を選んでください。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="ja_JP">
+			<Text>指導者の詳細を隠す</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="ja_JP">
+			<Text>指導者の詳細を表示</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="ja_JP">
+			<Text>{1_Leader}[N]右クリック: {2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="ja_JP">
+			<Text>自動ターン終了: オン</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ja_JP">
+			<Text>自動ターン終了: オフ</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ja_JP">
+			<Text>産出</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="ja_JP">
+			<Text>生産</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="ja_JP">
+			<Text>スコア</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="ja_JP">
+			<Text>技術と社会制度</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="ja_JP">
+			<Text>研究中</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="ja_JP">
+			<Text>現在の社会制度</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="ja_JP">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="ja_JP">
+			<Text>市民</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="ja_JP">
+			<Text>完了した技術</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="ja_JP">
+			<Text>完了した社会制度</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="ja_JP">
+			<Text>建設した遺産</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="ja_JP">
+			<Text>軍事力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="ja_JP">
+			<Text>パンテオンはまだありません。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="ja_JP">
+			<Text>{1_Leader}はまだ宗教を創始していません。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="ja_JP">
+			<Text>{1_Leader}と戦争中</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="ja_JP">
+			<Text>戦争していません。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ja_JP">
+			<Text>推定: 基本戦闘力のみ</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ja_JP">
+			<Text>産出グラフ</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ja_JP">
+			<Text>各指導者の1ターンあたりの{1_Yield}。ゲーム中、毎ターン記録されます。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="ja_JP">
+			<Text>まだ記録されたターンはありません。産出は毎ターンの開始時に記録されます。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ja_JP">
+			<Text>1ターンあたりの{1_Yield}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="ja_JP">
+			<Text>1ターンあたり</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ja_JP">
+			<Text>総合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="ja_JP">
+			<Text>クリックするとこの指導者の線を非表示にします。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ja_JP">
+			<Text>クリックするとこの指導者の線を表示します。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="ja_JP">
+			<Text>科学</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="ja_JP">
+			<Text>文化</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="ja_JP">
+			<Text>ゴールド</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="ja_JP">
+			<Text>影響力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="ja_JP">
+			<Text>食料</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ja_JP">
+			<Text>生産力</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

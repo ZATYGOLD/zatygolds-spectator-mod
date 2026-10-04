@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,10 +28,11 @@
  * the Gameface renderer supports (plain <img>, width-based bars).
  */
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
+import { clamp, isAgeTransitionInProgress } from '../shared/zom-util.js';
+import { ICONS, METER_COLORS } from './observer-config.js';
 import { unitStrength } from './observer-core.js';
 
 const TEXT_COLOR = '#e7d9ac';
-const BAR_COLOR = { tech: '#5fb5f0', civic: '#c08fe0', production: '#7fc77f' };
 
 /** A stat row: everything is drawn by `img`, the rest feeds tooltips and sorting. */
 function displayItem(type, label, img, details, rawValue) {
@@ -40,7 +41,7 @@ function displayItem(type, label, img, details, rawValue) {
 
 /** Icon, label and a progress bar stacked in one column; pct is 0..100. */
 function meterHTML(iconUrl, label, pct, barColor) {
-  const p = Math.max(0, Math.min(100, Math.round(pct ?? 0)));
+  const p = clamp(Math.round(pct ?? 0), 0, 100);
   const icon = iconUrl ? `<img src='${iconUrl}' style='width:1.7rem;height:1.7rem;'>` : '';
   const name = label
     ? `<div style='font-size:0.66rem;line-height:0.85rem;color:${TEXT_COLOR};text-align:center;margin-top:0.15rem;width:3.8rem;overflow:hidden;'>${label}</div>`
@@ -53,12 +54,6 @@ function meterHTML(iconUrl, label, pct, barColor) {
 
 // ============================ Yields ============================
 
-const ICON = {
-  military: 'blp:fi_nar_rew_combat_64',
-  techs: 'blp:fi_radial_tech_64',
-  civics: 'blp:fi_radial_civics_64',
-  wonders: 'blp:ntf_wonder_completed'
-};
 const SIGNED_TYPES = new Set(['gold', 'science', 'culture', 'happiness', 'diplomacy', 'food', 'production']);
 
 /** Short numbers for the narrow card: 9.5, 42, 1.2k, 15k. */
@@ -82,8 +77,8 @@ function valueRow(type, labelLoc, iconUrl, rawValue) {
 
 const yieldValue = (player, yieldType) => player.Stats?.getNetYield?.(YieldTypes[yieldType]) ?? 0;
 
-const strengthCache = new Map();   // player id -> military strength, cleared when units change
-const STRENGTH_EVENTS = ['UnitAddedToMap', 'UnitRemovedFromMap', 'UnitDamageChanged', 'UnitPromoted', 'LocalPlayerTurnBegin'];
+const strengthCache = new Map();   // player id -> military strength, dropped when one of its units changes
+const STRENGTH_EVENTS = ['UnitAddedToMap', 'UnitRemovedFromMap', 'UnitDamageChanged', 'UnitPromoted'];
 
 /** Sum of every unit's current base strength (cached until a unit changes). */
 function militaryStrength(player) {
@@ -94,7 +89,13 @@ function militaryStrength(player) {
   return total;
 }
 
-for (const event of STRENGTH_EVENTS) engine.on(event, () => strengthCache.clear());
+for (const event of STRENGTH_EVENTS) {
+  engine.on(event, (data) => {
+    const owner = data?.unit?.owner;
+    if (owner == null) strengthCache.clear(); else strengthCache.delete(owner);
+  });
+}
+engine.on('LocalPlayerTurnBegin', () => strengthCache.clear());
 
 /** Civics completed, each mastery level counted. */
 function civicsCompleted(player) {
@@ -110,10 +111,10 @@ const EXTRA_ROWS = [
   { type: 'food', label: 'LOC_YIELD_FOOD', icon: () => UI.getIconURL('YIELD_FOOD', 'YIELD'), value: (p) => yieldValue(p, 'YIELD_FOOD') },
   { type: 'production', label: 'LOC_YIELD_PRODUCTION', icon: () => UI.getIconURL('YIELD_PRODUCTION', 'YIELD'), value: (p) => yieldValue(p, 'YIELD_PRODUCTION') },
   { type: 'citizens', label: 'LOC_ZOM_OBSERVER_CITIZENS', icon: () => UI.getIconURL('YIELD_POPULATION', 'YIELD'), value: (p) => p.Stats?.totalPopulation ?? 0 },
-  { type: 'military', label: 'LOC_ZOM_OBSERVER_MILITARY_STRENGTH', icon: () => ICON.military, value: militaryStrength },
-  { type: 'techs', label: 'LOC_ZOM_OBSERVER_TECHS_COMPLETED', icon: () => ICON.techs, value: (p) => p.Techs?.getNumTechsUnlocked?.() ?? 0 },
-  { type: 'civics', label: 'LOC_ZOM_OBSERVER_CIVICS_COMPLETED', icon: () => ICON.civics, value: civicsCompleted },
-  { type: 'wonders', label: 'LOC_ZOM_OBSERVER_WONDERS_BUILT', icon: () => ICON.wonders, value: wondersBuilt }
+  { type: 'military', label: 'LOC_ZOM_OBSERVER_MILITARY_STRENGTH', icon: () => ICONS.military, value: militaryStrength },
+  { type: 'techs', label: 'LOC_ZOM_OBSERVER_TECHS_COMPLETED', icon: () => ICONS.tech, value: (p) => p.Techs?.getNumTechsUnlocked?.() ?? 0 },
+  { type: 'civics', label: 'LOC_ZOM_OBSERVER_CIVICS_COMPLETED', icon: () => ICONS.civic, value: civicsCompleted },
+  { type: 'wonders', label: 'LOC_ZOM_OBSERVER_WONDERS_BUILT', icon: () => ICONS.wonders, value: wondersBuilt }
 ];
 
 /** Latest value per row type and player, for the best-in-category highlight. */
@@ -158,11 +159,6 @@ function bestByType(playerIds) {
 
 // ============================ Research ============================
 
-/** True while an Age transition is processing (trees are in flux). */
-function ageTransitionActive() {
-  try { return Modding.getTransitionInProgress?.() === TransitionType.Age; } catch (e) { return false; }
-}
-
 /**
  * The node a player is researching in a tree, mirroring the sub-system dock:
  * { name, turns, icon, progress 0..1 } or null.
@@ -183,7 +179,7 @@ function activeResearch(playerID, treeType, tree, isTech) {
     try {
       const researching = tree?.getResearching?.();
       const cost = researching?.type != null && nodeData ? tree.getNodeCost?.(researching.type) : 0;
-      if (cost > 0) progress = Math.max(0, Math.min(1, nodeData.progress / cost));
+      if (cost > 0) progress = clamp(nodeData.progress / cost, 0, 1);
     } catch (e) { /* leave 0 */ }
     const icon = isTech ? Icon.getTechIconFromProgressionTreeNodeDefinition(nodeInfo) : Icon.getCultureIconFromProgressionTreeNodeDefinition(nodeInfo);
     return { name, turns: tree?.getTurnsLeft?.() ?? 0, icon, progress };
@@ -196,14 +192,14 @@ function researchRow(type, labelLoc, research, barColor) {
   return displayItem(type, research.name, meterHTML(research.icon, research.name, research.progress * 100, barColor), details, research.turns);
 }
 
-/** Current tech and civic meters. */
+/** Current tech and civic meters (none while an Age transition processes: the trees are in flux). */
 function researchItems(player) {
-  const busy = ageTransitionActive();
+  const busy = isAgeTransitionInProgress();
   const tech = busy ? null : activeResearch(player.id, player.Techs?.getTreeType?.(), player.Techs, true);
   const civic = busy ? null : activeResearch(player.id, player.Culture?.getActiveTree?.(), player.Culture, false);
   return [
-    researchRow('science', 'LOC_ZOM_OBSERVER_RESEARCH_TECH', tech, BAR_COLOR.tech),
-    researchRow('culture', 'LOC_ZOM_OBSERVER_RESEARCH_CIVIC', civic, BAR_COLOR.civic)
+    researchRow('science', 'LOC_ZOM_OBSERVER_RESEARCH_TECH', tech, METER_COLORS.tech),
+    researchRow('culture', 'LOC_ZOM_OBSERVER_RESEARCH_CIVIC', civic, METER_COLORS.civic)
   ];
 }
 
@@ -231,7 +227,7 @@ function productionItems(player) {
       const pct = producing ? (queue.getPercentComplete?.(hash) ?? 0) : 0;
       const itemName = producing ? productionName(hash) : null;
       items.push(displayItem('production', itemName ? `${cityName} - ${itemName}` : cityName,
-        meterHTML(producing ? Icon.getProductionIconFromHash(hash) : '', cityName, pct, BAR_COLOR.production), itemName ?? cityName, pct));
+        meterHTML(producing ? Icon.getProductionIconFromHash(hash) : '', cityName, pct, METER_COLORS.production), itemName ?? cityName, pct));
     }
   } catch (e) { /* keep what was built */ }
   return items;

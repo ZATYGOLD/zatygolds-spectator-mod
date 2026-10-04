@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@
  *     kept until peace);
  *   - the leader panel shows no ribbon.
  */
+import { setStyle } from '../shared/zom-util.js';
 import { HIGHLIGHT, ROW_COLORS } from './observer-config.js';
 import { diplomacySnapshot } from './observer-core.js';
 
@@ -59,7 +60,6 @@ const CONTENT_WIDTH = '4.25rem';       // 90% of .diplo-ribbon_content-container
 const CARD_GAP = '0.1111111111rem';   // 2px between neighbouring cards
 
 let statHeightPx = 0;
-let writtenCss = '';
 
 // ============================ Stylesheet ============================
 
@@ -93,11 +93,11 @@ function celebrationRules() {
   ];
 }
 
-/** (Re)write the stylesheet only when its content changes. Later rules win: war glow, then the alliance border. */
+/** (Re)write the stylesheet when its content changes. Later rules win: war glow, then the alliance border. */
 function writeStyle() {
   const fixed = (prop) => `${prop}: ${CONTENT_WIDTH} !important; min-${prop}: ${CONTENT_WIDTH} !important; max-${prop}: ${CONTENT_WIDTH} !important;`;
   const height = statHeightPx > 0 ? `height: ${statHeightPx}px !important; min-height: ${statHeightPx}px !important; max-height: ${statHeightPx}px !important;` : '';
-  const css = [
+  setStyle(STYLE_ID, [
     `.${SIZED_CLASS} .diplo-ribbon__yields { ${fixed('width')} overflow: hidden !important; ${height} }`,
     `.${SIZED_CLASS} .diplo-ribbon_content-container { ${fixed('width')} }`,
     `.${SIZED_CLASS} .relationship-icon, .${SIZED_CLASS} .diplo-ribbon__war-support-count { display: none; }`,
@@ -114,11 +114,7 @@ function writeStyle() {
     ...celebrationRules(),
     ...portraitGlow('.' + AT_WAR_CLASS, HIGHLIGHT.atWar),
     ...HIGHLIGHT.alliances.flatMap((color, i) => allianceBorder('.' + ALLY_CLASS_PREFIX + i, color))
-  ].join('\n');
-  if (css === writtenCss && document.getElementById(STYLE_ID)) return;
-  let el = document.getElementById(STYLE_ID);
-  if (!el) { el = document.createElement('style'); el.id = STYLE_ID; document.head.appendChild(el); }
-  el.textContent = writtenCss = css;
+  ].join('\n'));
 }
 
 /** Size the stat area once, measured in the Yields view from a leader card (not the Observer's own). */

@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,10 +35,11 @@
  * the game refuses. Other players see the base screens.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import { createLogger } from '../shared/zom-util.js';
-import { isObserverSeat, watchedPlayers } from './observer-core.js';
+import { createLogger, setStyle } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 
-const SCREEN_PROPS = { singleton: true, createMouseGuard: true };
+const log = createLogger('observer-leader-view', CONFIG.debug);
 const SELECTED_STYLE = 'border: 0.1666666667rem solid #e5d2ac; opacity: 1;';
 const OTHER_STYLE = 'border: 0.1666666667rem solid transparent; opacity: 0.65;';
 // A dark plate so the row reads over any background (Great Works sits over the map).
@@ -87,11 +88,8 @@ function restoredTab(screenTag) {
 
 /** While a screen is rebuilt for another leader it skips its open animations and transitions. */
 function writeSwitchStyle() {
-  const css = [...screenTags].flatMap((t) => [`.${SWITCHING_CLASS} ${t}`, `.${SWITCHING_CLASS} ${t} *`]).join(', ') +
-    ' { animation: none !important; transition: none !important; }';
-  let el = document.getElementById(STYLE_ID);
-  if (!el) { el = document.createElement('style'); el.id = STYLE_ID; document.head.appendChild(el); }
-  if (el.textContent !== css) el.textContent = css;
+  setStyle(STYLE_ID, [...screenTags].flatMap((t) => [`.${SWITCHING_CLASS} ${t}`, `.${SWITCHING_CLASS} ${t} *`]).join(', ') +
+    ' { animation: none !important; transition: none !important; }');
 }
 
 const afterFrames = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
@@ -115,11 +113,7 @@ function portraitButton(screenTag, player, selected) {
   btn.classList.value = 'size-14 mx-1 rounded-full pointer-events-auto';
   btn.style.cssText = selected ? SELECTED_STYLE : OTHER_STYLE;
   btn.setAttribute('data-tooltip-content', Locale.compose(player.name));
-  const icon = document.createElement('fxs-icon');
-  icon.classList.value = 'size-full';
-  icon.setAttribute('data-icon-id', GameInfo.Leaders.lookup(player.leaderType)?.LeaderType ?? 'UNKNOWN_LEADER');
-  icon.setAttribute('data-icon-context', 'CIRCLE_MASK');
-  btn.appendChild(icon);
+  btn.appendChild(leaderPortrait(player, 'size-full'));
   for (const event of ['action-activate', 'click']) btn.addEventListener(event, () => reopen(screenTag, player.id));
   return btn;
 }
@@ -143,7 +137,7 @@ engine.whenReady.then(() => {
   if (!isObserverSeat()) return;
   let flag;
   try { flag = Configuration.getGame().getValue('ZOM_OBSERVER_IN_GAME'); } catch (e) { flag = 'unreadable'; }
-  createLogger('observer-leader-view')(`observer-in-game option: ${flag}`);
+  log.debug(`observer-in-game option: ${flag}`);
 });
 
 export { BAR_CLASS, setRefresh, playerID as viewedPlayerID };

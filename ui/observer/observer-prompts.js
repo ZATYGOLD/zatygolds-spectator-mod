@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,12 +43,11 @@ import AgeProgressionPopupManager from 'fs://game/base-standard/ui/age-progressi
 import { NarrativePopupManager } from 'fs://game/base-standard/ui/narrative-event/narrative-popup-manager.js';
 import { DiplomacyDialogManagerImpl } from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import EndGameScreenManager from 'fs://game/base-standard/ui/endgame/screen-endgame.js';
-import { createLogger, OBSERVER_CIV_PREFIX, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, deferOnce, observerCivForAge, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat } from './observer-core.js';
 
-const log = createLogger('observer-prompts');
-const debug = CONFIG.debug ? log : () => {};
+const log = createLogger('observer-prompts', CONFIG.debug);
 const SILENCED_NOTIFICATIONS = /^NOTIFICATION_(CRISIS|AGE_(EARLY|LATE|VERY_LATE)_PROGRESS|AGE_PROGRESSION_|AGE_EXTENDED|PLAYER_MET|DIPLOMATIC_ACTION_AGENDA)/;
 const STORY_NOTIFICATIONS = /STORY_DIRECTION$/;
 const CHOOSE_CIV_NOTIFICATION = 'NOTIFICATION_CHOOSE_CIVILIZATION';
@@ -92,7 +91,7 @@ function answerPendingStory() {
       tryOperation(PlayerOperationTypes.CHOOSE_NARRATIVE_STORY_DIRECTION, { TargetType: key, Target: storyId, Action: PlayerOperationParameters.Activate }));
     if (!answered) { log(`story ${JSON.stringify(storyId)}: no available choice`); return; }
     lastAnsweredStory = storyId;
-    debug(`story ${JSON.stringify(storyId)} answered with ${answered}`);
+    log.debug(`story ${JSON.stringify(storyId)} answered with ${answered}`);
     setTimeout(answerPendingStory, STORY_RETRY_MS);   // the next pending story, if any
   } catch (e) { log(`story answer failed: ${e}`); }
 }
@@ -108,7 +107,7 @@ function answerFirstMeets() {
     try {
       if (!tryOperation(PlayerOperationTypes.RESPOND_DIPLOMATIC_FIRST_MEET, { Player1: me, Player2: id, Type: DiplomacyPlayerFirstMeets.PLAYER_REALATIONSHIP_FIRSTMEET_NEUTRAL })) continue;
       answeredMeets.add(id);
-      debug(`first meeting with player ${id} answered`);
+      log.debug(`first meeting with player ${id} answered`);
     } catch (e) { log(`first meeting answer failed: ${e}`); }
   }
 }
@@ -118,7 +117,7 @@ function answerFirstMeets() {
 /** Complete the Age-start step (dedications / advanced start) with nothing chosen. */
 function completeAgeStart() {
   try {
-    if (tryOperation(PlayerOperationTypes.ADVANCED_START_MARK_COMPLETED, {})) debug('age start completed');
+    if (tryOperation(PlayerOperationTypes.ADVANCED_START_MARK_COMPLETED, {})) log.debug('age start completed');
   } catch (e) { log(`age start completion failed: ${e}`); }
 }
 
@@ -131,7 +130,7 @@ function nextObserverCiv() {
   const current = GameInfo.Ages.lookup(Game.age);
   const next = GameInfo.Ages.filter((a) => a.ChronologyIndex > (current?.ChronologyIndex ?? Infinity))
     .sort((a, b) => a.ChronologyIndex - b.ChronologyIndex)[0];
-  return next ? OBSERVER_CIV_PREFIX + next.AgeType.replace(/^AGE_/, '') : null;
+  return next ? observerCivForAge(next.AgeType) : null;
 }
 
 /** Pick the next Age's Observer civilization and confirm the transition choices (once per Age). */
@@ -141,7 +140,7 @@ function completeAgeTransitionChoice() {
     const civ = nextObserverCiv();
     if (civ) GameSetup.setPlayerParameterValue(GameContext.localPlayerID, 'AgeTransitionPlayerCivilization', civ);
     transitionChoiceSent = tryOperation(PlayerOperationTypes.SET_AGE_TRANSITION_DATA, { Finished: true });
-    debug(`age transition choice ${transitionChoiceSent ? 'confirmed' : 'not accepted yet'} (${civ})`);
+    log.debug(`age transition choice ${transitionChoiceSent ? 'confirmed' : 'not accepted yet'} (${civ})`);
   } catch (e) { log(`age transition choice failed: ${e}`); }
 }
 
@@ -167,12 +166,7 @@ function sweep() {
   }
 }
 
-let sweepQueued = false;
-function queueSweep() {
-  if (sweepQueued) return;
-  sweepQueued = true;
-  setTimeout(() => { sweepQueued = false; sweep(); }, SWEEP_DELAY_MS);
-}
+const queueSweep = deferOnce(sweep, SWEEP_DELAY_MS);
 
 // ============================ Popups ============================
 

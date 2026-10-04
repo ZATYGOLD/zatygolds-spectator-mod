@@ -1,5 +1,4 @@
--- config/observer-setup-rules.sql
--- Author: Zatygold
+-- Zatygold's Spectator - civilization pairing rules (setup database).
 
 --*******************************************************
 --************* OBSERVER CIVILIZATION PAIRING ***********

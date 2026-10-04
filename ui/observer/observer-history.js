@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@
  *
  * Sample text: "<age chronology>|<turn>|<playerId>:<v1>,<v2>,...;<playerId>:...".
  */
-import { createLogger } from '../shared/zom-util.js';
+import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, watchedPlayers } from './observer-core.js';
 
-const log = createLogger('observer-history');
+const log = createLogger('observer-history', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_YIELD_HISTORY_';
 const COUNT_KEY = `${KEY_PREFIX}COUNT`;
 const HISTORY_EVENT = 'zom-yield-history-changed';
@@ -88,18 +88,16 @@ function yieldHistory() {
       if (typeof text === 'string' && text) samples.push(decode(text));
     }
   } catch (e) { log(`history read failed: ${e}`); }
-  log(`yield history: ${samples.length} turns loaded`);
+  log.debug(`yield history: ${samples.length} turns loaded`);
   return samples;
 }
-
-const currentAge = () => GameInfo.Ages.lookup(Game.age)?.ChronologyIndex ?? 0;
 
 /** Records this turn's yields; a turn already recorded (e.g. after a reload) is replaced. */
 function recordTurn() {
   const store = propertyStore();
   if (!isObserverSeat() || !store) return;
   const history = yieldHistory();
-  const sample = { age: currentAge(), turn: Game.turn, values: new Map() };
+  const sample = { age: currentAgeChronology(), turn: Game.turn, values: new Map() };
   for (const player of watchedPlayers()) {
     sample.values.set(player.id, SLOT_ORDER.map((y) => round(player.Stats?.getNetYield?.(YieldTypes[y.yieldType]))));
   }
@@ -118,12 +116,10 @@ function recordTurn() {
 
 const scheduleRecord = () => setTimeout(recordTurn, CONFIG.historyRecordDelayMs);
 
-if (CONFIG.enabled) {
-  engine.whenReady.then(() => {
-    if (!isObserverSeat()) return;
-    engine.on('TurnBegin', scheduleRecord);
-    scheduleRecord();
-  });
-}
+engine.whenReady.then(() => {
+  if (!isObserverSeat()) return;
+  engine.on('TurnBegin', scheduleRecord);
+  scheduleRecord();
+});
 
 export { HISTORY_EVENT, HISTORY_YIELDS, yieldHistory };

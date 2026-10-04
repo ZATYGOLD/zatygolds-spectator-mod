@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -43,9 +43,8 @@ import { isMobile } from 'fs://game/core/ui-next/services/view-experience.js';
 import { LeaderWithRibbon } from 'fs://game/base-standard/ui-next/components/leader-with-ribbon.js';
 import { ScreenFrame } from 'fs://game/base-standard/ui-next/components/screen-frame.js';
 import victoriesStyle from 'fs://game/base-standard/ui-next/screens/victories/victories-screen.scss.js';
-import { createLogger, whenDefined, wrapMethod } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
-import { isObserverSeat } from './observer-core.js';
+import { createLogger, currentAgeChronology, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
 import { HISTORY_EVENT, HISTORY_YIELDS, yieldHistory } from './observer-history.js';
 
 const log = createLogger('observer-graphs');
@@ -87,7 +86,6 @@ const T = {
 // ============================ Data ============================
 
 const ages = () => [...GameInfo.Ages].sort((a, b) => a.ChronologyIndex - b.ChronologyIndex);
-const currentChronology = () => GameInfo.Ages.lookup(Game.age)?.ChronologyIndex ?? 0;
 
 function ageLabel(option) {
   if (option === OVERALL) return Locale.compose('LOC_ZOM_GRAPH_OVERALL');
@@ -112,8 +110,7 @@ function leaderBanner(playerId) {
       }
     } catch (e) { log(`banners unavailable: ${e}`); }
   }
-  const leaderType = GameInfo.Leaders.lookup(Players.get(playerId)?.leaderType)?.LeaderType;
-  return banners.get(leaderType) ?? DEFAULT_BANNER;
+  return banners.get(leaderTypeOf(Players.get(playerId)?.leaderType, null)) ?? DEFAULT_BANNER;
 }
 
 const formatValue = (value) => (value == null ? '-' : Locale.toNumber(Math.round(value * 10) / 10));
@@ -214,6 +211,8 @@ const YieldPanel = (props) => {
     }
   }));
 
+  const rows = createMemo(() => ranking(props.samples(), slot));
+  const top = createMemo(() => graphTop(props.samples(), slot));
   const body = T.body();
   const graph = body.firstChild.firstChild;
   insert(body, createComponent(ScrollArea, {
@@ -221,7 +220,7 @@ const YieldPanel = (props) => {
     useProxy: true,
     get children() {
       return createComponent(For, {
-        get each() { return ranking(props.samples(), slot); },
+        get each() { return rows(); },
         children: (entry, index) => createComponent(LeaderRow, { entry, rank: index() + 1, hidden: () => props.hidden().has(entry.id), onToggle: props.toggle })
       });
     }
@@ -235,7 +234,7 @@ const YieldPanel = (props) => {
         width: LINE_WIDTH,
         get lines() { return graphLines(props.samples(), slot, props.hidden()); },
         get maxX() { return Math.max(props.samples().length, 2); },
-        get maxY() { return graphTop(props.samples(), slot); },
+        get maxY() { return top(); },
         minX: 1,
         gridColorX: 'rgb(255 255 255 / 30%)',
         axisLabelX: Locale.compose('LOC_GENERIC_TURN'),
@@ -278,7 +277,7 @@ const GraphsScreenComponent = () => {
   onCleanup(() => window.removeEventListener(HISTORY_EVENT, onHistory));
 
   const samples = createMemo(() => (age() === OVERALL ? history() : history().filter((s) => s.age === optionChronology(age()))));
-  const ageOptions = createMemo(() => [OVERALL, ...ages().map((a) => a.ChronologyIndex).filter((c) => c <= currentChronology()).map(ageOption)]);
+  const ageOptions = createMemo(() => [OVERALL, ...ages().map((a) => a.ChronologyIndex).filter((c) => c <= currentAgeChronology()).map(ageOption)]);
   const toggle = (id) => {
     const set = hidden();
     if (!set.delete(id)) set.add(id);
@@ -337,7 +336,7 @@ defineLegacyComponent(GRAPHS_TAG, { classNames: ['fullscreen'], attrs: {} }, () 
   return createComponent(GraphsScreen, {});
 });
 
-const openGraphs = () => ContextManager.push(GRAPHS_TAG, { singleton: true, createMouseGuard: true });
+const openGraphs = () => ContextManager.push(GRAPHS_TAG, SCREEN_PROPS);
 
 // ============================ Dock button ============================
 
@@ -400,19 +399,15 @@ function placeDockButton(dock) {
   else root.appendChild(button);
 }
 
-if (CONFIG.enabled) {
-  whenDefined(DOCK_TAG, (definition) => {
-    wrapMethod(definition.createInstance.prototype, 'onAttach', function (base, ...args) {
-      const result = base(...args);
-      try { placeDockButton(this); } catch (e) { log(`dock button failed: ${e}`); }
-      return result;
-    });
-    // The HUD may already be up.
-    engine.whenReady.then(() => {
-      const dock = document.querySelector(DOCK_TAG);
-      try { placeDockButton(dock?.maybeComponent ?? dock?.component); } catch (e) { log(`dock button failed: ${e}`); }
-    });
-  }, { log });
-}
-
-export { openGraphs };
+whenDefined(DOCK_TAG, (definition) => {
+  wrapMethod(definition.createInstance.prototype, 'onAttach', function (base, ...args) {
+    const result = base(...args);
+    try { placeDockButton(this); } catch (e) { log(`dock button failed: ${e}`); }
+    return result;
+  });
+  // The HUD may already be up.
+  engine.whenReady.then(() => {
+    const dock = document.querySelector(DOCK_TAG);
+    try { placeDockButton(dock?.maybeComponent ?? dock?.component); } catch (e) { log(`dock button failed: ${e}`); }
+  });
+}, { log });
