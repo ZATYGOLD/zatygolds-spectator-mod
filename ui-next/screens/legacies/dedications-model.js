@@ -12,7 +12,7 @@ import { addAvailableCard, removeAvailableCard, getLegacyCardStyling, parseCardT
  * (build dated 2026-09-16). The only changes are marked "ZOM:": for the
  * Observer the dedications shown are the viewed leader's; game actions keep the
  * real local player.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 
 var DedicationsFilterOptions = /* @__PURE__ */ ((DedicationsFilterOptions2) => {

@@ -23,8 +23,10 @@
 
 <!--*************************** CRITERIA: OBSERVER ************************************************-->
 
-        <!-- A game with an Observer: a player's leader is the Observer, or the
-             hidden game option the lobby host sets when one is picked. -->
+        <!-- A game with an Observer: the hidden game option set at setup while any
+             player is the Observer (ui/setup/setup-observer.js; single player or
+             the multiplayer host). The Player-group check alone never matched in
+             testing and is kept only as a fallback. -->
         <Criteria id="zom-observer-in-game" any="true">
             <ConfigurationValueContains>
                 <Group>Player</Group>
@@ -39,7 +41,7 @@
         </Criteria>
     </ActionCriteria>
 
-<!--*************************** SHELL: LOBBY, TEXT & SETUP ***********************************************-->
+<!--*************************** SHELL: SETUP, LOBBY & TEXT ***********************************************-->
 
     <ActionGroups>
         <ActionGroup id="zom-shell" scope="shell" criteria="always">
@@ -51,18 +53,19 @@
                 <UpdateDatabase>
                     <Item>config/SetupParameters.sql</Item>
                     <Item>config/observer-config.xml</Item>
+                    <Item>config/observer-setup-rules.sql</Item>
                 </UpdateDatabase>
                 <ImportFiles>
-                    <Item>icons/zom_observer.png</Item>
-                    <Item>icons/zom_observer_civ.png</Item>
-                    <Item>icons/zom_observer_leader_256.png</Item>
-                    <Item>icons/zom_observer_leader_140.png</Item>
-                    <Item>icons/zom_observer_leader_128.png</Item>
-                    <Item>icons/zom_observer_leader_64.png</Item>
-                    <Item>icons/zom_observer_circle_256.png</Item>
-                    <Item>icons/zom_observer_circle_140.png</Item>
-                    <Item>icons/zom_observer_circle_128.png</Item>
-                    <Item>icons/zom_observer_circle_64.png</Item>
+                    <Item>art/icons/zom_observer.png</Item>
+                    <Item>art/icons/zom_observer_civ.png</Item>
+                    <Item>art/icons/zom_observer_leader_256.png</Item>
+                    <Item>art/icons/zom_observer_leader_140.png</Item>
+                    <Item>art/icons/zom_observer_leader_128.png</Item>
+                    <Item>art/icons/zom_observer_leader_64.png</Item>
+                    <Item>art/icons/zom_observer_circle_256.png</Item>
+                    <Item>art/icons/zom_observer_circle_140.png</Item>
+                    <Item>art/icons/zom_observer_circle_128.png</Item>
+                    <Item>art/icons/zom_observer_circle_64.png</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/observer/observer-icons.xml</Item>
@@ -71,9 +74,11 @@
                     <Item>data/observer/observer-colors.xml</Item>
                 </UpdateColors>
                 <UIScripts>
-                    <Item>ui/zom-shared/zom-util.js</Item>
-                    <Item>ui/mp-lobby/mp-lobby-config.js</Item>
-                    <Item>ui/mp-lobby/mp-lobby-observer.js</Item>
+                    <Item>ui/shared/zom-util.js</Item>
+                    <Item>ui/shared/zom-assets.js</Item>
+                    <Item>ui/setup/setup-config.js</Item>
+                    <Item>ui/setup/setup-observer.js</Item>
+                    <Item>ui/setup/lobby-observer.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>
@@ -87,7 +92,8 @@
                     <Item>text/en_us/zom-text.xml</Item>
                 </UpdateText>
                 <UIScripts>
-                    <Item>ui/zom-shared/zom-util.js</Item>
+                    <Item>ui/shared/zom-util.js</Item>
+                    <Item>ui/shared/zom-assets.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>
@@ -99,8 +105,8 @@
             <Actions>
                 <ImportFiles>
                     <Item>maps/zom-observer-eye.js</Item>
-                    <Item>backgrounds/lsbg_zom_observer_1080.png</Item>
-                    <Item>backgrounds/lsbg_zom_observer_720.png</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer_1080.png</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer_720.png</Item>
                 </ImportFiles>
                 <UpdateDatabase>
                     <Item>data/observer/observer-leader.xml</Item>
@@ -111,16 +117,16 @@
                     <Item>data/observer/observer-legacies.sql</Item>
                 </UpdateDatabase>
                 <ImportFiles>
-                    <Item>icons/zom_observer.png</Item>
-                    <Item>icons/zom_observer_civ.png</Item>
-                    <Item>icons/zom_observer_leader_256.png</Item>
-                    <Item>icons/zom_observer_leader_140.png</Item>
-                    <Item>icons/zom_observer_leader_128.png</Item>
-                    <Item>icons/zom_observer_leader_64.png</Item>
-                    <Item>icons/zom_observer_circle_256.png</Item>
-                    <Item>icons/zom_observer_circle_140.png</Item>
-                    <Item>icons/zom_observer_circle_128.png</Item>
-                    <Item>icons/zom_observer_circle_64.png</Item>
+                    <Item>art/icons/zom_observer.png</Item>
+                    <Item>art/icons/zom_observer_civ.png</Item>
+                    <Item>art/icons/zom_observer_leader_256.png</Item>
+                    <Item>art/icons/zom_observer_leader_140.png</Item>
+                    <Item>art/icons/zom_observer_leader_128.png</Item>
+                    <Item>art/icons/zom_observer_leader_64.png</Item>
+                    <Item>art/icons/zom_observer_circle_256.png</Item>
+                    <Item>art/icons/zom_observer_circle_140.png</Item>
+                    <Item>art/icons/zom_observer_circle_128.png</Item>
+                    <Item>art/icons/zom_observer_circle_64.png</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/observer/observer-icons.xml</Item>
@@ -129,29 +135,29 @@
                     <Item>data/observer/observer-colors.xml</Item>
                 </UpdateColors>
                 <UIScripts>
-                    <Item>ui/mp-observer/mp-observer-config.js</Item>
-                    <Item>ui/mp-observer/mp-observer-core.js</Item>
-                    <Item>ui/mp-observer/mp-observer-overview.js</Item>
-                    <Item>ui/mp-observer/mp-observer-screens.js</Item>
-                    <Item>ui/mp-observer/mp-observer-leader-view.js</Item>
-                    <Item>ui/mp-observer/mp-observer-leader-screens.js</Item>
-                    <Item>ui/mp-observer/mp-observer-civ-lists.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon-data.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon-style.js</Item>
-                    <Item>ui/mp-observer/mp-observer-history.js</Item>
-                    <Item>ui/mp-observer/mp-observer-graphs.js</Item>
-                    <Item>ui/mp-observer/mp-observer-turn.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon-toolbar.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon.js</Item>
-                    <Item>ui/mp-observer/mp-observer-navigation.js</Item>
-                    <Item>ui/mp-observer/mp-observer-victory.js</Item>
-                    <Item>ui/mp-observer/mp-observer-diplomacy.js</Item>
-                    <Item>ui/mp-observer/mp-observer-yields.js</Item>
-                    <Item>ui/mp-observer/mp-observer-hud.js</Item>
-                    <Item>ui/mp-observer/mp-observer-units.js</Item>
-                    <Item>ui/mp-observer/mp-observer-combat.js</Item>
-                    <Item>ui/mp-observer/mp-observer-eye.js</Item>
-                    <Item>ui/mp-observer/mp-observer-prompts.js</Item>
+                    <Item>ui/observer/observer-config.js</Item>
+                    <Item>ui/observer/observer-core.js</Item>
+                    <Item>ui/observer/observer-overview.js</Item>
+                    <Item>ui/observer/observer-screens.js</Item>
+                    <Item>ui/observer/observer-leader-view.js</Item>
+                    <Item>ui/observer/observer-leader-screens.js</Item>
+                    <Item>ui/observer/observer-civ-lists.js</Item>
+                    <Item>ui/observer/observer-ribbon-data.js</Item>
+                    <Item>ui/observer/observer-ribbon-style.js</Item>
+                    <Item>ui/observer/observer-history.js</Item>
+                    <Item>ui/observer/observer-graphs.js</Item>
+                    <Item>ui/observer/observer-turn.js</Item>
+                    <Item>ui/observer/observer-ribbon-toolbar.js</Item>
+                    <Item>ui/observer/observer-ribbon.js</Item>
+                    <Item>ui/observer/observer-navigation.js</Item>
+                    <Item>ui/observer/observer-victory.js</Item>
+                    <Item>ui/observer/observer-diplomacy.js</Item>
+                    <Item>ui/observer/observer-yields.js</Item>
+                    <Item>ui/observer/observer-hud.js</Item>
+                    <Item>ui/observer/observer-units.js</Item>
+                    <Item>ui/observer/observer-combat.js</Item>
+                    <Item>ui/observer/observer-eye.js</Item>
+                    <Item>ui/observer/observer-prompts.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>

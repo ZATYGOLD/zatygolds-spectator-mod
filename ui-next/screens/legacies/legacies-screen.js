@@ -17,7 +17,7 @@ import { LegaciesTriumphTab } from './legacies-triumphs-tab.js';
  * (build dated 2026-09-16). The only changes are marked "ZOM:": for the
  * Observer, a row of leader portraits above the tabs picks the leader shown,
  * and the open tab is kept when another leader is picked.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 
 const LegaciesScreenComponent = (_props) => {

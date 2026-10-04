@@ -36,7 +36,7 @@
 
   <!-- No LeaderCivilizationBias rows on purpose: the engine auto-applies every
        bias row when the leader changes (all three Ages in a row), which left a
-       Modern civ in an Antiquity game. ui/mp-lobby/mp-lobby-observer.js pairs
+       Modern civ in an Antiquity game. ui/setup/setup-observer.js pairs
        leader and civ for the game's start Age instead. -->
   <LeaderUnlocks>
     <Row LeaderType="LEADER_ZOM_OBSERVER" AgeDomain="StandardAges" AgeType="AGE_EXPLORATION" Type="CIVILIZATION_ZOM_OBSERVER_EXPLORATION" Kind="KIND_CIVILIZATION" Name="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Description="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Icon="CIVILIZATION_ZOM_OBSERVER_EXPLORATION"/>

@@ -1,6 +1,7 @@
 # Zatygold's Spectator
 
-A playable **Spectator** for multiplayer **Sid Meier's Civilization VII**, built
+A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
+multiplayer, built
 on the game's own UI components. Current version: **1.0.0**.
 
 Pick **Spectator** as your leader to watch a game as a real player with no
@@ -18,9 +19,11 @@ normal HUD and End Turn, through every Age, and you are never eliminated.
 
 ## Spectator (experimental)
 
-**Setup:** in the multiplayer lobby pick **Spectator** as leader or
-civilization (the other follows; team and civ lock). At each Age transition
-the Spectator civilization is picked automatically.
+**Setup:** in single player pick **Spectator** as your leader (its
+civilization is the only one offered). In the multiplayer lobby pick it as
+leader or civilization (the other follows; team and civ lock). At each Age
+transition the Spectator civilization is picked automatically. Computer
+players never become the Spectator.
 
 **Playing:** you are a normal player who never settles and is never
 eliminated. Press **End Turn** or turn on **Auto End Turn** (the button on
@@ -63,7 +66,7 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 
 ### How it works
 
-- Data, not UI hacks: an Spectator leader and one civ per Age, defined like the
+- Data, not UI hacks: a Spectator leader and one civ per Age, defined like the
   game's own, with no abilities. Defeat and every Triumph get an extra
   "not the Spectator" requirement.
 - The Eye replaces the Founder (`UnitReplaces`), is created by the start-plot
@@ -71,11 +74,16 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
   sees 128 tiles through terrain, keeps every unit visible and is kept asleep.
 - UI only: the Spectator counts as having met everyone, and screens read the
   picked leader through `ZOMLeaderView`.
+- The Spectator has no 3D leader or banner: leader select and diplomacy scenes
+  load the game's stand-ins (`zom-assets.js`). Setup lists it only for human
+  players, offers its civilization only to it, and resolves computer players'
+  Random leaders itself in single player.
 - Zoom past the engine's 0..1 range changes the field of view, as Zoom+ does.
 
 ### Known limits
 
-- Multiplayer only; a "Random" pick could resolve to the Spectator.
+- In multiplayer, a computer player on "Random" could still resolve to the
+  Spectator.
 - The Eye shows as a generic ship, visible only to the Spectator.
 - Combat previews between other players' units are estimates.
 
@@ -85,24 +93,25 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 
 ```
 zatygolds-observer-mode.modinfo   # manifest, zom-observer-in-game criteria
-├─ config/                       # lobby DB: Spectator leader / civs, hidden "Spectator in game" option
-├─ data/observer/                # gameplay DB: Spectator leader, civs, Eye, Triumph / defeat exemptions
-├─ icons/, backgrounds/          # Spectator art and loading screen (built by tools/build_art.py)
-├─ images/                       # source art (not loaded by the game)
-├─ tools/                        # build_art.py: images/ -> icons/, backgrounds/
+├─ art/
+│  ├─ source/                    # source images (not loaded by the game)
+│  ├─ icons/, backgrounds/       # generated: leader / civ icons, loading screen
+│  └─ build_art.py               # source/ -> icons/, backgrounds/
+├─ config/                       # setup DB: Spectator leader / civs, hidden "Spectator in game" option
+├─ data/observer/                # gameplay DB: Spectator leader, civs, Eye, loading screen, Triumph / defeat exemptions
+├─ text/en_us/                   # mod info and in-game strings
 ├─ maps/, scripts/               # base-game overrides: Spectator start and Eye each Age
 ├─ ui-next/screens/, ui/policies/, ui/great-works/,
 │  ui/tech-tree/, ui/culture-tree/, ui/tree-grid/   # base-game overrides: screens for a picked leader
-├─ text/en_us/                   # mod info and in-game strings
 └─ ui/
-   ├─ zom-shared/                # logger, method wrapping, deferred patching, Spectator identity
-   ├─ mp-lobby/                  # Spectator lobby role
-   └─ mp-observer/               # in-game Spectator (no-op for other players)
+   ├─ shared/                    # logger, method wrapping, deferred patching, Spectator identity
+   ├─ setup/                     # Spectator in game setup (multiplayer lobby, single player)
+   └─ observer/                  # in-game Spectator (no-op for other players)
 ```
 
 Each feature has a `*-config.js` for settings, and modules patch the base UI at
 runtime. Base-game overrides are verbatim copies with changes marked `ZOM:`;
-they load only in a game with an Spectator (modinfo criteria
+they load only in a game with a Spectator (modinfo criteria
 `zom-observer-in-game`), so other games run the untouched files. Diagnostics go to
 `UI.log`.
 
@@ -112,6 +121,19 @@ they load only in a game with an Spectator (modinfo criteria
 
 ### 1.0.0
 
+- **Single player** — pick the Spectator in game setup: its civilization is
+  paired automatically, the setup scene shows the Random leader's silhouette
+  and banner, and computer players never become the Spectator. The Eye,
+  screens and Age transitions work as in multiplayer (the hidden "Spectator
+  in game" option is now set in single player too).
+- **New art** — a hooded Spectator portrait framed like the base leaders
+  (head above the ribbon hex, body behind it), a hex-eye icon, a
+  civilization emblem and a loading screen, also used behind the
+  Government, Unlocks, Resources and Legacies screens.
+- **Renamed** — the mod is now Zatygold's Spectator (mod id unchanged).
+- **Project layout** — `ui/setup`, `ui/observer`, `ui/shared` and `art/`
+  (source images and `art/build_art.py`, which builds every icon and the
+  loading screen).
 - **Split from Multiplayer Toolkit** — the Spectator is now its own mod
   (`zatygolds-observer-mode`); the pause, Competitive timer and lobby tooltip
   features stay in Multiplayer Toolkit.
