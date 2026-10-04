@@ -28,7 +28,7 @@
  * by right-clicking the Observer's portrait), and the Observer's card switches what every
  * card shows (see observer-ribbon-toolbar.js). Portraits show each leader's
  * mood (angry at war, else happy while celebrating); look and highlights are
- * in observer-ribbon-style.js.
+ * in observer-ribbon-style.js, the Perspective eye in observer-perspective.js.
  *
  * The leader panel (and other diplomacy screens) keep the base compact cards
  * and are never rebuilt by this module: there the base panel re-centres on
@@ -39,6 +39,7 @@ import { PanelDiploRibbon } from 'fs://game/base-standard/ui/diplo-ribbon/panel-
 import { createLogger, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
 import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from './observer-core.js';
+import { markPerspectiveCard } from './observer-perspective.js';
 import { bestByType, pantheonBadge, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
 import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markRows, setRibbonHidden } from './observer-ribbon-style.js';
 import { placeViewButtons } from './observer-ribbon-toolbar.js';
@@ -95,6 +96,7 @@ function decorateRibbon(panel) {
   }
   markCards(panel, isCelebrating);
   markBest(panel);
+  markPerspectiveCard(panel);
 }
 
 const BEST_VIEWS = new Set([OBSERVER_VIEW.YIELDS, OBSERVER_VIEW.SCORE]);

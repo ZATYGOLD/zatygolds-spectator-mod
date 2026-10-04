@@ -5,7 +5,7 @@
 			<Text>Spectator</Text>
 		</Row>
 		<Row Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION">
-			<Text>Watch the game without playing. The Spectator has no abilities, founds no settlement and sees the whole map. Its civilization is the Witnesses.</Text>
+			<Text>Watch the game without playing. The Spectator has no abilities, founds no settlement and sees the whole map. Its civilization is the Observers.</Text>
 		</Row>
 		<Row Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE">
 			<Text>"To see everything, hold nothing."</Text>

@@ -45,7 +45,11 @@ const CONFIG = {
   zoomIn: 0.3,                          // closest zoom: 30% less of the map than the game's closest
   zoomOut: 0.55,                        // furthest zoom: 55% more of the map than the game's furthest
   zoomStepScale: 0.5,                   // zoom step per input vs. the game's (smaller = smoother)
-  notificationScale: 0.75               // notification bar size
+  notificationScale: 0.75,              // notification bar size
+  perspectiveUnexplored: { saturation: 0, brightness: 0 },        // Perspective: tiles the viewed leader never explored (colour filter)
+  perspectiveUnexploredFill: { x: 0, y: 0, z: 0, w: 1 },          // Perspective: ground of tiles they never explored (plot overlay, linear RGBA)
+  perspectiveSeenFill: { x: 0.16, y: 0.16, z: 0.18, w: 0.6 },     // Perspective: grey on tiles seen before but not seen now (plot overlay)
+  perspectiveRefreshMs: 250             // Perspective: redraw delay after units move (batches an AI turn's moves)
 };
 
 /**
@@ -95,7 +99,8 @@ const ICONS = {
   civic: 'blp:fi_radial_civics_64',
   wonders: 'blp:ntf_wonder_completed',
   victories: 'blp:radial_victories',
-  endTurn: 'blp:fi_next_turn_64'
+  endTurn: 'blp:fi_next_turn_64',
+  perspective: 'fs://game/art/icons/zom_observer.png'
 };
 
 export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, ROW_COLORS };

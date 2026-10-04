@@ -2,13 +2,13 @@
 <Database>
 	<EnglishText>
 		<Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME">
-			<Text>Witnesses</Text>
+			<Text>Observers</Text>
 		</Row>
 		<Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME">
-			<Text>The Witnesses</Text>
+			<Text>The Observers</Text>
 		</Row>
 		<Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE">
-			<Text>Witness</Text>
+			<Text>Observer</Text>
 		</Row>
 		<Row Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION">
 			<Text>A civilization that never settles. In place of a Founder it starts with the Spectator's Eye, which sees every plot and every unit. Added by Zatygold's Spectator.</Text>

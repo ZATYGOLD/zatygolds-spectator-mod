@@ -22,6 +22,15 @@
 		<Row Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF">
 			<Text>Auto End Turn: Off</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF">
+			<Text>Perspective: Off[N]Turn it on, then left-click a leader to see the map as they see it.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK">
+			<Text>Perspective: On[N]Left-click a leader to see the map as they see it.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER">
+			<Text>Perspective: {1_Leader}[N]Left-click another leader to switch. Click here or your own portrait to see the whole map again.</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_YIELDS">
 			<Text>Yields</Text>
 		</Row>

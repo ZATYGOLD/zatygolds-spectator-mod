@@ -19,11 +19,11 @@ normal HUD and End Turn, through every Age, and you are never eliminated.
 ## Spectator (experimental)
 
 **Setup:** in single player pick **Spectator** as your leader: its
-civilization, **the Witnesses**, follows, so the civilization step is skipped
+civilization, **the Observers**, follows, so the civilization step is skipped
 and the Overview shows the Spectator's own art. In the multiplayer lobby pick
-the Spectator leader or the Witnesses civilization (the other follows; team
+the Spectator leader or the Observers civilization (the other follows; team
 and civ lock). The Spectator plays no mementos: its memento slots are turned
-off. At each Age transition the Witnesses are picked automatically. Computer
+off. At each Age transition the Observers are picked automatically. Computer
 players never become the Spectator.
 
 **Playing:** you are a normal player who never settles and is never
@@ -45,6 +45,14 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
   open the owner's panel.
 - Allies share a hex-border colour; leaders at war glow red with a pip per
   war; celebrations glow gold. Antiquity cards show the leader's pantheon.
+
+**Perspective:** the eye button beside Victories on your card. Turn it on and
+left-click a leader to see the map as they see it: tiles they see now look
+normal, tiles they explored earlier are greyed (with greyed resource icons),
+tiles they never explored are black, and unit flags, settlement banners and floating map texts follow what
+they can see. The camera keeps the game's normal zoom range meanwhile. Their portrait carries the eye. Left-click another leader to
+switch; click the button or your own portrait to see the whole map again.
+It only changes what you see, never the game.
 
 **Yield Graphs:** a button in the HUD's screen dock opens line graphs of
 every leader's science, culture, gold, influence, food and production per
@@ -130,8 +138,11 @@ they load only in a game with a Spectator (modinfo criteria
   ring (with the eye in place of a level); the civilization step is skipped
   for it; the Overview's leader and civilization cards show the Spectator's
   portrait and a slice of its loading-screen art, and the level ring shows
-  the eye. Changing the start Age keeps the matching Witnesses civilization.
-- **The Witnesses** — the Spectator's civilization has its own name, so the
+  the eye. Changing the start Age keeps the matching Observers civilization.
+- **Perspective** — see the map as any leader sees it: their fog of war,
+  explored and unexplored tiles, and only the unit flags and settlement
+  banners they can see (a toggle on the Spectator's ribbon card).
+- **The Observers** — the Spectator's civilization has its own name, so the
   leader and the civilization no longer both read "Spectator" (every
   language).
 - **No mementos** — the Spectator's memento slots are turned off in single

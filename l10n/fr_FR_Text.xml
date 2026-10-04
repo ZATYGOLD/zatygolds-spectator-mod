@@ -8,7 +8,7 @@
 			<Text>Spectateur</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="fr_FR">
-			<Text>Regardez la partie sans jouer. Le Spectateur n'a aucune capacité, ne fonde aucune colonie et voit toute la carte. Sa civilisation : les Témoins.</Text>
+			<Text>Regardez la partie sans jouer. Le Spectateur n'a aucune capacité, ne fonde aucune colonie et voit toute la carte. Sa civilisation : les Observateurs.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="fr_FR">
 			<Text>« Pour tout voir, ne rien retenir. »</Text>
@@ -20,13 +20,13 @@
 			<Text>N'est jamais éliminé faute de colonies.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="fr_FR">
-			<Text>Témoins</Text>
+			<Text>Observateurs</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="fr_FR">
-			<Text>Les Témoins</Text>
+			<Text>Les Observateurs</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="fr_FR">
-			<Text>témoin</Text>
+			<Text>observateur</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="fr_FR">
 			<Text>Une civilisation qui ne s'installe jamais. Au lieu d'un Fondateur, elle commence avec l'Œil du Spectateur, qui voit chaque case et chaque unité. Ajouté par Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Jouer en tant que [B]Spectateur[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="fr_FR">
-			<Text>Le [B]Spectateur[/B] observe en tant que [B]Témoins[/B] à chaque Âge.</Text>
+			<Text>Le [B]Spectateur[/B] observe en tant que [B]Observateurs[/B] à chaque Âge.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="fr_FR">
 			<Text>Spectateur</Text>
@@ -78,6 +78,15 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="fr_FR">
 			<Text>Fin de tour auto : désactivée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="fr_FR">
+			<Text>Perspective : désactivée[N]Activez-la, puis faites un clic gauche sur un dirigeant pour voir la carte comme il la voit.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="fr_FR">
+			<Text>Perspective : activée[N]Faites un clic gauche sur un dirigeant pour voir la carte comme il la voit.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="fr_FR">
+			<Text>Perspective : {1_Leader}[N]Clic gauche sur un autre dirigeant pour changer. Cliquez ici ou sur votre propre portrait pour revoir toute la carte.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="fr_FR">
 			<Text>Rendements</Text>

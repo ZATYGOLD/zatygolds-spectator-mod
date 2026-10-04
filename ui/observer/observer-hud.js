@@ -28,7 +28,8 @@
  *     end the camera's field of view is narrowed or widened instead (the
  *     technique of the Zoom+ mod, reduced to its core); the view is re-applied
  *     while the camera moves, since the engine may reset it. Left to Zoom+
- *     when that mod's camera controller is installed;
+ *     when that mod's camera controller is installed. While a Perspective is
+ *     shown (observer-perspective.js) the game's own zoom range applies;
  *   - the notification bar is drawn at CONFIG.notificationScale.
  */
 import CameraController from 'fs://game/core/ui/camera/camera-controller.js';
@@ -37,6 +38,7 @@ import ViewManager from 'fs://game/core/ui/views/view-manager.js';
 import { clamp, createLogger, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat } from './observer-core.js';
+import { isPerspectiveActive, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 
 const log = createLogger('observer-hud', CONFIG.debug);
 const ZOOM_RATE = 0.3;              // camera-controller.js zoomRate
@@ -101,7 +103,7 @@ function currentZoom() {
 /** One zoom input along the single axis; true when handled (the base zoom must not run). */
 function zoomBy(direction, status, x) {
   if (!reportedInput) { reportedInput = true; log.debug(`first zoom input: world input ${ViewManager.isWorldInputAllowed ? 'allowed' : 'blocked'}, zoom ${Camera.getState().zoomLevel}`); }
-  if (!isObserverSeat() || !ViewManager.isWorldInputAllowed) return false;
+  if (!isObserverSeat() || isPerspectiveActive() || !ViewManager.isWorldInputAllowed) return false;
   if (typeof Camera.setVerticalFoV !== 'function') {
     if (!reportedFov) { reportedFov = true; log('Camera.setVerticalFoV is not available: the game zoom range is kept'); }
     return false;
@@ -114,6 +116,18 @@ function zoomBy(direction, status, x) {
   applyFov();
   holdFov();
   return true;
+}
+
+/** Back to the game's own zoom range: normal field of view, zoom clamped to 0..1. */
+function resetZoom() {
+  clearInterval(holdTimer);
+  holdTimer = null;
+  if (zoom === null || viewScale(zoom) === 1) return;
+  zoom = clamp(zoom, 0, 1);
+  try {
+    Camera.setVerticalFoV(baseFov ?? DEFAULT_FOV);
+    Camera.zoom(zoom);
+  } catch (e) { log(`zoom reset failed: ${e}`); }
 }
 
 const hookedControllers = new WeakSet();
@@ -155,5 +169,6 @@ engine.whenReady.then(() => {
   if (!isObserverSeat()) return;
   patchCamera();
   scaleNotifications();
+  window.addEventListener(PERSPECTIVE_CHANGED_EVENT, () => { if (isPerspectiveActive()) resetZoom(); });
   log.debug(`zoom range ${-CONFIG.zoomIn}..${1 + CONFIG.zoomOut}, step x${CONFIG.zoomStepScale}`);
 });

@@ -8,7 +8,7 @@
 			<Text>Widz</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
-			<Text>Oglądaj grę bez grania. Widz nie ma zdolności, nie zakłada osiedli i widzi całą mapę. Jego cywilizacja to Świadkowie.</Text>
+			<Text>Oglądaj grę bez grania. Widz nie ma zdolności, nie zakłada osiedli i widzi całą mapę. Jego cywilizacja to Obserwatorzy.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="pl_PL">
 			<Text>„Aby widzieć wszystko, nie trzymaj niczego.”</Text>
@@ -20,13 +20,13 @@
 			<Text>Nigdy nie zostaje wyeliminowany z powodu braku osiedli.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="pl_PL">
-			<Text>Świadkowie</Text>
+			<Text>Obserwatorzy</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="pl_PL">
-			<Text>Świadkowie</Text>
+			<Text>Obserwatorzy</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="pl_PL">
-			<Text>Świadków</Text>
+			<Text>Obserwatorów</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
 			<Text>Cywilizacja, która nigdy nie osiada. Zamiast Założyciela zaczyna z Okiem Widza, które widzi każde pole i każdą jednostkę. Dodane przez Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Graj jako [B]Widz[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="pl_PL">
-			<Text>[B]Widz[/B] obserwuje w każdej epoce jako [B]Świadkowie[/B].</Text>
+			<Text>[B]Widz[/B] obserwuje w każdej epoce jako [B]Obserwatorzy[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="pl_PL">
 			<Text>Widz</Text>
@@ -78,6 +78,15 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="pl_PL">
 			<Text>Automatyczny koniec tury: wył.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="pl_PL">
+			<Text>Perspektywa: wył.[N]Włącz ją, a potem kliknij lewym przyciskiem przywódcę, aby zobaczyć mapę jego oczami.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="pl_PL">
+			<Text>Perspektywa: wł.[N]Kliknij lewym przyciskiem przywódcę, aby zobaczyć mapę jego oczami.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="pl_PL">
+			<Text>Perspektywa: {1_Leader}[N]Kliknij lewym przyciskiem innego przywódcę, aby zmienić. Kliknij tutaj lub swój portret, aby znów widzieć całą mapę.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="pl_PL">
 			<Text>Dochody</Text>
