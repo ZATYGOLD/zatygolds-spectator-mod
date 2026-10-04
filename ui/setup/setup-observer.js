@@ -49,7 +49,7 @@ import { CONFIG } from './setup-config.js';
 const PARAM_LEADER = 'PlayerLeader';
 const PARAM_CIV = 'PlayerCivilization';
 const PARAM_AGE = 'Age';
-const MEMENTO_PARAMS = ['PlayerMementoMajorSlot', 'PlayerMementoMinorSlot1'];
+const MEMENTO_SLOT = /^PlayerMemento\w*Slot/;   // every memento slot, other mods' too (Multiplayer Balance Mod adds PlayerMementoMinorSlot2), as config/setup-rules.sql
 const NO_MEMENTO = 'NONE';
 const PARAM_OBSERVER_IN_GAME = 'ZOMObserverInGame';
 const RANDOM = 'RANDOM';
@@ -112,7 +112,8 @@ function setTeam(playerID, team) {
 
 /** Unequip the player's mementos (the Observer plays none; config/setup-rules.sql turns its slots off). */
 function clearMementos(playerID) {
-  for (const param of MEMENTO_PARAMS) {
+  const slots = (GameSetup.getPlayerParameters(playerID) ?? []).map((p) => GameSetup.resolveString(p.ID)).filter((id) => MEMENTO_SLOT.test(id ?? ''));
+  for (const param of slots) {
     const value = GameSetup.findPlayerParameter(playerID, param)?.value?.value;
     if (value && value !== NO_MEMENTO) setParam(playerID, param, NO_MEMENTO);
   }

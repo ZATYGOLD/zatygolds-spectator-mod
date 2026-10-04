@@ -277,22 +277,4 @@ function scoreItems(player) {
   return items.length ? items : [scoreRow({ label: 'LOC_ZOM_OBSERVER_NONE' }, 0)];
 }
 
-// ============================ Pantheon badge ============================
-
-/**
- * The card's religion slot (base: religion in Exploration, ideology in
- * Modern) shows the leader's pantheon in Antiquity, same shape as the base
- * data: { name, type, icon, isIdeology }; null without a pantheon.
- */
-function pantheonBadge(player) {
-  const beliefs = (player.Religion?.getPantheons?.() ?? []).map((type) => GameInfo.Beliefs.lookup(type)).filter(Boolean);
-  if (beliefs.length === 0) return null;
-  return {
-    name: beliefs.map((b) => Locale.compose(b.Name)).join(', '),
-    type: beliefs[0].BeliefType,
-    icon: UI.getIconURL(beliefs[0].BeliefType, 'PANTHEONS'),
-    isIdeology: false
-  };
-}
-
-export { bestByType, pantheonBadge, yieldsItems, researchItems, productionItems, scoreItems };
+export { bestByType, yieldsItems, researchItems, productionItems, scoreItems };

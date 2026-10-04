@@ -44,8 +44,11 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
   leader panel (wars listed, no actions). Settlement banners and city centers
   open the owner's panel.
 - Allies share a hex-border colour (no glow); leaders at war glow red with a
-  pip per war; celebrations glow gold. Antiquity cards show the leader's
-  pantheon.
+  pip per war; celebrations glow gold. Each card shows every faith badge the
+  leader holds, side by side: pantheon, religion, ideology (with the
+  Multiplayer Balance Mod, pantheons stay for the whole game). Hover a
+  pantheon badge for its effects, or click it to see every leader's
+  pantheons, in any Age.
 
 **Perspective:** the eye button under Victories on your card. Turn it on and
 left-click a leader to see the map as they see it: tiles they see now look
@@ -144,6 +147,13 @@ they load only in a game with a Spectator (modinfo criteria
 - **Perspective** — see the map as any leader sees it: their fog of war,
   explored and unexplored tiles, and only the unit flags and settlement
   banners they can see (a toggle on the Spectator's ribbon card).
+- **Faith badges** — ribbon cards show the pantheon, religion and ideology
+  together, adding up over the Ages instead of replacing each other; with
+  the Multiplayer Balance Mod the pantheon stays after Antiquity (read from
+  that mod's own pantheon record), and clicking it opens every leader's
+  pantheons in any Age. The Religion screen stays available in Modern, where
+  the game drops its button. The Multiplayer Balance Mod's third memento
+  slot is turned off for the Spectator too.
 - **The Observers** — the Spectator's civilization has its own name, so the
   leader and the civilization no longer both read "Spectator" (every
   language).

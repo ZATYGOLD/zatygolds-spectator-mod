@@ -37,6 +37,9 @@
  *     portrait); a coloured pip per
  *     war under the portrait shows who fights whom (one colour per war pair,
  *     kept until peace);
+ *   - faith: the card's religion slot shows every badge the leader holds -
+ *     pantheon, religion, ideology - side by side, each with its tooltip; a
+ *     badge with an action (the pantheon) opens it when clicked;
  *   - the leader panel shows no ribbon.
  */
 import { setStyle } from '../shared/zom-util.js';
@@ -53,6 +56,11 @@ const PIPS_CLASS = 'zom-war-pips';
 const BEST_CLASS = 'zom-best';
 const NEGATIVE_CLASS = 'zom-negative';
 const OWN_CARD_CLASS = 'zom-observer-own-card';
+const FAITH_CLASS = 'zom-faith';
+const FAITH_ICON_CLASS = 'zom-faith-icon';
+const FAITH_ACTION_CLASS = 'zom-faith-action';
+const FAITH_ATTR = 'data-zom-faith';
+const FAITH_ICON_REM = [2, 1.6, 1.35];   // badge size by count (the base slot is 2rem)
 const DETAILS_CHANGED_EVENT = 'zom-ribbon-details-changed';
 const DETAILS_OPTION = ['user', 'Interface', 'RibbonStats'];   // System > "Always Show Ribbon Yields"
 const ROW_TYPE_PREFIX = 'yield-colors--';
@@ -107,6 +115,9 @@ function writeStyle() {
     `.${SIZED_CLASS} .${BEST_CLASS} { ${band(HIGHLIGHT.best)} }`,
     `.${SIZED_CLASS} .${NEGATIVE_CLASS} { ${band(HIGHLIGHT.negative)} }`,
     `.${HIDDEN_CLASS} { display: none !important; }`,
+    `.${FAITH_CLASS} { background-image: none !important; width: auto !important; display: flex; flex-direction: row; justify-content: center; align-items: center; pointer-events: none !important; }`,
+    `.${FAITH_CLASS} .${FAITH_ICON_CLASS} { background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: auto; }`,
+    `.${FAITH_CLASS} .${FAITH_ACTION_CLASS}:hover { filter: brightness(1.3); }`,
     ...celebrationRules(),
     ...portraitGlow('.' + AT_WAR_CLASS, HIGHLIGHT.atWar),
     ...HIGHLIGHT.alliances.map((color, i) => hexBorder('.' + ALLY_CLASS_PREFIX + i, color))
@@ -216,6 +227,40 @@ function markCards(panel, isCelebrating) {
   }
 }
 
+// ============================ Faith ============================
+
+/**
+ * Every card's religion slot shows badgesFor(player) side by side ({ kind, tooltip, icon });
+ * actions[kind], when given, runs on a click. Cards whose badges are unchanged are left alone.
+ */
+function markFaith(panel, badgesFor, actions = {}) {
+  if (!panel) return;
+  for (const cardEl of panel.querySelectorAll('.diplo-ribbon-outer[data-player-id]')) {
+    const slot = cardEl.querySelector('.diplo-ribbon__religion');
+    const player = Players.get(parseInt(cardEl.getAttribute('data-player-id'), 10));
+    if (!slot || !player) continue;
+    const badges = badgesFor(player);
+    const signature = badges.map((b) => `${b.kind}|${b.icon}|${b.tooltip}`).join(';');
+    if (slot.classList.contains(FAITH_CLASS) && slot.getAttribute(FAITH_ATTR) === signature) continue;
+    slot.classList.add(FAITH_CLASS);
+    slot.setAttribute(FAITH_ATTR, signature);
+    slot.innerHTML = '';
+    const size = `${FAITH_ICON_REM[Math.min(badges.length, FAITH_ICON_REM.length) - 1] ?? FAITH_ICON_REM[0]}rem`;
+    for (const badge of badges) {
+      const icon = document.createElement('div');
+      icon.classList.add(FAITH_ICON_CLASS);
+      Object.assign(icon.style, { width: size, height: size, backgroundImage: `url('${badge.icon}')` });
+      icon.setAttribute('data-tooltip-content', badge.tooltip);
+      const action = actions[badge.kind];
+      if (action) {
+        icon.classList.add(FAITH_ACTION_CLASS);
+        icon.addEventListener('click', (ev) => { ev.stopPropagation(); action(); });
+      }
+      slot.appendChild(icon);
+    }
+  }
+}
+
 // ============================ Best in category ============================
 
 /**
@@ -233,4 +278,4 @@ function markRows(panel, best) {
   }
 }
 
-export { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markOwnCard, markRows, setDetailsHidden, setRibbonHidden };
+export { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markFaith, markOwnCard, markRows, setDetailsHidden, setRibbonHidden };

@@ -25,7 +25,7 @@
  * unless isObserverSeat() - other players are untouched.
  */
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { isObserverPlayer, leaderTypeOf } from '../shared/zom-util.js';
+import { isObserverPlayer, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 
 /** ContextManager.push options for the Observer's full screens. */
@@ -41,6 +41,41 @@ function watchedPlayers() {
   try { return Players.getAlive().filter((p) => p?.isMajor && !isObserverPlayer(p.id)); }
   catch (e) { return []; }
 }
+
+// ============================ Screen dock ============================
+
+const DOCK_TAG = 'panel-sub-system-dock';
+
+/**
+ * The HUD's screen dock: patch(prototype) once its class is defined, then
+ * place(dock) on the dock now (if it is up) and every time it attaches.
+ */
+function onScreenDock({ patch, place }, log) {
+  const run = (dock) => {
+    try { if (dock) place?.(dock); } catch (e) { log(`screen dock: ${e}`); }
+  };
+  whenDefined(DOCK_TAG, (definition) => {
+    const proto = definition.createInstance.prototype;
+    patch?.(proto);
+    wrapMethod(proto, 'onAttach', function (base, ...args) {
+      const result = base(...args);
+      run(this);
+      return result;
+    });
+    engine.whenReady.then(() => {
+      const dock = document.querySelector(DOCK_TAG);
+      run(dock?.maybeComponent ?? dock?.component);
+    });
+  }, { log });
+}
+
+// ============================ Saved values ============================
+
+/** The Observer's own player properties: saved with the game and kept across Age transitions (the store the game's UI catalogs use). */
+const savedStore = () => Players.get(GameContext.localPlayerID)?.Tutorial;
+const canSave = () => !!savedStore();
+const readSaved = (key) => savedStore()?.getProperty(Database.makeHash(key));
+const writeSaved = (key, value) => savedStore()?.setProperty(Database.makeHash(key), value);
 
 // ============================ Diplomacy snapshot ============================
 
@@ -114,4 +149,4 @@ function inLeaderPanel() {
   try { return /DIPLOMACY_HUB/.test(InterfaceMode.getCurrent() ?? ''); } catch (e) { return false; }
 }
 
-export { SCREEN_PROPS, diplomacySnapshot, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, rangedStrength, unitStrength, watchedPlayers };
+export { SCREEN_PROPS, canSave, diplomacySnapshot, onScreenDock, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, rangedStrength, readSaved, unitStrength, watchedPlayers, writeSaved };

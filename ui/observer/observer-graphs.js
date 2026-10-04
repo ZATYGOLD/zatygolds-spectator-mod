@@ -43,13 +43,12 @@ import { isMobile } from 'fs://game/core/ui-next/services/view-experience.js';
 import { LeaderWithRibbon } from 'fs://game/base-standard/ui-next/components/leader-with-ribbon.js';
 import { ScreenFrame } from 'fs://game/base-standard/ui-next/components/screen-frame.js';
 import victoriesStyle from 'fs://game/base-standard/ui-next/screens/victories/victories-screen.scss.js';
-import { createLogger, currentAgeChronology, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
+import { createLogger, currentAgeChronology, leaderTypeOf } from '../shared/zom-util.js';
+import { isObserverSeat, onScreenDock, SCREEN_PROPS } from './observer-core.js';
 import { HISTORY_EVENT, HISTORY_YIELDS, yieldHistory } from './observer-history.js';
 
 const log = createLogger('observer-graphs');
 const GRAPHS_TAG = 'zom-observer-graphs';
-const DOCK_TAG = 'panel-sub-system-dock';
 const DOCK_BUTTON_CLASS = 'zom-graphs-dock-button';
 // Age dropdown values are non-empty strings: the dropdown treats a falsy value (Antiquity's 0) as nothing selected.
 const OVERALL = 'overall';
@@ -399,15 +398,4 @@ function placeDockButton(dock) {
   else root.appendChild(button);
 }
 
-whenDefined(DOCK_TAG, (definition) => {
-  wrapMethod(definition.createInstance.prototype, 'onAttach', function (base, ...args) {
-    const result = base(...args);
-    try { placeDockButton(this); } catch (e) { log(`dock button failed: ${e}`); }
-    return result;
-  });
-  // The HUD may already be up.
-  engine.whenReady.then(() => {
-    const dock = document.querySelector(DOCK_TAG);
-    try { placeDockButton(dock?.maybeComponent ?? dock?.component); } catch (e) { log(`dock button failed: ${e}`); }
-  });
-}, { log });
+onScreenDock({ place: placeDockButton }, log);

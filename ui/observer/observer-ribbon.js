@@ -40,8 +40,10 @@ import { createLogger, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
 import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from './observer-core.js';
 import { markPerspectiveCard } from './observer-perspective.js';
-import { bestByType, pantheonBadge, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
-import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markRows, setRibbonHidden } from './observer-ribbon-style.js';
+import { faithBadges } from './observer-faith.js';
+import { openOverview } from './observer-overview.js';
+import { bestByType, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
+import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markFaith, markRows, setRibbonHidden } from './observer-ribbon-style.js';
 import { placeViewButtons } from './observer-ribbon-toolbar.js';
 
 const log = createLogger('observer-ribbon');
@@ -52,6 +54,9 @@ const VIEW_ITEMS = {
   [OBSERVER_VIEW.PRODUCTION]: productionItems,
   [OBSERVER_VIEW.SCORE]: scoreItems
 };
+
+/** A pantheon badge opens every leader's pantheons (in any Age). */
+const FAITH_ACTIONS = { pantheon: () => openOverview('pantheons') };
 
 const METER_VIEWS = new Set([OBSERVER_VIEW.RESEARCH, OBSERVER_VIEW.PRODUCTION]);
 
@@ -94,9 +99,15 @@ function decorateRibbon(panel) {
     lockCardSize(panel, viewMode === OBSERVER_VIEW.YIELDS);
     placeViewButtons(panel, viewMode, setView);
   }
-  markCards(panel, isCelebrating);
-  markBest(panel);
+  markCardState(panel);
   markPerspectiveCard(panel);
+}
+
+/** Per-card state that changes during play: highlights, faith badges, best rows (after every rebuild and in-place update). */
+function markCardState(panel) {
+  markCards(panel, isCelebrating);
+  markFaith(panel, faithBadges, FAITH_ACTIONS);
+  markBest(panel);
 }
 
 const BEST_VIEWS = new Set([OBSERVER_VIEW.YIELDS, OBSERVER_VIEW.SCORE]);
@@ -164,14 +175,6 @@ function patchModel() {
       return items;
     } catch (e) { return base(player, ...rest); }
   });
-  // No religion yet (Antiquity): the pantheon fills the card's religion slot.
-  wrapMethod(DiploRibbonData, 'createPlayerData', (base, player, ...rest) => {
-    const data = base(player, ...rest);
-    if (isObserverSeat() && data && !data.religionIdeology && player) {
-      try { data.religionIdeology = pantheonBadge(player) ?? undefined; } catch (e) { /* no badge */ }
-    }
-    return data;
-  });
   wrapMethod(DiploRibbonData, 'createPlayerSizeData', (base, player, ...rest) =>
     (isObserverSeat() && player?.id === GameContext.localPlayerID ? [] : base(player, ...rest)));
 
@@ -203,7 +206,7 @@ function patchModel() {
       this._playerData = cards;
       this.onUpdate?.(this);
       this._eventNotificationRefresh?.trigger?.();
-      for (const panel of document.querySelectorAll('panel-diplo-ribbon')) { markCards(panel, isCelebrating); markBest(panel); }
+      for (const panel of document.querySelectorAll('panel-diplo-ribbon')) markCardState(panel);
       if (!inDiplomacyMode()) refreshMeters();
     } catch (e) {
       log(`observer update failed (${e}); using the base ribbon`);

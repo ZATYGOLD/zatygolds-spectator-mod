@@ -153,6 +153,7 @@
                     <Item>ui/shared/zom-assets.js</Item>
                     <Item>ui/observer/observer-config.js</Item>
                     <Item>ui/observer/observer-core.js</Item>
+                    <Item>ui/observer/observer-faith.js</Item>
                     <Item>ui/observer/observer-overview.js</Item>
                     <Item>ui/observer/observer-screens.js</Item>
                     <Item>ui/observer/observer-leader-view.js</Item>

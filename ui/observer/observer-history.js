@@ -32,7 +32,7 @@
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat, watchedPlayers } from './observer-core.js';
+import { canSave, isObserverSeat, readSaved, watchedPlayers, writeSaved } from './observer-core.js';
 
 const log = createLogger('observer-history', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_YIELD_HISTORY_';
@@ -56,8 +56,6 @@ const SLOT_ORDER = [...HISTORY_YIELDS].sort((a, b) => a.slot - b.slot);
 let samples = null;   // [{ age, turn, values: Map<playerId, number[]> }], oldest first
 let nextIndex = 0;    // property index of the next new sample
 
-const propertyHash = (key) => Database.makeHash(key);
-const propertyStore = () => Players.get(GameContext.localPlayerID)?.Tutorial;
 const round = (value) => Math.round((Number(value) || 0) * 10) / 10;
 
 function encode({ age, turn, values }) {
@@ -79,12 +77,11 @@ function decode(text) {
 function yieldHistory() {
   if (samples) return samples;
   samples = [];
-  const store = propertyStore();
-  if (!store) return samples;
+  if (!canSave()) return samples;
   try {
-    nextIndex = Number(store.getProperty(propertyHash(COUNT_KEY))) || 0;
+    nextIndex = Number(readSaved(COUNT_KEY)) || 0;
     for (let i = 0; i < nextIndex; i++) {
-      const text = store.getProperty(propertyHash(KEY_PREFIX + i));
+      const text = readSaved(KEY_PREFIX + i);
       if (typeof text === 'string' && text) samples.push(decode(text));
     }
   } catch (e) { log(`history read failed: ${e}`); }
@@ -94,8 +91,7 @@ function yieldHistory() {
 
 /** Records this turn's yields; a turn already recorded (e.g. after a reload) is replaced. */
 function recordTurn() {
-  const store = propertyStore();
-  if (!isObserverSeat() || !store) return;
+  if (!isObserverSeat() || !canSave()) return;
   const history = yieldHistory();
   const sample = { age: currentAgeChronology(), turn: Game.turn, values: new Map() };
   for (const player of watchedPlayers()) {
@@ -106,8 +102,8 @@ function recordTurn() {
   const replace = last?.age === sample.age && last?.turn === sample.turn;
   const index = replace ? nextIndex - 1 : nextIndex;
   try {
-    store.setProperty(propertyHash(KEY_PREFIX + index), encode(sample));
-    if (!replace) store.setProperty(propertyHash(COUNT_KEY), index + 1);
+    writeSaved(KEY_PREFIX + index, encode(sample));
+    if (!replace) writeSaved(COUNT_KEY, index + 1);
   } catch (e) { log(`history write failed: ${e}`); return; }
   if (replace) history[history.length - 1] = sample;
   else { history.push(sample); nextIndex = index + 1; }

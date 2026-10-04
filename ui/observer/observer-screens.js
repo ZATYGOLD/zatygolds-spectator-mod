@@ -31,13 +31,21 @@
  *     game's religion and belief screen, where the Observer picks a leader
  *     (observer-leader-view.js); the tech and civic choosers open the
  *     full trees (observer-leader-screens.js).
+ *   - the screen dock keeps its Religion button after Exploration (the game
+ *     drops it in Modern, CAPABILITY_RELIGION_UI): religions still exist, and
+ *     it opens the same religion and belief screen.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import PopupSequencer from 'fs://game/base-standard/ui/popup-sequencer/popup-sequencer.js';
-import { wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
+import { createLogger, wrapMethod } from '../shared/zom-util.js';
+import { isObserverSeat, onScreenDock, SCREEN_PROPS } from './observer-core.js';
 import { CHOOSER_TAGS, openFullTree } from './observer-leader-screens.js';
 import { OVERVIEW_PANEL_TAG, setOverviewSource } from './observer-overview.js';
+
+const log = createLogger('observer-screens');
+const RELIGION_SCREEN = 'panel-belief-picker';
+const RELIGION_UI = 'CAPABILITY_RELIGION_UI';
+const RELIGION_BUTTON_CLASS = 'tut-religion';   // the game's own button class
 
 const BLOCKED = new Set(['screen-advisor-council', 'advisor-council-popup', 'screen-dedication-selection', 'screen-advanced-start']);
 /** Screen -> what opens instead: an overview source, or another screen. */
@@ -61,3 +69,31 @@ wrapMethod(ContextManager, 'push', (base, target, ...rest) => {
 // Blocked popups never enter the queue, so nothing waits on a screen that will not open.
 wrapMethod(PopupSequencer, 'addDisplayRequest', (base, request, ...rest) =>
   (isObserverSeat() && BLOCKED.has(request?.screenId) ? request : base(request, ...rest)));
+
+// ============================ Religion after Exploration ============================
+
+/** The game's Religion button (same look and sound), after Great Works as the game places it. */
+function placeReligionButton(dock) {
+  const root = dock.Root;
+  if (!isObserverSeat() || Game.hasCapability(RELIGION_UI) || root?.querySelector('.' + RELIGION_BUTTON_CLASS)) return;
+  const button = dock.createButton({
+    tooltip: 'LOC_UI_VIEW_RELIGION',
+    modifierClass: 'religion',
+    callback: dock.openReligionViewer.bind(dock),
+    class: RELIGION_BUTTON_CLASS,
+    audio: 'religion',
+    focusedAudio: 'data-audio-focus-small'
+  });
+  button.classList.add('ssb__element');
+  const greatWorks = root.querySelector('.tut-great-works');
+  if (greatWorks) greatWorks.after(button);
+  else dock.buttonContainer?.appendChild(button);
+}
+
+onScreenDock({
+  // The game has no religion screen after Exploration; the Observer keeps the belief screen (button and hotkey).
+  patch: (proto) => wrapMethod(proto, 'getReligionScreenName', function (base, ...args) {
+    return base(...args) ?? (isObserverSeat() ? RELIGION_SCREEN : undefined);
+  }),
+  place: placeReligionButton
+}, log);

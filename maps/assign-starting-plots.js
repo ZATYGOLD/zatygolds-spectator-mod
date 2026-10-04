@@ -26,7 +26,16 @@ import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-obse
       let plots = null;
       try { plots = observerPlots(StartPositioner.zomObserverPlots); }
       catch (e) { log(`observer start failed for ${playerId}: ${e}`); }
-      const result = base(plots ? plots.start.index : plotIndex, playerId);
+      // A refused or failing start must never abort the other players' starts: fall back to the script's plot.
+      let result = false;
+      if (plots) {
+        try { result = base(plots.start.index, playerId); }
+        catch (e) { log(`eye start refused for ${playerId}: ${e}`); }
+      }
+      if (result === false) {
+        try { result = base(plotIndex, playerId); }
+        catch (e) { log(`start failed for ${playerId}: ${e}`); }
+      }
       try {
         const w = GameplayMap.getGridWidth();
         const script = { x: plotIndex % w, y: Math.floor(plotIndex / w) };

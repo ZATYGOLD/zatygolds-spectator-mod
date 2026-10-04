@@ -26,11 +26,13 @@
  * pantheon panel's markup and stylesheet. Each source supplies the title and
  * the entries; screen routing (observer-screens.js) picks the source.
  */
+import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import Panel from 'fs://game/core/ui/panel-support.js';
 import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
 import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
 import { clearChildren } from '../shared/zom-util.js';
-import { leaderPortrait, watchedPlayers } from './observer-core.js';
+import { leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { pantheons } from './observer-faith.js';
 
 const PANEL_TAG = 'zom-observer-overview';
 const PANTHEON_STYLES = 'fs://game/base-standard/ui/pantheon-complete/panel-pantheon-complete.css';
@@ -45,14 +47,9 @@ const CONTENT = `
 
 // ============================ Sources ============================
 
-/** A leader's pantheons (Antiquity). */
+/** A leader's pantheons (Antiquity; every Age with the Multiplayer Balance Mod). */
 function pantheonEntries(player) {
-  const entries = [];
-  for (const type of player.Religion?.getPantheons?.() ?? []) {
-    const def = GameInfo.Beliefs.lookup(type);
-    if (def) entries.push({ icon: UI.getIconCSS(def.BeliefType, 'PANTHEONS'), title: def.Name, description: def.Description });
-  }
-  return entries;
+  return pantheons(player).map((p) => ({ icon: UI.getIconCSS(p.type, 'PANTHEONS'), title: p.name, description: p.description }));
 }
 
 const SOURCES = {
@@ -165,4 +162,10 @@ Controls.define(PANEL_TAG, {
 /** Which source (a SOURCES key) the next opened panel shows. */
 function setOverviewSource(source) { requestedSource = source; }
 
-export { PANEL_TAG as OVERVIEW_PANEL_TAG, setOverviewSource };
+/** Open the overview on a source (from the Observer's own controls; game screens are redirected in observer-screens.js). */
+function openOverview(source) {
+  setOverviewSource(source);
+  ContextManager.push(PANEL_TAG, SCREEN_PROPS);
+}
+
+export { PANEL_TAG as OVERVIEW_PANEL_TAG, openOverview, setOverviewSource };
