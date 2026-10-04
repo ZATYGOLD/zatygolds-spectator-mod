@@ -5,7 +5,7 @@
 			<Text>Play as [B]Spectator[/B].</Text>
 		</Row>
 		<Row Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP">
-			<Text>The [B]Spectator[/B] watches as the [B]Spectator[/B] civilization in every Age.</Text>
+			<Text>The [B]Spectator[/B] watches as the [B]Witnesses[/B] in every Age.</Text>
 		</Row>
 	</EnglishText>
 </Database>

@@ -8,7 +8,7 @@
 			<Text>Espectador</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="es_ES">
-			<Text>Observa la partida sin jugar. El Espectador no tiene habilidades, no funda ningún asentamiento y ve todo el mapa. Combínalo con la civilización Espectador.</Text>
+			<Text>Observa la partida sin jugar. El Espectador no tiene habilidades, no funda ningún asentamiento y ve todo el mapa. Su civilización son los Testigos.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="es_ES">
 			<Text>«Para verlo todo, no hay que aferrarse a nada».</Text>
@@ -20,13 +20,13 @@
 			<Text>Nunca es eliminado por no tener asentamientos.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="es_ES">
-			<Text>Espectador</Text>
+			<Text>Testigos</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="es_ES">
-			<Text>Espectador</Text>
+			<Text>Los Testigos</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="es_ES">
-			<Text>Espectador</Text>
+			<Text>testigo</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="es_ES">
 			<Text>Una civilización que nunca se asienta. En lugar de un Fundador, empieza con el Ojo del Espectador, que ve cada casilla y cada unidad. Añadido por Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Juega como [B]Espectador[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="es_ES">
-			<Text>El [B]Espectador[/B] observa como la civilización [B]Espectador[/B] en cada era.</Text>
+			<Text>El [B]Espectador[/B] observa como los [B]Testigos[/B] en cada era.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="es_ES">
 			<Text>Espectador</Text>

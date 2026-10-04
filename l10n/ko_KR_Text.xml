@@ -8,7 +8,7 @@
 			<Text>관전자</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="ko_KR">
-			<Text>플레이하지 않고 게임을 관전합니다. 관전자는 능력이 없고, 정착지를 건설하지 않으며, 지도 전체를 봅니다. 관전자 문명과 함께 선택하세요.</Text>
+			<Text>플레이하지 않고 게임을 관전합니다. 관전자는 능력이 없고, 정착지를 건설하지 않으며, 지도 전체를 봅니다. 문명은 목격자들입니다.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="ko_KR">
 			<Text>"모든 것을 보려면, 아무것도 쥐지 말라."</Text>
@@ -20,13 +20,13 @@
 			<Text>정착지가 없어도 탈락하지 않습니다.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="ko_KR">
-			<Text>관전자</Text>
+			<Text>목격자들</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="ko_KR">
-			<Text>관전자</Text>
+			<Text>목격자들</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="ko_KR">
-			<Text>관전자</Text>
+			<Text>목격자</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="ko_KR">
 			<Text>결코 정착하지 않는 문명입니다. 창시자 대신 관전자의 눈을 가지고 시작하며, 모든 타일과 모든 유닛을 봅니다. Zatygold's Spectator에서 추가.</Text>
@@ -56,7 +56,7 @@
 			<Text>[B]관전자[/B](으)로 플레이.</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="ko_KR">
-			<Text>[B]관전자[/B]는 모든 시대에서 [B]관전자[/B] 문명으로 관전합니다.</Text>
+			<Text>[B]관전자[/B]는 모든 시대에서 [B]목격자들[/B]로 관전합니다.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="ko_KR">
 			<Text>관전자</Text>

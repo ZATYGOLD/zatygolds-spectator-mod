@@ -34,11 +34,16 @@
  *   - Computer players are never offered the team "Observer" entry.
  *   - Rebuilding the leader list re-checks the hidden ZOMObserverInGame option
  *     (setup-observer.js; written by the host).
+ *   - The Observer plays no mementos (its slots are turned off in
+ *     config/setup-rules.sql): its row lists none, and the lobby's Mementos
+ *     button and hotkey are off while the local player observes.
  * Wraps the lobby model's dropdown builders and callbacks; no base file edits.
  */
-import MPLobbyModel, { MPLobbyDataModel } from 'fs://game/core/ui/shell/mp-staging/model-mp-staging-new.js';
+import MPLobbyModel, { LobbyUpdateEventName, MPLobbyDataModel } from 'fs://game/core/ui/shell/mp-staging/model-mp-staging-new.js';
+import 'fs://game/core/ui/shell/mp-staging/mp-staging-leader-dropdown.js';
+import 'fs://game/core/ui/shell/mp-staging/mp-staging-new.js';
 import { MPStagingTeamDropdown } from 'fs://game/core/ui/shell/mp-staging/mp-staging-team-dropdown.js';
-import { createLogger, isObserverCiv, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, isObserverCiv, OBSERVER_LEADER, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
 import { isComputerSlot, isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
 
@@ -48,6 +53,7 @@ const PARAM_LEADER = 'PlayerLeader';
 const DROPDOWN_PARAM = 'DROPDOWN_TYPE_PLAYER_PARAM';
 const DROPDOWN_TEAM = 'DROPDOWN_TYPE_TEAM';
 const NO_TEAM = -1;
+const HIDDEN = 'hidden';
 
 const log = createLogger('lobby-observer', CONFIG.debug);
 
@@ -110,6 +116,52 @@ function shapeTeamDropdown(dropdown, playerID) {
     dropdown.selectedItemIndex = items.length - 1;
     dropdown.showLabelOnSelectedItem = false;
   }
+}
+
+// ============================ Mementos ============================
+
+const isLocalObserver = () => playerLeader(GameContext.localPlayerID) === OBSERVER_LEADER;
+
+/**
+ * An Observer row lists no mementos: its "mementos" attribute is emptied, so the
+ * base row and other mods' slots on it (Advanced Settings Pro) hide as they do
+ * for a player without mementos.
+ */
+function syncRowMementos(dropdown) {
+  const playerID = parseInt(dropdown.Root.getAttribute('data-player-id') ?? '');
+  if (Number.isInteger(playerID) && isObserverRow(playerID) && dropdown.Root.getAttribute('mementos')) {
+    dropdown.Root.setAttribute('mementos', '');
+  }
+}
+
+/** The lobby's Mementos button: shown only when mementos are on and the local player does not observe. */
+function syncMementoButton() {
+  const button = document.querySelector('screen-mp-lobby .memento-button');
+  button?.classList.toggle(HIDDEN, !Configuration.getGame().isMementosEnabled || isLocalObserver());
+}
+
+function installMementos(proto) {
+  const canEdit = Object.getOwnPropertyDescriptor(proto, 'canEditMementos');
+  if (canEdit?.get) {
+    Object.defineProperty(proto, 'canEditMementos', { ...canEdit, get() { return canEdit.get.call(this) && !isLocalObserver(); } });
+  }
+
+  whenDefined('leader-dropdown', (definition) => {
+    wrapMethod(definition.createInstance.prototype, 'onAttributeChanged', function (base, ...args) {
+      base(...args);
+      try { syncRowMementos(this); } catch (e) { /* keep base visuals */ }
+    });
+  }, { log });
+
+  whenDefined('screen-mp-lobby', (definition) => {
+    wrapMethod(definition.createInstance.prototype, 'openMementos', function (base, ...args) {
+      return isLocalObserver() ? undefined : base(...args);
+    });
+  }, { log });
+
+  window.addEventListener(LobbyUpdateEventName, () => {
+    try { syncMementoButton(); } catch (e) { log(`memento button failed: ${e}`); }
+  });
 }
 
 // ============================ Installation ============================
@@ -178,6 +230,8 @@ function install() {
       this.Root.setAttribute('show-label-on-selected-item', observing ? 'false' : 'true');
     } catch (e) { /* keep base visuals */ }
   });
+
+  installMementos(proto);
 
   log.debug('lobby role installed');
 }

@@ -8,7 +8,7 @@
 			<Text>Zuschauer</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="de_DE">
-			<Text>Sieh dem Spiel zu, ohne zu spielen. Der Zuschauer hat keine Fähigkeiten, gründet keine Siedlung und sieht die ganze Karte. Mit der Zivilisation Zuschauer kombinieren.</Text>
+			<Text>Sieh dem Spiel zu, ohne zu spielen. Der Zuschauer hat keine Fähigkeiten, gründet keine Siedlung und sieht die ganze Karte. Seine Zivilisation sind die Zeugen.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="de_DE">
 			<Text>„Wer alles sehen will, darf nichts festhalten.“</Text>
@@ -20,13 +20,13 @@
 			<Text>Wird nie eliminiert, weil er keine Siedlungen besitzt.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="de_DE">
-			<Text>Zuschauer</Text>
+			<Text>Zeugen</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="de_DE">
-			<Text>Zuschauer</Text>
+			<Text>Die Zeugen</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="de_DE">
-			<Text>Zuschauer</Text>
+			<Text>Zeugen</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="de_DE">
 			<Text>Eine Zivilisation, die nie sesshaft wird. Statt eines Gründers beginnt sie mit dem Auge des Zuschauers, das jedes Feld und jede Einheit sieht. Hinzugefügt von Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Als [B]Zuschauer[/B] spielen.</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="de_DE">
-			<Text>Der [B]Zuschauer[/B] sieht in jedem Zeitalter als Zivilisation [B]Zuschauer[/B] zu.</Text>
+			<Text>Der [B]Zuschauer[/B] sieht in jedem Zeitalter als die [B]Zeugen[/B] zu.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="de_DE">
 			<Text>Zuschauer</Text>

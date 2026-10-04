@@ -18,10 +18,12 @@ normal HUD and End Turn, through every Age, and you are never eliminated.
 
 ## Spectator (experimental)
 
-**Setup:** in single player pick **Spectator** as your leader (its
-civilization is the only one offered). In the multiplayer lobby pick it as
-leader or civilization (the other follows; team and civ lock). At each Age
-transition the Spectator civilization is picked automatically. Computer
+**Setup:** in single player pick **Spectator** as your leader: its
+civilization, **the Witnesses**, follows, so the civilization step is skipped
+and the Overview shows the Spectator's own art. In the multiplayer lobby pick
+the Spectator leader or the Witnesses civilization (the other follows; team
+and civ lock). The Spectator plays no mementos: its memento slots are turned
+off. At each Age transition the Witnesses are picked automatically. Computer
 players never become the Spectator.
 
 **Playing:** you are a normal player who never settles and is never
@@ -96,7 +98,7 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 
 ```
 zatygolds-observer-mode.modinfo   # manifest, zom-observer-in-game criteria
-├─ art/icons/, art/backgrounds/  # leader / civ icons, loading screen
+├─ art/icons/, art/leaders/, art/backgrounds/  # icons, Overview portrait, civ card and loading screen
 ├─ config/                       # setup DB: Spectator leader / civs, hidden "Spectator in game" option
 ├─ data/                         # gameplay DB: leaders, civilizations, units (the Eye), legacies, loading info
 │  ├─ icons/                     # icon definitions
@@ -124,6 +126,17 @@ they load only in a game with a Spectator (modinfo criteria
 
 ### 1.0.0
 
+- **Game setup** — the Spectator's leader-select portrait has the leaders'
+  ring (with the eye in place of a level); the civilization step is skipped
+  for it; the Overview's leader and civilization cards show the Spectator's
+  portrait and a slice of its loading-screen art, and the level ring shows
+  the eye. Changing the start Age keeps the matching Witnesses civilization.
+- **The Witnesses** — the Spectator's civilization has its own name, so the
+  leader and the civilization no longer both read "Spectator" (every
+  language).
+- **No mementos** — the Spectator's memento slots are turned off in single
+  player, the multiplayer lobby (also the slots Advanced Settings Pro adds
+  there) and at Age transitions; becoming the Spectator unequips any memento.
 - **Single player** — pick the Spectator in game setup: its civilization is
   paired automatically, the setup scene shows the Random leader's silhouette
   and banner, and computer players never become the Spectator. The Eye,

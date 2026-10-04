@@ -8,7 +8,7 @@
 			<Text>Spettatore</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="it_IT">
-			<Text>Guarda la partita senza giocare. Lo Spettatore non ha abilità, non fonda insediamenti e vede l'intera mappa. Da abbinare alla civiltà Spettatore.</Text>
+			<Text>Guarda la partita senza giocare. Lo Spettatore non ha abilità, non fonda insediamenti e vede l'intera mappa. La sua civiltà sono i Testimoni.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="it_IT">
 			<Text>"Per vedere tutto, non trattenere nulla."</Text>
@@ -20,13 +20,13 @@
 			<Text>Non viene mai eliminato per l'assenza di insediamenti.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="it_IT">
-			<Text>Spettatore</Text>
+			<Text>Testimoni</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="it_IT">
-			<Text>Spettatore</Text>
+			<Text>I Testimoni</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="it_IT">
-			<Text>Spettatore</Text>
+			<Text>testimone</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="it_IT">
 			<Text>Una civiltà che non si insedia mai. Al posto di un Fondatore inizia con l'Occhio dello Spettatore, che vede ogni casella e ogni unità. Aggiunto da Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Gioca come [B]Spettatore[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="it_IT">
-			<Text>Lo [B]Spettatore[/B] osserva come civiltà [B]Spettatore[/B] in ogni epoca.</Text>
+			<Text>Lo [B]Spettatore[/B] osserva come i [B]Testimoni[/B] in ogni epoca.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="it_IT">
 			<Text>Spettatore</Text>

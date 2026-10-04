@@ -8,7 +8,7 @@
 			<Text>观战者</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hans_CN">
-			<Text>不参与游戏，只观看对局。观战者没有任何能力，不建立定居点，并能看到整张地图。请搭配观战者文明。</Text>
+			<Text>不参与游戏，只观看对局。观战者没有任何能力，不建立定居点，并能看到整张地图。其文明为见证者。</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="zh_Hans_CN">
 			<Text>“欲观万物，须一无所持。”</Text>
@@ -20,13 +20,13 @@
 			<Text>不会因没有定居点而被淘汰。</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="zh_Hans_CN">
-			<Text>观战者</Text>
+			<Text>见证者</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="zh_Hans_CN">
-			<Text>观战者</Text>
+			<Text>见证者</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="zh_Hans_CN">
-			<Text>观战者</Text>
+			<Text>见证者</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hans_CN">
 			<Text>一个从不定居的文明。它以观战者之眼代替奠基者开局，能看到每个单元格和每个单位。由 Zatygold's Spectator 添加。</Text>
@@ -56,7 +56,7 @@
 			<Text>以[B]观战者[/B]身份游玩。</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="zh_Hans_CN">
-			<Text>[B]观战者[/B]在每个时代都以[B]观战者[/B]文明观战。</Text>
+			<Text>[B]观战者[/B]在每个时代都以[B]见证者[/B]文明观战。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="zh_Hans_CN">
 			<Text>观战者</Text>

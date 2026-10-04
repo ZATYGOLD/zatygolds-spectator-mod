@@ -25,17 +25,21 @@
  *   - Leader and civilization move together: the Observer leader takes the
  *     Observer civilization of the game's start Age, leaving it resets the
  *     civilization to Random (the lobby calls syncSelection from its dropdowns;
- *     single player syncs every parameter change).
+ *     single player syncs every parameter change, and moves the Observer to
+ *     the new Age's civilization when the start Age changes).
  *   - Single player lists the Observer civilization only for the Observer
  *     leader, and the Observer leader only for the local player.
  *   - The hidden game option ZOMObserverInGame follows whether any player is
  *     the Observer (the multiplayer host, or the single player); the modinfo
  *     loads the Observer's base-game overrides only in such a game.
+ *   - The Observer plays no mementos: becoming it unequips them, and the
+ *     memento screens list no slots for it (config/setup-rules.sql turns the
+ *     slots off too).
  *   - Computer players never become the Observer: their leader list omits it.
  *     When a single-player game starts, every Random leader is resolved here
  *     to a valid leader nobody else plays, so Random never picks the Observer.
  *   - The leader-select 3D models use the game's stand-ins for the Observer.
- * Wraps GameSetup's parameter lookup / setter and engine.call; no base file edits.
+ * Wraps GameSetup's parameter lookup / setters and engine.call; no base file edits.
  */
 import LeaderSelectModelManager from 'fs://game/core/ui/shell/leader-select/leader-select-model-manager.js';
 import { installAssetAliases } from '../shared/zom-assets.js';
@@ -44,6 +48,9 @@ import { CONFIG } from './setup-config.js';
 
 const PARAM_LEADER = 'PlayerLeader';
 const PARAM_CIV = 'PlayerCivilization';
+const PARAM_AGE = 'Age';
+const MEMENTO_PARAMS = ['PlayerMementoMajorSlot', 'PlayerMementoMinorSlot1'];
+const NO_MEMENTO = 'NONE';
 const PARAM_OBSERVER_IN_GAME = 'ZOMObserverInGame';
 const RANDOM = 'RANDOM';
 const NO_TEAM = -1;
@@ -103,6 +110,14 @@ function setTeam(playerID, team) {
   try { Configuration.editPlayer(playerID)?.setTeam(team); } catch (e) { /* ignore */ }
 }
 
+/** Unequip the player's mementos (the Observer plays none; config/setup-rules.sql turns its slots off). */
+function clearMementos(playerID) {
+  for (const param of MEMENTO_PARAMS) {
+    const value = GameSetup.findPlayerParameter(playerID, param)?.value?.value;
+    if (value && value !== NO_MEMENTO) setParam(playerID, param, NO_MEMENTO);
+  }
+}
+
 // ============================ Selection sync ============================
 
 /** Leader and civ move together: Observer leader <-> Observer civ, team cleared. */
@@ -110,6 +125,7 @@ function syncSelection(playerID, param, value) {
   const civ = observerCivForStartAge();
   if (param === PARAM_LEADER) {
     if (value === OBSERVER_LEADER) {
+      clearMementos(playerID);
       if (playerCiv(playerID) !== civ) setParam(playerID, PARAM_CIV, civ);
       setTeam(playerID, NO_TEAM);
       log.debug(`player ${playerID} -> observer (${civ})`);
@@ -120,13 +136,21 @@ function syncSelection(playerID, param, value) {
   } else if (param === PARAM_CIV) {
     if (isObserverCiv(value)) {
       if (value !== civ) setParam(playerID, PARAM_CIV, civ);
-      if (playerLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
+      if (playerLeader(playerID) !== OBSERVER_LEADER) { clearMementos(playerID); setParam(playerID, PARAM_LEADER, OBSERVER_LEADER); }
       setTeam(playerID, NO_TEAM);
       log.debug(`player ${playerID} -> observer via civ`);
     } else if (playerLeader(playerID) === OBSERVER_LEADER) {
       setParam(playerID, PARAM_LEADER, RANDOM);
       log.debug(`player ${playerID} left observer via civ; leader reset`);
     }
+  }
+}
+
+/** Single player: a new start Age moves every Observer to that Age's Observer civilization. */
+function syncObserverCivsToAge() {
+  const civ = observerCivForStartAge();
+  for (const id of Configuration.getGame().participatingPlayerIDs ?? []) {
+    if (playerLeader(id) === OBSERVER_LEADER && playerCiv(id) !== civ && setParam(id, PARAM_CIV, civ)) log.debug(`player ${id} -> ${civ} (start Age)`);
   }
 }
 
@@ -204,6 +228,10 @@ function install() {
     try { return param ? shapeParameter(playerID, paramName, param) : param; } catch (e) { return param; }
   });
 
+  // Memento screens (single player, multiplayer editor) list no slots for the Observer.
+  wrapMethod(GameSetup, 'getMementoFilteredPlayerParameters', (base, playerID, ...rest) =>
+    (playerLeader(playerID) === OBSERVER_LEADER ? [] : base(playerID, ...rest)));
+
   let syncing = false;
   wrapMethod(GameSetup, 'setPlayerParameterValue', (base, playerID, paramName, value, ...rest) => {
     const result = base(playerID, paramName, value, ...rest);
@@ -212,6 +240,14 @@ function install() {
       try { syncSelection(playerID, paramName, value?.toString?.() ?? value); } catch (e) { log(`sync failed: ${e}`); }
       finally { syncing = false; }
       queueObserverFlag();
+    }
+    return result;
+  });
+
+  wrapMethod(GameSetup, 'setGameParameterValue', (base, paramName, ...rest) => {
+    const result = base(paramName, ...rest);
+    if (paramName === PARAM_AGE && !isMultiplayerSetup()) {
+      try { syncObserverCivsToAge(); } catch (e) { log(`age sync failed: ${e}`); }
     }
     return result;
   });

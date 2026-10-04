@@ -8,7 +8,7 @@
 			<Text>Widz</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
-			<Text>Oglądaj grę bez grania. Widz nie ma zdolności, nie zakłada osiedli i widzi całą mapę. Połącz z cywilizacją Widz.</Text>
+			<Text>Oglądaj grę bez grania. Widz nie ma zdolności, nie zakłada osiedli i widzi całą mapę. Jego cywilizacja to Świadkowie.</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="pl_PL">
 			<Text>„Aby widzieć wszystko, nie trzymaj niczego.”</Text>
@@ -20,13 +20,13 @@
 			<Text>Nigdy nie zostaje wyeliminowany z powodu braku osiedli.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="pl_PL">
-			<Text>Widz</Text>
+			<Text>Świadkowie</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="pl_PL">
-			<Text>Widz</Text>
+			<Text>Świadkowie</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="pl_PL">
-			<Text>Widz</Text>
+			<Text>Świadków</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="pl_PL">
 			<Text>Cywilizacja, która nigdy nie osiada. Zamiast Założyciela zaczyna z Okiem Widza, które widzi każde pole i każdą jednostkę. Dodane przez Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Graj jako [B]Widz[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="pl_PL">
-			<Text>[B]Widz[/B] obserwuje jako cywilizacja [B]Widz[/B] w każdej epoce.</Text>
+			<Text>[B]Widz[/B] obserwuje w każdej epoce jako [B]Świadkowie[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="pl_PL">
 			<Text>Widz</Text>

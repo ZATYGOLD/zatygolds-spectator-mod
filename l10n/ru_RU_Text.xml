@@ -8,7 +8,7 @@
 			<Text>Наблюдатель</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="ru_RU">
-			<Text>Наблюдайте за игрой, не участвуя в ней. У Наблюдателя нет способностей, он не основывает поселений и видит всю карту. Выбирайте вместе с цивилизацией «Наблюдатель».</Text>
+			<Text>Наблюдайте за игрой, не участвуя в ней. У Наблюдателя нет способностей, он не основывает поселений и видит всю карту. Его цивилизация — «Свидетели».</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="ru_RU">
 			<Text>«Чтобы видеть всё, не держись ни за что».</Text>
@@ -20,13 +20,13 @@
 			<Text>Никогда не выбывает из игры из-за отсутствия поселений.</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="ru_RU">
-			<Text>Наблюдатель</Text>
+			<Text>Свидетели</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="ru_RU">
-			<Text>Наблюдатель</Text>
+			<Text>Свидетели</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="ru_RU">
-			<Text>Наблюдатель</Text>
+			<Text>Свидетелей</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="ru_RU">
 			<Text>Цивилизация, которая никогда не оседает. Вместо Основателя она начинает с Оком Наблюдателя, которое видит каждую клетку и каждый юнит. Добавлено модом Zatygold's Spectator.</Text>
@@ -56,7 +56,7 @@
 			<Text>Играть за [B]Наблюдателя[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="ru_RU">
-			<Text>[B]Наблюдатель[/B] наблюдает за цивилизацию [B]Наблюдатель[/B] в каждой эпохе.</Text>
+			<Text>В каждой эпохе [B]Наблюдатель[/B] наблюдает как цивилизация [B]«Свидетели»[/B].</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="ru_RU">
 			<Text>Наблюдатель</Text>

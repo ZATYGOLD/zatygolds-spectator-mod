@@ -8,7 +8,7 @@
 			<Text>観戦者</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="ja_JP">
-			<Text>プレイせずにゲームを観戦します。観戦者には能力がなく、居住地を建設せず、マップ全体を見渡せます。観戦者文明と組み合わせてください。</Text>
+			<Text>プレイせずにゲームを観戦します。観戦者には能力がなく、居住地を建設せず、マップ全体を見渡せます。文明は目撃者です。</Text>
 		</Replace>
 		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="ja_JP">
 			<Text>「すべてを見るには、何も持たぬこと。」</Text>
@@ -20,13 +20,13 @@
 			<Text>居住地がなくても脱落しない。</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="ja_JP">
-			<Text>観戦者</Text>
+			<Text>目撃者</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="ja_JP">
-			<Text>観戦者</Text>
+			<Text>目撃者たち</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="ja_JP">
-			<Text>観戦者</Text>
+			<Text>目撃者</Text>
 		</Replace>
 		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="ja_JP">
 			<Text>決して定住しない文明。創始者の代わりに観戦者の眼を持って開始し、すべてのタイルとすべてのユニットを見通す。Zatygold's Spectatorにより追加。</Text>
@@ -56,7 +56,7 @@
 			<Text>[B]観戦者[/B]としてプレイ。</Text>
 		</Replace>
 		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="ja_JP">
-			<Text>[B]観戦者[/B]はすべての時代で[B]観戦者[/B]文明として観戦します。</Text>
+			<Text>[B]観戦者[/B]はすべての時代で[B]目撃者[/B]として観戦します。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="ja_JP">
 			<Text>観戦者</Text>

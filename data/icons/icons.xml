@@ -3,8 +3,10 @@
   Zatygold's Spectator - Spectator icons (UpdateIcons, game and shell).
   The leader portrait is the hooded Spectator cutout, framed like the base
   leaders: head above the ribbon's hex, body clipped to its inner edge. The
-  civilization symbol is the eye emblem in white.
-  Files come from ImportFiles (art/icons/*.png) and are served under fs://game/art/icons/.
+  civilization symbol is the eye emblem in white; its BACKGROUND_VERT art (a slice
+  of the loading screen) fills the civilization card of the game-setup Overview.
+  Files come from ImportFiles (art/icons/, art/backgrounds/) and are served under
+  fs://game/art/.
 -->
 <Database>
   <IconDefinitions>
@@ -16,11 +18,14 @@
     <Row><ID>LEADER_ZOM_OBSERVER</ID><Path>fs://game/art/icons/zom_observer_circle_256.png</Path><Context>CIRCLE_MASK</Context><IconSize>256</IconSize></Row>
     <Row><ID>LEADER_ZOM_OBSERVER</ID><Path>fs://game/art/icons/zom_observer_circle_128.png</Path><Context>CIRCLE_MASK</Context><IconSize>128</IconSize></Row>
     <Row><ID>LEADER_ZOM_OBSERVER</ID><Path>fs://game/art/icons/zom_observer_circle_64.png</Path><Context>CIRCLE_MASK</Context><IconSize>64</IconSize></Row>
-    <Row><ID>LEADER_ZOM_OBSERVER</ID><Path>fs://game/art/icons/zom_observer_circle_140.png</Path><Context>PORTRAIT_MASK</Context><IconSize>140</IconSize></Row>
+    <Row><ID>LEADER_ZOM_OBSERVER</ID><Path>fs://game/art/icons/zom_observer_portrait_140.png</Path><Context>PORTRAIT_MASK</Context><IconSize>140</IconSize></Row>
 
     <Row><ID>CIVILIZATION_ZOM_OBSERVER_ANTIQUITY</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
     <Row><ID>CIVILIZATION_ZOM_OBSERVER_EXPLORATION</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
     <Row><ID>CIVILIZATION_ZOM_OBSERVER_MODERN</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
+    <Row><ID>CIVILIZATION_ZOM_OBSERVER_ANTIQUITY</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.png</Path><Context>BACKGROUND_VERT</Context></Row>
+    <Row><ID>CIVILIZATION_ZOM_OBSERVER_EXPLORATION</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.png</Path><Context>BACKGROUND_VERT</Context></Row>
+    <Row><ID>CIVILIZATION_ZOM_OBSERVER_MODERN</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.png</Path><Context>BACKGROUND_VERT</Context></Row>
 
     <Row><ID>UNIT_ZOM_OBSERVER_EYE</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
   </IconDefinitions>
