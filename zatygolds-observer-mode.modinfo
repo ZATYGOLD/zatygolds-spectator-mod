@@ -4,6 +4,7 @@
         <Name>LOC_MOD_ZOM_NAME</Name>
         <Description>LOC_MOD_ZOM_DESCRIPTION</Description>
         <Authors>Zatygold</Authors>
+        <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
         <Version>1.0.0</Version>

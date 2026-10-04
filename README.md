@@ -174,6 +174,12 @@ they load only in a game with a Spectator (modinfo criteria
 
 ---
 
+## Special thanks
+
+Special thanks to **ArKantiK** for all their feedback and testing.
+
+---
+
 ## License
 
 Copyright (C) 2026 Zatygold. Free software under the **GNU General Public
