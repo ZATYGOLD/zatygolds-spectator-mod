@@ -28,9 +28,10 @@
  *   - Fog: tiles the leader never explored are blacked out by a region colour
  *     filter (as the game's tile purchase uses), which also blacks out
  *     mountains, vegetation and units there, plus an opaque black plot
- *     overlay. Tiles they saw before but do not see now get a grey plot
- *     overlay on the ground (units there stay drawn). Only one colour filter
- *     applies at a time (tested in-game), so the grey is an overlay.
+ *     overlay. Tiles they saw before but do not see now get a dark grey plot
+ *     overlay on the ground; 3D models there (units too) stay drawn, since
+ *     only one colour filter applies at a time (tested in-game) and no
+ *     per-unit model API exists.
  *   - Resource icons: suppressed on unexplored tiles (the resource layer's own
  *     suppressPlots); on tiles seen before they are redrawn with the game's
  *     greyed fog-of-war icons (the layer's FOW variants), as the game does.

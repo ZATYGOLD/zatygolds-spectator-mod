@@ -26,7 +26,8 @@
  * every other card between Yields | Production, Research and Victories. The
  * card's banner, between the portrait and the civ symbol, holds the Auto End
  * Turn toggle (observer-turn.js); the civ symbol, smaller, sits under it.
- * The Perspective toggle (observer-perspective.js) sits beside Victories.
+ * The buttons form one column; the Perspective toggle (observer-perspective.js)
+ * comes last, under Victories.
  * Right-clicking the card's portrait hides or shows every card's details
  * (observer-navigation.js); its tooltip says so.
  */
@@ -38,6 +39,7 @@ import { isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
 const BUTTONS_CLASS = 'zom-observer-view-buttons';
 const BANNER_CLASS = 'zom-observer-banner-toggles';
 const BUTTON_SIZE = '1.6rem';
+const BUTTON_MARGIN = '0.2rem 0';
 const TOGGLE_SIZE_REM = 1.4;
 const TOGGLE_GLYPH_INSET = '0.12rem';
 const SYMBOL_SIZE = '2rem';
@@ -92,11 +94,13 @@ const PERSPECTIVE_TOGGLE = { cls: 'zom-observer-perspective', icon: ICONS.perspe
 const BANNER_TOGGLES = [AUTO_END_TOGGLE];
 const ALL_TOGGLES = [AUTO_END_TOGGLE, PERSPECTIVE_TOGGLE];
 
-/** Stat-area buttons by row: views, and toggles. */
-const BUTTON_ROWS = [
-  [{ view: OBSERVER_VIEW.YIELDS, loc: 'LOC_ZOM_OBSERVER_YIELDS' }, { view: OBSERVER_VIEW.PRODUCTION, loc: 'LOC_ZOM_OBSERVER_PRODUCTION' }],
-  [{ view: OBSERVER_VIEW.RESEARCH, loc: 'LOC_ZOM_OBSERVER_TECHS_CIVICS' }],
-  [{ view: OBSERVER_VIEW.SCORE, loc: 'LOC_PEDIA_VICTORIES_TITLE' }, { toggle: PERSPECTIVE_TOGGLE }]
+/** Stat-area buttons, top to bottom: views, then toggles. */
+const STAT_BUTTONS = [
+  { view: OBSERVER_VIEW.YIELDS, loc: 'LOC_ZOM_OBSERVER_YIELDS' },
+  { view: OBSERVER_VIEW.PRODUCTION, loc: 'LOC_ZOM_OBSERVER_PRODUCTION' },
+  { view: OBSERVER_VIEW.RESEARCH, loc: 'LOC_ZOM_OBSERVER_TECHS_CIVICS' },
+  { view: OBSERVER_VIEW.SCORE, loc: 'LOC_PEDIA_VICTORIES_TITLE' },
+  { toggle: PERSPECTIVE_TOGGLE }
 ];
 
 /** A round lens-style button; drawGlyph fills its icon. */
@@ -105,7 +109,7 @@ function roundButton(tooltip, pressed, drawGlyph, onActivate) {
   btn.classList.add('mini-map__lens-button', 'pointer-events-auto');
   btn.classList.toggle('pressed', pressed);
   btn.setAttribute('data-tooltip-content', tooltip);
-  btn.style.cssText = `width: ${BUTTON_SIZE}; height: ${BUTTON_SIZE}; margin: 0.3rem 0.25rem;`;
+  btn.style.cssText = `width: ${BUTTON_SIZE}; height: ${BUTTON_SIZE}; margin: ${BUTTON_MARGIN};`;
   const bg = document.createElement('div');
   bg.classList.add('mini-map__lens-button__bg');
   const icon = document.createElement('div');
@@ -194,12 +198,7 @@ function placeViewButtons(panel, currentView, onSelect) {
     const box = document.createElement('div');
     box.classList.add(BUTTONS_CLASS, 'pointer-events-auto');
     box.style.cssText = 'display: flex; flex-direction: column; align-items: center; padding: 0.4rem 0;';
-    for (const row of BUTTON_ROWS) {
-      const line = document.createElement('div');
-      line.style.cssText = 'display: flex; flex-direction: row; justify-content: center;';
-      for (const item of row) line.appendChild(item.toggle ? toggleButton(item.toggle) : viewButton(item, currentView, onSelect));
-      box.appendChild(line);
-    }
+    for (const item of STAT_BUTTONS) box.appendChild(item.toggle ? toggleButton(item.toggle) : viewButton(item, currentView, onSelect));
     own.appendChild(box);
   }
   const card = own.closest?.('.diplo-ribbon-outer');

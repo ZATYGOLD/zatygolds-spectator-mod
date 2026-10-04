@@ -48,7 +48,7 @@ const CONFIG = {
   notificationScale: 0.75,              // notification bar size
   perspectiveUnexplored: { saturation: 0, brightness: 0 },        // Perspective: tiles the viewed leader never explored (colour filter)
   perspectiveUnexploredFill: { x: 0, y: 0, z: 0, w: 1 },          // Perspective: ground of tiles they never explored (plot overlay, linear RGBA)
-  perspectiveSeenFill: { x: 0.16, y: 0.16, z: 0.18, w: 0.6 },     // Perspective: grey on tiles seen before but not seen now (plot overlay)
+  perspectiveSeenFill: { x: 0.07, y: 0.07, z: 0.08, w: 0.75 },    // Perspective: grey on tiles seen before but not seen now (plot overlay)
   perspectiveRefreshMs: 250             // Perspective: redraw delay after units move (batches an AI turn's moves)
 };
 

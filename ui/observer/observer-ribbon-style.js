@@ -32,8 +32,9 @@
  *     card but the Observer's shows its stats only on hover);
  *   - a small gap between cards;
  *   - highlights: allied leaders share a portrait hex-border colour (one per
- *     alliance); a leader at war glows red, a celebrating leader's portrait
- *     and civ banner glow gold (war wins on the portrait); a coloured pip per
+ *     alliance, no glow); glows are only for a leader at war (red) and a
+ *     celebrating leader's portrait and civ banner (gold; war wins on the
+ *     portrait); a coloured pip per
  *     war under the portrait shows who fights whom (one colour per war pair,
  *     kept until peace);
  *   - the leader panel shows no ribbon.
@@ -65,16 +66,11 @@ let statHeightPx = 0;
 
 const card = (selector) => `.${SIZED_CLASS} ${selector}`;
 const glow = (color, size = HIGHLIGHT.glowSize) => `filter: drop-shadow(0 0 ${size} ${color});`;
-const hexBorder = (selector, color) => `${card(selector)} .diplo-ribbon__portrait-hex-bg-frame { fxs-background-image-tint: ${color}; }`;
+/** Tints the hex border like the base tints the hex (the frame ignores fxs-background-image-tint); it replaces the frame's glow. */
+const hexBorder = (selector, color) => `${card(selector)} .diplo-ribbon__portrait-hex-bg-frame { filter: fxs-color-tint(${color}); }`;
 
 /** A row highlight: a soft horizontal band of the colour (r, g, b). */
 const band = (rgb) => `background-image: linear-gradient(90deg, rgba(${rgb}, 0), rgba(${rgb}, 0.35) 22%, rgba(${rgb}, 0.45) 50%, rgba(${rgb}, 0.35) 78%, rgba(${rgb}, 0));`;
-
-/** An alliance colours the hex border and its tight glow, whatever else glows (celebration, war). */
-const allianceBorder = (selector, color) => [
-  hexBorder(selector, color),
-  `${card(selector)} .diplo-ribbon__portrait-hex-bg-frame { ${glow(color, HIGHLIGHT.borderGlowSize)} }`
-];
 
 /** Glow around the whole portrait hex, plus a tight glow on the hex border itself so the edge reads clearly. */
 const portraitGlow = (selector, color) => [
@@ -82,11 +78,10 @@ const portraitGlow = (selector, color) => [
   `${card(selector)} .diplo-ribbon__portrait-hex-bg-frame { ${glow(color, HIGHLIGHT.borderGlowSize)} }`
 ];
 
-/** A celebration tints the hex border and civ banner and glows both gold. */
+/** A celebration tints the civ banner and glows it and the portrait gold. */
 function celebrationRules() {
   const selector = '.' + CELEBRATING_CLASS;
   return [
-    hexBorder(selector, HIGHLIGHT.celebration),
     ...portraitGlow(selector, HIGHLIGHT.celebration),
     `${card(selector)} .diplo-ribbon__front-banner-shadow { fxs-border-image-tint: ${HIGHLIGHT.celebration}; }`,
     `${card(selector)} .diplo-ribbon__upper-bg { ${glow(HIGHLIGHT.celebration)} }`
@@ -108,12 +103,13 @@ function writeStyle() {
     ...Object.entries(ROW_COLORS).map(([type, color]) => `.${SIZED_CLASS} .${ROW_TYPE_PREFIX}${type} .yield-value { color: ${color}; }`),
     ...['diplo-ribbon__yields', 'diplo-ribbon__bottom-spacer', 'diplo-ribbon__bg-container']
       .map((part) => `.${SIZED_CLASS} .${OWN_CARD_CLASS}.show-on-hover .${part} { display: flex; }`),
+    `.${SIZED_CLASS} .${OWN_CARD_CLASS} .diplo-ribbon__yields { height: auto !important; min-height: 0 !important; max-height: 100rem !important; }`,
     `.${SIZED_CLASS} .${BEST_CLASS} { ${band(HIGHLIGHT.best)} }`,
     `.${SIZED_CLASS} .${NEGATIVE_CLASS} { ${band(HIGHLIGHT.negative)} }`,
     `.${HIDDEN_CLASS} { display: none !important; }`,
     ...celebrationRules(),
     ...portraitGlow('.' + AT_WAR_CLASS, HIGHLIGHT.atWar),
-    ...HIGHLIGHT.alliances.flatMap((color, i) => allianceBorder('.' + ALLY_CLASS_PREFIX + i, color))
+    ...HIGHLIGHT.alliances.map((color, i) => hexBorder('.' + ALLY_CLASS_PREFIX + i, color))
   ].join('\n'));
 }
 
