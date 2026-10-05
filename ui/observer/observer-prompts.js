@@ -21,21 +21,10 @@
 /**
  * Zatygold's Spectator - Observer prompts (in-game scope).
  *
- * The Observer is a real player, so the game also sends it the prompts meant
- * for an empire. For the Observer seat:
- *   - narrative events (crises included) never open; each pending story is
- *     answered with its first available choice, so nothing waits on it;
- *   - first meetings are answered with the neutral greeting (the turn cannot
- *     end until they are);
- *   - diplomacy dialogs addressed to the Observer never open; their session
- *     is closed, as the dialog's own buttons do;
- *   - the end-of-age countdown popup and the end-of-Age screens never open
- *     (the Observer always continues, see observer-turn.js); the Age
- *     transition choice never opens either - the next Age's Observer
- *     civilization is chosen and the choice confirmed; each Age's start step
- *     (dedications, capital) is completed with nothing chosen - the Observer
- *     has no settlement and no legacies;
- *   - crisis, age-progress, "player met" and agenda notifications are dismissed.
+ * Answers or skips what the game sends an empire, for the Observer seat:
+ * narrative stories (first available choice), first meetings, diplomacy
+ * dialogs, end-of-Age popups and screens, the Age transition choice and the
+ * Age-start step, and empire notifications.
  */
 import { DisplayQueueManager } from 'fs://game/core/ui/context-manager/display-queue-manager.js';
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
@@ -45,7 +34,7 @@ import { DiplomacyDialogManagerImpl } from 'fs://game/base-standard/ui/diplomacy
 import EndGameScreenManager from 'fs://game/base-standard/ui/endgame/screen-endgame.js';
 import { createLogger, deferOnce, observerCivForAge, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, onObserverReady } from './observer-core.js';
 
 const log = createLogger('observer-prompts', CONFIG.debug);
 const SILENCED_NOTIFICATIONS = /^NOTIFICATION_(CRISIS|AGE_(EARLY|LATE|VERY_LATE)_PROGRESS|AGE_PROGRESSION_|AGE_EXTENDED|PLAYER_MET|DIPLOMATIC_ACTION_AGENDA)/;
@@ -68,7 +57,10 @@ const skipDisplay = (request) => setTimeout(() => DisplayQueueManager.close(requ
 
 // ============================ Narrative stories ============================
 
-let lastAnsweredStory = null;
+let lastAnsweredStory = null;   // key of the story last answered
+
+/** A story id's value key (the engine hands out a new id object per call). */
+const storyKey = (id) => `${id.owner}/${id.id}/${id.type}`;
 
 /** Choice keys for a pending story, in the order the narrative screen lists them. */
 function storyChoices(stories, storyId) {
@@ -86,11 +78,11 @@ function answerPendingStory() {
   try {
     const stories = Players.get(GameContext.localPlayerID)?.Stories;
     const storyId = stories?.getFirstPendingMetId?.() || stories?.getFirstPendingDiscoveryLastMetID?.();
-    if (!storyId || storyId === lastAnsweredStory) return;
+    if (!storyId || storyKey(storyId) === lastAnsweredStory) return;
     const answered = storyChoices(stories, storyId).find((key) =>
       tryOperation(PlayerOperationTypes.CHOOSE_NARRATIVE_STORY_DIRECTION, { TargetType: key, Target: storyId, Action: PlayerOperationParameters.Activate }));
     if (!answered) { log(`story ${JSON.stringify(storyId)}: no available choice`); return; }
-    lastAnsweredStory = storyId;
+    lastAnsweredStory = storyKey(storyId);
     log.debug(`story ${JSON.stringify(storyId)} answered with ${answered}`);
     setTimeout(answerPendingStory, STORY_RETRY_MS);   // the next pending story, if any
   } catch (e) { log(`story answer failed: ${e}`); }
@@ -202,6 +194,9 @@ function patchPopups() {
 }
 
 patchPopups();
-engine.on('NotificationAdded', (data) => { if (data?.id?.owner == GameContext.localPlayerID && isObserverSeat()) queueSweep(); });
-engine.on('LocalPlayerTurnBegin', () => { answerPendingStory(); queueSweep(); });
-engine.whenReady.then(() => { answerPendingStory(); queueSweep(); });
+onObserverReady(() => {
+  engine.on('NotificationAdded', (data) => { if (data?.id?.owner == GameContext.localPlayerID) queueSweep(); });
+  engine.on('LocalPlayerTurnBegin', () => { answerPendingStory(); queueSweep(); });
+  answerPendingStory();
+  queueSweep();
+});

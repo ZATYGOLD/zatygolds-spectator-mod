@@ -21,18 +21,23 @@
 /**
  * Zatygold's Spectator - leaders' faith (in-game scope).
  *
- * What each leader holds - pantheon, religion, ideology - in every Age, for
- * the ribbon cards (observer-ribbon-style.js), the pantheon overview
- * (observer-overview.js) and the Religion screen (observer-leader-screens.js).
- *
- * Pantheons: the game keeps them in Antiquity only. The Multiplayer Balance
- * Mod keeps them for the whole game: founding PANTHEON_BONUS_<n> grants the
- * narrative tag MBM_NARRATIVE_TAG_PANTHEON_<n>, whose effects it re-attaches
- * in every later Age. Pantheon beliefs exist in Antiquity's data only; their
- * names, descriptions and icons load in every Age.
+ * Each leader's pantheon, religion and ideology in every Age, for the ribbon,
+ * the pantheon overview and the Religion screen. After Antiquity pantheons are
+ * read from the Multiplayer Balance Mod's carried narrative tags, when present.
  */
 const CARRIED_PANTHEON_TAG = /^MBM_NARRATIVE_TAG_PANTHEON_(\d+)$/;
-const carriedPantheonBelief = (n) => `PANTHEON_BONUS_${n}`;
+let carriedTags = null;   // [{ tag, belief }] for every carried-pantheon narrative tag (read once)
+
+function carriedPantheonTags() {
+  if (!carriedTags) {
+    carriedTags = [];
+    for (const row of GameInfo.NarrativeTags ?? []) {
+      const n = CARRIED_PANTHEON_TAG.exec(row.NarrativeTagType ?? '')?.[1];
+      if (n) carriedTags.push({ tag: row.NarrativeTagType, belief: `PANTHEON_BONUS_${n}` });
+    }
+  }
+  return carriedTags;
+}
 
 /** A player's points in a narrative tag (Identity takes the type name, as for attribute points). */
 function narrativeTagPoints(player, tag) {
@@ -51,12 +56,7 @@ function narrativeTagPoints(player, tag) {
 function pantheonTypes(player) {
   const live = (player.Religion?.getPantheons?.() ?? []).map((type) => GameInfo.Beliefs.lookup(type)?.BeliefType).filter(Boolean);
   if (live.length) return live;
-  const carried = [];
-  for (const row of GameInfo.NarrativeTags ?? []) {
-    const n = CARRIED_PANTHEON_TAG.exec(row.NarrativeTagType ?? '')?.[1];
-    if (n && narrativeTagPoints(player, row.NarrativeTagType) > 0) carried.push(carriedPantheonBelief(n));
-  }
-  return carried;
+  return carriedPantheonTags().filter(({ tag }) => narrativeTagPoints(player, tag) > 0).map(({ belief }) => belief);
 }
 
 /** The player's pantheons in any Age: { type, name, description } (text keys). */

@@ -21,44 +21,12 @@
 /**
  * Zatygold's Spectator - Observer perspective (in-game scope).
  *
- * The Observer's Eye sees the whole map. Left-clicking a leader's ribbon
- * portrait (observer-navigation.js) shows the map as that leader sees it
- * instead; clicking the same portrait again, or the Observer's own, ends it.
- *   - Fog: tiles the leader never explored are blacked out by a region colour
- *     filter (as the game's tile purchase uses), which also blacks out
- *     mountains, vegetation and units there, plus an opaque black plot
- *     overlay. Tiles they saw before but do not see now get a dark grey plot
- *     overlay on the ground; 3D models there (units too) stay drawn, since
- *     only one colour filter applies at a time (tested in-game) and no
- *     per-unit model API exists.
- *   - Minimap: the engine draws it for the Observer, so a canvas over it
- *     blacks out the tiles the leader never explored and greys the ones they
- *     saw before, placed by the minimap's own projection (minimapToWorld
- *     against the plots' world positions).
- *   - Resource icons: suppressed on unexplored tiles (the resource layer's own
- *     suppressPlots); on tiles seen before they are redrawn with the game's
- *     greyed fog-of-war icons (the layer's FOW variants), as the game does.
- *   - The camera keeps the game's own zoom range (observer-hud.js).
- *   - While active, the UI's visibility lookups for the local player
- *     (GameplayMap.getRevealedState / getRevealedStates) answer for the viewed
- *     leader, so the game's own checks follow them: plot tooltips, district
- *     health bars, floating world texts ("+1 Food") and the like.
- *   - Unit flags and district health bars are re-applied on every change
- *     (their setVisibility calls), and floating world texts on tiles the
- *     leader does not see are dropped.
- *   - Settlement banners (ui-next) on tiles the leader never explored are
- *     hidden with our own class, and the banner manager is asked to
- *     recompute its visible flags on every toggle, so none go stale once
- *     the Perspective ends (refreshBanners, recomputeBannerFlags).
- *   - The picked leader's ribbon card carries the eye, centred between the
- *     portrait and the civ symbol; the ribbon lists only the leaders they
- *     have met (observer-ribbon.js).
- *   - The top yield bar, the empire screens and the tech / civic trees show
- *     the picked leader (observer-yields.js, observer-leader-view.js).
- * The game's real fog of war is drawn by the engine for the local observer
- * only, with no per-tile API, so it cannot be moved to another leader.
- * Only drawing changes, never game state. Redrawn (debounced) when units move,
- * appear or leave, and at every turn.
+ * Shows the map as one leader sees it (toggled from the ribbon portraits):
+ * unexplored tiles blacked out (colour filter + overlay), seen tiles greyed,
+ * the minimap masked, resources shown as the game shows fog-of-war resources,
+ * and flags, district bars, banners and world texts hidden where the leader
+ * cannot see. The UI's revealed-state lookups for the local seat answer for
+ * the viewed leader while active. Drawing only; never game state.
  */
 import LensManager from 'fs://game/core/ui/lenses/lens-manager.js';
 import { ResourceLensLayer } from 'fs://game/base-standard/ui/lenses/layer/resource-layer.js';
@@ -69,13 +37,13 @@ import { UnitFlagManager } from 'fs://game/base-standard/ui/unit-flags/unit-flag
 import { GenericUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags.js';
 import { IndependentPowersUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags-independent-powers.js';
 import { OVERLAY_PRIORITY } from 'fs://game/base-standard/ui/utilities/utilities-overlay.js';
-import { createLogger, deferOnce, findAncestor, wrapMethod } from '../shared/zom-util.js';
+import { ancestorWithClass, createLogger, deferOnce, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, ICONS } from './observer-config.js';
-import { isObserverSeat } from './observer-core.js';
+import { inDiplomacyMode, isObserverSeat } from './observer-core.js';
 import { forEachBanner } from './observer-settlement-info.js';
 
 const PERSPECTIVE_CHANGED_EVENT = 'zom-perspective-changed';
-const REFRESH_EVENTS = ['UnitMoveComplete', 'UnitAddedToMap', 'UnitRemovedFromMap', 'PlayerTurnActivated'];
+const REFRESH_EVENTS = ['UnitMoveComplete', 'UnitAddedToMap', 'UnitRemovedFromMap', 'PlayerTurnActivated', 'DistrictAddedToMap', 'DistrictDamageChanged', 'DistrictControlChanged', 'CityTransfered'];
 const BADGE_CLASS = 'zom-perspective-badge';
 const BADGE_SIZE_REM = 1.4;
 // The card banner's gap: the portrait hex ends about 2.8rem down, the civ symbol starts at 5rem (mt-20).
@@ -85,6 +53,9 @@ const BADGE_STYLE = `position: absolute; top: ${BADGE_TOP_REM}rem; left: 50%; ma
   background-image: url("${ICONS.perspective}"); background-size: contain; background-repeat: no-repeat; background-position: center;`;
 const MINIMAP_CLASS = 'zom-perspective-minimap';
 const FOG_CLASS = 'zom-perspective-fog-hidden';
+const FOG_STYLE_ID = 'zom-perspective-fog-style';
+const SCREEN_MARGIN = 0.1;      // fraction of the screen kept filtered beyond its edges
+const SCENE_SETTLE_MS = 1000;
 const MINIMAP_CANVAS_PX = { width: 480, height: 300 };
 const MINIMAP_TILE_OVERLAP = 1.1;   // opaque hexes drawn as slightly larger rectangles leave no gaps (translucent ones would darken where they overlap)
 const MINIMAP_BORDER_ROWS = 2;      // fallback projection: sea rows above and below the map (panel-mini-map.js)
@@ -99,8 +70,10 @@ const RESOURCE_TYPE_OFFSET = { x: 0, y: -16 };
 const log = createLogger('observer-perspective', CONFIG.debug);
 
 let viewed = null;         // the player whose view is shown
-let bannersInFog = 0;      // banners hidden by the last pass (breadcrumb)
 let filterPushed = false;
+let filterPlots = null;     // explored plots kept clear of the unexplored filter (null: none drawn)
+let unexploredPlots = [];
+let filterRegion = null;    // the region currently pushed
 let suppressedResources = false;
 let shownKey = '';         // the revealed states currently drawn
 let overlayGroup = null;
@@ -149,11 +122,42 @@ function unitState(unitId) {
 
 // ============================ Map ============================
 
-function clearMap() {
-  if (filterPushed) {
-    try { WorldUI.popFilter(); } catch (e) { log(`filter pop failed: ${e}`); }
-    filterPushed = false;
+/** Unexplored plots outside the screen (with a margin), from their projected screen position. */
+function offscreenUnexplored() {
+  return unexploredPlots.filter((plot) => {
+    const uv = WorldUI.getScreenPlotPos(GameplayMap.getLocationFromIndex(plot));
+    return !uv || uv.x < -SCREEN_MARGIN || uv.x > 1 + SCREEN_MARGIN || uv.y < -SCREEN_MARGIN || uv.y > 1 + SCREEN_MARGIN;
+  });
+}
+
+/**
+ * The unexplored filter is a final pass that also tests a diplomacy scene's pixels against the
+ * plots behind them in world space, which lie off screen: during a scene those plots join the
+ * explored region, so every tile on screen stays filtered and the scene stays whole.
+ */
+function syncFilter() {
+  let region = filterPlots;
+  if (region && inDiplomacyMode()) {
+    try { region = region.concat(offscreenUnexplored()); } catch (e) { log(`scene region failed: ${e}`); }
   }
+  if (region === filterRegion) return;
+  try {
+    if (filterPushed) { WorldUI.popFilter(); filterPushed = false; }
+    if (region) { WorldUI.pushRegionColorFilter(region, {}, CONFIG.perspectiveUnexplored); filterPushed = true; }
+    filterRegion = region;
+  } catch (e) { log(`filter update failed: ${e}`); }
+}
+
+/** Re-fit the region on a mode change, and again once the camera has settled. */
+function onInterfaceMode() {
+  syncFilter();
+  setTimeout(syncFilter, SCENE_SETTLE_MS);
+}
+
+function clearMap() {
+  filterPlots = null;
+  unexploredPlots = [];
+  syncFilter();
   overlayGroup?.clearAll();
   seenResources?.clear();
   seenResourceTypes?.clear();
@@ -174,8 +178,9 @@ function drawMap() {
   clearMap();
   const unexplored = plotsWhere(states, (s) => s === RevealedStates.HIDDEN);
   const seen = plotsWhere(states, (s) => s === RevealedStates.REVEALED);
-  WorldUI.pushRegionColorFilter(plotsWhere(states, (s) => s !== RevealedStates.HIDDEN), {}, CONFIG.perspectiveUnexplored);
-  filterPushed = true;
+  unexploredPlots = unexplored;
+  filterPlots = plotsWhere(states, (s) => s !== RevealedStates.HIDDEN);
+  syncFilter();
   overlayGroup ??= WorldUI.createOverlayGroup('ZOMPerspectiveOverlayGroup', OVERLAY_PRIORITY.HEX_GRID);
   unexploredOverlay ??= overlayGroup.addPlotOverlay();
   unexploredOverlay.addPlots(unexplored, { fillColor: CONFIG.perspectiveUnexploredFill });
@@ -292,7 +297,7 @@ function barLocation(bar) {
   return Number.isInteger(x) && Number.isInteger(y) ? { x, y } : null;
 }
 
-/** Re-apply every unit flag's, district health bar's and settlement banner's visibility. */
+/** Re-apply every unit flag's, district health bar's and settlement banner's visibility; returns how many bars and banners are in fog. */
 function refreshFlagsAndBanners() {
   UnitFlagManager.instance?.flags?.forEach((flag) => {
     try {
@@ -300,37 +305,40 @@ function refreshFlagsAndBanners() {
       if (loc) flag.setVisibility(GameplayMap.getRevealedState(GameContext.localObserverID, loc.x, loc.y));
     } catch (e) { /* flag gone */ }
   });
+  let bars = 0;
   DistrictHealthManager.instance?.children?.forEach((bar) => {
     try {
       const loc = barLocation(bar);
       if (loc) bar.setVisibility(GameplayMap.getRevealedState(GameContext.localObserverID, loc.x, loc.y) !== RevealedStates.REVEALED);
+      if (applyBarFog(bar)) bars++;
     } catch (e) { /* bar gone */ }
   });
-  refreshBanners();
+  return { bars, banners: refreshBanners() };
 }
 
-/**
- * Settlement banners (the ui-next ones) on tiles the viewed leader never
- * explored are hidden with our own class (display:none !important), which
- * only exists while a Perspective is shown.
- */
+/** Hide a district health bar on tiles the viewed leader does not see (the base only dims it); returns whether hidden. */
+function applyBarFog(bar) {
+  const loc = barLocation(bar);
+  const hidden = isActive() && !!loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) !== RevealedStates.VISIBLE;
+  bar.Root?.classList.toggle(FOG_CLASS, hidden);
+  return hidden;
+}
+
+/** Hide banners on tiles the viewed leader never explored; returns how many. */
 function refreshBanners() {
-  bannersInFog = 0;
+  let hiddenCount = 0;
   forEachBanner((banner, subject) => {
     const hidden = isActive() && !!subject
       && subject.locations.every((loc) => GameplayMap.getRevealedState(viewed, loc.x, loc.y) === RevealedStates.HIDDEN);
     banner.classList.toggle(FOG_CLASS, hidden);
-    if (hidden) bannersInFog++;
+    if (hidden) hiddenCount++;
   });
+  return hiddenCount;
 }
 
 /**
- * The banner manager stores a visible flag per banner, computed from the
- * local seat's revealed state - which our lookup wrap answers for the viewed
- * leader - but only when a banner's status refreshes (yields, growth, turn),
- * so a Perspective leaves stale flags behind. Asking the manager to re-show
- * its banners recomputes them for the current view (on toggles only: each
- * banner blinks for a frame).
+ * The banner manager's per-banner visible flags follow our seat redirect only when a banner's
+ * status refreshes, so they go stale across toggles; re-showing recomputes them (each blinks once).
  */
 function recomputeBannerFlags() {
   if (document.getElementById('city-banner-container')?.classList.contains('hidden')) return;
@@ -351,15 +359,9 @@ function patchFlagsAndBanners() {
       return base(isActive() ? unitState(this.componentID) : state, ...rest);
     });
   }
-  // The bar's own setVisibility(false) only dims it (its fog style); on tiles
-  // the viewed leader never explored it must disappear entirely, since the
-  // base game never creates bars there but the Observer's full vision does.
   wrapMethod(DistrictHealthBar.prototype, 'setVisibility', function (base, isVisible, ...rest) {
-    if (!isActive()) { this.Root?.classList.remove('hidden'); return base(isVisible, ...rest); }
-    const loc = barLocation(this);
-    const state = loc ? GameplayMap.getRevealedState(viewed, loc.x, loc.y) : RevealedStates.VISIBLE;
-    this.Root?.classList.toggle('hidden', state !== RevealedStates.VISIBLE);
-    return base(state === RevealedStates.VISIBLE, ...rest);
+    const hidden = applyBarFog(this);
+    return base(isActive() ? !hidden : isVisible, ...rest);
   });
   wrapMethod(WorldAnchorTextManager.prototype, 'onWorldTextMessage', function (base, data, ...rest) {
     const loc = data?.location;
@@ -376,7 +378,7 @@ function markPerspectiveCard(panel = document.querySelector('panel-diplo-ribbon'
   Array.prototype.forEach.call(panel.querySelectorAll('.' + BADGE_CLASS), (badge) => badge.remove());
   if (!isActive()) return;
   const portrait = panel.querySelector(`.diplo-ribbon__portrait[data-player-id="${viewed}"]`);
-  const banner = findAncestor(portrait, (el) => el.classList?.contains('diplo-ribbon-outer'))?.querySelector('.diplo-ribbon__upper-bg');
+  const banner = ancestorWithClass(portrait, 'diplo-ribbon-outer')?.querySelector('.diplo-ribbon__upper-bg');
   if (!banner) return;
   const badge = document.createElement('div');
   badge.classList.add(BADGE_CLASS);
@@ -386,22 +388,24 @@ function markPerspectiveCard(panel = document.querySelector('panel-diplo-ribbon'
 
 // ============================ State ============================
 
+/** Show the current view; returns how many bars and banners are in fog. Each step on its own, so one failure never skips the rest. */
 function apply() {
-  // Each step on its own: a map failure must never leave banners unrefreshed.
+  let fog = { bars: 0, banners: 0 };
   try {
     if (isActive()) drawMap();
     else { clearMap(); clearMinimap(); }
   } catch (e) { log(`perspective map failed: ${e}`); }
-  try { refreshFlagsAndBanners(); recomputeBannerFlags(); } catch (e) { log(`perspective banners failed: ${e}`); }
+  try { fog = refreshFlagsAndBanners(); recomputeBannerFlags(); } catch (e) { log(`perspective banners failed: ${e}`); }
   try { markPerspectiveCard(); } catch (e) { log(`perspective ribbon failed: ${e}`); }
   window.dispatchEvent(new CustomEvent(PERSPECTIVE_CHANGED_EVENT));
+  return fog;
 }
 
 /** Show the player's view, or return to the Observer's own when it is already shown. Returns whether it is now shown. */
 function togglePerspective(playerId) {
   viewed = viewed === playerId ? null : playerId;
-  apply();
-  log(viewed != null ? `perspective on: player ${viewed} (${bannersInFog} banners in fog)` : 'perspective off');
+  const fog = apply();
+  log(viewed != null ? `perspective on: player ${viewed} (in fog: ${fog.banners} banners, ${fog.bars} district bars)` : 'perspective off');
   return viewed != null;
 }
 
@@ -420,14 +424,12 @@ const queueRedraw = deferOnce(() => {
 }, CONFIG.perspectiveRefreshMs);
 
 function install() {
-  const style = document.createElement('style');
-  style.textContent = `.${FOG_CLASS} { display: none !important; }`;
-  document.head.appendChild(style);
+  setStyle(FOG_STYLE_ID, `.${FOG_CLASS} { display: none !important; }`);
   patchVisibilityLookups();
   patchFlagsAndBanners();
   for (const event of REFRESH_EVENTS) engine.on(event, () => { if (isActive()) queueRedraw(); });
-  // The fog-of-war resource icons follow the game's own resource layer live
-  // (the diplomacy scenes switch to a lens without it, for one).
+  window.addEventListener('interface-mode-changed', onInterfaceMode);
+  // Fog-of-war resource icons follow the game's resource layer (diplomacy scenes turn it off).
   for (const event of ['lens-event-layer-enabled', 'lens-event-layer-disabled']) {
     window.addEventListener(event, (ev) => {
       if (ev.detail?.layer !== RESOURCE_LAYER || !isActive()) return;

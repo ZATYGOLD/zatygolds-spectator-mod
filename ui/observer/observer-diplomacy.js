@@ -21,20 +21,9 @@
 /**
  * Zatygold's Spectator - Observer diplomacy (in-game scope).
  *
- * For every player: the diplomacy 3D scenes show the game's stand-in leader and
- * banner for the Observer, who has neither (zom-assets.js).
- *
- * For the Observer seat:
- *   - met everyone: the Observer's own hasMet answers true, so every screen
- *     shows real leader names and portraits instead of "unmet";
- *   - leader panel: the actions tab lists every war the selected leader is in
- *     (the base panel lists only wars involving the local player) and offers
- *     no diplomatic actions; the relationships tab leaves the Observer out;
- *   - independent and city-state panel: what it is (type, independent or
- *     city-state), a city-state's suzerain and their chosen bonus, then every
- *     leader's standing with it - friendly / neutral / hostile, at war, and
- *     befriending progress; the base befriending box, built around the local
- *     player, is left out.
+ * The Observer has met everyone; the leader panel lists all of a leader's wars
+ * and offers no actions; the independent / city-state panel shows its type,
+ * suzerain and bonus, then every leader's standing and befriending progress.
  */
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import LeaderModelManager from 'fs://game/base-standard/ui/diplomacy/leader-model-manager.js';
@@ -55,7 +44,7 @@ const RELATIONSHIP_TEXT = {
   NEUTRAL: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_NEUTRAL', color: '#e5d2ac' },
   HOSTILE: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_HOSTILE', color: '#e0604e' }
 };
-const AT_WAR_COLOR = '#e0604e';
+const AT_WAR_COLOR = RELATIONSHIP_TEXT.HOSTILE.color;
 
 let metInstalled = false;
 
@@ -99,14 +88,18 @@ function note(loc) {
 
 // ============================ Independents and city-states ============================
 
-/** A leader's befriending project with the independent: { progress, total, perTurn }, else null. */
-function befriending(powerId, leaderId) {
+/** Each leader's befriending project with an independent: leader id -> { progress, total, perTurn }. */
+function befriendingProjects(power) {
+  const projects = new Map();
+  if (!power.isIndependent) return projects;
   try {
-    const action = Game.Diplomacy.getPlayerEvents(powerId).find((a) =>
-      a.actionType == DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN && a.initialPlayer === leaderId);
-    const data = action ? Game.Diplomacy.getDiplomaticEventData(action.uniqueID) : null;
-    return data?.completionScore > 0 ? { progress: data.progressScore, total: data.completionScore, perTurn: data.support } : null;
-  } catch (e) { return null; }
+    for (const action of Game.Diplomacy.getPlayerEvents(power.id)) {
+      if (action.actionType != DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN || projects.has(action.initialPlayer)) continue;
+      const data = Game.Diplomacy.getDiplomaticEventData(action.uniqueID);
+      if (data?.completionScore > 0) projects.set(action.initialPlayer, { progress: data.progressScore, total: data.completionScore, perTurn: data.support });
+    }
+  } catch (e) { /* no events */ }
+  return projects;
 }
 
 /** The leader's standing (a RELATIONSHIP_TEXT key), as the map banner reads it: through the suzerain for a city-state. */
@@ -186,7 +179,7 @@ function identitySection(power) {
 }
 
 /** One leader's row: portrait and name, standing on the right, befriending progress under them. */
-function relationshipRow(power, leader, isSuzerain) {
+function relationshipRow(power, leader, isSuzerain, project) {
   const row = document.createElement('div');
   row.classList.value = 'flex flex-row items-center self-stretch mt-3 px-3';
   row.appendChild(leaderPortrait(leader, 'size-10 mr-2'));
@@ -206,7 +199,6 @@ function relationshipRow(power, leader, isSuzerain) {
   if (power.isMinor && isAtWar(leader, power.id)) statuses.appendChild(textLine('LOC_PLAYER_RELATIONSHIP_AT_WAR', 'font-body-sm ml-2', AT_WAR_COLOR));
   line.appendChild(statuses);
   body.appendChild(line);
-  const project = power.isIndependent ? befriending(power.id, leader.id) : null;
   if (project) {
     const progress = document.createElement('div');
     progress.classList.value = 'font-body-xs text-accent-3';
@@ -218,10 +210,9 @@ function relationshipRow(power, leader, isSuzerain) {
 }
 
 /** Suzerain first, then the furthest along in befriending, then the rest. */
-function rowOrder(power) {
-  const suzerain = suzerainOf(power);
+function rowOrder(suzerain, projects) {
   const progress = (leader) => {
-    const project = power.isIndependent ? befriending(power.id, leader.id) : null;
+    const project = projects.get(leader.id);
     return project ? project.progress / project.total : -1;
   };
   return (a, b) => (b.id === suzerain) - (a.id === suzerain) || progress(b) - progress(a);
@@ -233,7 +224,10 @@ function relationshipSection(power) {
   section.classList.value = 'flex flex-col items-center self-stretch mb-4';
   section.appendChild(header('LOC_DIPLOMACY_ACTIONS_RELATIONSHIPS_HEADER'));
   const suzerain = suzerainOf(power);
-  for (const leader of watchedPlayers().sort(rowOrder(power))) section.appendChild(relationshipRow(power, leader, leader.id === suzerain));
+  const projects = befriendingProjects(power);
+  for (const leader of watchedPlayers().sort(rowOrder(suzerain, projects))) {
+    section.appendChild(relationshipRow(power, leader, leader.id === suzerain, projects.get(leader.id)));
+  }
   return section;
 }
 

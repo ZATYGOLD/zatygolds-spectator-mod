@@ -37,7 +37,7 @@ const CreateDedicationsModel = () => {
     const layoutModel = LayoutModel.get();
     return isMobileViewExperience || layoutModel.screenHeight() <= Layout.pixelsToScreenPixels(SMALL_SCREEN_MODE_MAX_HEIGHT) || layoutModel.screenWidth() <= Layout.pixelsToScreenPixels(SMALL_SCREEN_MODE_MAX_WIDTH);
   });
-  const realLocalPlayerID = useLocalPlayerId();
+  const realLocalPlayerID = useLocalPlayerId();   // ZOM: renamed
   const localPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? realLocalPlayerID();   // ZOM: the viewed leader
   const playerLegacyCompleted = createEngineEvent("PlayerLegacyCompleted");
   const [selectedDedicationFilter, setSelectedDedicationFilter] = createSignal(
@@ -407,14 +407,14 @@ const CreateDedicationsModel = () => {
         for (let i = 0; i < effect.amount; i++) {
           const args = { ID: effect.id };
           const result = Game.PlayerOperations.canStart(
-            realLocalPlayerID() /* ZOM: real local player */,
+            realLocalPlayerID(),   // ZOM: real local player
             PlayerOperationTypes.ADVANCED_START_USE_EFFECT,
             args,
             false
           );
           if (result.Success) {
             Game.PlayerOperations.sendRequest(
-              realLocalPlayerID() /* ZOM: real local player */,
+              realLocalPlayerID(),   // ZOM: real local player
               PlayerOperationTypes.ADVANCED_START_USE_EFFECT,
               args
             );

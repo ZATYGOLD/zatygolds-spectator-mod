@@ -21,30 +21,15 @@
 /**
  * Zatygold's Spectator - Observer turn ending (in-game scope).
  *
- * Auto End Turn (off by default, toggled from the Observer's ribbon card):
- * the Observer's turn ends as soon as nothing blocks it, never while the game
- * is paused, and never again in a turn the Observer un-readied itself (as the
- * game's own Auto End Turn option). Switching it off un-readies an ended turn
- * while the game still allows it.
- *
- * Age end: when an Age is complete, Auto End Turn switches off so the HUD's
- * Age transition action shows on the last turn and the Observer starts the
- * transition. Once the Age has ended the Observer always continues: those
- * turns end automatically (observer-prompts.js skips the end-of-Age
- * screens).
- *
- * While the turn is ended for the Observer and the game is not paused, the
- * HUD's End Turn button (panel-action) slides down out of sight (and back up
- * when shown) by a stylesheet rule, which also covers a rebuilt button.
- *
- * Pause recovery (always on): the engine ignores a turn completion sent while
- * the game is paused, yet the client still counts the turn as ended, so the
- * game would wait on the Observer forever. After every unpause the Observer's
- * still-active, "ended" turn is sent again.
+ * Auto End Turn (off by default, toggled from the ribbon): ends the Observer's
+ * turn once nothing blocks it, never while paused or after the Observer
+ * un-readied. Switches off when an Age completes so the transition action shows,
+ * and hides the End Turn button while the turn is ended. After every unpause
+ * an ended turn is sent again (the engine drops completions sent while paused).
  */
 import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, onObserverReady } from './observer-core.js';
 
 const log = createLogger('observer-turn');
 const HIDE_CLASS = 'zom-observer-auto-turn';
@@ -132,8 +117,10 @@ function setAutoEndTurn(on) {
   catch (e) { log(`unready failed: ${e}`); }
 }
 
-for (const event of ['LocalPlayerTurnBegin', 'GameAgeEnded']) engine.on(event, later(onTurnState));
-engine.on('GamePauseStateChanged', () => { setTimeout(updateEndTurnButton, 0); later(recoverAfterPause)(); });
-engine.whenReady.then(later(onTurnState));
+onObserverReady(() => {
+  for (const event of ['LocalPlayerTurnBegin', 'GameAgeEnded']) engine.on(event, later(onTurnState));
+  engine.on('GamePauseStateChanged', () => { setTimeout(updateEndTurnButton, 0); later(recoverAfterPause)(); });
+  later(onTurnState)();
+});
 
 export { isAutoEndTurn, setAutoEndTurn };

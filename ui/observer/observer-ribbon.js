@@ -21,24 +21,14 @@
 /**
  * Zatygold's Spectator - Observer diplomacy ribbon (in-game scope).
  *
- * The base ribbon lists only leaders the local player has met, and an empire
- * with no units meets no one. For the Observer seat the ribbon model is
- * rebuilt from every living major (the Observer's own card last, at the right
- * edge), stats follow the game's "Always Show Ribbon Yields" option (toggled
- * by right-clicking the Observer's portrait), and the Observer's card switches what every
- * card shows (see observer-ribbon-toolbar.js). Portraits show each leader's
- * mood (angry at war, else happy while celebrating); look and highlights are
- * in observer-ribbon-style.js, the Perspective eye in observer-perspective.js.
- * While a Perspective is shown, only the leaders the viewed leader has met
- * get a card (the Observer's own always does).
- *
- * The leader panel (and other diplomacy screens) keep the base compact cards
- * and are never rebuilt by this module: there the base panel re-centres on
- * the selected leader on every rebuild, which reads as the ribbon jumping.
+ * Rebuilds the ribbon model from every living major (the Observer's card last;
+ * during a Perspective only the leaders the viewed leader met), with mood
+ * portraits and the Observer's card driving every card's view. Diplomacy screens
+ * keep the base cards.
  */
 import { DiploRibbonData } from 'fs://game/base-standard/ui/diplo-ribbon/model-diplo-ribbon.js';
 import { PanelDiploRibbon } from 'fs://game/base-standard/ui/diplo-ribbon/panel-diplo-ribbon.js';
-import { createLogger, wrapMethod } from '../shared/zom-util.js';
+import { componentOf, createLogger, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
 import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from './observer-core.js';
 import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
@@ -125,7 +115,7 @@ function rebuildRibbon() {
   if (inDiplomacyMode()) return;
   try {
     const panel = hudPanel();
-    const component = panel?.maybeComponent ?? panel?.component;
+    const component = componentOf(panel);
     if (!component) return;
     shownMeters = meterSignature();
     const first = component.firstLeaderIndex;
@@ -190,10 +180,7 @@ function patchModel() {
     }
   });
 
-  // The base turn-end handler captures an index into playerData and writes
-  // through it 250ms later; by then updateAll may have replaced the filtered,
-  // reordered array, so the write lands out of bounds (a logged TypeError
-  // every turn). Re-register it to look the card up by id at write time.
+  // The base turn-end handler writes through an index captured 250ms earlier, which our rebuilt list can invalidate: look the card up by id instead.
   try {
     const proto = Object.getPrototypeOf(DiploRibbonData);
     engine.off('PlayerTurnDeactivated', proto.onPlayerTurnDeactivated, DiploRibbonData);

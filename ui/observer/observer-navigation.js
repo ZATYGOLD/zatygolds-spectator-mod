@@ -21,21 +21,15 @@
 /**
  * Zatygold's Spectator - Observer navigation (in-game scope).
  *
- * For the Observer seat:
- *   - leader portraits on the ribbon: left click shows the map as that leader
- *     sees it and moves the camera to their capital, and a second left click
- *     returns to the whole map (observer-perspective.js); right click moves
- *     the camera and opens their leader panel. On the Observer's own
- *     portrait, left click ends a Perspective, or else moves the camera to
- *     the Observer's Eye, and right click hides or shows every card's details;
- *   - a settlement banner or city-center tile opens the settlement's details
- *     (observer-settlement.js); right-clicking a banner opens its owner's
- *     leader panel (the base game refuses unmet leaders, and the Observer
- *     meets no one).
+ * Ribbon portraits: left click toggles that leader's Perspective and moves the
+ * camera, right click opens their leader panel; on the Observer's own portrait
+ * they end a Perspective / find the Eye and toggle every card's details.
+ * Settlement banners and city centers open the settlement's details; right
+ * click on a banner opens its owner's panel.
  */
 import { RaiseDiplomacyEvent } from 'fs://game/base-standard/ui/diplomacy/diplomacy-events.js';
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
-import { createLogger, findAncestor, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
+import { ancestorWithClass, createLogger, findAncestor, isObserverPlayer, isTag, wrapMethod } from '../shared/zom-util.js';
 import { isObserverSeat } from './observer-core.js';
 import { endPerspective, togglePerspective } from './observer-perspective.js';
 import { isDetailsHidden, setDetailsHidden } from './observer-ribbon-style.js';
@@ -66,8 +60,8 @@ function settlementOfBanner(banner) {
 
 /** The ribbon portrait (and its player id) under an event target, or null. */
 function portraitTarget(target) {
-  const ribbon = findAncestor(target, (el) => String(el.localName).toLowerCase() === 'panel-diplo-ribbon');
-  if (!ribbon || !findAncestor(target, (el) => el.classList?.contains('diplo-ribbon__portrait') || el.classList?.contains('diplo-ribbon__portrait-hitbox'))) return null;
+  const ribbon = findAncestor(target, (el) => isTag(el, 'panel-diplo-ribbon'));
+  if (!ribbon || !(ancestorWithClass(target, 'diplo-ribbon__portrait') || ancestorWithClass(target, 'diplo-ribbon__portrait-hitbox'))) return null;
   const id = parseInt(findAncestor(target, (el) => el.getAttribute('data-player-id') != null)?.getAttribute('data-player-id'), 10);
   return Number.isNaN(id) ? null : id;
 }

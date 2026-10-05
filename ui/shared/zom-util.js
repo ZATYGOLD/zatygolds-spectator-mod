@@ -105,6 +105,29 @@ function findAncestor(el, test) {
   return null;
 }
 
+const DOUBLE_ACTIVATION_MS = 150;
+
+/** Run on activation, once per click: fxs-activatable can fire action-activate and click together. */
+function onActivate(element, run) {
+  let last = 0;
+  const once = (ev) => {
+    const now = Date.now();
+    if (now - last < DOUBLE_ACTIVATION_MS) return;
+    last = now;
+    run(ev);
+  };
+  for (const event of ['action-activate', 'click']) element.addEventListener(event, once);
+}
+
+/** The component instance behind a custom element (null until it is created). */
+const componentOf = (el) => el?.maybeComponent ?? el?.component ?? null;
+
+/** Whether el is a tag (custom element names compare case-insensitively). */
+const isTag = (el, tag) => String(el?.localName).toLowerCase() === tag;
+
+/** The nearest of el and its ancestors carrying className, or null. */
+const ancestorWithClass = (el, className) => findAncestor(el, (node) => node.classList?.contains(className));
+
 function clearChildren(el) {
   while (el?.firstChild) el.removeChild(el.firstChild);
 }
@@ -156,6 +179,11 @@ function configLeader(playerId) {
   try { return Configuration.getPlayer(playerId)?.leaderTypeName ?? ''; } catch (e) { return ''; }
 }
 
+/** A player's configured civilization type name ('' when unset). */
+function configCiv(playerId) {
+  try { return Configuration.getPlayer(playerId)?.civilizationTypeName ?? ''; } catch (e) { return ''; }
+}
+
 const paramValue = (entry) => entry?.value?.toString() ?? '';
 
 /** A setup parameter with only the possible values keep(value) accepts, as a copy (the parameter itself if it has no list). */
@@ -181,7 +209,7 @@ function isObserverPlayer(playerId) {
 }
 
 export {
-  OBSERVER_CIV_PREFIX, OBSERVER_LEADER, clamp, clearChildren, configLeader, createLogger, currentAgeChronology, deferOnce,
-  filterParamValues, findAncestor, isAgeEnding, isAgeTransitionInProgress, isObserverCiv, isObserverPlayer, leaderTypeOf,
-  observerCivForAge, overrideComponent, paramValue, setStyle, whenDefined, wrapMethod
+  OBSERVER_CIV_PREFIX, OBSERVER_LEADER, ancestorWithClass, clamp, clearChildren, componentOf, configCiv, configLeader, createLogger, currentAgeChronology, deferOnce,
+  filterParamValues, findAncestor, isAgeEnding, isAgeTransitionInProgress, isObserverCiv, isObserverPlayer, isTag, leaderTypeOf,
+  observerCivForAge, onActivate, overrideComponent, paramValue, setStyle, whenDefined, wrapMethod
 };

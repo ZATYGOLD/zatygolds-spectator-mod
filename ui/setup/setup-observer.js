@@ -21,29 +21,15 @@
 /**
  * Zatygold's Spectator - Observer setup rules (shell scope).
  *
- * Shared by game setup (single player) and the multiplayer lobby:
- *   - Leader and civilization move together: the Observer leader takes the
- *     Observer civilization of the game's start Age, leaving it resets the
- *     civilization to Random (the lobby calls syncSelection from its dropdowns;
- *     single player syncs every parameter change, and moves the Observer to
- *     the new Age's civilization when the start Age changes).
- *   - Single player lists the Observer civilization only for the Observer
- *     leader, and the Observer leader only for the local player.
- *   - The hidden game option ZOMObserverInGame follows whether any player is
- *     the Observer (the multiplayer host, or the single player); the modinfo
- *     loads the Observer's base-game overrides only in such a game.
- *   - The Observer plays no mementos: becoming it unequips them, and the
- *     memento screens list no slots for it (config/setup-rules.sql turns the
- *     slots off too).
- *   - Computer players never become the Observer: their leader list omits it.
- *     When a single-player game starts, every Random leader is resolved here
- *     to a valid leader nobody else plays, so Random never picks the Observer.
- *   - The leader-select 3D models use the game's stand-ins for the Observer.
- * Wraps GameSetup's parameter lookup / setters and engine.call; no base file edits.
+ * Shared by single-player setup and the lobby: the Observer leader and the
+ * start Age's Observer civilization move together; only the local player may be
+ * the Observer (never a computer, never through Random); the hidden option
+ * ZOMObserverInGame tracks whether anyone observes; the Observer plays no
+ * mementos; leader-select models use the game's stand-ins.
  */
 import LeaderSelectModelManager from 'fs://game/core/ui/shell/leader-select/leader-select-model-manager.js';
 import { installAssetAliases } from '../shared/zom-assets.js';
-import { configLeader, createLogger, deferOnce, filterParamValues, isObserverCiv, OBSERVER_LEADER, observerCivForAge, paramValue, wrapMethod } from '../shared/zom-util.js';
+import { configCiv, configLeader, createLogger, deferOnce, filterParamValues, isObserverCiv, OBSERVER_LEADER, observerCivForAge, paramValue, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
 
 const PARAM_LEADER = 'PlayerLeader';
@@ -85,14 +71,10 @@ function isMultiplayerSetup() {
 
 // ============================ Players ============================
 
-const playerLeader = configLeader;
-
-function playerCiv(playerID) {
-  try { return Configuration.getPlayer(playerID)?.civilizationTypeName ?? ''; } catch (e) { return ''; }
-}
+const isLocalObserver = () => configLeader(GameContext.localPlayerID) === OBSERVER_LEADER;
 
 function isObserverRow(playerID) {
-  return playerLeader(playerID) === OBSERVER_LEADER || isObserverCiv(playerCiv(playerID));
+  return configLeader(playerID) === OBSERVER_LEADER || isObserverCiv(configCiv(playerID));
 }
 
 /** A computer player's slot: never the local player (single-player setup may report its slot as a computer one). */
@@ -127,20 +109,20 @@ function syncSelection(playerID, param, value) {
   if (param === PARAM_LEADER) {
     if (value === OBSERVER_LEADER) {
       clearMementos(playerID);
-      if (playerCiv(playerID) !== civ) setParam(playerID, PARAM_CIV, civ);
+      if (configCiv(playerID) !== civ) setParam(playerID, PARAM_CIV, civ);
       setTeam(playerID, NO_TEAM);
       log.debug(`player ${playerID} -> observer (${civ})`);
-    } else if (isObserverCiv(playerCiv(playerID))) {
+    } else if (isObserverCiv(configCiv(playerID))) {
       setParam(playerID, PARAM_CIV, RANDOM);
       log.debug(`player ${playerID} left observer; civ reset`);
     }
   } else if (param === PARAM_CIV) {
     if (isObserverCiv(value)) {
       if (value !== civ) setParam(playerID, PARAM_CIV, civ);
-      if (playerLeader(playerID) !== OBSERVER_LEADER) { clearMementos(playerID); setParam(playerID, PARAM_LEADER, OBSERVER_LEADER); }
+      if (configLeader(playerID) !== OBSERVER_LEADER) { clearMementos(playerID); setParam(playerID, PARAM_LEADER, OBSERVER_LEADER); }
       setTeam(playerID, NO_TEAM);
       log.debug(`player ${playerID} -> observer via civ`);
-    } else if (playerLeader(playerID) === OBSERVER_LEADER) {
+    } else if (configLeader(playerID) === OBSERVER_LEADER) {
       setParam(playerID, PARAM_LEADER, RANDOM);
       log.debug(`player ${playerID} left observer via civ; leader reset`);
     }
@@ -151,7 +133,7 @@ function syncSelection(playerID, param, value) {
 function syncObserverCivsToAge() {
   const civ = observerCivForStartAge();
   for (const id of Configuration.getGame().participatingPlayerIDs ?? []) {
-    if (playerLeader(id) === OBSERVER_LEADER && playerCiv(id) !== civ && setParam(id, PARAM_CIV, civ)) log.debug(`player ${id} -> ${civ} (start Age)`);
+    if (configLeader(id) === OBSERVER_LEADER && configCiv(id) !== civ && setParam(id, PARAM_CIV, civ)) log.debug(`player ${id} -> ${civ} (start Age)`);
   }
 }
 
@@ -169,7 +151,7 @@ function syncObserverFlag() {
   try {
     const slots = Configuration.getMap().maxMajorPlayers ?? 0;
     let anyObserver = false;
-    for (let id = 0; id < slots && !anyObserver; id++) anyObserver = playerLeader(id) === OBSERVER_LEADER;
+    for (let id = 0; id < slots && !anyObserver; id++) anyObserver = configLeader(id) === OBSERVER_LEADER;
     const current = !!GameSetup.findGameParameter(PARAM_OBSERVER_IN_GAME)?.value?.value;
     if (current !== anyObserver) {
       GameSetup.setGameParameterValue(PARAM_OBSERVER_IN_GAME, anyObserver);
@@ -192,7 +174,7 @@ function shapeParameter(playerID, paramName, param) {
     debugOnce('leader-local', entry ? `Spectator offered to the local player (invalidReason ${entry.invalidReason})` : 'Spectator missing from the local leader list');
   }
   if (paramName !== PARAM_CIV || isMultiplayerSetup()) return param;
-  if (playerLeader(playerID) === OBSERVER_LEADER) {
+  if (configLeader(playerID) === OBSERVER_LEADER) {
     const civ = observerCivForStartAge();
     const shaped = filterParamValues(param, (v) => v === civ);
     return shaped?.domain?.possibleValues?.length ? shaped : filterParamValues(param, isObserverCiv);   // unknown Age: any Observer civ
@@ -205,9 +187,9 @@ function shapeParameter(playerID, paramName, param) {
 /** Single player, at game start: every player on Random (computer or not) gets a concrete leader, never the Observer. */
 function resolveRandomLeaders() {
   const ids = [...(Configuration.getGame().participatingPlayerIDs ?? [])];
-  const taken = new Set(ids.map(playerLeader).filter((leader) => leader && leader !== RANDOM));
+  const taken = new Set(ids.map(configLeader).filter((leader) => leader && leader !== RANDOM));
   for (const id of ids) {
-    if (playerLeader(id) !== RANDOM) continue;
+    if (configLeader(id) !== RANDOM) continue;
     const pool = (GameSetup.findPlayerParameter(id, PARAM_LEADER)?.domain?.possibleValues ?? [])
       .filter((v) => v.invalidReason === GameSetupDomainValueInvalidReason.Valid)
       .map(paramValue)
@@ -231,7 +213,7 @@ function install() {
 
   // Memento screens (single player, multiplayer editor) list no slots for the Observer.
   wrapMethod(GameSetup, 'getMementoFilteredPlayerParameters', (base, playerID, ...rest) =>
-    (playerLeader(playerID) === OBSERVER_LEADER ? [] : base(playerID, ...rest)));
+    (configLeader(playerID) === OBSERVER_LEADER ? [] : base(playerID, ...rest)));
 
   let syncing = false;
   wrapMethod(GameSetup, 'setPlayerParameterValue', (base, playerID, paramName, value, ...rest) => {
@@ -270,4 +252,4 @@ if (CONFIG.observerRole !== false) {
   try { install(); } catch (e) { log(`install failed: ${e}`); }
 }
 
-export { isComputerSlot, isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection };
+export { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, setParam, setTeam, syncSelection };

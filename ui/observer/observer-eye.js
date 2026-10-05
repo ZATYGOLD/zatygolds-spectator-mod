@@ -31,7 +31,7 @@
 import { GenericUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags.js';
 import { createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, onObserverReady } from './observer-core.js';
 
 const log = createLogger('observer-eye', CONFIG.debug);
 const SLEEP_OPERATION = 'UNITOPERATION_SLEEP';
@@ -73,8 +73,7 @@ function logVision() {
 }
 
 hideOwnFlags();
-engine.whenReady.then(() => {
-  if (!isObserverSeat()) return;
+onObserverReady(() => {
   engine.on('LocalPlayerTurnBegin', sleepUnits);
   engine.on('UnitAddedToMap', (data) => { if (data?.unit?.owner === GameContext.localPlayerID) sleepUnits(); });
   sleepUnits();

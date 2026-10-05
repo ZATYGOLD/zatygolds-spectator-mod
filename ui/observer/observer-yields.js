@@ -31,7 +31,7 @@
  */
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import { PanelYieldBanner } from 'fs://game/base-standard/ui/diplo-ribbon/panel-yield-banner.js';
-import { createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
+import { componentOf, createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
 import { inLeaderPanel, isObserverSeat } from './observer-core.js';
 import { PERSPECTIVE_CHANGED_EVENT, perspectivePlayer } from './observer-perspective.js';
 
@@ -52,8 +52,10 @@ const REPAINT_EVENTS = [
 
 /** The leader whose yields the bar shows: the leader panel's leader, else the Perspective's, else the Observer (the bar's own player id). */
 function shownPlayer() {
-  const selected = inLeaderPanel() ? DiplomacyManager.selectedPlayerID : (perspectivePlayer() ?? PlayerIds.NO_PLAYER);
-  return Players.get(Players.isValid(selected) ? selected : GameContext.localObserverID);
+  const panelLeader = inLeaderPanel() ? Players.get(DiplomacyManager.selectedPlayerID) : null;
+  if (panelLeader?.isMajor) return panelLeader;   // an independent's panel keeps the current leader's yields
+  const viewed = perspectivePlayer();
+  return Players.get(viewed ?? GameContext.localObserverID);
 }
 
 /** Write a data attribute only when it changes (every write re-renders the entry). */
@@ -107,7 +109,7 @@ function refreshBanner(banner) {
 /** Repaint every yield bar after the current handlers (and the bar's own) have run. */
 const repaintBanners = deferOnce(() => {
   for (const el of document.querySelectorAll(BANNER_TAG)) {
-    const banner = el.maybeComponent ?? el.component;
+    const banner = componentOf(el);
     if (banner) refreshBanner(banner);
   }
 });

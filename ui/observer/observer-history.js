@@ -32,7 +32,7 @@
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { canSave, isObserverSeat, readSaved, watchedPlayers, writeSaved } from './observer-core.js';
+import { canSave, isObserverSeat, onObserverReady, readSaved, watchedPlayers, writeSaved } from './observer-core.js';
 
 const log = createLogger('observer-history', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_YIELD_HISTORY_';
@@ -76,8 +76,8 @@ function decode(text) {
 /** Every recorded sample (read from the save once per session). */
 function yieldHistory() {
   if (samples) return samples;
+  if (!canSave()) return [];   // not cached: the save is read once it is available
   samples = [];
-  if (!canSave()) return samples;
   try {
     nextIndex = Number(readSaved(COUNT_KEY)) || 0;
     for (let i = 0; i < nextIndex; i++) {
@@ -112,8 +112,7 @@ function recordTurn() {
 
 const scheduleRecord = () => setTimeout(recordTurn, CONFIG.historyRecordDelayMs);
 
-engine.whenReady.then(() => {
-  if (!isObserverSeat()) return;
+onObserverReady(() => {
   engine.on('TurnBegin', scheduleRecord);
   scheduleRecord();
 });

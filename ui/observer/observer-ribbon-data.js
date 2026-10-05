@@ -56,7 +56,7 @@ function meterHTML(iconUrl, label, pct, barColor) {
 
 const SIGNED_TYPES = new Set(['gold', 'science', 'culture', 'happiness', 'diplomacy', 'food', 'production']);
 
-/** Full numbers with thousands separators; one decimal under 100 (as the Clean Slate mod formats them). */
+/** Full numbers with thousands separators; one decimal under 100. */
 function formatCompact(value) {
   const abs = Math.abs(value);
   const sign = value < 0 ? '-' : '';
@@ -130,7 +130,7 @@ function recordValues(playerId, items) {
  * routes (always 0/0 with the Observer), plus food, production, citizens,
  * military strength and techs / civics / wonders completed.
  */
-const OWN_ROW_TYPES = new Set(['trade', 'combat', ...EXTRA_ROWS.map((row) => row.type)]);   // rows we drop or build ourselves (combat/food/production also come from the Clean Slate mod)
+const OWN_ROW_TYPES = new Set(['trade', 'combat', ...EXTRA_ROWS.map((row) => row.type)]);   // rows we drop or build ourselves (also when another mod adds them)
 
 function yieldsItems(player, baseItems) {
   const base = baseItems().filter((item) => !OWN_ROW_TYPES.has(item.type)).map((item) =>
@@ -163,7 +163,7 @@ function leadersByType(playerIds, marked) {
 /** Row type -> ids of the leaders with the highest value (ties included; nothing when the best is 0). */
 const bestByType = (playerIds) => leadersByType(playerIds, (low, high) => (high > 0 ? high : null));
 
-/** Row type -> ids of the leaders with the lowest value (only from four leaders up, as the Clean Slate mod). */
+/** Row type -> ids of the leaders with the lowest value (only from four leaders up). */
 const worstByType = (playerIds) => (playerIds.length < 4 ? new Map() : leadersByType(playerIds, (low) => low));
 
 // ============================ Research ============================

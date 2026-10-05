@@ -20,42 +20,37 @@
 /**
  * Zatygold's Spectator - Observer settlement details (in-game scope).
  *
- * Clicking a settlement (observer-navigation.js) opens this panel: the
- * settlement's details for any leader, read directly from the game, in the
- * spirit of the City Hall mod's overview - population, growth, connections
- * (click one to open it), warehouse yields, a town's focus choices (the
- * current one highlighted) and the buildings and wonders standing. The
- * game's own City Details panel is not used: it, and the mods that decorate
- * it, follow the head selected city inside the city view, which the
- * Observer (owning no city) never enters. The arrows step through the
- * owner's settlements. It only shows; nothing in it changes the game.
+ * A read-only details panel for any leader's settlement: alerts, population and
+ * growth, connections, warehouse yields, town focus choices and buildings. The
+ * game's City Details panel only works inside the city view, which the Observer
+ * never enters. The arrows step through the owner's settlements.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
 import Panel from 'fs://game/core/ui/panel-support.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
 import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
-import { clearChildren, createLogger, deferOnce } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { clearChildren, componentOf, createLogger, deferOnce, onActivate } from '../shared/zom-util.js';
+import { CONFIG, HIGHLIGHT } from './observer-config.js';
 import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
 import { townFocus } from './observer-settlement-info.js';
 
 const HOST_TAG = 'zom-observer-settlement';
 const DETAILS_STYLES = 'fs://game/base-standard/ui/city-details/panel-city-details.css';
 
-// The City Hall mod's look: striped pill rows, a small table per section.
+// Striped pill rows, a small table per section.
 const ROW_HEIGHT = '1.5rem';
 const ROW_RADIUS = '0.75rem';
 const ODD_ROW_BG = 'rgba(76, 71, 61, 0.6)';
 const HIGHLIGHT_BG = 'rgba(128, 179, 77, 0.4)';   // the current town focus (food green)
-const DAMAGED_COLOR = '#ff6644';
+const DAMAGED_COLOR = HIGHLIGHT.negative;
 const ICON_SIZE = '1.5rem';
 const ICON_SMALL = '1.25rem';
 const FRAME_WIDTH = '27rem';
 const SPECIALIST_ICON = "url('specialist_tile_pip_full')";
 const TIMER_ICON = "url('hud_turn-timer')";
 const REFRESH_EVENTS = ['CityPopulationChanged', 'CityGrowthModeChanged', 'CityProductionCompleted', 'ConstructibleAddedToMap', 'PlayerTurnActivated'];
-/** Warehouse ordering by bonus yield, as the City Hall mod groups them. */
+/** Warehouse ordering by bonus yield. */
 const WAREHOUSE_ORDER = {
   LOC_IMPROVEMENT_FARM_NAME: 0, LOC_IMPROVEMENT_PASTURE_NAME: 0.1, LOC_IMPROVEMENT_PLANTATION_NAME: 0.1,
   LOC_IMPROVEMENT_FISHING_BOAT_NAME: 0.2, LOC_IMPROVEMENT_MINE_NAME: 1, LOC_IMPROVEMENT_CLAY_PIT_NAME: 1.1,
@@ -68,18 +63,6 @@ const log = createLogger('observer-settlement', CONFIG.debug);
 let shown = null;   // the settlement whose details are open
 
 const nameSort = (a, b) => Locale.compose(a ?? '').localeCompare(Locale.compose(b ?? ''));
-
-/** One activation per click: fxs-activatable can fire action-activate and click together. */
-let lastActivation = 0;
-function onActivate(element, run) {
-  const once = () => {
-    const now = Date.now();
-    if (now - lastActivation < 150) return;
-    lastActivation = now;
-    run();
-  };
-  for (const event of ['action-activate', 'click']) element.addEventListener(event, once);
-}
 
 // ============================ Elements ============================
 
@@ -138,7 +121,7 @@ function religionIcon(religionId) {
   return def ? def.ReligionType : null;
 }
 
-/** Population, growth and state, as the City Hall mod's growth block. */
+/** Population, growth and state. */
 function summary(city) {
   const growth = city.Growth;
   const growing = growth?.growthType === GrowthTypes.EXPAND;
@@ -189,9 +172,16 @@ function warehouses(city) {
   return [...groups.values()].sort((a, b) => a.order - b.order || nameSort(a.name, b.name));
 }
 
-/** Counts feeding the focus bonus estimates (fortified and appealing tiles, quarters). */
+let fortificationTypes = null;   // constructible types tagged FORTIFICATION (read once)
+
+const isFortification = (type) => {
+  fortificationTypes ??= new Set(GameInfo.TypeTags.filter((tag) => tag.Tag === 'FORTIFICATION').map((tag) => tag.Type));
+  return fortificationTypes.has(type);
+};
+
+/** Counts feeding the focus bonus estimates (fortified and appealing tiles, quarters, resources). */
 function districtCounts(city) {
-  const counts = { fortified: 0, appeal: 0, quarters: 0 };
+  const counts = { fortified: 0, appeal: 0, quarters: 0, resources: 0 };
   try {
     const appealing = GameInfo.GlobalParameters.lookup('APPEAL_FOR_HAPPINESS_TILE_YIELD')?.Value ?? 3;
     for (const id of city.Districts?.getIds?.() ?? []) {
@@ -203,21 +193,21 @@ function districtCounts(city) {
       const fortified = MapConstructibles.getHiddenFilteredConstructibles(loc.x, loc.y).some((conId) => {
         const type = Constructibles.getByComponentID(conId)?.type;
         const info = type != null ? GameInfo.Constructibles.lookup(type) : null;
-        return !!info && GameInfo.TypeTags.find((tag) => tag.Type === info.ConstructibleType && tag.Tag === 'FORTIFICATION') != null;
+        return !!info && isFortification(info.ConstructibleType);
       });
       if (fortified) counts.fortified += 1;
     }
+    counts.resources = (city.Constructibles?.getIds?.() ?? []).filter((id) => {
+      const loc = Constructibles.getByComponentID(id)?.location;
+      return loc && GameplayMap.getResourceType(loc.x, loc.y) !== ResourceTypes.NO_RESOURCE;
+    }).length;
   } catch (e) { log.debug(`district counts failed: ${e}`); }
   return counts;
 }
 
-/** Each focus project's estimated bonuses, as the City Hall mod lists them: [{ icon, bonus }]. */
+/** Each focus project's estimated bonuses: [{ icon, bonus }]. */
 function focusDetails(projectType, city, counts, groups) {
   const warehouseCount = (...names) => groups.filter((g) => names.includes(g.name)).reduce((sum, g) => sum + g.count, 0);
-  const resources = (city.Constructibles?.getIds?.() ?? []).filter((id) => {
-    const loc = Constructibles.getByComponentID(id)?.location;
-    return loc && GameplayMap.getResourceType(loc.x, loc.y) !== ResourceTypes.NO_RESOURCE;
-  }).length;
   switch (projectType) {
     case 'PROJECT_TOWN_FORT': return [{ icon: 'ACTION_FORTIFY', bonus: 25 }, { icon: 'YIELD_GOLD', bonus: counts.fortified }];
     case 'PROJECT_TOWN_URBAN_CENTER': return [{ icon: 'YIELD_SCIENCE', bonus: counts.quarters }, { icon: 'YIELD_CULTURE', bonus: counts.quarters }];
@@ -227,7 +217,7 @@ function focusDetails(projectType, city, counts, groups) {
       return [{ icon: 'YIELD_FOOD', bonus: warehouseCount('LOC_IMPROVEMENT_FARM_NAME', 'LOC_IMPROVEMENT_PASTURE_NAME', 'LOC_IMPROVEMENT_PLANTATION_NAME', 'LOC_IMPROVEMENT_FISHING_BOAT_NAME') }];
     case 'PROJECT_TOWN_PRODUCTION':
       return [{ icon: 'YIELD_PRODUCTION', bonus: 2 * warehouseCount('LOC_IMPROVEMENT_CAMP_NAME', 'LOC_IMPROVEMENT_WOODCUTTER_NAME', 'LOC_IMPROVEMENT_CLAY_PIT_NAME', 'LOC_IMPROVEMENT_MINE_NAME', 'LOC_IMPROVEMENT_QUARRY_NAME') }];
-    case 'PROJECT_TOWN_TRADE': return [{ icon: 'YIELD_TRADES', bonus: 5 }, { icon: 'YIELD_HAPPINESS', bonus: resources }];
+    case 'PROJECT_TOWN_TRADE': return [{ icon: 'YIELD_TRADES', bonus: 5 }, { icon: 'YIELD_HAPPINESS', bonus: counts.resources }];
     case 'PROJECT_TOWN_INN': return [{ icon: 'YIELD_DIPLOMACY', bonus: city.getConnectedCities?.()?.length ?? 0 }];
     case 'PROJECT_TOWN_FACTORY': return [{ icon: 'YIELD_TRADES', bonus: 5 }];
     default: return [];
@@ -454,12 +444,13 @@ class ObserverSettlementPanel extends Panel {
       const table = el('flex flex-col self-stretch');
       groups.forEach((group, i) => {
         const tail = [];
-        if (group.damaged) tail.push(textDiv('LOC_UI_CITY_DETAILS_BUILDING_DAMAGED', 'uppercase font-body-sm mr-1'));
+        if (group.damaged) {
+          const damaged = textDiv('LOC_UI_CITY_DETAILS_BUILDING_DAMAGED', 'uppercase font-body-sm mr-1');
+          damaged.style.color = DAMAGED_COLOR;
+          tail.push(damaged);
+        }
         if (group.count > 1) tail.push(valueDiv(`×${group.count}`));
-        const row = tableRow(i % 2 === 0, group.icon, group.name, ...tail);
-        const damagedText = group.damaged ? row.children[2] : null;
-        if (damagedText) damagedText.style.color = DAMAGED_COLOR;
-        table.appendChild(row);
+        table.appendChild(tableRow(i % 2 === 0, group.icon, group.name, ...tail));
       });
       list.appendChild(table);
     }
@@ -506,7 +497,7 @@ function showSettlement(cityId) {
   if (!isObserverSeat() || !cityId || ComponentID.isInvalid(cityId) || !Cities.get(cityId)) return false;
   shown = cityId;
   const open = document.querySelector(HOST_TAG);
-  if (open) (open.maybeComponent ?? open.component)?.renderCity();
+  if (open) componentOf(open)?.renderCity();
   else ContextManager.push(HOST_TAG, SCREEN_PROPS);
   return true;
 }

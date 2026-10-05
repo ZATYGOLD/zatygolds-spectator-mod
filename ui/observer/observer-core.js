@@ -25,11 +25,11 @@
  * unless isObserverSeat() - other players are untouched.
  */
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { createLogger, isObserverPlayer, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { componentOf, createLogger, isObserverPlayer, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 
 const coreLog = createLogger('observer-core');
-const BUILD = '2026-10-05 23:40 ui-next banners';
+const BUILD = '2026-10-06 06:05';
 // One line per game load, so UI.log always says which build ran and for whom.
 engine.whenReady.then(() => coreLog(`build ${BUILD}; observer seat: ${isObserverSeat()}`));
 
@@ -39,6 +39,11 @@ const SCREEN_PROPS = { singleton: true, createMouseGuard: true };
 /** True when this client plays the Observer (and the Observer's features are on). */
 function isObserverSeat() {
   try { return CONFIG.enabled && isObserverPlayer(GameContext.localPlayerID); } catch (e) { return false; }
+}
+
+/** Run once the game is ready, on the Observer seat only (listeners for everyone else are never registered). */
+function onObserverReady(run) {
+  engine.whenReady.then(() => { if (isObserverSeat()) run(); });
 }
 
 /** Living major players, Observers excluded. */
@@ -69,7 +74,7 @@ function onScreenDock({ patch, place }, log) {
     });
     engine.whenReady.then(() => {
       const dock = document.querySelector(DOCK_TAG);
-      run(dock?.maybeComponent ?? dock?.component);
+      run(componentOf(dock));
     });
   }, { log });
 }
@@ -154,4 +159,4 @@ function inLeaderPanel() {
   try { return /DIPLOMACY_HUB/.test(InterfaceMode.getCurrent() ?? ''); } catch (e) { return false; }
 }
 
-export { SCREEN_PROPS, canSave, diplomacySnapshot, onScreenDock, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, rangedStrength, readSaved, unitStrength, watchedPlayers, writeSaved };
+export { SCREEN_PROPS, canSave, diplomacySnapshot, onScreenDock, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, onObserverReady, meleeStrength, rangedStrength, readSaved, unitStrength, watchedPlayers, writeSaved };

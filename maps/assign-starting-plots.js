@@ -10,10 +10,9 @@ import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-obse
  * a block that wraps StartPositioner.setStartPosition.
  * Re-apply after game updates; see maps/zom-observer-eye.js.
  *
- * ZOM: Observer players (leader LEADER_ZOM_OBSERVER) never start on land with
- * the other majors: their start plot becomes the marine ice tile chosen by
- * ./zom-observer-eye.js, and the Observer's Eye is created there.
+ * ZOM: Observers start on the marine ice tile chosen by ./zom-observer-eye.js, with their Eye.
  */
+// ZOM: begin
 (function zomObserverStartPositions() {
   const log = (m) => console.log('[ZOM observer-start] ' + m);
   try {
@@ -45,6 +44,7 @@ import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-obse
     };
   } catch (e) { log('could not wrap StartPositioner: ' + e); }
 })();
+// ZOM: end
 
 class PlayerRegion {
   tiles = [];

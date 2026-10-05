@@ -21,23 +21,13 @@
 /**
  * Zatygold's Spectator - Observer leader view (in-game scope).
  *
- * Empire screens read "the local player" through ZOMLeaderView (base-game
- * overrides marked "ZOM:" in ui-next/screens/commerce, ui-next/screens/legacies,
- * ui/policies and ui/great-works, plus runtime patches in
- * observer-leader-screens.js): Resources & Trade, Legacies, Government,
- * Great Works and Religion. For the Observer that is the leader picked in a
- * row of leader portraits above the screen's tabs, shared by every such screen; picking
- * another leader reopens the screen for that leader on the same tab, in place:
- * its open animation is skipped, so it does not slide or fade back in. A
- * screen that can rebuild its content itself registers a refresh instead
- * (setRefresh: the tech and civic trees). The
- * screens stay read-only: game actions are still sent as the Observer, which
- * the game refuses. While a Perspective is shown (observer-perspective.js)
- * every such screen shows that leader, with no row of portraits. Other
- * players see the base screens.
+ * ZOMLeaderView: the leader the empire screens show (base-file overrides marked
+ * "ZOM:" read it), picked from a row of portraits shared by every such screen;
+ * a pick reopens the screen in place on the same tab. During a Perspective the
+ * viewed leader is shown with no picker. Screens stay read-only.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import { createLogger, setStyle } from '../shared/zom-util.js';
+import { createLogger, onActivate, setStyle } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { perspectivePlayer } from './observer-perspective.js';
@@ -119,7 +109,7 @@ function portraitButton(screenTag, player, selected) {
   btn.style.cssText = selected ? SELECTED_STYLE : OTHER_STYLE;
   btn.setAttribute('data-tooltip-content', Locale.compose(player.name));
   btn.appendChild(leaderPortrait(player, 'size-full'));
-  for (const event of ['action-activate', 'click']) btn.addEventListener(event, () => reopen(screenTag, player.id));
+  onActivate(btn, () => reopen(screenTag, player.id));
   return btn;
 }
 
@@ -145,4 +135,4 @@ engine.whenReady.then(() => {
   log.debug(`observer-in-game option: ${flag}`);
 });
 
-export { BAR_CLASS, setRefresh, playerID as viewedPlayerID };
+export { BAR_CLASS, playerBar, setRefresh, playerID as viewedPlayerID };

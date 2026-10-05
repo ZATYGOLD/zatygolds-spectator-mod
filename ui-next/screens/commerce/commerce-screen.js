@@ -26,7 +26,7 @@ import style from './commerce-screen.scss.js';
 const CommerceScreenComponent = (_props) => {
   const model = createCommerceScreenModel();
   const audioTrigger = useAudio("CommerceScreenPopup");
-  const realLocalPlayerId = useLocalPlayerId();
+  const realLocalPlayerId = useLocalPlayerId();   // ZOM: renamed
   const localPlayerId = () => globalThis.ZOMLeaderView?.playerID() ?? realLocalPlayerId();   // ZOM: the viewed leader
   const civName = createMemo(() => {
     const player = Players.get(localPlayerId());

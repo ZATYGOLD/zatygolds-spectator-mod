@@ -14,7 +14,7 @@ import { isMobile } from '../../../core/ui-next/services/view-experience.js';
  * player.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: the leader the Observer views (everyone else: the local player)
+const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
 
 const [activePolicyTab, setActivePolicyTab] = createSignal("gov-overview");
 function createGovtScreenModel() {

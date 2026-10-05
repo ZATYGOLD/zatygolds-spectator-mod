@@ -21,19 +21,9 @@
 /**
  * Zatygold's Spectator - Observer screen routing (in-game scope).
  *
- * Every screen opens through ContextManager.push (popups first pass through
- * the PopupSequencer queue). For the Observer seat:
- *   - blocked: the advisor screens (there is no empire to advise) and the
- *     Age-start dedication / advanced-start screens (observer-prompts.js
- *     completes that step for the Observer);
- *   - redirected: the Antiquity pantheon screens open every leader's
- *     pantheons (observer-overview.js); the religion picker opens the
- *     game's religion and belief screen, where the Observer picks a leader
- *     (observer-leader-view.js); the tech and civic choosers open the
- *     full trees (observer-leader-screens.js).
- *   - the screen dock keeps its Religion button after Exploration (the game
- *     drops it in Modern, CAPABILITY_RELIGION_UI): religions still exist, and
- *     it opens the same religion and belief screen.
+ * Blocks the advisor and Age-start screens, redirects the pantheon, religion
+ * and tech / civic chooser screens to their read-only views, and keeps the
+ * dock's Religion button in every Age.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import PopupSequencer from 'fs://game/base-standard/ui/popup-sequencer/popup-sequencer.js';

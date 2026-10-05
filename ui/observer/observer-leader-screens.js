@@ -19,33 +19,20 @@
  */
 
 /**
- * Zatygold's Spectator - Observer leader view on the older screens (in-game scope).
+ * Zatygold's Spectator - leader picker on the older screens (in-game scope).
  *
- * Runtime patches (no base-file copies) giving the Religion, Great Works and
- * tech / civic tree screens the leader picker of observer-leader-view.js:
- *   - Religion (panel-belief-picker): the viewed leader's religion is the
- *     screen's own (first tab); a leader without one gets a note instead of
- *     another leader's religion; the leader's pantheons are listed last, under
- *     their own title (observer-faith.js, every Age); its belief slots read as
- *     the game shows another player's religion (earned and locked, never
- *     open); once the Age has no religion beliefs (Modern) their sections give
- *     way to a note; nothing can be chosen, founded or confirmed;
- *   - Great Works: the picker row under the title (the slots themselves come
- *     from the model-great-works.js override);
- *   - tech and civic trees: the picker row under the title (the progress
- *     comes from the model-tech-tree.js, model-culture-tree.js and
- *     tree-grid.js overrides); a leader switch rebuilds the open tree in
- *     place by sending the screen's own "view tree" event for that leader's
- *     trees (the civic screen's cached tab panels are rebuilt). The Observer
- *     cannot choose, so a chooser opens its full tree instead (openFullTree,
- *     routed by observer-screens.js).
+ * Runtime patches giving Religion, Great Works and the tech / civic trees the
+ * picker of observer-leader-view.js. Religion shows the viewed leader's
+ * religion and pantheons read-only (a note when there is none, or when the Age
+ * has no beliefs); the trees rebuild in place for the picked leader, and a
+ * chooser opens the full tree.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
-import { createLogger, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, isTag, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { SCREEN_PROPS } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
-import { BAR_CLASS, setRefresh, viewedPlayerID } from './observer-leader-view.js';
+import { BAR_CLASS, playerBar, setRefresh, viewedPlayerID } from './observer-leader-view.js';
 
 const log = createLogger('observer-leader-screens');
 const RELIGION_TAG = 'panel-belief-picker';
@@ -78,7 +65,7 @@ const TREES = [
       const main = GameInfo.Ages.lookup(Game.age)?.MainCultureProgressionTreeType;
       if (main && !trees.some((t) => GameInfo.ProgressionTrees.lookup(t)?.ProgressionTreeType === main)) trees.unshift(main);
       return !trees.length ? null
-        : { treeCSV: trees.join(','), targetNode: activeNode(player, player.Culture.getActiveTree()), iconCallback: Icon.getCultureIconFromProgressionTreeNodeDefinition };
+        : { treeCSV: trees.join(','), targetNode: activeNode(player, player.Culture?.getActiveTree?.()), iconCallback: Icon.getCultureIconFromProgressionTreeNodeDefinition };
     }
   }
 ];
@@ -95,7 +82,7 @@ const viewedPlayer = () => {
 };
 
 function insertBar(anchor, screenTag, before = true) {
-  const bar = globalThis.ZOMLeaderView?.playerBar(screenTag);
+  const bar = playerBar(screenTag);
   if (!bar || !anchor?.parentElement) return null;
   anchor.parentElement.insertBefore(bar, before ? anchor : anchor.nextSibling);
   return bar;
@@ -168,8 +155,10 @@ function patchReligion(proto) {
     if (!viewedPlayer()) return base(...args);
     const own = this.playerReligion;
     this.playerReligion = null;
-    try { base(...args); } finally { this.playerReligion = own; }
+    let result;
+    try { result = base(...args); } finally { this.playerReligion = own; }
     try { if (!ageHasReligionBeliefs()) showBeliefsEnded(this.Root); } catch (e) { log(`belief slots patch failed: ${e}`); }
+    return result;
   });
   // The viewed leader's religion is the screen's own; the Observer never founds one.
   wrapMethod(proto, 'constructAllPlayerReligionInfo', function (base, ...args) {
@@ -234,7 +223,7 @@ function resetTreePanels(screen, treesCSV) {
 
 /** Opens the screen's tab bar on the tab with this id (the base picks the tree being researched, kept from the last leader or Age). */
 function selectTab(fragment, id) {
-  const bar = [...(fragment?.childNodes ?? [])].find((node) => String(node.localName).toLowerCase() === 'fxs-tab-bar');
+  const bar = [...(fragment?.childNodes ?? [])].find((node) => isTag(node, 'fxs-tab-bar'));
   const index = id ? JSON.parse(bar?.getAttribute('tab-items') ?? '[]').findIndex((tab) => tab.id === id) : -1;
   if (index >= 0) bar.setAttribute('selected-tab-index', `${index}`);
 }

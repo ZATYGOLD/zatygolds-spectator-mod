@@ -57,7 +57,10 @@ const GovermentScreenComponent = (_props) => {
             },
             get children() {
               return [globalThis.ZOMLeaderView?.playerBar('screen-policies') ?? null, createComponent(Tab, {   // ZOM: the Observer's leader picker
-                activeTab: () => { const tab = activePolicyTab(); return globalThis.ZOMLeaderView?.restoredTab('screen-policies') ?? tab; },   // ZOM: same tab after a leader switch
+                activeTab: () => {   // ZOM: same tab after a leader switch
+                  const tab = activePolicyTab();
+                  return globalThis.ZOMLeaderView?.restoredTab('screen-policies') ?? tab;
+                },
                 get defaultTab() { return globalThis.ZOMLeaderView?.restoredTab('screen-policies'); },   // ZOM: applied as the tabs register
                 onTabChanged: globalThis.ZOMLeaderView?.trackTab('screen-policies'),   // ZOM: remember the open tab
                 "class": "w-full relative flex flex-col flex-auto pointer-events-auto",

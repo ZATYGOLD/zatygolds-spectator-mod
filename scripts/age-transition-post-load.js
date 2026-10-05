@@ -14,8 +14,7 @@ import { placeObserverEyes } from '../maps/zom-observer-eye.js';   // ZOM: the O
  * a call at the end of generateTransition.
  * Re-apply after game updates; see maps/zom-observer-eye.js.
  *
- * ZOM: an Age transition resets every unit, so each Observer gets a new
- * Observer's Eye (its vision) on the marine ice (../maps/zom-observer-eye.js).
+ * ZOM: Age transitions reset units, so each Observer gets a new Eye (../maps/zom-observer-eye.js).
  */
 
 console.log("Loading age-transition-post-load.ts");

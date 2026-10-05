@@ -21,6 +21,7 @@
 /**
  * Zatygold's Spectator - Observer configuration & constants (in-game scope).
  */
+import { ART } from '../shared/zom-assets.js';
 
 /** What every leader card on the Observer's ribbon shows. */
 const OBSERVER_VIEW = {
@@ -62,7 +63,7 @@ const HIGHLIGHT = {
   glowSize: '0.7rem',                   // glow around the portrait hex
   borderGlowSize: '0.3rem',             // tight glow on the hex border
   atWar: '#ff2a2a',
-  best: 'rgba(229, 210, 172, 0.25)',    // highest value in a row (Clean Slate's look)
+  best: 'rgba(229, 210, 172, 0.25)',    // highest value in a row
   worst: 'rgba(0, 0, 0, 0.8)',          // lowest value in a row
   negative: '#ff6644',                  // negative totals (bright red on the slate background)
   celebration: '#ffc21a',
@@ -72,7 +73,7 @@ const HIGHLIGHT = {
   wars: ['#e04848', '#4aa3ff', '#5cd65c', '#b36bff', '#ff8c1a', '#3de0d0', '#ff5fb0', '#f0f0f0']
 };
 
-/** Value colour of each Yields row, bright against the slate background (Clean Slate's palette, extended). */
+/** Value colour of each Yields row, bright against the slate background. */
 const ROW_COLORS = {
   gold: '#f6ce55',
   science: '#79b3ee',
@@ -111,7 +112,7 @@ const ICONS = {
   wonders: 'blp:ntf_wonder_completed',
   victories: 'blp:radial_victories',
   endTurn: 'blp:fi_next_turn_64',
-  perspective: 'fs://game/art/icons/zom_observer.png'
+  perspective: ART.observerIcon
 };
 
 export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, ROW_COLORS };

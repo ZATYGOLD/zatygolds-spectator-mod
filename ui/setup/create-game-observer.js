@@ -21,19 +21,9 @@
 /**
  * Zatygold's Spectator - Observer in single-player game creation (shell scope).
  *
- *   - Leader select: the Observer's portrait gets the leaders' XP ring, with the
- *     eye in the level bubble (the Observer has no Legend Path level).
- *   - The civilization steps are skipped while the local player is the Observer:
- *     its civilization follows the leader (setup-observer.js). Leader select
- *     goes on to game setup, Back from game setup returns to leader select, and
- *     the Overview's civilization card does nothing.
- *   - Overview: the leader card shows the Observer's portrait (the cutout the
- *     base cards load as blp:lsl_<leader>), the civilization card its
- *     BACKGROUND_VERT art (data/icons/icons.xml), the level ring the eye, and
- *     the Mementos section is hidden (the Observer's memento slots are turned
- *     off in config/setup-rules.sql).
- * Overrides registered ui-next components (ComponentRegistry) and wraps the
- * screen flow's activate; no base file edits.
+ * The Observer's leader card gets the XP ring with the eye, the civilization
+ * steps are skipped (the civ follows the leader), and the Overview shows the
+ * Observer's portrait and civ art with no Mementos.
  */
 import { createComponent, createEffect } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { RingMeter } from 'fs://game/core/ui-next/components/ring-meter.js';
@@ -42,11 +32,11 @@ import { useCivSelectModelContext } from 'fs://game/core/ui-next/screens/create-
 import 'fs://game/core/ui-next/screens/create-game/create-game-hub.js';
 import 'fs://game/core/ui-next/screens/create-game/leader-select-button.js';
 import { useLeaderSelectModelContext } from 'fs://game/core/ui-next/screens/create-game/leader-select-model.js';
-import { configLeader, createLogger, OBSERVER_LEADER, overrideComponent as overrideRegistered, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, OBSERVER_LEADER, overrideComponent, wrapMethod } from '../shared/zom-util.js';
+import { ART } from '../shared/zom-assets.js';
 import { CONFIG } from './setup-config.js';
+import { isLocalObserver } from './setup-observer.js';
 
-const OBSERVER_ICON = 'fs://game/art/icons/zom_observer.png';
-const OBSERVER_LEADER_ART = 'fs://game/art/leaders/lsl_zom_observer.png';
 const CIV_ART_CONTEXT = 'BACKGROUND_VERT';
 const OVERRIDE_PRIORITY = 1;
 
@@ -60,7 +50,7 @@ const LEVEL_EYE_STYLE = {
   'font-size': '0',
   'width': '4rem',
   'height': '4rem',
-  'background-image': `url('${OBSERVER_ICON}')`,
+  'background-image': `url('${ART.observerIcon}')`,
   'background-size': 'contain',
   'background-position': 'center',
   'background-repeat': 'no-repeat'
@@ -69,7 +59,6 @@ const HIDDEN_STYLE = { 'display': 'none' };
 
 const log = createLogger('create-game-observer', CONFIG.debug);
 
-const isLocalObserver = () => configLeader(GameContext.localPlayerID) === OBSERVER_LEADER;
 
 /** As the base screens: no XP rings when mementos work offline (no 2K account). */
 function isOfflineMemento() {
@@ -88,8 +77,8 @@ function setBackground(el, url) {
   if (el && url) el.style.setProperty('background-image', `url('${url}')`);
 }
 
-function overrideComponent(name, wrap) {
-  if (!overrideRegistered(name, wrap, OVERRIDE_PRIORITY)) log(`${name} is not registered`);
+function override(name, wrap) {
+  if (!overrideComponent(name, wrap, OVERRIDE_PRIORITY)) log(`${name} is not registered`);
 }
 
 // ============================ Leader select ============================
@@ -146,17 +135,17 @@ function decorateHub(root, observer, civID) {
   setStyles(root?.querySelector('.text-accent-2.mx-2')?.parentElement, HIDDEN_STYLE, observer);   // Mementos section
   if (!observer) return;
   const layers = leaderCard?.querySelectorAll('div') ?? [];
-  setBackground(Array.prototype.find.call(layers, (el) => el.style.backgroundImage?.includes('lsl_')), OBSERVER_LEADER_ART);
+  setBackground(Array.prototype.find.call(layers, (el) => el.style.backgroundImage?.includes('lsl_')), ART.observerLeader);
   setBackground(civCard?.querySelector('.bg-cover'), UI.getIconURL(civID, CIV_ART_CONTEXT));
 }
 
 // ============================ Installation ============================
 
 function install() {
-  overrideComponent('LeaderXpRing', (base) => (props) =>
+  override('LeaderXpRing', (base) => (props) =>
     props.leaderID === OBSERVER_LEADER && !isOfflineMemento() ? observerXpRing() : base(props));
 
-  overrideComponent('CreateGameHub', (base) => (props) => {
+  override('CreateGameHub', (base) => (props) => {
     const leaderModel = useLeaderSelectModelContext();
     const civModel = useCivSelectModelContext();
     const view = base(props);

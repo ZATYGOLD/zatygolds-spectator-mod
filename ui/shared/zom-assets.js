@@ -29,6 +29,13 @@
  */
 import { OBSERVER_CIV_PREFIX, OBSERVER_LEADER } from './zom-util.js';
 
+/** The mod's own art. */
+const ART = {
+  observerIcon: 'fs://game/art/icons/zom_observer.png',
+  observerCivIcon: 'fs://game/art/icons/zom_observer_civ.png',
+  observerLeader: 'fs://game/art/leaders/lsl_zom_observer.png'
+};
+
 const LEADER_ASSET = `${OBSERVER_LEADER}_GAME_ASSET`;
 const BANNER_ASSET = new RegExp(`^${OBSERVER_CIV_PREFIX}\\w+_BANNER_GAME_ASSET$`);
 const STAND_INS = {
@@ -77,4 +84,4 @@ function installAssetAliases(...existingGroups) {
   existingGroups.forEach(patchModelGroup);
 }
 
-export { installAssetAliases };
+export { ART, installAssetAliases };

@@ -21,19 +21,9 @@
 /**
  * Zatygold's Spectator - Observer units (in-game scope).
  *
- * The Observer's Eye (data/units.xml) keeps the whole map
- * and every unit in sight. For the Observer seat, other players' units are
- * selected with the game's own selection so the base unit panel shows them
- * (combat preview: observer-combat.js). The base game only ever selects
- * the local player's own units, so every step that assumes ownership is
- * guarded:
- *   - selection: clicking a tile cycles through its units, clicking a unit
- *     flag selects that unit, and the unit-selected mode allows them;
- *   - map decorations (move range, attack targets, path) are skipped for
- *     them; drawing them for a foreign unit hung the GPU;
- *   - orders: right-click / move-to and unit operations or commands are never
- *     sent for a unit the Observer does not own.
- * The Observer's own units (the Eye) are never selected.
+ * Lets the Observer select other players' units with the game's own selection
+ * (so the unit panel shows them), and guards every step that assumes ownership:
+ * no move / attack decorations (they hung the GPU) and no orders sent.
  */
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import UnitSelection from 'fs://game/base-standard/ui/unit-selection/unit-selection.js';
@@ -42,7 +32,7 @@ import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes
 import { InputHandlerState } from 'fs://game/core/ui/input/input-support.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
 import { createLogger, findAncestor, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, onObserverReady } from './observer-core.js';
 
 const log = createLogger('observer-units');
 
@@ -110,6 +100,6 @@ function patchGuards() {
 
 patchSelection();
 patchGuards();
-window.addEventListener('engine-input', onEngineInput, true);
+onObserverReady(() => window.addEventListener('engine-input', onEngineInput, true));
 
 export { inspectableUnits, isForeign };

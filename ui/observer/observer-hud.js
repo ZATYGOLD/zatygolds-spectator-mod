@@ -21,23 +21,16 @@
 /**
  * Zatygold's Spectator - Observer HUD and camera (in-game scope).
  *
- * For the Observer seat:
- *   - one zoom axis from CONFIG.zoomIn closer than the game allows to
- *     CONFIG.zoomOut further out, in smaller steps (CONFIG.zoomStepScale) for
- *     a smoother scroll. The engine clamps its zoom to 0..1, so past either
- *     end the camera's field of view is narrowed or widened instead (the
- *     technique of the Zoom+ mod, reduced to its core); the view is re-applied
- *     while the camera moves, since the engine may reset it. Left to Zoom+
- *     when that mod's camera controller is installed. While a Perspective is
- *     shown (observer-perspective.js) the game's own zoom range applies;
- *   - the notification bar is drawn at CONFIG.notificationScale.
+ * A wider zoom range in smaller steps (past the engine's 0..1 zoom the field of
+ * view changes instead; left to Zoom+ when installed, and to the game's range
+ * during a Perspective), and a scaled notification bar.
  */
 import CameraController from 'fs://game/core/ui/camera/camera-controller.js';
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import ViewManager from 'fs://game/core/ui/views/view-manager.js';
 import { clamp, createLogger, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, onObserverReady } from './observer-core.js';
 import { isPerspectiveActive, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 
 const log = createLogger('observer-hud', CONFIG.debug);
@@ -165,8 +158,7 @@ function scaleNotifications() {
   setStyle(STYLE_ID, `panel-notification-train { transform: scale(${CONFIG.notificationScale}); transform-origin: bottom right; }`);
 }
 
-engine.whenReady.then(() => {
-  if (!isObserverSeat()) return;
+onObserverReady(() => {
   patchCamera();
   scaleNotifications();
   window.addEventListener(PERSPECTIVE_CHANGED_EVENT, () => { if (isPerspectiveActive()) resetZoom(); });

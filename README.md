@@ -36,8 +36,8 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
 
 - Your card's buttons switch every card between **Yields** (compact rows
   incl. food, production, citizens, military, techs / civics / wonders),
-  **Research**, **Production** and **Victories**. Rows take the Clean Slate
-  mod's look: lining digits that line up between rows, thousands separators,
+  **Research**, **Production** and **Victories**. Rows use lining digits
+  that line up between rows, thousands separators,
   bright value colours on the slate background, the highest value in a row
   on a light pill and the lowest (from four leaders) on a black one,
   negative totals in bright red, and each card's banner tinted with the
@@ -74,15 +74,14 @@ leader again, or your own portrait, to see the whole game again. It only
 changes what you see, never the game.
 
 **Settlements:** click any settlement's banner or city center to open the
-settlement's details, in the spirit of the City Hall mod's overview:
-population (urban / rural / specialists, with religion icons once spread),
+settlement's details: population (urban / rural / specialists, with religion icons once spread),
 growth progress, connections (click one to open it), warehouse yields, a
 town's focus choices with the current one highlighted and its estimated
 bonuses, and the buildings and wonders standing. The arrows step through
 that leader's other settlements, and razing or unrest shows in red.
 Right-click a banner to open its owner's leader panel instead. Town banners
-show the town's focus beside the name, where the capital star sits (as the
-Flag Corps mod places its settlement icons); a city-state's type icon names
+show the town's focus beside the name, where the capital star sits; a
+city-state's type icon names
 its suzerain bonus on hover.
 
 **Yield Graphs:** a button in the HUD's screen dock opens line graphs of
@@ -159,14 +158,6 @@ they load only in a game with a Spectator (modinfo criteria
 `zom-observer-in-game`), so other games run the untouched files. Diagnostics go to
 `UI.log`.
 
-**Mod compatibility:** the ribbon, settlement details and banner icons take
-their look from beezany's Clean Slate, City Hall and Flag Corps mods, so
-none is needed alongside this mod. Running Clean Slate as well double-styles
-the ribbon and logs errors on the Spectator's card. Flag Corps patches the
-game's older banner code, which the current game no longer draws, so it has
-no effect either way. City Hall's panels only appear inside a player's city view, which the
-Spectator never enters.
-
 ---
 
 ## Changelog
@@ -189,8 +180,7 @@ Spectator never enters.
   the banner's type icon names the bonus; their map banners no longer go
   missing in the whole-map view.
 - **Settlement details** — clicking a settlement opens the Spectator's own
-  details panel for it, read-only and built like the City Hall mod's
-  overview: population, growth, connections, warehouse yields, town focus
+  details panel for it, read-only: population, growth, connections, warehouse yields, town focus
   choices and buildings / wonders; right-clicking its banner opens the
   owner's leader panel. Town banners show the town focus icon.
 - **Faith badges** — ribbon cards show the religion (or, before one is

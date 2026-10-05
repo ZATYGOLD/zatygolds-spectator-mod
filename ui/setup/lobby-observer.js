@@ -21,38 +21,22 @@
 /**
  * Zatygold's Spectator - Observer in the multiplayer lobby (shell scope).
  *
- * The Observer is a real leader + civilization (config/config.xml);
- * setup-observer.js holds the rules shared with single player. This module
- * makes the lobby treat them as one role:
- *   - The civilization list shows a single "Observer" entry - the one for the
- *     game's start Age (the lobby lists every Age's civs together).
- *   - Picking the Observer leader or civilization sets the other one and
- *     clears the team; picking another leader releases the civilization.
- *   - While observing, the civilization and team dropdowns are locked and the
- *     team column shows the eye badge. The leader dropdown stays open so the
- *     player can switch back.
- *   - Computer players are never offered the team "Observer" entry.
- *   - Rebuilding the leader list re-checks the hidden ZOMObserverInGame option
- *     (setup-observer.js; written by the host).
- *   - The Observer plays no mementos (its slots are turned off in
- *     config/setup-rules.sql): its row lists none, and the lobby's Mementos
- *     button and hotkey are off while the local player observes.
- * Wraps the lobby model's dropdown builders and callbacks; no base file edits.
+ * Makes the Observer leader + civilization one role: a single Observer civ
+ * entry (the start Age's), picking either sets the other and clears the team,
+ * locked civ / team dropdowns with the eye badge while observing, no Observer
+ * team for computers, and no mementos.
  */
 import MPLobbyModel, { LobbyUpdateEventName, MPLobbyDataModel } from 'fs://game/core/ui/shell/mp-staging/model-mp-staging-new.js';
 import 'fs://game/core/ui/shell/mp-staging/mp-staging-leader-dropdown.js';
 import 'fs://game/core/ui/shell/mp-staging/mp-staging-new.js';
 import { MPStagingTeamDropdown } from 'fs://game/core/ui/shell/mp-staging/mp-staging-team-dropdown.js';
-import { createLogger, isObserverCiv, OBSERVER_LEADER, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { configCiv, configLeader, createLogger, isObserverCiv, OBSERVER_LEADER, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
-import { isComputerSlot, isObserverRow, observerCivForStartAge, playerCiv, playerLeader, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
+import { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
+import { ART } from '../shared/zom-assets.js';
 
-const OBSERVER_ICON = 'fs://game/art/icons/zom_observer.png';
-const OBSERVER_CIV_ICON = 'fs://game/art/icons/zom_observer_civ.png';
-const PARAM_LEADER = 'PlayerLeader';
 const DROPDOWN_PARAM = 'DROPDOWN_TYPE_PLAYER_PARAM';
 const DROPDOWN_TEAM = 'DROPDOWN_TYPE_TEAM';
-const NO_TEAM = -1;
 const HIDDEN = 'hidden';
 
 const log = createLogger('lobby-observer', CONFIG.debug);
@@ -78,8 +62,8 @@ function shapeCivDropdown(dropdown, playerID) {
     if (first) items.push(first);
   }
   items = moveObserverLast(items, (it) => isObserverCiv(it.paramID));
-  for (const it of items) if (isObserverCiv(it.paramID)) it.iconURL = OBSERVER_CIV_ICON;
-  const current = playerCiv(playerID);
+  for (const it of items) if (isObserverCiv(it.paramID)) it.iconURL = ART.observerCivIcon;
+  const current = configCiv(playerID);
   dropdown.itemList = items;
   dropdown.selectedItemIndex = items.findIndex((it) => it.paramID === current);
   if (isObserverRow(playerID)) lockDropdown(dropdown, items.findIndex((it) => isObserverCiv(it.paramID)));
@@ -88,9 +72,9 @@ function shapeCivDropdown(dropdown, playerID) {
 /** Leader list: Observer last with the eye icon; stays enabled to switch back. */
 function shapeLeaderDropdown(dropdown, playerID) {
   const items = moveObserverLast(dropdown.itemList ?? [], (it) => it.paramID === OBSERVER_LEADER);
-  for (const it of items) if (it.paramID === OBSERVER_LEADER) it.iconURL = OBSERVER_ICON;
+  for (const it of items) if (it.paramID === OBSERVER_LEADER) it.iconURL = ART.observerIcon;
   dropdown.itemList = items;
-  const current = playerLeader(playerID);
+  const current = configLeader(playerID);
   dropdown.selectedItemIndex = items.findIndex((it) => it.paramID === current);
 }
 
@@ -120,7 +104,6 @@ function shapeTeamDropdown(dropdown, playerID) {
 
 // ============================ Mementos ============================
 
-const isLocalObserver = () => playerLeader(GameContext.localPlayerID) === OBSERVER_LEADER;
 
 /**
  * An Observer row lists no mementos: its "mementos" attribute is emptied, so the
@@ -205,7 +188,7 @@ function install() {
       const playerID = parseInt(event?.target?.getAttribute?.('data-player-id') ?? '');
       if (Number.isInteger(playerID)) {
         if (event?.detail?.selectedItem?.zomObserver && !isComputerSlot(playerID)) {
-          if (playerLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
+          if (configLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
           syncSelection(playerID, PARAM_LEADER, OBSERVER_LEADER);
           return;
         }
@@ -225,7 +208,7 @@ function install() {
       const observing = !!this.dropdownItems?.[index]?.zomObserver;
       if (observing) {
         this.Root.setAttribute('icon-container-innerhtml',
-          `<div class='absolute w-16 h-16' style='background-image: url("${OBSERVER_ICON}"); background-size: contain; background-repeat: no-repeat; background-position: center;'></div>`);
+          `<div class='absolute w-16 h-16' style='background-image: url("${ART.observerIcon}"); background-size: contain; background-repeat: no-repeat; background-position: center;'></div>`);
       }
       this.Root.setAttribute('show-label-on-selected-item', observing ? 'false' : 'true');
     } catch (e) { /* keep base visuals */ }

@@ -30,6 +30,7 @@
  * Right-clicking the card's portrait hides or shows every card's details
  * (observer-navigation.js); its tooltip says so.
  */
+import { ancestorWithClass, onActivate } from '../shared/zom-util.js';
 import { ICONS, OBSERVER_VIEW } from './observer-config.js';
 import { isDetailsHidden, markOwnCard } from './observer-ribbon-style.js';
 import { isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
@@ -42,7 +43,6 @@ const TOGGLE_SIZE_REM = 1.4;
 const TOGGLE_GLYPH_INSET = '0.12rem';
 const SYMBOL_SIZE = '2rem';
 const SYMBOL_GAP_REM = 0.25;
-const DOUBLE_ACTIVATION_MS = 150;   // a click fires both action-activate and click
 const COLUMN_TOP_REM = 2.8;   // clear of the portrait hex on the white banner
 const BANNER_TOP = `${COLUMN_TOP_REM}rem`;
 // The civ symbol sits right under the toggle, about where the base places it (mt-20, 5rem).
@@ -91,7 +91,7 @@ const STAT_BUTTONS = [
 ];
 
 /** A round lens-style button; drawGlyph fills its icon. */
-function roundButton(tooltip, pressed, drawGlyph, onActivate) {
+function roundButton(tooltip, pressed, drawGlyph, run) {
   const btn = document.createElement('fxs-activatable');
   btn.classList.add('mini-map__lens-button', 'pointer-events-auto');
   btn.classList.toggle('pressed', pressed);
@@ -105,14 +105,7 @@ function roundButton(tooltip, pressed, drawGlyph, onActivate) {
   for (const side of ['top', 'left', 'right', 'bottom']) icon.style[side] = GLYPH_INSET;
   drawGlyph(icon);
   btn.append(bg, icon);
-  let lastActivation = 0;
-  const activate = () => {
-    const now = Date.now();
-    if (now - lastActivation < DOUBLE_ACTIVATION_MS) return;
-    lastActivation = now;
-    onActivate(btn);
-  };
-  for (const event of ['action-activate', 'click']) btn.addEventListener(event, activate);
+  onActivate(btn, () => run(btn));
   return btn;
 }
 
@@ -188,7 +181,7 @@ function placeViewButtons(panel, currentView, onSelect) {
     for (const item of STAT_BUTTONS) box.appendChild(viewButton(item, currentView, onSelect));
     own.appendChild(box);
   }
-  const card = own.closest?.('.diplo-ribbon-outer');
+  const card = ancestorWithClass(own, 'diplo-ribbon-outer');
   const portrait = card?.querySelector('.diplo-ribbon__portrait-image');
   if (portrait) Object.assign(portrait.style, { top: '0', left: '0', width: '100%', height: '100%' });
   placeBannerToggles(card);

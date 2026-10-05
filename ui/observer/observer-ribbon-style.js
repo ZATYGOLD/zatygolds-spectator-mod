@@ -21,35 +21,12 @@
 /**
  * Zatygold's Spectator - Observer ribbon look (in-game scope).
  *
- * The stat rows follow the Clean Slate mod's visuals: body font (lining
- * digits that line up between rows), bright value colours on the slate
- * background, the card banner tinted with the player's colour, the highest
- * value in a row on a light pill, the lowest on a black one, and negative
- * totals in bright red.
- *
- * One injected stylesheet for the Observer's ribbon:
- *   - fixed card size: every view renders into the stat-area size the Yields
- *     view uses, so switching views never re-lays out the ribbon;
- *   - cards 10% narrower than the base ribbon's; compact stat rows (small
- *     icons, short numbers), a colour per row, negatives in red and a
- *     highlight on the best leader in each Yields / Victories row (after the
- *     Diplo Ribbon Plus mod's look);
- *   - details: the game's own "Always Show Ribbon Yields" option (off: every
- *     card but the Observer's shows its stats only on hover);
- *   - a small gap between cards;
- *   - highlights: allied leaders share a portrait hex-border colour (one per
- *     alliance, no glow); glows are only for a leader at war (red) and a
- *     celebrating leader's portrait and civ banner (gold; war wins on the
- *     portrait); a coloured pip per
- *     war under the portrait shows who fights whom (one colour per war pair,
- *     kept until peace);
- *   - faith: the card's religion slot shows the leader's faith badges
- *     (observer-faith.js) side by side, each with its tooltip, the pantheon
- *     tinted amber so it does not read as a religion; a badge with an action
- *     (the pantheon) opens it when clicked;
- *   - the leader panel shows no ribbon.
+ * One injected stylesheet plus per-card marks: fixed card size across views,
+ * compact coloured stat rows (lining digits, best / worst highlights, negatives
+ * in red), the banner tinted with the player's colour, alliance / war / celebration
+ * highlights on portraits, and the leader's faith badges.
  */
-import { setStyle } from '../shared/zom-util.js';
+import { ancestorWithClass, setStyle } from '../shared/zom-util.js';
 import { HIGHLIGHT, ROW_COLORS } from './observer-config.js';
 import { diplomacySnapshot } from './observer-core.js';
 
@@ -281,12 +258,12 @@ function markFaith(panel, badgesFor, actions = {}) {
 /**
  * Per-row marks on every card: highest and lowest leader in that row (type ->
  * Set of ids; null clears), negative numbers, and the body font (lining
- * digits), as the Clean Slate mod styles its rows.
+ * digits).
  */
 function markRows(panel, best, worst = null) {
   if (!panel) return;
   for (const row of panel.querySelectorAll('.diplo-ribbon__yields .yield-item')) {
-    const id = parseInt(row.closest('.diplo-ribbon__yields')?.getAttribute('data-leader-id') ?? '', 10);
+    const id = parseInt(ancestorWithClass(row, 'diplo-ribbon__yields')?.getAttribute('data-leader-id') ?? '', 10);
     const typeClass = [...row.classList].find((c) => c.startsWith(ROW_TYPE_PREFIX));
     const type = typeClass?.slice(ROW_TYPE_PREFIX.length);
     row.classList.replace('font-title-base', 'font-body-sm');

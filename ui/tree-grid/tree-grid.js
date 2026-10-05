@@ -15,7 +15,7 @@ import { getUnlockTargetIconUrl } from '../../ui-next/screens/choosers/helpers.j
  * player.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: the leader the Observer views (everyone else: the local player)
+const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
 
 var TreeGridSourceType = /* @__PURE__ */ ((TreeGridSourceType2) => {
   TreeGridSourceType2[TreeGridSourceType2["ATTRIBUTES"] = 0] = "ATTRIBUTES";
@@ -893,7 +893,7 @@ class TreeGrid {
    *  If true notifications for ChooseTech handler can be added and not automatically dismissed
    */
   canAddChooseNotification() {
-    const player = zomLocalPlayerID();
+    const player = GameContext.localPlayerID;   // ZOM: game logic stays the local player's
     if (this.currentResearching) {
       const nodeState = Game.ProgressionTrees.getNodeState(
         player,
