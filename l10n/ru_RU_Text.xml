@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ru_RU">
 			<Text>Автоматическое завершение хода: выкл.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="ru_RU">
-			<Text>Точка зрения: выкл.[N]Включите, затем щёлкните левой кнопкой по лидеру, чтобы увидеть карту его глазами.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="ru_RU">
-			<Text>Точка зрения: вкл.[N]Щёлкните левой кнопкой по лидеру, чтобы увидеть карту его глазами.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="ru_RU">
-			<Text>Точка зрения: {1_Leader}[N]Щёлкните левой кнопкой по другому лидеру, чтобы переключиться. Щёлкните здесь или по своему портрету, чтобы снова видеть всю карту.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ru_RU">
 			<Text>Доходы</Text>
 		</Replace>

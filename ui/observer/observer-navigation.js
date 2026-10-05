@@ -22,22 +22,24 @@
  * Zatygold's Spectator - Observer navigation (in-game scope).
  *
  * For the Observer seat:
- *   - leader portraits on the ribbon: left click moves the camera to that
- *     leader's capital, right click also opens their leader panel; a left
- *     click on the Observer's own portrait moves the camera to the Observer's
- *     Eye, a right click hides or shows every card's details; while the
- *     Perspective toggle is on, a left click on a leader also shows the map
- *     as they see it, and on the Observer's own portrait turns it off
- *     (observer-perspective.js);
- *   - a settlement banner or city-center tile opens its owner's leader panel
- *     (the base game refuses unmet leaders, and the Observer meets no one).
+ *   - leader portraits on the ribbon: left click shows the map as that leader
+ *     sees it and moves the camera to their capital, and a second left click
+ *     returns to the whole map (observer-perspective.js); right click moves
+ *     the camera and opens their leader panel. On the Observer's own
+ *     portrait, left click ends a Perspective, or else moves the camera to
+ *     the Observer's Eye, and right click hides or shows every card's details;
+ *   - a settlement banner or city-center tile opens the settlement's details
+ *     (observer-settlement.js); right-clicking a banner opens its owner's
+ *     leader panel (the base game refuses unmet leaders, and the Observer
+ *     meets no one).
  */
 import { RaiseDiplomacyEvent } from 'fs://game/base-standard/ui/diplomacy/diplomacy-events.js';
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import { createLogger, findAncestor, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
 import { isObserverSeat, watchedPlayers } from './observer-core.js';
-import { isPerspectiveMode, setPerspectiveMode, viewPerspective } from './observer-perspective.js';
+import { endPerspective, togglePerspective } from './observer-perspective.js';
 import { isDetailsHidden, setDetailsHidden } from './observer-ribbon-style.js';
+import { showSettlement } from './observer-settlement.js';
 
 const log = createLogger('observer-navigation');
 
@@ -54,11 +56,15 @@ function lookAtPlayer(playerId) {
   } catch (e) { log(`look-at failed: ${e}`); }
 }
 
-/** The leader owning the settlement whose banner shows this name. */
-function ownerOfBanner(banner) {
+/** The settlement whose banner shows this name. */
+function settlementOfBanner(banner) {
   const name = banner.querySelector('.city-banner__name')?.textContent?.trim();
   if (!name) return null;
-  return watchedPlayers().find((p) => (p.Cities?.getCities?.() ?? []).some((city) => Locale.compose(city.name) === name))?.id ?? null;
+  for (const player of watchedPlayers()) {
+    const city = (player.Cities?.getCities?.() ?? []).find((c) => Locale.compose(c.name) === name);
+    if (city) return city;
+  }
+  return null;
 }
 
 /** The ribbon portrait (and its player id) under an event target, or null. */
@@ -73,37 +79,39 @@ function onEngineInput(ev) {
   const d = ev.detail;
   if (!d || !['mousebutton-left', 'mousebutton-right', 'accept'].includes(d.name) || !isObserverSeat()) return;
   try {
-    const banner = d.name === 'mousebutton-left' ? findAncestor(ev.target, (el) => el.classList?.contains('city-banner')) : null;
-    const bannerOwner = banner ? ownerOfBanner(banner) : null;
-    const portraitId = bannerOwner == null ? portraitTarget(ev.target) : null;
-    if (bannerOwner == null && portraitId == null) return;
+    const banner = d.name === 'accept' ? null : findAncestor(ev.target, (el) => el.classList?.contains('city-banner'));
+    const settlement = banner ? settlementOfBanner(banner) : null;
+    const portraitId = settlement ? null : portraitTarget(ev.target);
+    if (!settlement && portraitId == null) return;
     ev.stopPropagation();
     ev.preventDefault();
     if (d.status !== InputActionStatuses.FINISH) return;
-    if (bannerOwner != null) { openLeaderPanel(bannerOwner); return; }
-    if (d.name === 'mousebutton-right' && portraitId === GameContext.localPlayerID) { setDetailsHidden(!isDetailsHidden()); return; }
-    if (d.name !== 'mousebutton-right' && isPerspectiveMode()) {
-      if (portraitId === GameContext.localPlayerID) { setPerspectiveMode(false); return; }
-      viewPerspective(portraitId);
+    if (settlement) {
+      if (d.name === 'mousebutton-right') openLeaderPanel(settlement.owner);
+      else showSettlement(settlement.id);
+      return;
     }
+    const own = portraitId === GameContext.localPlayerID;
+    if (d.name === 'mousebutton-right') {
+      if (own) { setDetailsHidden(!isDetailsHidden()); return; }
+      lookAtPlayer(portraitId);
+      if (!isObserverPlayer(portraitId)) openLeaderPanel(portraitId);
+      return;
+    }
+    if (own ? endPerspective() : !togglePerspective(portraitId)) return;
     lookAtPlayer(portraitId);
-    if (d.name === 'mousebutton-right' && !isObserverPlayer(portraitId)) openLeaderPanel(portraitId);
   } catch (e) { log(`click failed: ${e}`); }
 }
 
-/** City-center tiles open their owner's leader panel; every other tile keeps the base behaviour. */
+/** City-center tiles open the settlement's details; every other tile keeps the base behaviour. */
 function patchCityCenterClicks() {
   wrapMethod(WorldInput, 'handleSelectedPlotCity', (base, location, ...rest) => {
     if (!isObserverSeat()) return base(location, ...rest);
     try {
       const districtId = MapCities.getDistrict(location.x, location.y);
       const district = districtId ? Districts.get(districtId) : null;
-      const owner = district?.cityId && district.type == DistrictTypes.CITY_CENTER ? Cities.get(district.cityId)?.owner : null;
-      const player = owner != null ? Players.get(owner) : null;
-      if (player && (player.isMajor || player.isMinor || player.isIndependent) && !isObserverPlayer(owner)) {
-        openLeaderPanel(owner);
-        return false;
-      }
+      const city = district?.cityId && district.type === DistrictTypes.CITY_CENTER ? Cities.get(district.cityId) : null;
+      if (city && !isObserverPlayer(city.owner) && showSettlement(city.id)) return false;
     } catch (e) { log(`city center click failed: ${e}`); }
     return base(location, ...rest);
   });

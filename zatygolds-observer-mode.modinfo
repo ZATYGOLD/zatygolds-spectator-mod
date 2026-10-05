@@ -167,6 +167,7 @@
                     <Item>ui/observer/observer-perspective.js</Item>
                     <Item>ui/observer/observer-ribbon-toolbar.js</Item>
                     <Item>ui/observer/observer-ribbon.js</Item>
+                    <Item>ui/observer/observer-settlement.js</Item>
                     <Item>ui/observer/observer-navigation.js</Item>
                     <Item>ui/observer/observer-victory.js</Item>
                     <Item>ui/observer/observer-diplomacy.js</Item>

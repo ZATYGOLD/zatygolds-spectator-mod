@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="fr_FR">
 			<Text>Fin de tour auto : désactivée</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="fr_FR">
-			<Text>Perspective : désactivée[N]Activez-la, puis faites un clic gauche sur un dirigeant pour voir la carte comme il la voit.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="fr_FR">
-			<Text>Perspective : activée[N]Faites un clic gauche sur un dirigeant pour voir la carte comme il la voit.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="fr_FR">
-			<Text>Perspective : {1_Leader}[N]Clic gauche sur un autre dirigeant pour changer. Cliquez ici ou sur votre propre portrait pour revoir toute la carte.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="fr_FR">
 			<Text>Rendements</Text>
 		</Replace>

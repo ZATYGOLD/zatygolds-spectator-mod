@@ -25,7 +25,9 @@
  * tech / civic tree screens the leader picker of observer-leader-view.js:
  *   - Religion (panel-belief-picker): the viewed leader's religion is the
  *     screen's own (first tab); a leader without one gets a note instead of
- *     another leader's religion; nothing can be chosen, founded or confirmed;
+ *     another leader's religion; the leader's pantheons are listed last, under
+ *     their own title (observer-faith.js, every Age); nothing can be chosen,
+ *     founded or confirmed;
  *   - Great Works: the picker row under the title (the slots themselves come
  *     from the model-great-works.js override);
  *   - tech and civic trees: the picker row under the title (the progress
@@ -40,6 +42,7 @@ import { ContextManager } from 'fs://game/core/ui/context-manager/context-manage
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
 import { createLogger, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { SCREEN_PROPS } from './observer-core.js';
+import { pantheons } from './observer-faith.js';
 import { BAR_CLASS, setRefresh, viewedPlayerID } from './observer-leader-view.js';
 
 const log = createLogger('observer-leader-screens');
@@ -79,6 +82,7 @@ const TREES = [
 ];
 const CHOOSER_TAGS = new Set(TREES.map((t) => t.chooser));
 const NOTE_CLASS = 'zom-observer-no-religion';
+const PANTHEON_CLASS = 'zom-observer-pantheon';
 const GREAT_WORKS_BAR_STYLE = { marginTop: '-1rem', marginBottom: '1.5rem' };   // clear of the frame's top border
 
 const viewedPlayer = () => {
@@ -95,16 +99,43 @@ function insertBar(anchor, screenTag, before = true) {
 
 // ============================ Religion ============================
 
-/** Base layout for "no religion": the religion area and its tabs hidden, plus a note. */
+/** "No religion": the religion's tabs, icon and belief sections hidden, a note in their place (the pantheon section stays). */
 function showNoReligion(root, player) {
-  root.querySelector('.belief-picker_belief-choices')?.classList.add('opacity-0');
+  const choices = root.querySelector('.belief-picker_belief-choices');
   root.querySelector('.belief-picker_belief-tabs')?.classList.add('hidden');
   root.querySelector('.belief-picker-main-icon')?.classList.add('hidden');
-  if (root.querySelector('.' + NOTE_CLASS)) return;
+  if (!choices || choices.querySelector('.' + NOTE_CLASS)) return;
+  for (const child of choices.children) if (!child.classList.contains(PANTHEON_CLASS)) child.classList.add('hidden');
+  choices.classList.remove('opacity-0');
   const note = document.createElement('p');
-  note.classList.value = `${NOTE_CLASS} font-body-base text-accent-2 text-center self-center mt-6`;
+  note.classList.value = `${NOTE_CLASS} font-body-base text-accent-2 text-center self-center mt-6 mb-6`;
   note.textContent = Locale.compose('LOC_ZOM_OBSERVER_NO_RELIGION', player.name);
-  root.querySelector('.belief-picker_belief-choices')?.parentElement?.prepend(note);
+  choices.prepend(note);
+}
+
+/** A belief row in the screen's own item, as its filled belief slots are built. */
+function beliefItem(node) {
+  const item = document.createElement('belief-picker-chooser-item');
+  item.whenComponentCreated((chooser) => { chooser.beliefPickerChooserNode = node; });
+  return item;
+}
+
+/** The leader's pantheons as the last section of the belief list, titled like the others (any Age; all game with the Multiplayer Balance Mod). */
+function addPantheonSection(root, player) {
+  const choices = root.querySelector('.belief-picker_belief-choices');
+  const list = pantheons(player);
+  if (!choices || !list.length || choices.querySelector('.' + PANTHEON_CLASS)) return;
+  const header = document.createElement('fxs-header');
+  header.classList.value = `${PANTHEON_CLASS} font-title-lg text-secondary`;
+  header.setAttribute('title', 'LOC_BELIEF_CLASS_PANTHEON_NAME');
+  header.setAttribute('filigree-style', 'h4');
+  const container = document.createElement('div');
+  container.classList.value = `${PANTHEON_CLASS} belief-container flex flex-col items-center m-3 justify-center w-full`;
+  for (const p of list) {
+    container.appendChild(beliefItem({ name: p.name, primaryIcon: UI.getIconURL(p.type, 'PANTHEONS'), description: p.description, isSwappable: false, isLocked: false }));
+  }
+  choices.append(header, container);
+  choices.style.height = 'auto';   // the list grows past the base's fixed height; the frame scrolls
 }
 
 function patchReligion(proto) {
@@ -129,6 +160,7 @@ function patchReligion(proto) {
       this.beliefConfirmButton?.classList.add('hidden');
       this.backButton?.classList.add('hidden');
       insertBar(this.Root.querySelector('.belief-picker_belief-tabs'), RELIGION_TAG);
+      addPantheonSection(this.Root, viewed);
       if (!viewed.Religion?.hasCreatedReligion()) showNoReligion(this.Root, viewed);
     } catch (e) { log(`religion screen patch failed: ${e}`); }
     return result;

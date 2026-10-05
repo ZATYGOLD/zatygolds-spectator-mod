@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="de_DE">
 			<Text>Automatisches Rundenende: Aus</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="de_DE">
-			<Text>Perspektive: Aus[N]Einschalten, dann einen Anführer mit Linksklick wählen, um die Karte mit seinen Augen zu sehen.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="de_DE">
-			<Text>Perspektive: An[N]Linksklick auf einen Anführer, um die Karte mit seinen Augen zu sehen.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="de_DE">
-			<Text>Perspektive: {1_Leader}[N]Linksklick auf einen anderen Anführer zum Wechseln. Hier oder auf dein eigenes Porträt klicken, um wieder die ganze Karte zu sehen.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="de_DE">
 			<Text>Erträge</Text>
 		</Replace>

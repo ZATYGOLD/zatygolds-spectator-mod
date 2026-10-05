@@ -39,10 +39,11 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
   highlighted, negatives banded red), **Research**, **Production** and
   **Victories**.
 - Right-click your portrait to hide or show details (the game's "Always Show
-  Ribbon Yields" option); left-click it to jump to the Eye.
-- Left-click a leader to jump to their capital; right-click also opens their
-  leader panel (wars listed, no actions). Settlement banners and city centers
-  open the owner's panel.
+  Ribbon Yields" option); left-click it to end a Perspective, or else to jump
+  to the Eye.
+- Left-click a leader to see their Perspective and jump to their capital;
+  right-click to jump there and open their leader panel (wars listed, no
+  actions).
 - Allies share a hex-border colour (no glow); leaders at war glow red with a
   pip per war; celebrations glow gold. Each card shows every faith badge the
   leader holds, side by side: pantheon, religion, ideology (with the
@@ -50,14 +51,20 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
   pantheon badge for its effects, or click it to see every leader's
   pantheons, in any Age.
 
-**Perspective:** the eye button under Victories on your card. Turn it on and
-left-click a leader to see the map as they see it: tiles they see now look
-normal, tiles they explored earlier are dark grey (with greyed resource
-icons), tiles they never explored are black, and unit flags, settlement
-banners and floating map texts follow what they can see. The camera keeps
-the game's normal zoom range meanwhile. Their portrait carries the eye.
-Left-click another leader to switch; click the button or your own portrait
-to see the whole map again. It only changes what you see, never the game.
+**Perspective:** left-click a leader's portrait to see the map as they see
+it: tiles they see now look normal, tiles they explored earlier are dark
+grey (with greyed resource icons), tiles they never explored are black, and
+unit flags, settlement banners and floating map texts follow what they can
+see. The camera keeps the game's normal zoom range meanwhile. Their portrait
+carries the eye. Left-click another leader to switch; click the same leader
+again, or your own portrait, to see the whole map again. It only changes
+what you see, never the game.
+
+**Settlements:** click any settlement's banner or city center to open the
+game's City Details for it (Town Details for a town): growth, buildings,
+improvements, wonders, connections and yields, as its owner sees them. The
+arrows step through that leader's other settlements. Right-click a banner to
+open its owner's leader panel instead.
 
 **Yield Graphs:** a button in the HUD's screen dock opens line graphs of
 every leader's science, culture, gold, influence, food and production per
@@ -146,13 +153,18 @@ they load only in a game with a Spectator (modinfo criteria
   the eye. Changing the start Age keeps the matching Observers civilization.
 - **Perspective** — see the map as any leader sees it: their fog of war,
   explored and unexplored tiles, and only the unit flags and settlement
-  banners they can see (a toggle on the Spectator's ribbon card).
+  banners they can see (left-click a leader's portrait; click it again to
+  return).
+- **Settlement details** — clicking a settlement opens the game's City
+  Details (or Town Details) for it, read-only; right-clicking its banner
+  opens the owner's leader panel.
 - **Faith badges** — ribbon cards show the pantheon, religion and ideology
   together, adding up over the Ages instead of replacing each other; with
   the Multiplayer Balance Mod the pantheon stays after Antiquity (read from
   that mod's own pantheon record), and clicking it opens every leader's
-  pantheons in any Age. The Religion screen stays available in Modern, where
-  the game drops its button. The Multiplayer Balance Mod's third memento
+  pantheons in any Age. The Religion screen lists the viewed leader's
+  pantheon under its own Pantheon heading, and stays available in
+  Modern, where the game drops its button. The Multiplayer Balance Mod's third memento
   slot is turned off for the Spectator too.
 - **The Observers** — the Spectator's civilization has its own name, so the
   leader and the civilization no longer both read "Spectator" (every

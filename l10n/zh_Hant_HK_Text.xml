@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="zh_Hant_HK">
 			<Text>自動結束回合：關</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="zh_Hant_HK">
-			<Text>視角：關[N]開啟後左鍵點擊一位領袖，即可以其視角查看地圖。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="zh_Hant_HK">
-			<Text>視角：開[N]左鍵點擊一位領袖，即可以其視角查看地圖。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="zh_Hant_HK">
-			<Text>視角：{1_Leader}[N]左鍵點擊其他領袖可切換。點擊此處或你自己的頭像可重新查看整張地圖。</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="zh_Hant_HK">
 			<Text>收益</Text>
 		</Replace>

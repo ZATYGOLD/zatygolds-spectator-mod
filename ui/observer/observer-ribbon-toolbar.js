@@ -26,14 +26,12 @@
  * every other card between Yields | Production, Research and Victories. The
  * card's banner, between the portrait and the civ symbol, holds the Auto End
  * Turn toggle (observer-turn.js); the civ symbol, smaller, sits under it.
- * The buttons form one column; the Perspective toggle (observer-perspective.js)
- * comes last, under Victories.
+ * The buttons form one column.
  * Right-clicking the card's portrait hides or shows every card's details
  * (observer-navigation.js); its tooltip says so.
  */
 import { ICONS, OBSERVER_VIEW } from './observer-config.js';
 import { isDetailsHidden, markOwnCard } from './observer-ribbon-style.js';
-import { isPerspectiveMode, PERSPECTIVE_CHANGED_EVENT, perspectivePlayer, setPerspectiveMode } from './observer-perspective.js';
 import { isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
 
 const BUTTONS_CLASS = 'zom-observer-view-buttons';
@@ -77,30 +75,19 @@ const GLYPHS = {
   [OBSERVER_VIEW.SCORE]: (icon) => { icon.style.backgroundImage = `url("${ICONS.victories}")`; }
 };
 
-/** The Perspective toggle's tooltip: off, waiting for a leader, or whose view is shown. */
-function perspectiveText() {
-  if (!isPerspectiveMode()) return Locale.compose('LOC_ZOM_OBSERVER_PERSPECTIVE_OFF');
-  const id = perspectivePlayer();
-  const name = id != null ? Players.get(id)?.name : null;
-  return name ? Locale.compose('LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER', Locale.compose(name)) : Locale.compose('LOC_ZOM_OBSERVER_PERSPECTIVE_PICK');
-}
-
 /** Toggles: pressed while on; text() is the tooltip for the current state. */
 const AUTO_END_TOGGLE = { cls: 'zom-observer-auto-end', icon: ICONS.endTurn, isOn: isAutoEndTurn, set: setAutoEndTurn,
   text: () => Locale.compose(isAutoEndTurn() ? 'LOC_ZOM_OBSERVER_AUTO_END_TURN_ON' : 'LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF') };
-const PERSPECTIVE_TOGGLE = { cls: 'zom-observer-perspective', icon: ICONS.perspective, isOn: isPerspectiveMode, set: setPerspectiveMode, text: perspectiveText };
 
 /** The banner toggles, top to bottom. */
 const BANNER_TOGGLES = [AUTO_END_TOGGLE];
-const ALL_TOGGLES = [AUTO_END_TOGGLE, PERSPECTIVE_TOGGLE];
 
-/** Stat-area buttons, top to bottom: views, then toggles. */
+/** Stat-area view buttons, top to bottom. */
 const STAT_BUTTONS = [
   { view: OBSERVER_VIEW.YIELDS, loc: 'LOC_ZOM_OBSERVER_YIELDS' },
   { view: OBSERVER_VIEW.PRODUCTION, loc: 'LOC_ZOM_OBSERVER_PRODUCTION' },
   { view: OBSERVER_VIEW.RESEARCH, loc: 'LOC_ZOM_OBSERVER_TECHS_CIVICS' },
-  { view: OBSERVER_VIEW.SCORE, loc: 'LOC_PEDIA_VICTORIES_TITLE' },
-  { toggle: PERSPECTIVE_TOGGLE }
+  { view: OBSERVER_VIEW.SCORE, loc: 'LOC_PEDIA_VICTORIES_TITLE' }
 ];
 
 /** A round lens-style button; drawGlyph fills its icon. */
@@ -141,7 +128,7 @@ function showToggleState(btn, toggle) {
 
 /** Every toggle's state under root. */
 function refreshToggles(root) {
-  for (const toggle of ALL_TOGGLES) {
+  for (const toggle of BANNER_TOGGLES) {
     Array.prototype.forEach.call(root?.querySelectorAll('.' + toggle.cls) ?? [], (btn) => showToggleState(btn, toggle));
   }
 }
@@ -198,7 +185,7 @@ function placeViewButtons(panel, currentView, onSelect) {
     const box = document.createElement('div');
     box.classList.add(BUTTONS_CLASS, 'pointer-events-auto');
     box.style.cssText = 'display: flex; flex-direction: column; align-items: center; padding: 0.4rem 0;';
-    for (const item of STAT_BUTTONS) box.appendChild(item.toggle ? toggleButton(item.toggle) : viewButton(item, currentView, onSelect));
+    for (const item of STAT_BUTTONS) box.appendChild(viewButton(item, currentView, onSelect));
     own.appendChild(box);
   }
   const card = own.closest?.('.diplo-ribbon-outer');
@@ -209,7 +196,5 @@ function placeViewButtons(panel, currentView, onSelect) {
   setPortraitTooltip(card);
   markOwnCard(card);
 }
-
-window.addEventListener(PERSPECTIVE_CHANGED_EVENT, () => refreshToggles(document.querySelector('panel-diplo-ribbon')));
 
 export { placeViewButtons };

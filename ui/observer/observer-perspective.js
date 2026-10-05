@@ -21,10 +21,9 @@
 /**
  * Zatygold's Spectator - Observer perspective (in-game scope).
  *
- * The Observer's Eye sees the whole map. The Perspective toggle on the
- * Observer's ribbon card (observer-ribbon-toolbar.js) shows the map as one
- * leader sees it instead: while it is on, left-clicking a leader's portrait
- * (observer-navigation.js) picks that leader.
+ * The Observer's Eye sees the whole map. Left-clicking a leader's ribbon
+ * portrait (observer-navigation.js) shows the map as that leader sees it
+ * instead; clicking the same portrait again, or the Observer's own, ends it.
  *   - Fog: tiles the leader never explored are blacked out by a region colour
  *     filter (as the game's tile purchase uses), which also blacks out
  *     mountains, vegetation and units there, plus an opaque black plot
@@ -82,7 +81,6 @@ const RESOURCE_TYPE_OFFSET = { x: 0, y: -16 };
 
 const log = createLogger('observer-perspective', CONFIG.debug);
 
-let enabled = false;       // the Perspective toggle
 let viewed = null;         // the player whose view is shown
 let filterPushed = false;
 let suppressedResources = false;
@@ -94,8 +92,6 @@ let seenResources = null;       // fog-of-war resource icons on tiles seen befor
 let seenResourceTypes = null;
 const [revision, setRevision] = createSignal(0);   // settlement banners re-check their visibility when it changes
 
-const isPerspectiveMode = () => enabled;
-const perspectivePlayer = () => viewed;
 const isActive = () => viewed != null && isObserverSeat();
 
 // ============================ Visibility ============================
@@ -292,18 +288,19 @@ function apply() {
   window.dispatchEvent(new CustomEvent(PERSPECTIVE_CHANGED_EVENT));
 }
 
-/** The toggle: off also returns to the Observer's own (whole) view. */
-function setPerspectiveMode(on) {
-  enabled = !!on;
-  if (!enabled) viewed = null;
+/** Show the player's view, or return to the Observer's own when it is already shown. Returns whether it is now shown. */
+function togglePerspective(playerId) {
+  viewed = viewed === playerId ? null : playerId;
   apply();
+  return viewed != null;
 }
 
-/** Show the player's view (only while the toggle is on). */
-function viewPerspective(playerId) {
-  if (!enabled || playerId === viewed) return;
-  viewed = playerId;
+/** Return to the Observer's own (whole) view. Returns whether a Perspective was shown. */
+function endPerspective() {
+  if (viewed == null) return false;
+  viewed = null;
   apply();
+  return true;
 }
 
 const queueRedraw = deferOnce(() => {
@@ -318,9 +315,9 @@ function install() {
   patchVisibilityLookups();
   patchFlagsAndBanners();
   for (const event of REFRESH_EVENTS) engine.on(event, () => { if (isActive()) queueRedraw(); });
-  engine.on('BeforeUnload', () => { enabled = false; viewed = null; clearMap(); });
+  engine.on('BeforeUnload', () => { viewed = null; clearMap(); });
 }
 
 try { install(); } catch (e) { log(`install failed: ${e}`); }
 
-export { PERSPECTIVE_CHANGED_EVENT, isActive as isPerspectiveActive, isPerspectiveMode, markPerspectiveCard, perspectivePlayer, setPerspectiveMode, viewPerspective };
+export { PERSPECTIVE_CHANGED_EVENT, endPerspective, isActive as isPerspectiveActive, markPerspectiveCard, togglePerspective };

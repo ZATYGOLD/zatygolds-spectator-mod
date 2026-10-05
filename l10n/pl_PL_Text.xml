@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="pl_PL">
 			<Text>Automatyczny koniec tury: wył.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="pl_PL">
-			<Text>Perspektywa: wył.[N]Włącz ją, a potem kliknij lewym przyciskiem przywódcę, aby zobaczyć mapę jego oczami.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="pl_PL">
-			<Text>Perspektywa: wł.[N]Kliknij lewym przyciskiem przywódcę, aby zobaczyć mapę jego oczami.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="pl_PL">
-			<Text>Perspektywa: {1_Leader}[N]Kliknij lewym przyciskiem innego przywódcę, aby zmienić. Kliknij tutaj lub swój portret, aby znów widzieć całą mapę.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="pl_PL">
 			<Text>Dochody</Text>
 		</Replace>

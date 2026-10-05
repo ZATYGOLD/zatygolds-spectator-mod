@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ja_JP">
 			<Text>自動ターン終了: オフ</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="ja_JP">
-			<Text>視点: オフ[N]オンにしてから指導者を左クリックすると、その指導者が見ているマップを表示します。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="ja_JP">
-			<Text>視点: オン[N]指導者を左クリックすると、その指導者が見ているマップを表示します。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="ja_JP">
-			<Text>視点: {1_Leader}[N]別の指導者を左クリックで切り替え。ここか自分の肖像をクリックすると、マップ全体の表示に戻ります。</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ja_JP">
 			<Text>産出</Text>
 		</Replace>

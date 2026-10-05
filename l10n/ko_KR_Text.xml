@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ko_KR">
 			<Text>자동 턴 종료: 꺼짐</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="ko_KR">
-			<Text>시점: 꺼짐[N]켠 다음 지도자를 좌클릭하면 그 지도자가 보는 지도를 봅니다.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="ko_KR">
-			<Text>시점: 켜짐[N]지도자를 좌클릭하면 그 지도자가 보는 지도를 봅니다.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="ko_KR">
-			<Text>시점: {1_Leader}[N]다른 지도자를 좌클릭하면 바뀝니다. 여기나 자신의 초상화를 클릭하면 다시 지도 전체를 봅니다.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ko_KR">
 			<Text>산출량</Text>
 		</Replace>

@@ -79,15 +79,6 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="es_ES">
 			<Text>Terminar turno automáticamente: No</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_OFF" Language="es_ES">
-			<Text>Perspectiva: No[N]Actívala y haz clic izquierdo en un líder para ver el mapa como lo ve él.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_PICK" Language="es_ES">
-			<Text>Perspectiva: Sí[N]Haz clic izquierdo en un líder para ver el mapa como lo ve él.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_PERSPECTIVE_LEADER" Language="es_ES">
-			<Text>Perspectiva: {1_Leader}[N]Haz clic izquierdo en otro líder para cambiar. Haz clic aquí o en tu propio retrato para volver a ver todo el mapa.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="es_ES">
 			<Text>Rendimientos</Text>
 		</Replace>
