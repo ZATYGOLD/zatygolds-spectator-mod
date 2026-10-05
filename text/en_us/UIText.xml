@@ -64,6 +64,12 @@
 		<Row Tag="LOC_ZOM_OBSERVER_NO_RELIGION">
 			<Text>{1_Leader} has not founded a religion yet.</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED">
+			<Text>Religious beliefs end with the Exploration Age. The religion and its followers remain.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS">
+			<Text>Suzerain Bonus</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH">
 			<Text>At war with {1_Leader}</Text>
 		</Row>

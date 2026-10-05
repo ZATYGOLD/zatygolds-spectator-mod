@@ -31,6 +31,10 @@
  *     overlay on the ground; 3D models there (units too) stay drawn, since
  *     only one colour filter applies at a time (tested in-game) and no
  *     per-unit model API exists.
+ *   - Minimap: the engine draws it for the Observer, so a canvas over it
+ *     blacks out the tiles the leader never explored and greys the ones they
+ *     saw before, placed by the minimap's own projection (minimapToWorld
+ *     against the plots' world positions).
  *   - Resource icons: suppressed on unexplored tiles (the resource layer's own
  *     suppressPlots); on tiles seen before they are redrawn with the game's
  *     greyed fog-of-war icons (the layer's FOW variants), as the game does.
@@ -41,16 +45,23 @@
  *     health bars, floating world texts ("+1 Food") and the like.
  *   - Unit flags, district health bars and settlement banners are re-applied
  *     on every change (the flags' and bars' setVisibility; the ui-next
- *     CityBanner component is overridden), and floating world texts on tiles
- *     the leader does not see are dropped.
- *   - The picked leader's ribbon portrait carries the eye.
+ *     CityBanner reads bannerVisible, observer-banners.js), and floating
+ *     world texts on tiles the leader does not see are dropped.
+ *   - Without a Perspective the Observer's settlement banners follow the
+ *     Observer's own revealed tiles: the visibility an engine event carries
+ *     can hide an independent's or city-state's banner on a tile the
+ *     Observer sees.
+ *   - The picked leader's ribbon card carries the eye, centred between the
+ *     portrait and the civ symbol; the ribbon lists only the leaders they
+ *     have met (observer-ribbon.js).
+ *   - The top yield bar, the empire screens and the tech / civic trees show
+ *     the picked leader (observer-yields.js, observer-leader-view.js).
  * The game's real fog of war is drawn by the engine for the local observer
  * only, with no per-tile API, so it cannot be moved to another leader.
  * Only drawing changes, never game state. Redrawn (debounced) when units move,
  * appear or leave, and at every turn.
  */
-import { createSignal, mergeProps } from 'fs://game/core/vendor/solid-js/dist/solid.js';
-import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-registry.js';
+import { createSignal } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import LensManager from 'fs://game/core/ui/lenses/lens-manager.js';
 import { CityBannerComponent } from 'fs://game/base-standard/ui/city-banners/city-banners.js';
 import { ResourceLensLayer } from 'fs://game/base-standard/ui/lenses/layer/resource-layer.js';
@@ -61,17 +72,24 @@ import { UnitFlagManager } from 'fs://game/base-standard/ui/unit-flags/unit-flag
 import { GenericUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags.js';
 import { IndependentPowersUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags-independent-powers.js';
 import { OVERLAY_PRIORITY } from 'fs://game/base-standard/ui/utilities/utilities-overlay.js';
-import 'fs://game/base-standard/ui-next/screens/city-banners/city-banner.js';
-import { createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, deferOnce, findAncestor, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, ICONS } from './observer-config.js';
 import { isObserverSeat } from './observer-core.js';
 
 const PERSPECTIVE_CHANGED_EVENT = 'zom-perspective-changed';
 const REFRESH_EVENTS = ['UnitMoveComplete', 'UnitAddedToMap', 'UnitRemovedFromMap', 'PlayerTurnActivated'];
 const BADGE_CLASS = 'zom-perspective-badge';
-const BADGE_STYLE = `position: absolute; top: -0.1rem; right: -0.1rem; width: 1.4rem; height: 1.4rem; z-index: 5; pointer-events: none;
+const BADGE_SIZE_REM = 1.4;
+// The card banner's gap: the portrait hex ends about 2.8rem down, the civ symbol starts at 5rem (mt-20).
+const BADGE_TOP_REM = 2.8 + (5 - 2.8 - BADGE_SIZE_REM) / 2;
+const BADGE_STYLE = `position: absolute; top: ${BADGE_TOP_REM}rem; left: 50%; margin-left: ${-BADGE_SIZE_REM / 2}rem;
+  width: ${BADGE_SIZE_REM}rem; height: ${BADGE_SIZE_REM}rem; z-index: 5; pointer-events: none;
   background-image: url("${ICONS.perspective}"); background-size: contain; background-repeat: no-repeat; background-position: center;`;
-const OVERRIDE_PRIORITY = 1;
+const MINIMAP_CLASS = 'zom-perspective-minimap';
+const MINIMAP_CANVAS_PX = { width: 480, height: 300 };
+const MINIMAP_TILE_OVERLAP = 1.1;   // opaque hexes drawn as slightly larger rectangles leave no gaps (translucent ones would darken where they overlap)
+const MINIMAP_BORDER_ROWS = 2;      // fallback projection: sea rows above and below the map (panel-mini-map.js)
+const PLOT_ORIGIN = { x: 0, y: 0, z: 0 };
 const RESOURCE_LAYER = 'fxs-resource-layer';
 // As resource-layer.js draws its icons.
 const RESOURCE_POSITION = { x: 0, y: 25, z: 5 };
@@ -93,6 +111,14 @@ let seenResourceTypes = null;
 const [revision, setRevision] = createSignal(0);   // settlement banners re-check their visibility when it changes
 
 const isActive = () => viewed != null && isObserverSeat();
+/** The leader whose view is shown, else null. */
+const perspectivePlayer = () => (isActive() ? viewed : null);
+
+/** Whether the shown view includes this leader: always without a Perspective, else the viewed leader and those they met. */
+function isKnownInPerspective(playerId) {
+  if (!isActive() || playerId === viewed) return true;
+  try { return !!Players.get(viewed)?.Diplomacy?.hasMet(playerId); } catch (e) { return false; }
+}
 
 // ============================ Visibility ============================
 
@@ -143,8 +169,9 @@ function clearMap() {
 /** Fog for the viewed leader; redrawn only when their revealed tiles changed. */
 function drawMap() {
   const states = revealedStates(viewed);
-  if (!states.length) { clearMap(); return; }
+  if (!states.length) { clearMap(); clearMinimap(); return; }
   const key = Array.prototype.join.call(states, '');
+  drawMinimap(states, key);
   if (key === shownKey) return;
   clearMap();
   const unexplored = plotsWhere(states, (s) => s === RevealedStates.HIDDEN);
@@ -161,6 +188,79 @@ function drawMap() {
   drawSeenResources(seen);
   shownKey = key;
   log.debug(`perspective of player ${viewed} drawn`);
+}
+
+/**
+ * Plot -> minimap position as fractions of the image (u right, v down, the
+ * plot's centre) and a tile's size in those fractions. Calibrated from the
+ * minimap's own projection (its input v runs upwards); else the base minimap's
+ * highlight formula.
+ */
+function minimapProjection() {
+  const width = GameplayMap.getGridWidth();
+  const height = GameplayMap.getGridHeight();
+  try {
+    const a = WorldUI.minimapToWorld({ x: 0.25, y: 0.25 });
+    const b = WorldUI.minimapToWorld({ x: 0.75, y: 0.75 });
+    const plot = (x, y) => WorldUI.getPlotLocation({ x, y }, PLOT_ORIGIN, PlacementMode.TERRAIN);
+    const origin = plot(0, 0);
+    const right = plot(1, 0);
+    const up = plot(0, 1);
+    if (a && b && origin && right && up && a.x !== b.x && a.y !== b.y) {
+      const col = right.x - origin.x;
+      const row = up.y - origin.y;
+      const oddShift = up.x - origin.x;
+      const scaleU = 0.5 / (b.x - a.x);
+      const scaleV = 0.5 / (b.y - a.y);
+      return {
+        tile: { u: Math.abs(col * scaleU), v: Math.abs(row * scaleV) },
+        at: (loc) => {
+          const wx = origin.x + loc.x * col + (loc.y % 2 ? oddShift : 0);
+          const wy = origin.y + loc.y * row;
+          return { u: 0.25 + (wx - a.x) * scaleU, v: 1 - (0.25 + (wy - a.y) * scaleV) };
+        }
+      };
+    }
+  } catch (e) { log.debug(`minimap projection unavailable: ${e}`); }
+  const rows = height + 2 * MINIMAP_BORDER_ROWS + 0.5;
+  return {
+    tile: { u: 1 / (width + 0.5), v: 1 / rows },
+    at: (loc) => ({ u: (loc.x + (loc.y % 2 ? 0.5 : 0) + 0.5) / (width + 0.5), v: (height - 1 - loc.y + MINIMAP_BORDER_ROWS + 0.5) / rows })
+  };
+}
+
+/** The minimap's mask for these revealed states (kept while unchanged; re-added if the minimap was rebuilt). */
+function drawMinimap(states, key) {
+  const image = document.querySelector('.mini-map__image');
+  if (!image) return;
+  let canvas = image.querySelector('.' + MINIMAP_CLASS);
+  if (canvas?.getAttribute('data-key') === key) return;
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.classList.add(MINIMAP_CLASS);
+    canvas.style.cssText = 'position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;';
+    canvas.width = MINIMAP_CANVAS_PX.width;
+    canvas.height = MINIMAP_CANVAS_PX.height;
+    image.appendChild(canvas);
+  }
+  const projection = minimapProjection();
+  const tileW = projection.tile.u * canvas.width;
+  const tileH = projection.tile.v * canvas.height;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < states.length; i++) {
+    if (states[i] === RevealedStates.VISIBLE) continue;
+    const unexplored = states[i] === RevealedStates.HIDDEN;
+    const scale = unexplored ? MINIMAP_TILE_OVERLAP : 1;
+    const { u, v } = projection.at(GameplayMap.getLocationFromIndex(i));
+    ctx.fillStyle = unexplored ? CONFIG.perspectiveMinimapUnexplored : CONFIG.perspectiveMinimapSeen;
+    ctx.fillRect(u * canvas.width - (tileW * scale) / 2, v * canvas.height - (tileH * scale) / 2, tileW * scale, tileH * scale);
+  }
+  canvas.setAttribute('data-key', key);
+}
+
+function clearMinimap() {
+  Array.prototype.forEach.call(document.querySelectorAll('.' + MINIMAP_CLASS), (canvas) => canvas.remove());
 }
 
 /** The game's greyed fog-of-war resource icons on the given plots. */
@@ -214,16 +314,14 @@ function refreshFlagsAndBanners() {
   setRevision((r) => r + 1);
 }
 
-/** A settlement banner's data with status.visible following the viewed leader while active. */
-function perspectiveBannerData(props) {
-  const visible = () => {
-    revision();
-    const own = props.data.status.visible;
-    const loc = props.location ?? props.data.identity?.location;
-    return isActive() && loc ? isExploredBy(viewed, loc) : own;
-  };
-  const status = new Proxy({}, { get: (_, key) => (key === 'visible' ? visible() : props.data.status[key]) });
-  return new Proxy({}, { get: (_, key) => (key === 'status' ? status : props.data[key]) });
+/** The seat whose revealed tiles settlement banners follow: the viewed leader, else the Observer; null for other seats. */
+const bannerSeat = () => (isActive() ? viewed : (isObserverSeat() ? GameContext.localObserverID : null));
+
+/** Whether a settlement banner shows: on tiles bannerSeat() explored, else as the banner's own data says (re-read on every redraw). */
+function bannerVisible(loc, ownVisible) {
+  revision();
+  const seat = bannerSeat();
+  return seat != null && loc ? isExploredBy(seat, loc) : ownVisible;
 }
 
 /** The UI's visibility lookups for the local seat answer for the viewed leader while active. */
@@ -246,34 +344,30 @@ function patchFlagsAndBanners() {
   });
   wrapMethod(CityBannerComponent.prototype, 'setVisibility', function (base, state, ...rest) {
     const loc = this.location;
-    return base(isActive() && loc ? GameplayMap.getRevealedState(viewed, loc.x, loc.y) : state, ...rest);
+    const seat = bannerSeat();
+    return base(seat != null && loc ? GameplayMap.getRevealedState(seat, loc.x, loc.y) : state, ...rest);
   });
   wrapMethod(WorldAnchorTextManager.prototype, 'onWorldTextMessage', function (base, data, ...rest) {
     const loc = data?.location;
     if (isActive() && loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) !== RevealedStates.VISIBLE) return;
     return base(data, ...rest);
   });
-  const banner = ComponentRegistry.get('CityBanner')?.factory();
-  if (!banner) { log('CityBanner is not registered'); return; }
-  ComponentRegistry.register('CityBanner', (props) => {
-    const data = perspectiveBannerData(props);
-    return banner(mergeProps(props, { get data() { return data; } }));
-  }, OVERRIDE_PRIORITY);
 }
 
 // ============================ Ribbon ============================
 
-/** The eye on the viewed leader's ribbon portrait (re-applied after every ribbon rebuild). */
+/** The eye on the viewed leader's ribbon card, between portrait and civ symbol (re-applied after every ribbon rebuild). */
 function markPerspectiveCard(panel = document.querySelector('panel-diplo-ribbon')) {
   if (!panel) return;
   Array.prototype.forEach.call(panel.querySelectorAll('.' + BADGE_CLASS), (badge) => badge.remove());
   if (!isActive()) return;
   const portrait = panel.querySelector(`.diplo-ribbon__portrait[data-player-id="${viewed}"]`);
-  if (!portrait) return;
+  const banner = findAncestor(portrait, (el) => el.classList?.contains('diplo-ribbon-outer'))?.querySelector('.diplo-ribbon__upper-bg');
+  if (!banner) return;
   const badge = document.createElement('div');
   badge.classList.add(BADGE_CLASS);
   badge.style.cssText = BADGE_STYLE;
-  portrait.appendChild(badge);
+  banner.appendChild(badge);
 }
 
 // ============================ State ============================
@@ -281,7 +375,7 @@ function markPerspectiveCard(panel = document.querySelector('panel-diplo-ribbon'
 function apply() {
   try {
     if (isActive()) drawMap();
-    else clearMap();
+    else { clearMap(); clearMinimap(); }
     refreshFlagsAndBanners();
     markPerspectiveCard();
   } catch (e) { log(`perspective failed: ${e}`); }
@@ -315,9 +409,9 @@ function install() {
   patchVisibilityLookups();
   patchFlagsAndBanners();
   for (const event of REFRESH_EVENTS) engine.on(event, () => { if (isActive()) queueRedraw(); });
-  engine.on('BeforeUnload', () => { viewed = null; clearMap(); });
+  engine.on('BeforeUnload', () => { viewed = null; clearMap(); clearMinimap(); });
 }
 
 try { install(); } catch (e) { log(`install failed: ${e}`); }
 
-export { PERSPECTIVE_CHANGED_EVENT, endPerspective, isActive as isPerspectiveActive, markPerspectiveCard, togglePerspective };
+export { PERSPECTIVE_CHANGED_EVENT, bannerVisible, endPerspective, isActive as isPerspectiveActive, isKnownInPerspective, markPerspectiveCard, perspectivePlayer, togglePerspective };

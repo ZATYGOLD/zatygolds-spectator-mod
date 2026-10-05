@@ -22,8 +22,8 @@
  * Zatygold's Spectator - leaders' faith (in-game scope).
  *
  * What each leader holds - pantheon, religion, ideology - in every Age, for
- * the ribbon cards (observer-ribbon-style.js) and the pantheon overview
- * (observer-overview.js).
+ * the ribbon cards (observer-ribbon-style.js), the pantheon overview
+ * (observer-overview.js) and the Religion screen (observer-leader-screens.js).
  *
  * Pantheons: the game keeps them in Antiquity only. The Multiplayer Balance
  * Mod keeps them for the whole game: founding PANTHEON_BONUS_<n> grants the
@@ -75,7 +75,8 @@ function pantheons(player) {
 function pantheonBadge(player) {
   const list = pantheons(player);
   if (!list.length) return null;
-  const tooltip = list.map((p) => `[B]${Locale.compose(p.name)}[/B][N]${Locale.compose(p.description)}`).join('[N][N]');
+  const entries = list.map((p) => `[B]${Locale.compose(p.name)}[/B][N]${Locale.compose(p.description)}`).join('[N][N]');
+  const tooltip = `${Locale.compose('LOC_BELIEF_CLASS_PANTHEON_NAME')}[N][N]${entries}`;
   return { kind: 'pantheon', tooltip, icon: UI.getIconURL(list[0].type, 'PANTHEONS') };
 }
 
@@ -91,15 +92,16 @@ function ideologyBadge(player) {
   return def ? { kind: 'ideology', tooltip: Locale.compose(def.Name), icon: UI.getIcon(def.IdeologyType) } : null;
 }
 
+const badgeOf = (make, player) => { try { return make(player); } catch (e) { return null; } };
+
 /**
- * Everything the leader holds, adding up over the Ages instead of replacing
- * each other (the base card shows only the religion in Exploration and the
- * ideology in Modern): pantheon, religion, ideology, as { kind, tooltip, icon }.
+ * The leader's faith badges as { kind, tooltip, icon }: the religion, else the
+ * pantheon (still listed on the Religion screen once a religion is founded),
+ * plus the ideology, which the base card would show instead of the religion.
  */
 function faithBadges(player) {
-  return [pantheonBadge, religionBadge, ideologyBadge].map((badge) => {
-    try { return badge(player); } catch (e) { return null; }
-  }).filter(Boolean);
+  const religion = badgeOf(religionBadge, player);
+  return [religion ?? badgeOf(pantheonBadge, player), badgeOf(ideologyBadge, player)].filter(Boolean);
 }
 
 export { faithBadges, pantheons };

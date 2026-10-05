@@ -156,7 +156,8 @@ Controls.define(PANEL_TAG, {
   classNames: ['screen-pantheon-complete', 'absolute', 'pointer-events-none', 'flex'],
   innerHTML: [CONTENT],
   styles: [PANTHEON_STYLES],
-  attributes: []
+  attributes: [],
+  tabIndex: -1
 });
 
 /** Which source (a SOURCES key) the next opened panel shows. */

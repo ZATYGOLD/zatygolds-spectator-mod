@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="de_DE">
 			<Text>{1_Leader} hat noch keine Religion gegründet.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="de_DE">
+			<Text>Glaubenssätze enden mit dem Zeitalter der Erkundung. Die Religion und ihre Anhänger bleiben bestehen.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="de_DE">
+			<Text>Suzerän-Bonus</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="de_DE">
 			<Text>Im Krieg mit {1_Leader}</Text>
 		</Replace>

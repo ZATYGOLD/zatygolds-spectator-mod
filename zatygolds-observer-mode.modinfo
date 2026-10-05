@@ -164,7 +164,9 @@
                     <Item>ui/observer/observer-history.js</Item>
                     <Item>ui/observer/observer-graphs.js</Item>
                     <Item>ui/observer/observer-turn.js</Item>
+                    <Item>ui/observer/observer-settlement-info.js</Item>
                     <Item>ui/observer/observer-perspective.js</Item>
+                    <Item>ui/observer/observer-banners.js</Item>
                     <Item>ui/observer/observer-ribbon-toolbar.js</Item>
                     <Item>ui/observer/observer-ribbon.js</Item>
                     <Item>ui/observer/observer-settlement.js</Item>

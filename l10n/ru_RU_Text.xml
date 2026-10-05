@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="ru_RU">
 			<Text>{1_Leader}: религия еще не основана.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="ru_RU">
+			<Text>Религиозные верования заканчиваются с эпохой Исследования. Религия и её последователи остаются.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="ru_RU">
+			<Text>Бонус сюзерена</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="ru_RU">
 			<Text>В состоянии войны: {1_Leader}</Text>
 		</Replace>

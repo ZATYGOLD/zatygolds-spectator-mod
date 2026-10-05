@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="ko_KR">
 			<Text>{1_Leader}은(는) 아직 종교를 창시하지 않았습니다.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="ko_KR">
+			<Text>종교 교리는 대항해 시대와 함께 끝납니다. 종교와 신도는 그대로 남습니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="ko_KR">
+			<Text>종주국 보너스</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="ko_KR">
 			<Text>{1_Leader}와(과) 전쟁 중</Text>
 		</Replace>

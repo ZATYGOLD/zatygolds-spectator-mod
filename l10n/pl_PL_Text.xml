@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="pl_PL">
 			<Text>{1_Leader}: religia nie została jeszcze założona.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="pl_PL">
+			<Text>Wierzenia religijne kończą się wraz z Epoką odkryć. Religia i jej wyznawcy pozostają.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="pl_PL">
+			<Text>Premia suzerena</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="pl_PL">
 			<Text>W stanie wojny z: {1_Leader}</Text>
 		</Replace>

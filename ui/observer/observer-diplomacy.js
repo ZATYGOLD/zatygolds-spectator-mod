@@ -29,20 +29,35 @@
  *     shows real leader names and portraits instead of "unmet";
  *   - leader panel: the actions tab lists every war the selected leader is in
  *     (the base panel lists only wars involving the local player) and offers
- *     no diplomatic actions; the relationships tab leaves the Observer out.
+ *     no diplomatic actions; the relationships tab leaves the Observer out;
+ *   - independent and city-state panel: what it is (type, independent or
+ *     city-state), a city-state's suzerain and their chosen bonus, then every
+ *     leader's standing with it - friendly / neutral / hostile, at war, and
+ *     befriending progress; the base befriending box, built around the local
+ *     player, is left out.
  */
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import LeaderModelManager from 'fs://game/base-standard/ui/diplomacy/leader-model-manager.js';
+import { DiplomacyActionPanel } from 'fs://game/base-standard/ui/diplomacy-actions/panel-diplomacy-actions.js';
 import 'fs://game/base-standard/ui/diplomacy-actions/panel-other-diplomacy.js';   // defines PANEL_TAG
 import { installAssetAliases } from '../shared/zom-assets.js';
 import { clearChildren, createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat } from './observer-core.js';
+import { isObserverSeat, leaderPortrait, watchedPlayers } from './observer-core.js';
+import { cityStateBonus, cityStateType, suzerainOf } from './observer-settlement-info.js';
 
 const log = createLogger('observer-diplomacy');
 const PANEL_TAG = 'panel-other-player-diplomacy-actions';
 const OMIT_CLASS = 'zom-observer-omit';
 const OWN_RELATIONSHIP = '#panel-diplomacy-actions__relationship-event-container';
 const OTHER_RELATIONSHIPS = '#panel-diplomacy-actions__other-relationships-container';
+const RELATIONSHIP_TEXT = {
+  FRIENDLY: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_FRIENDLY', color: '#7ccf6e' },
+  NEUTRAL: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_NEUTRAL', color: '#e5d2ac' },
+  HOSTILE: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_HOSTILE', color: '#e0604e' }
+};
+const AT_WAR_COLOR = '#e0604e';
+const BAR_STYLE = 'height: 0.3rem; border-radius: 0.15rem; background-color: rgba(229, 210, 172, 0.2);';
+const BAR_FILL_STYLE = 'height: 100%; border-radius: 0.15rem; background-color: #e5b75b;';
 
 let metInstalled = false;
 
@@ -84,6 +99,141 @@ function note(loc) {
   return p;
 }
 
+// ============================ Independents and city-states ============================
+
+/** A leader's befriending project with the independent: { progress, total, perTurn }, else null. */
+function befriending(powerId, leaderId) {
+  try {
+    const action = Game.Diplomacy.getPlayerEvents(powerId).find((a) =>
+      a.actionType == DiplomacyActionTypes.DIPLOMACY_ACTION_GIVE_INFLUENCE_TOKEN && a.initialPlayer === leaderId);
+    const data = action ? Game.Diplomacy.getDiplomaticEventData(action.uniqueID) : null;
+    return data?.completionScore > 0 ? { progress: data.progressScore, total: data.completionScore, perTurn: data.support } : null;
+  } catch (e) { return null; }
+}
+
+/** The leader's standing (a RELATIONSHIP_TEXT key), as the map banner reads it: through the suzerain for a city-state. */
+function standing(power, leaderId) {
+  const suzerain = suzerainOf(power);
+  if (suzerain === leaderId) return 'FRIENDLY';
+  try {
+    const rel = Game.IndependentPowers.getIndependentRelationship(suzerain ?? power.id, leaderId);
+    return Object.keys(RELATIONSHIP_TEXT).find((key) => IndependentRelationship[key] === rel) ?? null;
+  } catch (e) { return null; }
+}
+
+function isAtWar(leader, powerId) {
+  try { return !!leader.Diplomacy?.isAtWarWith(powerId); } catch (e) { return false; }
+}
+
+/** A text element: loc is a text key (stylized by the game), color optional. */
+function textLine(loc, classes, color) {
+  const el = document.createElement('div');
+  el.classList.value = classes;
+  if (color) el.style.color = color;
+  el.setAttribute('data-l10n-id', loc);
+  return el;
+}
+
+function progressBar(fraction) {
+  const bar = document.createElement('div');
+  bar.classList.value = 'self-stretch mt-1';
+  bar.style.cssText = BAR_STYLE;
+  const fill = document.createElement('div');
+  fill.style.cssText = `${BAR_FILL_STYLE} width: ${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%;`;
+  bar.appendChild(fill);
+  return bar;
+}
+
+/** What the power is: its type icon and name, independent or city-state, and a city-state's suzerain and chosen bonus. */
+function identitySection(power) {
+  const section = document.createElement('div');
+  section.classList.value = 'flex flex-col items-center self-stretch mt-2 mb-4';
+  const type = cityStateType(power);
+  const title = document.createElement('div');
+  title.classList.value = 'flex flex-row items-center justify-center';
+  if (type) {
+    const icon = document.createElement('div');
+    icon.classList.value = 'size-10 mr-2 bg-contain bg-center bg-no-repeat';
+    icon.style.backgroundImage = `url('${type.icon}')`;
+    icon.style.setProperty('fxs-background-image-tint', type.color);
+    title.appendChild(icon);
+  }
+  const names = document.createElement('div');
+  names.classList.value = 'flex flex-col';
+  if (type) names.appendChild(textLine(type.name, 'font-title-base text-accent-2 uppercase'));
+  names.appendChild(textLine(power.isMinor ? 'LOC_CIVILIZATION_CITY_STATE_NAME' : 'LOC_PLOT_TOOLTIP_INDEPENDENT_CONQUEROR', 'font-body-sm text-accent-3'));
+  title.appendChild(names);
+  section.appendChild(title);
+  if (!power.isMinor) return section;
+  const suzerainId = suzerainOf(power);
+  const suzerain = suzerainId != null ? Players.get(suzerainId) : null;
+  const line = document.createElement('p');
+  line.classList.value = 'font-body-sm text-accent-2 text-center mt-3';
+  line.innerHTML = suzerain ? Locale.stylize('LOC_DIPLOMACY_SUZERAIN_OTHER', Locale.compose(suzerain.name)) : Locale.compose('LOC_DIPLOMACY_NO_SUZERAIN');
+  section.appendChild(line);
+  const bonus = cityStateBonus(power.id);
+  if (bonus) {
+    section.appendChild(header('LOC_ZOM_OBSERVER_SUZERAIN_BONUS'));
+    section.appendChild(textLine(bonus.name, 'font-title-sm text-accent-2 text-center mt-2'));
+    section.appendChild(textLine(bonus.description, 'font-body-sm text-accent-3 text-center mt-1 px-4'));
+  }
+  return section;
+}
+
+/** One leader's row: portrait and name, standing on the right, befriending progress under them. */
+function relationshipRow(power, leader, isSuzerain) {
+  const row = document.createElement('div');
+  row.classList.value = 'flex flex-row items-center self-stretch mt-2 px-2';
+  row.appendChild(leaderPortrait(leader, 'size-10 mr-2'));
+  const body = document.createElement('div');
+  body.classList.value = 'flex flex-col flex-auto';
+  const line = document.createElement('div');
+  line.classList.value = 'flex flex-row items-center justify-between';
+  const name = document.createElement('div');
+  name.classList.value = `font-title-sm ${isSuzerain ? 'text-secondary' : 'text-accent-2'}`;
+  name.textContent = Locale.compose(leader.name);
+  line.appendChild(name);
+  const statuses = document.createElement('div');
+  statuses.classList.value = 'flex flex-row items-center';
+  const key = standing(power, leader.id);
+  if (key) statuses.appendChild(textLine(RELATIONSHIP_TEXT[key].loc, 'font-body-sm ml-2', RELATIONSHIP_TEXT[key].color));
+  // An independent is hostile exactly while at war; a city-state's war is shown on its own.
+  if (power.isMinor && isAtWar(leader, power.id)) statuses.appendChild(textLine('LOC_PLAYER_RELATIONSHIP_AT_WAR', 'font-body-sm ml-2', AT_WAR_COLOR));
+  line.appendChild(statuses);
+  body.appendChild(line);
+  const project = power.isIndependent ? befriending(power.id, leader.id) : null;
+  if (project) {
+    const progress = document.createElement('div');
+    progress.classList.value = 'font-body-xs text-accent-3';
+    progress.textContent = Locale.compose('LOC_DIPLOMACY_BEFRIEND_INDEPENDENT_PROGRESS', project.progress, project.total, project.perTurn);
+    body.append(progress, progressBar(project.progress / project.total));
+  }
+  row.appendChild(body);
+  return row;
+}
+
+/** Suzerain first, then the furthest along in befriending, then the rest. */
+function rowOrder(power) {
+  const suzerain = suzerainOf(power);
+  const progress = (leader) => {
+    const project = power.isIndependent ? befriending(power.id, leader.id) : null;
+    return project ? project.progress / project.total : -1;
+  };
+  return (a, b) => (b.id === suzerain) - (a.id === suzerain) || progress(b) - progress(a);
+}
+
+/** Every leader's standing with an independent or city-state. */
+function relationshipSection(power) {
+  const section = document.createElement('div');
+  section.classList.value = 'flex flex-col items-center self-stretch mb-4';
+  section.appendChild(header('LOC_DIPLOMACY_ACTIONS_RELATIONSHIPS_HEADER'));
+  const suzerain = suzerainOf(power);
+  for (const leader of watchedPlayers().sort(rowOrder(power))) section.appendChild(relationshipRow(power, leader, leader.id === suzerain));
+  return section;
+}
+
+// ============================ Leader panel ============================
+
 /** Drop Observer portraits (and rows left empty) and the leader's relationship with the Observer. */
 function removeObserverRelationships(root) {
   root.querySelector(OWN_RELATIONSHIP)?.style.setProperty('display', 'none');
@@ -118,6 +268,11 @@ function patchPanel(proto) {
     if (!slot) return;
     clearChildren(slot);
     this.firstFocusSection = null;
+    const selected = Players.get(DiplomacyManager.selectedPlayerID);
+    if (selected?.isIndependent || selected?.isMinor) {
+      slot.append(identitySection(selected), relationshipSection(selected));
+      return;
+    }
     const wars = warsOf(DiplomacyManager.selectedPlayerID);
     slot.appendChild(header('LOC_DIPLOMACY_WAR_HEADER'));
     if (wars.length === 0) { slot.appendChild(note('LOC_ZOM_OBSERVER_NO_WARS')); return; }
@@ -134,6 +289,8 @@ installAssetAliases(LeaderModelManager.leaderModelGroupLeft, LeaderModelManager.
 const proto = Controls.getDefinition(PANEL_TAG)?.createInstance?.prototype;
 if (proto) patchPanel(proto);
 else log('leader panel not found');
+// Both leader panels (the local player's too) open the base befriending box, which is built around the local player.
+wrapMethod(DiplomacyActionPanel.prototype, 'showBefriendIndependentDetails', (base, ...args) => (isObserverSeat() ? undefined : base(...args)));
 
 engine.whenReady.then(() => {
   installMetEveryone();

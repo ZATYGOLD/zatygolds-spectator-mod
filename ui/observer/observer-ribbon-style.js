@@ -37,9 +37,10 @@
  *     portrait); a coloured pip per
  *     war under the portrait shows who fights whom (one colour per war pair,
  *     kept until peace);
- *   - faith: the card's religion slot shows every badge the leader holds -
- *     pantheon, religion, ideology - side by side, each with its tooltip; a
- *     badge with an action (the pantheon) opens it when clicked;
+ *   - faith: the card's religion slot shows the leader's faith badges
+ *     (observer-faith.js) side by side, each with its tooltip, the pantheon
+ *     tinted amber so it does not read as a religion; a badge with an action
+ *     (the pantheon) opens it when clicked;
  *   - the leader panel shows no ribbon.
  */
 import { setStyle } from '../shared/zom-util.js';
@@ -60,6 +61,7 @@ const FAITH_CLASS = 'zom-faith';
 const FAITH_ICON_CLASS = 'zom-faith-icon';
 const FAITH_ACTION_CLASS = 'zom-faith-action';
 const FAITH_ATTR = 'data-zom-faith';
+const FAITH_KIND_PREFIX = 'zom-faith--';   // + badge kind
 const FAITH_ICON_REM = [2, 1.6, 1.35];   // badge size by count (the base slot is 2rem)
 const DETAILS_CHANGED_EVENT = 'zom-ribbon-details-changed';
 const DETAILS_OPTION = ['user', 'Interface', 'RibbonStats'];   // System > "Always Show Ribbon Yields"
@@ -118,6 +120,8 @@ function writeStyle() {
     `.${FAITH_CLASS} { background-image: none !important; width: auto !important; display: flex; flex-direction: row; justify-content: center; align-items: center; pointer-events: none !important; }`,
     `.${FAITH_CLASS} .${FAITH_ICON_CLASS} { background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: auto; }`,
     `.${FAITH_CLASS} .${FAITH_ACTION_CLASS}:hover { filter: brightness(1.3); }`,
+    `.${FAITH_CLASS} .${FAITH_KIND_PREFIX}pantheon { filter: fxs-color-tint(${HIGHLIGHT.pantheon}); }`,
+    `.${FAITH_CLASS} .${FAITH_KIND_PREFIX}pantheon.${FAITH_ACTION_CLASS}:hover { filter: fxs-color-tint(${HIGHLIGHT.pantheonHover}); }`,
     ...celebrationRules(),
     ...portraitGlow('.' + AT_WAR_CLASS, HIGHLIGHT.atWar),
     ...HIGHLIGHT.alliances.map((color, i) => hexBorder('.' + ALLY_CLASS_PREFIX + i, color))
@@ -248,7 +252,7 @@ function markFaith(panel, badgesFor, actions = {}) {
     const size = `${FAITH_ICON_REM[Math.min(badges.length, FAITH_ICON_REM.length) - 1] ?? FAITH_ICON_REM[0]}rem`;
     for (const badge of badges) {
       const icon = document.createElement('div');
-      icon.classList.add(FAITH_ICON_CLASS);
+      icon.classList.add(FAITH_ICON_CLASS, FAITH_KIND_PREFIX + badge.kind);
       Object.assign(icon.style, { width: size, height: size, backgroundImage: `url('${badge.icon}')` });
       icon.setAttribute('data-tooltip-content', badge.tooltip);
       const action = actions[badge.kind];

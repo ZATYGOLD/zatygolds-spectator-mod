@@ -27,6 +27,8 @@
  * the head selected city, which the Observer (owning none) cannot select, so
  * while the model updates, that lookup answers with the clicked settlement.
  * The panel's previous / next arrows step through the owner's settlements.
+ * A town's details open with its focus (icon, name, effect), which the
+ * owner would see in the production panel beside them.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
@@ -39,9 +41,11 @@ import { GetNextCityID, GetPrevCityID } from 'fs://game/base-standard/ui/product
 import { createLogger, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
+import { townFocus } from './observer-settlement-info.js';
 
 const HOST_TAG = 'zom-observer-settlement';
 const UPDATE_CALLER = 'zom-observer-settlement';
+const FOCUS_CLASS = 'zom-town-focus';
 
 const log = createLogger('observer-settlement', CONFIG.debug);
 
@@ -89,8 +93,40 @@ Controls.define(HOST_TAG, {
   createInstance: ObserverSettlementHost,
   description: 'Spectator settlement details (any leader).',
   classNames: ['absolute', 'inset-0', 'flex', 'flex-row', 'justify-end', 'pointer-events-none'],
-  attributes: []
+  attributes: [],
+  tabIndex: -1
 });
+
+// ============================ Town focus ============================
+
+function textLine(loc, classes) {
+  const el = document.createElement('div');
+  el.classList.value = classes;
+  el.setAttribute('data-l10n-id', loc);
+  return el;
+}
+
+/** The shown town's focus above the growth tab's first note (redrawn on every panel update). */
+function showTownFocus(root) {
+  root.querySelector('.' + FOCUS_CLASS)?.remove();
+  const anchor = root.querySelector('.specialist-container');
+  const focus = shown != null ? townFocus(Cities.get(shown)) : null;
+  if (!focus || !anchor?.parentElement) return;
+  const block = document.createElement('div');
+  block.classList.value = `${FOCUS_CLASS} flex flex-row items-center m-1`;
+  const icon = document.createElement('div');
+  icon.classList.value = 'size-12 m-1 bg-contain bg-center bg-no-repeat';
+  icon.style.backgroundImage = `url('${focus.icon}')`;
+  const text = document.createElement('div');
+  text.classList.value = 'flex flex-col flex-auto ml-2';
+  text.append(
+    textLine('LOC_UI_TOWN_FOCUS', 'font-title text-gradient-secondary uppercase'),
+    textLine(focus.name, 'font-title text-accent-2'),
+    textLine(focus.description, 'font-body text-sm text-accent-3')
+  );
+  block.append(icon, text);
+  anchor.parentElement.insertBefore(block, anchor);
+}
 
 // ============================ Details ============================
 
@@ -108,6 +144,11 @@ function install() {
   wrapMethod(CityDetails.updateGate, 'updateFunction', (base, ...rest) => {
     answering = shown != null;
     try { return base(...rest); } finally { answering = false; }
+  });
+  wrapMethod(PanelCityDetails.prototype, 'update', function (base, ...rest) {
+    const result = base(...rest);
+    try { if (shown != null) showTownFocus(this.Root); } catch (e) { log(`town focus failed: ${e}`); }
+    return result;
   });
   for (const [name, step] of [['selectPrevCity', GetPrevCityID], ['selectNextCity', GetNextCityID]]) {
     wrapMethod(PanelCityDetails.prototype, name, (base, ...rest) => (shown == null ? base(...rest) : showSettlement(step(shown))));

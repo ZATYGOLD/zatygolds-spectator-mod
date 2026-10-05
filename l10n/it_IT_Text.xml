@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="it_IT">
 			<Text>{1_Leader} non ha ancora fondato una religione.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="it_IT">
+			<Text>Le credenze religiose terminano con l'Epoca delle esplorazioni. La religione e i suoi seguaci rimangono.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="it_IT">
+			<Text>Bonus del Sovrano</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="it_IT">
 			<Text>In guerra con {1_Leader}</Text>
 		</Replace>

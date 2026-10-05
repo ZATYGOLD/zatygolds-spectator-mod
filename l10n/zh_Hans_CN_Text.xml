@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="zh_Hans_CN">
 			<Text>{1_Leader}尚未创立宗教。</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="zh_Hans_CN">
+			<Text>宗教信仰随探索时代结束。宗教及其信徒仍然保留。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="zh_Hans_CN">
+			<Text>宗主国加成</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="zh_Hans_CN">
 			<Text>正与{1_Leader}交战</Text>
 		</Replace>

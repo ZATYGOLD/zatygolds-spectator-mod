@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="ja_JP">
 			<Text>{1_Leader}はまだ宗教を創始していません。</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="ja_JP">
+			<Text>宗教の信条は探検の時代で終わります。宗教とその信者は残ります。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="ja_JP">
+			<Text>宗主国ボーナス</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="ja_JP">
 			<Text>{1_Leader}と戦争中</Text>
 		</Replace>

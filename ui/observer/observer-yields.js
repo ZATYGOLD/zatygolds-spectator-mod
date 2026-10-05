@@ -23,7 +23,8 @@
  *
  * For the Observer seat the HUD's yield bar (panel-yield-banner) also shows
  * food and production, and while a leader panel is open it shows that
- * leader's yields, treasuries and settlement limit instead of the Observer's.
+ * leader's yields, treasuries and settlement limit instead of the Observer's;
+ * so it does while a Perspective is shown (observer-perspective.js).
  * The bar's own handlers keep writing the Observer's values (they are bound
  * before this module loads), so every change is followed by a deferred
  * repaint for the shown leader.
@@ -31,7 +32,8 @@
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import { PanelYieldBanner } from 'fs://game/base-standard/ui/diplo-ribbon/panel-yield-banner.js';
 import { createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
-import { inLeaderPanel, isObserverSeat } from './observer-core.js';
+import { inLeaderPanel, isObserverSeat } from './observer-core.js';
+import { PERSPECTIVE_CHANGED_EVENT, perspectivePlayer } from './observer-perspective.js';
 
 const log = createLogger('observer-yields');
 const BANNER_TAG = 'panel-yield-banner';
@@ -48,9 +50,9 @@ const REPAINT_EVENTS = [
   'TradeRouteRemovedFromMap', 'NarrativeChoiceMade', 'AdvancedStartEffectUsed'
 ];
 
-/** The leader whose yields the bar shows: the leader panel's leader, else the Observer (the bar's own player id). */
+/** The leader whose yields the bar shows: the leader panel's leader, else the Perspective's, else the Observer (the bar's own player id). */
 function shownPlayer() {
-  const selected = inLeaderPanel() ? DiplomacyManager.selectedPlayerID : PlayerIds.NO_PLAYER;
+  const selected = inLeaderPanel() ? DiplomacyManager.selectedPlayerID : (perspectivePlayer() ?? PlayerIds.NO_PLAYER);
   return Players.get(Players.isValid(selected) ? selected : GameContext.localObserverID);
 }
 
@@ -128,6 +130,6 @@ wrapMethod(PanelYieldBanner.prototype, 'render', function (base, ...args) {
 engine.whenReady.then(() => {
   if (!isObserverSeat()) return;
   for (const event of REPAINT_EVENTS) engine.on(event, onRepaintEvent);
-  for (const event of ['interface-mode-changed', 'diplomacy-selected-player-changed']) window.addEventListener(event, queueRefresh);
+  for (const event of ['interface-mode-changed', 'diplomacy-selected-player-changed', PERSPECTIVE_CHANGED_EVENT]) window.addEventListener(event, queueRefresh);
   queueRefresh();
 });

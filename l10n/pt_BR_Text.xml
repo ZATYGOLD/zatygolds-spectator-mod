@@ -121,6 +121,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="pt_BR">
 			<Text>{1_Leader} ainda não fundou uma religião.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="pt_BR">
+			<Text>As crenças religiosas terminam com a Era da Exploração. A religião e seus seguidores permanecem.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="pt_BR">
+			<Text>Bônus de suserania</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="pt_BR">
 			<Text>Em guerra com {1_Leader}</Text>
 		</Replace>

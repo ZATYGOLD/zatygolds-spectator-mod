@@ -29,6 +29,8 @@
  * card shows (see observer-ribbon-toolbar.js). Portraits show each leader's
  * mood (angry at war, else happy while celebrating); look and highlights are
  * in observer-ribbon-style.js, the Perspective eye in observer-perspective.js.
+ * While a Perspective is shown, only the leaders the viewed leader has met
+ * get a card (the Observer's own always does).
  *
  * The leader panel (and other diplomacy screens) keep the base compact cards
  * and are never rebuilt by this module: there the base panel re-centres on
@@ -39,7 +41,7 @@ import { PanelDiploRibbon } from 'fs://game/base-standard/ui/diplo-ribbon/panel-
 import { createLogger, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
 import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from './observer-core.js';
-import { markPerspectiveCard } from './observer-perspective.js';
+import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 import { faithBadges } from './observer-faith.js';
 import { openOverview } from './observer-overview.js';
 import { bestByType, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
@@ -114,7 +116,7 @@ const BEST_VIEWS = new Set([OBSERVER_VIEW.YIELDS, OBSERVER_VIEW.SCORE]);
 
 /** Best-in-category rows (Yields and Victories views) and negative numbers. */
 function markBest(panel) {
-  const best = BEST_VIEWS.has(viewMode) ? bestByType(watchedPlayers().map((p) => p.id)) : null;
+  const best = BEST_VIEWS.has(viewMode) ? bestByType(watchedPlayers().filter((p) => isKnownInPerspective(p.id)).map((p) => p.id)) : null;
   markRows(panel, best);
 }
 
@@ -188,7 +190,7 @@ function patchModel() {
     }
   });
 
-  // Every living major, the Observer's own card last.
+  // Every living major (in a Perspective: those the viewed leader met), the Observer's own card last.
   wrapMethod(DiploRibbonData, 'updateAll', function (base) {
     if (!isObserverSeat()) return base();
     try {
@@ -196,7 +198,7 @@ function patchModel() {
       const cards = [];
       let own = null;
       for (const player of Players.getAlive()) {
-        if (!player?.isMajor) continue;
+        if (!player?.isMajor || (player.id !== GameContext.localPlayerID && !isKnownInPerspective(player.id))) continue;
         const data = this.createPlayerData(player, player.Diplomacy, true);
         if (!data) continue;
         data.portraitContext = moodContext(player);
@@ -240,5 +242,5 @@ function seedRibbon(attempts) {
 patchModel();
 patchPanel();
 for (const event of ['DiplomacyDeclareWar', 'DiplomacyMakePeace']) engine.on(event, refreshRibbon);
-window.addEventListener(DETAILS_CHANGED_EVENT, refreshRibbon);
+for (const event of [DETAILS_CHANGED_EVENT, PERSPECTIVE_CHANGED_EVENT]) window.addEventListener(event, refreshRibbon);
 engine.whenReady.then(() => seedRibbon(CONFIG.ribbonSeedAttempts));

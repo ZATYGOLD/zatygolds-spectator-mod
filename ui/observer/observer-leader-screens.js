@@ -26,8 +26,10 @@
  *   - Religion (panel-belief-picker): the viewed leader's religion is the
  *     screen's own (first tab); a leader without one gets a note instead of
  *     another leader's religion; the leader's pantheons are listed last, under
- *     their own title (observer-faith.js, every Age); nothing can be chosen,
- *     founded or confirmed;
+ *     their own title (observer-faith.js, every Age); its belief slots read as
+ *     the game shows another player's religion (earned and locked, never
+ *     open); once the Age has no religion beliefs (Modern) their sections give
+ *     way to a note; nothing can be chosen, founded or confirmed;
  *   - Great Works: the picker row under the title (the slots themselves come
  *     from the model-great-works.js override);
  *   - tech and civic trees: the picker row under the title (the progress
@@ -83,6 +85,8 @@ const TREES = [
 const CHOOSER_TAGS = new Set(TREES.map((t) => t.chooser));
 const NOTE_CLASS = 'zom-observer-no-religion';
 const PANTHEON_CLASS = 'zom-observer-pantheon';
+const BELIEFS_ENDED_CLASS = 'zom-observer-beliefs-ended';
+const BELIEF_CONTAINERS = ['.belief-picker_belief-relic-container', '.belief-picker_belief-founder-container', '.belief-picker_belief-enhancer-container'];
 const GREAT_WORKS_BAR_STYLE = { marginTop: '-1rem', marginBottom: '1.5rem' };   // clear of the frame's top border
 
 const viewedPlayer = () => {
@@ -110,7 +114,7 @@ function showNoReligion(root, player) {
   const note = document.createElement('p');
   note.classList.value = `${NOTE_CLASS} font-body-base text-accent-2 text-center self-center mt-6 mb-6`;
   note.textContent = Locale.compose('LOC_ZOM_OBSERVER_NO_RELIGION', player.name);
-  choices.prepend(note);
+  choices.insertBefore(note, choices.firstChild);
 }
 
 /** A belief row in the screen's own item, as its filled belief slots are built. */
@@ -138,7 +142,35 @@ function addPantheonSection(root, player) {
   choices.style.height = 'auto';   // the list grows past the base's fixed height; the frame scrolls
 }
 
+/** Religion beliefs exist only in Exploration's data. */
+const ageHasReligionBeliefs = () => !!GameInfo.Beliefs.find((b) => b.BeliefClassType === 'BELIEF_CLASS_FOUNDER');
+
+/** After the Age of religion beliefs: their sections hidden, a note in their place (the pantheon section stays). */
+function showBeliefsEnded(root) {
+  const choices = root.querySelector('.belief-picker_belief-choices');
+  if (!choices) return;
+  for (const selector of BELIEF_CONTAINERS) {
+    const container = choices.querySelector(selector);
+    container?.classList.add('hidden');
+    container?.previousElementSibling?.classList.add('hidden');
+  }
+  if (choices.querySelector('.' + BELIEFS_ENDED_CLASS)) return;
+  const note = document.createElement('p');
+  note.classList.value = `${BELIEFS_ENDED_CLASS} font-body-base text-accent-2 text-center self-center mt-6 mb-6 px-6`;
+  note.setAttribute('data-l10n-id', 'LOC_ZOM_OBSERVER_BELIEFS_ENDED');
+  choices.insertBefore(note, choices.firstChild);
+  choices.style.height = 'auto';
+}
+
 function patchReligion(proto) {
+  // Slots as for another player's religion: the viewed leader's are not the Observer's to fill.
+  wrapMethod(proto, 'buildBeliefSlots', function (base, ...args) {
+    if (!viewedPlayer()) return base(...args);
+    const own = this.playerReligion;
+    this.playerReligion = null;
+    try { base(...args); } finally { this.playerReligion = own; }
+    try { if (!ageHasReligionBeliefs()) showBeliefsEnded(this.Root); } catch (e) { log(`belief slots patch failed: ${e}`); }
+  });
   // The viewed leader's religion is the screen's own; the Observer never founds one.
   wrapMethod(proto, 'constructAllPlayerReligionInfo', function (base, ...args) {
     const viewed = viewedPlayer();

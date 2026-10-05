@@ -32,12 +32,15 @@
  * screen that can rebuild its content itself registers a refresh instead
  * (setRefresh: the tech and civic trees). The
  * screens stay read-only: game actions are still sent as the Observer, which
- * the game refuses. Other players see the base screens.
+ * the game refuses. While a Perspective is shown (observer-perspective.js)
+ * every such screen shows that leader, with no row of portraits. Other
+ * players see the base screens.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { createLogger, setStyle } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { perspectivePlayer } from './observer-perspective.js';
 
 const log = createLogger('observer-leader-view', CONFIG.debug);
 const SELECTED_STYLE = 'border: 0.1666666667rem solid #e5d2ac; opacity: 1;';
@@ -59,9 +62,11 @@ const refreshers = new Map();    // screen tag -> rebuilds the open screen for t
 /** A screen rebuilt in place on a leader switch instead of being reopened. */
 function setRefresh(screenTag, refresh) { refreshers.set(screenTag, refresh); }
 
-/** The leader shown to the Observer (first watched leader by default); undefined for everyone else. */
+/** The leader shown to the Observer (the Perspective's, else the picked one, first watched by default); undefined for everyone else. */
 function playerID() {
   if (!isObserverSeat()) return undefined;
+  const perspective = perspectivePlayer();
+  if (perspective != null) return perspective;
   if (viewedId == null || !Players.get(viewedId)?.isAlive) viewedId = watchedPlayers()[0]?.id ?? null;
   return viewedId ?? undefined;
 }
@@ -118,10 +123,10 @@ function portraitButton(screenTag, player, selected) {
   return btn;
 }
 
-/** One portrait per watched leader, the viewed one highlighted; null for everyone else. */
+/** One portrait per watched leader, the viewed one highlighted; null for everyone else and while a Perspective is shown. */
 function playerBar(screenTag) {
   const viewed = playerID();
-  if (viewed === undefined) return null;
+  if (viewed === undefined || perspectivePlayer() != null) return null;
   screenTags.add(screenTag);
   const bar = document.createElement('div');
   bar.classList.value = `${BAR_CLASS} flex flex-row flex-wrap justify-center items-center self-center mb-2 pointer-events-auto`;
