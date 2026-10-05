@@ -62,8 +62,9 @@ const HIGHLIGHT = {
   glowSize: '0.7rem',                   // glow around the portrait hex
   borderGlowSize: '0.3rem',             // tight glow on the hex border
   atWar: '#ff2a2a',
-  best: '80, 150, 95',                  // best-in-category row background (r, g, b)
-  negative: '200, 60, 60',              // row background behind a negative number (r, g, b)
+  best: 'rgba(229, 210, 172, 0.25)',    // highest value in a row (Clean Slate's look)
+  worst: 'rgba(0, 0, 0, 0.8)',          // lowest value in a row
+  negative: '#ff6644',                  // negative totals (bright red on the slate background)
   celebration: '#ffc21a',
   pantheon: '#d9a441',                  // pantheon badge tint, apart from the white religion icons
   pantheonHover: '#f2c977',
@@ -71,15 +72,21 @@ const HIGHLIGHT = {
   wars: ['#e04848', '#4aa3ff', '#5cd65c', '#b36bff', '#ff8c1a', '#3de0d0', '#ff5fb0', '#f0f0f0']
 };
 
-/** Value colour of each Yields row (the base yields keep the game's own colours). */
+/** Value colour of each Yields row, bright against the slate background (Clean Slate's palette, extended). */
 const ROW_COLORS = {
-  settlements: '#d9c9a3',
-  food: '#8fd16a',
-  production: '#c08a5a',
-  citizens: '#f2e6c9',
-  military: '#ff5a5a',
-  techs: '#5fb5f0',
-  civics: '#c08fe0',
+  gold: '#f6ce55',
+  science: '#79b3ee',
+  culture: '#8d92f9',
+  happiness: '#f5993d',
+  diplomacy: '#afb7cf',
+  trade: '#afb7cf',
+  settlements: '#e5d2ac',
+  food: '#80b34d',
+  production: '#e87b64',
+  citizens: '#f9ecd2',
+  military: '#ff8080',
+  techs: '#6ec8e0',
+  civics: '#c89ff0',
   wonders: '#f0c040'
 };
 

@@ -21,6 +21,12 @@
 /**
  * Zatygold's Spectator - Observer ribbon look (in-game scope).
  *
+ * The stat rows follow the Clean Slate mod's visuals: body font (lining
+ * digits that line up between rows), bright value colours on the slate
+ * background, the card banner tinted with the player's colour, the highest
+ * value in a row on a light pill, the lowest on a black one, and negative
+ * totals in bright red.
+ *
  * One injected stylesheet for the Observer's ribbon:
  *   - fixed card size: every view renders into the stat-area size the Yields
  *     view uses, so switching views never re-lays out the ribbon;
@@ -55,7 +61,9 @@ const AT_WAR_CLASS = 'zom-at-war';
 const ALLY_CLASS_PREFIX = 'zom-ally-';
 const PIPS_CLASS = 'zom-war-pips';
 const BEST_CLASS = 'zom-best';
+const WORST_CLASS = 'zom-worst';
 const NEGATIVE_CLASS = 'zom-negative';
+const ROW_SHADOW = 'text-shadow: 0 0.0555555556rem 0.1111111111rem black, 0 0 0.3333333333rem black;';
 const OWN_CARD_CLASS = 'zom-observer-own-card';
 const FAITH_CLASS = 'zom-faith';
 const FAITH_ICON_CLASS = 'zom-faith-icon';
@@ -67,8 +75,8 @@ const DETAILS_CHANGED_EVENT = 'zom-ribbon-details-changed';
 const DETAILS_OPTION = ['user', 'Interface', 'RibbonStats'];   // System > "Always Show Ribbon Yields"
 const ROW_TYPE_PREFIX = 'yield-colors--';
 const SIGNATURE_ATTR = 'data-zom-highlight';
-const CONTENT_WIDTH = '4.25rem';       // 90% of .diplo-ribbon_content-container in the base stylesheet (4.72rem)
-const CARD_GAP = '0.1111111111rem';   // 2px between neighbouring cards
+const CONTENT_WIDTH = '4.6666666667rem';   // a little under the base .diplo-ribbon_content-container (4.72rem)
+const CARD_GAP = '0.0555555556rem';        // 1px between neighbouring cards
 
 let statHeightPx = 0;
 
@@ -79,8 +87,6 @@ const glow = (color, size = HIGHLIGHT.glowSize) => `filter: drop-shadow(0 0 ${si
 /** Tints the hex border like the base tints the hex (the frame ignores fxs-background-image-tint); it replaces the frame's glow. */
 const hexBorder = (selector, color) => `${card(selector)} .diplo-ribbon__portrait-hex-bg-frame { filter: fxs-color-tint(${color}); }`;
 
-/** A row highlight: a soft horizontal band of the colour (r, g, b). */
-const band = (rgb) => `background-image: linear-gradient(90deg, rgba(${rgb}, 0), rgba(${rgb}, 0.35) 22%, rgba(${rgb}, 0.45) 50%, rgba(${rgb}, 0.35) 78%, rgba(${rgb}, 0));`;
 
 /** Glow around the whole portrait hex, plus a tight glow on the hex border itself so the edge reads clearly. */
 const portraitGlow = (selector, color) => [
@@ -106,7 +112,10 @@ function writeStyle() {
     `.${SIZED_CLASS} .diplo-ribbon__yields { ${fixed('width')} overflow: hidden !important; ${height} }`,
     `.${SIZED_CLASS} .diplo-ribbon_content-container { ${fixed('width')} }`,
     `.${SIZED_CLASS} .relationship-icon, .${SIZED_CLASS} .diplo-ribbon__war-support-count { display: none; }`,
-    `.${SIZED_CLASS} .diplo-ribbon__yields .yield-item { line-height: 1.05rem; padding-top: 0.05rem; padding-bottom: 0.05rem; }`,
+    `.${SIZED_CLASS} .diplo-ribbon__yields .yield-item { line-height: 1.05rem; padding: 0.05rem 0.1666666667rem 0.05rem 0.1111111111rem; border-radius: 0.444em; }`,
+    `.${SIZED_CLASS} .diplo-ribbon-outer::after { width: 0.375em; max-width: 0.2083333333rem; }`,
+    `.${SIZED_CLASS} .diplo-ribbon__front-banner { fxs-border-image-tint: var(--player-color-primary); }`,
+    `.${SIZED_CLASS} .diplo-ribbon__front-banner-overlay { opacity: 0.75; }`,
     `.${SIZED_CLASS} .diplo-ribbon__yields .yield-label > img { width: 1rem; height: 1rem; }`,
     `.${SIZED_CLASS} .diplo-ribbon__yields .yield-value { min-width: 1.75rem; text-align: right; letter-spacing: 0.02em; }`,
     `.${SIZED_CLASS} .diplo-ribbon__bg-container { width: calc(${CONTENT_WIDTH} - ${CARD_GAP}) !important; left: calc(${CARD_GAP} / 2) !important; }`,
@@ -114,10 +123,12 @@ function writeStyle() {
     ...['diplo-ribbon__yields', 'diplo-ribbon__bottom-spacer', 'diplo-ribbon__bg-container']
       .map((part) => `.${SIZED_CLASS} .${OWN_CARD_CLASS}.show-on-hover .${part} { display: flex; }`),
     `.${SIZED_CLASS} .${OWN_CARD_CLASS} .diplo-ribbon__yields { height: auto !important; min-height: 0 !important; max-height: 100rem !important; }`,
-    `.${SIZED_CLASS} .${BEST_CLASS} { ${band(HIGHLIGHT.best)} }`,
-    `.${SIZED_CLASS} .${NEGATIVE_CLASS} { ${band(HIGHLIGHT.negative)} }`,
+    `.${SIZED_CLASS} .${BEST_CLASS} { background-color: ${HIGHLIGHT.best}; font-weight: 900; ${ROW_SHADOW} }`,
+    `.${SIZED_CLASS} .${WORST_CLASS} { background-color: ${HIGHLIGHT.worst}; ${ROW_SHADOW} }`,
+    `.${SIZED_CLASS} .${BEST_CLASS} img, .${SIZED_CLASS} .${WORST_CLASS} img { filter: drop-shadow(0 0.0555555556rem 0.1111111111rem black); }`,
+    `.${SIZED_CLASS} .${NEGATIVE_CLASS} .yield-value { color: ${HIGHLIGHT.negative} !important; ${ROW_SHADOW} }`,
     `.${HIDDEN_CLASS} { display: none !important; }`,
-    `.${FAITH_CLASS} { background-image: none !important; width: auto !important; display: flex; flex-direction: row; justify-content: center; align-items: center; pointer-events: none !important; }`,
+    `.${FAITH_CLASS} { background-image: none !important; width: auto !important; height: 2.1rem !important; align-self: center; display: flex; flex-direction: row; justify-content: center; align-items: center; pointer-events: none !important; }`,
     `.${FAITH_CLASS} .${FAITH_ICON_CLASS} { background-size: contain; background-repeat: no-repeat; background-position: center; pointer-events: auto; }`,
     `.${FAITH_CLASS} .${FAITH_ACTION_CLASS}:hover { filter: brightness(1.3); }`,
     `.${FAITH_CLASS} .${FAITH_KIND_PREFIX}pantheon { filter: fxs-color-tint(${HIGHLIGHT.pantheon}); }`,
@@ -268,16 +279,20 @@ function markFaith(panel, badgesFor, actions = {}) {
 // ============================ Best in category ============================
 
 /**
- * Per-row marks on every card: best leader in that row (best: type -> Set of
- * ids; null clears) and negative numbers.
+ * Per-row marks on every card: highest and lowest leader in that row (type ->
+ * Set of ids; null clears), negative numbers, and the body font (lining
+ * digits), as the Clean Slate mod styles its rows.
  */
-function markRows(panel, best) {
+function markRows(panel, best, worst = null) {
   if (!panel) return;
   for (const row of panel.querySelectorAll('.diplo-ribbon__yields .yield-item')) {
     const id = parseInt(row.closest('.diplo-ribbon__yields')?.getAttribute('data-leader-id') ?? '', 10);
     const typeClass = [...row.classList].find((c) => c.startsWith(ROW_TYPE_PREFIX));
     const type = typeClass?.slice(ROW_TYPE_PREFIX.length);
-    row.classList.toggle(BEST_CLASS, !!best && !!type && !!best.get(type)?.has(id));
+    row.classList.replace('font-title-base', 'font-body-sm');
+    const isBest = !!best && !!type && !!best.get(type)?.has(id);
+    row.classList.toggle(BEST_CLASS, isBest);
+    row.classList.toggle(WORST_CLASS, !isBest && !!worst && !!type && !!worst.get(type)?.has(id));
     row.classList.toggle(NEGATIVE_CLASS, (row.querySelector('.yield-value')?.textContent ?? '').trim().startsWith('-'));
   }
 }

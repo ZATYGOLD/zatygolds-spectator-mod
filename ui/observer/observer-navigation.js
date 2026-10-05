@@ -36,10 +36,11 @@
 import { RaiseDiplomacyEvent } from 'fs://game/base-standard/ui/diplomacy/diplomacy-events.js';
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import { createLogger, findAncestor, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat, watchedPlayers } from './observer-core.js';
+import { isObserverSeat } from './observer-core.js';
 import { endPerspective, togglePerspective } from './observer-perspective.js';
 import { isDetailsHidden, setDetailsHidden } from './observer-ribbon-style.js';
 import { showSettlement } from './observer-settlement.js';
+import { bannerOf, bannerSubject } from './observer-settlement-info.js';
 
 const log = createLogger('observer-navigation');
 
@@ -56,15 +57,11 @@ function lookAtPlayer(playerId) {
   } catch (e) { log(`look-at failed: ${e}`); }
 }
 
-/** The settlement whose banner shows this name. */
+/** A watched leader's settlement shown by this banner, else null (independents and city-states keep the base behaviour). */
 function settlementOfBanner(banner) {
-  const name = banner.querySelector('.city-banner__name')?.textContent?.trim();
-  if (!name) return null;
-  for (const player of watchedPlayers()) {
-    const city = (player.Cities?.getCities?.() ?? []).find((c) => Locale.compose(c.name) === name);
-    if (city) return city;
-  }
-  return null;
+  const subject = bannerSubject(banner);
+  const owner = subject?.city ? Players.get(subject.owner) : null;
+  return owner?.isMajor && !isObserverPlayer(owner.id) ? subject.city : null;
 }
 
 /** The ribbon portrait (and its player id) under an event target, or null. */
@@ -79,7 +76,7 @@ function onEngineInput(ev) {
   const d = ev.detail;
   if (!d || !['mousebutton-left', 'mousebutton-right', 'accept'].includes(d.name) || !isObserverSeat()) return;
   try {
-    const banner = d.name === 'accept' ? null : findAncestor(ev.target, (el) => el.classList?.contains('city-banner'));
+    const banner = d.name === 'accept' ? null : bannerOf(ev.target);
     const settlement = banner ? settlementOfBanner(banner) : null;
     const portraitId = settlement ? null : portraitTarget(ev.target);
     if (!settlement && portraitId == null) return;

@@ -44,7 +44,7 @@ import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from '
 import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 import { faithBadges } from './observer-faith.js';
 import { openOverview } from './observer-overview.js';
-import { bestByType, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
+import { bestByType, productionItems, researchItems, scoreItems, worstByType, yieldsItems } from './observer-ribbon-data.js';
 import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markFaith, markRows, setRibbonHidden } from './observer-ribbon-style.js';
 import { placeViewButtons } from './observer-ribbon-toolbar.js';
 
@@ -114,10 +114,10 @@ function markCardState(panel) {
 
 const BEST_VIEWS = new Set([OBSERVER_VIEW.YIELDS, OBSERVER_VIEW.SCORE]);
 
-/** Best-in-category rows (Yields and Victories views) and negative numbers. */
+/** Highest and lowest value per row (Yields and Victories views) and negative numbers. */
 function markBest(panel) {
-  const best = BEST_VIEWS.has(viewMode) ? bestByType(watchedPlayers().filter((p) => isKnownInPerspective(p.id)).map((p) => p.id)) : null;
-  markRows(panel, best);
+  const ids = BEST_VIEWS.has(viewMode) ? watchedPlayers().filter((p) => isKnownInPerspective(p.id)).map((p) => p.id) : null;
+  markRows(panel, ids && bestByType(ids), ids && worstByType(ids));
 }
 
 /** Full rebuild of the HUD ribbon, keeping its scroll position (never in diplomacy screens). */
@@ -189,6 +189,22 @@ function patchModel() {
       return baseStuck ? baseStuck.call(this) : (this._alwaysShowYields === 1 || this._userDiploRibbonsToggled === 1);
     }
   });
+
+  // The base turn-end handler captures an index into playerData and writes
+  // through it 250ms later; by then updateAll may have replaced the filtered,
+  // reordered array, so the write lands out of bounds (a logged TypeError
+  // every turn). Re-register it to look the card up by id at write time.
+  try {
+    const proto = Object.getPrototypeOf(DiploRibbonData);
+    engine.off('PlayerTurnDeactivated', proto.onPlayerTurnDeactivated, DiploRibbonData);
+    engine.on('PlayerTurnDeactivated', (data) => {
+      setTimeout(() => {
+        const card = DiploRibbonData._playerData?.find?.((o) => o.id === data.player);
+        if (card) card.isTurnActive = false;
+      }, 250);
+      DiploRibbonData.onUpdate?.(DiploRibbonData);
+    });
+  } catch (e) { log(`turn handler not replaced: ${e}`); }
 
   // Every living major (in a Perspective: those the viewed leader met), the Observer's own card last.
   wrapMethod(DiploRibbonData, 'updateAll', function (base) {

@@ -38,12 +38,11 @@
 import { createComponent, createEffect } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { RingMeter } from 'fs://game/core/ui-next/components/ring-meter.js';
 import { ScreenFlowContextProvider } from 'fs://game/core/ui-next/components/screen-flow.js';
-import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-registry.js';
 import { useCivSelectModelContext } from 'fs://game/core/ui-next/screens/create-game/civ-select-model.js';
 import 'fs://game/core/ui-next/screens/create-game/create-game-hub.js';
 import 'fs://game/core/ui-next/screens/create-game/leader-select-button.js';
 import { useLeaderSelectModelContext } from 'fs://game/core/ui-next/screens/create-game/leader-select-model.js';
-import { configLeader, createLogger, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
+import { configLeader, createLogger, OBSERVER_LEADER, overrideComponent as overrideRegistered, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
 
 const OBSERVER_ICON = 'fs://game/art/icons/zom_observer.png';
@@ -89,11 +88,8 @@ function setBackground(el, url) {
   if (el && url) el.style.setProperty('background-image', `url('${url}')`);
 }
 
-/** Register wrap(current factory) as the component's factory. */
 function overrideComponent(name, wrap) {
-  const base = ComponentRegistry.get(name)?.factory();
-  if (!base) { log(`${name} is not registered`); return; }
-  ComponentRegistry.register(name, wrap(base), OVERRIDE_PRIORITY);
+  if (!overrideRegistered(name, wrap, OVERRIDE_PRIORITY)) log(`${name} is not registered`);
 }
 
 // ============================ Leader select ============================

@@ -20,74 +20,110 @@
 /**
  * Zatygold's Spectator - Observer settlement banners (in-game scope).
  *
- * The ui-next CityBanner reads its data through this override, which changes
- * it for the Observer seat only:
- *   - visibility: on tiles the Observer, or the Perspective's leader, has
- *     explored (observer-perspective.js);
- *   - towns: the town's focus icon where a city shows its leader, its name in
- *     that portrait's tooltip;
- *   - independents and city-states: the type icon's tooltip adds the
- *     suzerain's chosen bonus and its effect.
+ * The live banners are the ui-next (Solid) ones, created before any mod
+ * script runs, so nothing can be patched into their components. For the
+ * Observer seat only:
+ *   - towns: the town's focus icon (as the settlement details show it) is
+ *     placed in the banner's name row, where a city's capital star sits,
+ *     named in its tooltip; refreshed on growth-mode, government and turn
+ *     changes;
+ *   - city-states: the type icon's tooltip adds the suzerain's chosen bonus
+ *     and its effect. Tooltip content is created on hover through the
+ *     registered Stylize component, so overriding it reaches every banner;
+ *     the hovered type icon says which city-state it is for.
+ * Visibility in a Perspective is handled by observer-perspective.js.
  */
 import { mergeProps } from 'fs://game/core/vendor/solid-js/dist/solid.js';
-import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-registry.js';
-import 'fs://game/base-standard/ui-next/screens/city-banners/city-banner.js';
-import { createLogger, setStyle } from '../shared/zom-util.js';
+import { createLogger, deferOnce, findAncestor, overrideComponent } from '../shared/zom-util.js';
 import { isObserverSeat } from './observer-core.js';
-import { bannerVisible } from './observer-perspective.js';
-import { cityStateBonus, townFocus } from './observer-settlement-info.js';
+import { bannerOf, bannerSubject, cityStateBonus, cityStateType, forEachBanner, townFocus } from './observer-settlement-info.js';
 
 const log = createLogger('observer-banners');
-const OVERRIDE_PRIORITY = 1;
-const STYLE_ID = 'zom-banner-style';
-// A town's portrait as a city's, its focus icon whole inside the hex.
-const TOWN_PORTRAIT_STYLE = [
-  '.city-banner.city-banner--town .city-banner__portrait { top: -0.1666666667rem; width: 1.3333333333rem; height: 2rem; display: flex; }',
-  '.city-banner.city-banner--town .city-banner__portrait-img { left: 0.1rem !important; right: 0.1rem !important; top: 0.2rem !important; bottom: 0.2rem !important; background-size: contain !important; }'
-].join('\n');
+const ICON_CLASS = 'zom-settlement-icon';
+const ICON_SHADOW = 'drop-shadow(0.0277777778rem 0.0555555556rem 0.0555555556rem #000000)';
+const TYPE_ICON_CLASS = 'city-banner__city-state-container';
+const REFRESH_EVENTS = ['CityInitialized', 'CityGovernmentLevelChanged', 'CityGrowthModeChanged', 'CityNameChanged', 'PlayerTurnActivated'];
 
-/** An object reading through to target, with some keys answered by getters. */
-function readThrough(target, getters) {
-  return new Proxy({}, { get: (_, key) => (key in getters ? getters[key]() : target()[key]) });
+const seen = new Set();          // breadcrumbs already logged this game load
+let hoveredTypeIcon = null;      // the city-state type icon under the mouse
+
+/** Log a breadcrumb once per game load. */
+function once(key, message) {
+  if (seen.has(key)) return;
+  seen.add(key);
+  log(message);
 }
 
-function townFocusOf(props) {
-  if (!isObserverSeat() || props.data.identity.bannerType !== 'town') return null;
-  void props.data.status;   // re-read when the town's status (growth mode included) changes
-  try { return townFocus(Cities.get(props.cityID)); } catch (e) { return null; }
+// ============================ Town focus ============================
+
+/** A major's town banner shows its focus at the start of the name row; any other banner drops it. */
+function refreshFocusIcon(banner, subject) {
+  const owner = subject?.city ? Players.get(subject.owner) : null;
+  const focus = owner?.isMajor ? townFocus(subject.city) : null;
+  let icon = banner.querySelector('.' + ICON_CLASS);
+  if (!focus) { icon?.remove(); return false; }
+  if (!icon) {
+    const row = banner.querySelector('.city-banner__name')?.parentElement;
+    if (!row) return false;
+    icon = document.createElement('div');
+    icon.classList.value = `${ICON_CLASS} size-6 self-center bg-cover bg-no-repeat pointer-events-auto`;
+    icon.style.filter = ICON_SHADOW;
+    row.insertBefore(icon, row.firstChild);
+  }
+  icon.style.backgroundImage = `url('${focus.icon}')`;
+  icon.setAttribute('data-tooltip-content', Locale.compose(focus.name));
+  return true;
 }
 
-/** The type icon's tooltip: the type, then the chosen suzerain bonus and its effect. */
-function cityStateTooltip(props) {
-  const identity = props.data.identity;
-  const bonus = isObserverSeat() && identity.cityStateBonusName ? cityStateBonus(props.cityID.owner) : null;
-  if (!bonus) return identity.cityStateTypeName;
-  return `${Locale.compose(identity.cityStateTypeName)}[N][B]${Locale.compose(bonus.name)}[/B][N]${Locale.compose(bonus.description)}`;
+const refreshAll = deferOnce(() => {
+  if (!isObserverSeat()) return;
+  try {
+    let banners = 0;
+    let icons = 0;
+    forEachBanner((banner, subject) => {
+      banners++;
+      if (refreshFocusIcon(banner, subject)) icons++;
+    });
+    once('pass', `banner pass: ${banners} banners, ${icons} town focus icons`);
+  } catch (e) { log(`banner refresh failed: ${e}`); }
+});
+
+// ============================ Suzerain bonus ============================
+
+/** The type icon's tooltip text with the chosen bonus, for the hovered city-state; null to keep the base text. */
+function bonusText(text) {
+  const subject = bannerSubject(bannerOf(hoveredTypeIcon));
+  const owner = Players.get(subject?.owner ?? -1);
+  const type = cityStateType(owner);
+  const bonus = owner ? cityStateBonus(owner.id) : null;
+  if (!type || !bonus || text !== type.name) return null;
+  return `${Locale.compose(type.name)}[N][B]${Locale.compose(bonus.name)}[/B][N]${Locale.compose(bonus.description)}`;
 }
 
-function observerBannerData(props) {
-  const identity = readThrough(() => props.data.identity, {
-    portraitIcon: () => townFocusOf(props)?.icon ?? props.data.identity.portraitIcon,
-    cityStateBonusName: () => {
-      const focus = townFocusOf(props);
-      return focus ? Locale.compose(focus.name) : props.data.identity.cityStateBonusName;
-    },
-    cityStateTypeName: () => cityStateTooltip(props)
-  });
-  const status = readThrough(() => props.data.status, {
-    visible: () => bannerVisible(props.location ?? props.data.identity?.location, props.data.status.visible)
-  });
-  return readThrough(() => props.data, { identity: () => identity, status: () => status });
-}
+const withBonus = (base) => (props) => {
+  if (!hoveredTypeIcon || !isObserverSeat()) return base(props);
+  try {
+    const text = bonusText(props.text);
+    if (text) {
+      once('bonus', 'suzerain bonus tooltip shown');
+      return base(mergeProps(props, { text, args: [] }));
+    }
+  } catch (e) { log(`bonus tooltip failed: ${e}`); }
+  return base(props);
+};
+
+// ============================ Installation ============================
 
 function install() {
-  const banner = ComponentRegistry.get('CityBanner')?.factory();
-  if (!banner) { log('CityBanner is not registered'); return; }
-  ComponentRegistry.register('CityBanner', (props) => {
-    const data = observerBannerData(props);
-    return banner(mergeProps(props, { get data() { return data; } }));
-  }, OVERRIDE_PRIORITY);
-  engine.whenReady.then(() => { if (isObserverSeat()) setStyle(STYLE_ID, TOWN_PORTRAIT_STYLE); });
+  if (!overrideComponent('Stylize', withBonus)) log('Stylize is not registered');
+  document.addEventListener('mouseover', (ev) => {
+    hoveredTypeIcon = findAncestor(ev.target, (el) => el.classList?.contains(TYPE_ICON_CLASS));
+  }, true);
+  engine.whenReady.then(() => {
+    for (const event of REFRESH_EVENTS) engine.on(event, refreshAll);
+    refreshAll();
+  });
+  log('ui-next banner patches installed');
 }
 
 try { install(); } catch (e) { log(`install failed: ${e}`); }

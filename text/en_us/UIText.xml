@@ -121,5 +121,8 @@
 		<Row Tag="LOC_ZOM_GRAPH_PRODUCTION">
 			<Text>Production</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GROUPED_DIGITS">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
+		</Row>
 	</EnglishText>
 </Database>

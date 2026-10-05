@@ -25,7 +25,16 @@
  * (observer-diplomacy.js) show about any leader's settlement: a town's focus,
  * and an independent's or city-state's type and its suzerain's chosen bonus.
  * Read as the base banners and production chooser read them.
+ *
+ * Also which settlement each on-screen banner shows. The live banners are the
+ * ui-next ones (ui-next/screens/city-banners, mounted by ui/app.js before any
+ * mod script runs); their elements carry no id, so a banner is matched by the
+ * name it composes: the city's name, or a village's independent's full name.
  */
+import { findAncestor } from '../shared/zom-util.js';
+
+const BANNER_CLASS = 'city-banner';
+const VILLAGE_TYPES = ['IMPROVEMENT_VILLAGE', 'IMPROVEMENT_ENCAMPMENT'];
 
 /** City-state types as the base banner draws them (icon, tint, name). */
 const CITY_STATE_TYPES = {
@@ -70,4 +79,39 @@ function townFocus(city) {
   return project ? { name: project.Name, description: project.Description, icon: UI.getIconURL(project.ProjectType) } : null;
 }
 
-export { cityStateBonus, cityStateType, suzerainOf, townFocus };
+// ============================ Banners ============================
+
+/** Every settlement a banner can show, by composed name: { owner, city (null for a village), locations }. */
+function settlementIndex() {
+  const index = new Map();
+  const add = (name, entry) => {
+    const key = Locale.compose(name);
+    if (!index.has(key)) index.set(key, entry);
+  };
+  for (const player of Players.getAlive()) {
+    for (const city of player.Cities?.getCities?.() ?? []) add(city.name, { owner: player.id, city, locations: [city.location] });
+    if (!player.isIndependent) continue;
+    const locations = (player.Constructibles?.getConstructibles() ?? [])
+      .filter((c) => VILLAGE_TYPES.includes(GameInfo.Constructibles.lookup(c.type)?.ConstructibleType))
+      .map((c) => c.location);
+    if (locations.length) add(player.civilizationFullName, { owner: player.id, city: null, locations });
+  }
+  return index;
+}
+
+/** The settlement a banner element shows, else null. */
+function bannerSubject(banner, index = settlementIndex()) {
+  const name = banner?.querySelector('.city-banner__name')?.textContent?.trim();
+  return name ? index.get(name) ?? null : null;
+}
+
+/** The banner element containing el, else null. */
+const bannerOf = (el) => findAncestor(el, (node) => node.classList?.contains(BANNER_CLASS));
+
+/** run(banner, subject) for every banner on screen (subject null when unmatched). */
+function forEachBanner(run) {
+  const index = settlementIndex();
+  Array.prototype.forEach.call(document.querySelectorAll('.' + BANNER_CLASS), (banner) => run(banner, bannerSubject(banner, index)));
+}
+
+export { bannerOf, bannerSubject, cityStateBonus, cityStateType, forEachBanner, suzerainOf, townFocus };

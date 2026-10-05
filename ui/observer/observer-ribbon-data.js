@@ -56,15 +56,13 @@ function meterHTML(iconUrl, label, pct, barColor) {
 
 const SIGNED_TYPES = new Set(['gold', 'science', 'culture', 'happiness', 'diplomacy', 'food', 'production']);
 
-/** Short numbers for the narrow card: 9.5, 42, 1.2k, 15k. */
+/** Full numbers with thousands separators; one decimal under 100 (as the Clean Slate mod formats them). */
 function formatCompact(value) {
   const abs = Math.abs(value);
   const sign = value < 0 ? '-' : '';
-  const oneDecimal = (v) => String(Math.round(v * 10) / 10);
-  if (abs < 10) return sign + oneDecimal(abs);
-  if (abs < 1000) return sign + Math.round(abs);
-  if (abs < 10000) return sign + oneDecimal(abs / 1000) + 'k';
-  return sign + Math.round(abs / 1000) + 'k';
+  if (abs < 100) return sign + String(Math.trunc(abs * 10) / 10);
+  if (abs < 1000) return sign + String(Math.trunc(abs));
+  return sign + Locale.compose('LOC_ZOM_GROUPED_DIGITS', Math.trunc(abs));
 }
 
 const formatSigned = (value) => (value >= 0 ? '+' : '') + formatCompact(value);
@@ -132,8 +130,10 @@ function recordValues(playerId, items) {
  * routes (always 0/0 with the Observer), plus food, production, citizens,
  * military strength and techs / civics / wonders completed.
  */
+const OWN_ROW_TYPES = new Set(['trade', 'combat', ...EXTRA_ROWS.map((row) => row.type)]);   // rows we drop or build ourselves (combat/food/production also come from the Clean Slate mod)
+
 function yieldsItems(player, baseItems) {
-  const base = baseItems().filter((item) => item.type !== 'trade').map((item) =>
+  const base = baseItems().filter((item) => !OWN_ROW_TYPES.has(item.type)).map((item) =>
     (SIGNED_TYPES.has(item.type) ? { ...item, value: formatSigned(item.rawValue ?? 0) } : item));
   const extra = EXTRA_ROWS.map((row) => {
     let value = 0;
@@ -145,17 +145,26 @@ function yieldsItems(player, baseItems) {
   return items;
 }
 
-/** Row type -> ids of the leaders with the highest value (ties included; nothing when the best is 0). */
-function bestByType(playerIds) {
-  const best = new Map();
+/** Row type -> ids of the leaders holding the marked value; nothing where every leader ties. */
+function leadersByType(playerIds, marked) {
+  const marks = new Map();
   for (const [type, values] of rowValues) {
-    let max = -Infinity;
-    for (const id of playerIds) if (values.has(id)) max = Math.max(max, values.get(id));
-    if (!(max > 0)) continue;
-    best.set(type, new Set(playerIds.filter((id) => values.get(id) === max)));
+    const held = playerIds.filter((id) => values.has(id)).map((id) => [id, values.get(id)]);
+    if (!held.length) continue;
+    const low = Math.min(...held.map(([, value]) => value));
+    const high = Math.max(...held.map(([, value]) => value));
+    const top = marked(low, high);
+    if (top == null || low === high) continue;
+    marks.set(type, new Set(held.filter(([, value]) => value === top).map(([id]) => id)));
   }
-  return best;
+  return marks;
 }
+
+/** Row type -> ids of the leaders with the highest value (ties included; nothing when the best is 0). */
+const bestByType = (playerIds) => leadersByType(playerIds, (low, high) => (high > 0 ? high : null));
+
+/** Row type -> ids of the leaders with the lowest value (only from four leaders up, as the Clean Slate mod). */
+const worstByType = (playerIds) => (playerIds.length < 4 ? new Map() : leadersByType(playerIds, (low) => low));
 
 // ============================ Research ============================
 
@@ -277,4 +286,4 @@ function scoreItems(player) {
   return items.length ? items : [scoreRow({ label: 'LOC_ZOM_OBSERVER_NONE' }, 0)];
 }
 
-export { bestByType, yieldsItems, researchItems, productionItems, scoreItems };
+export { bestByType, worstByType, yieldsItems, researchItems, productionItems, scoreItems };

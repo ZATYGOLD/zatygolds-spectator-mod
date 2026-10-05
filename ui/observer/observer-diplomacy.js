@@ -56,8 +56,6 @@ const RELATIONSHIP_TEXT = {
   HOSTILE: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_HOSTILE', color: '#e0604e' }
 };
 const AT_WAR_COLOR = '#e0604e';
-const BAR_STYLE = 'height: 0.3rem; border-radius: 0.15rem; background-color: rgba(229, 210, 172, 0.2);';
-const BAR_FILL_STYLE = 'height: 100%; border-radius: 0.15rem; background-color: #e5b75b;';
 
 let metInstalled = false;
 
@@ -134,14 +132,19 @@ function textLine(loc, classes, color) {
   return el;
 }
 
+/**
+ * A plain bar in the game's colours (dark track, bronze border, deep bronze
+ * fill). The game's fxs-progress-bar draws beyond its box and bled into the
+ * rows below, so the bar is ordinary divs that cannot overlap anything.
+ */
 function progressBar(fraction) {
-  const bar = document.createElement('div');
-  bar.classList.value = 'self-stretch mt-1';
-  bar.style.cssText = BAR_STYLE;
+  const track = document.createElement('div');
+  track.classList.value = 'self-stretch mt-1';
+  track.style.cssText = 'height: 0.4444444444rem; background-color: rgba(0, 0, 0, 0.6); border: 0.0555555556rem solid rgba(140, 126, 98, 0.6);';
   const fill = document.createElement('div');
-  fill.style.cssText = `${BAR_FILL_STYLE} width: ${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%;`;
-  bar.appendChild(fill);
-  return bar;
+  fill.style.cssText = `height: 100%; background-color: #e0b96c; width: ${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%;`;
+  track.appendChild(fill);
+  return track;
 }
 
 /** What the power is: its type icon and name, independent or city-state, and a city-state's suzerain and chosen bonus. */
@@ -150,7 +153,7 @@ function identitySection(power) {
   section.classList.value = 'flex flex-col items-center self-stretch mt-2 mb-4';
   const type = cityStateType(power);
   const title = document.createElement('div');
-  title.classList.value = 'flex flex-row items-center justify-center';
+  title.classList.value = 'flex flex-row items-center justify-center mb-3';
   if (type) {
     const icon = document.createElement('div');
     icon.classList.value = 'size-10 mr-2 bg-contain bg-center bg-no-repeat';
@@ -168,14 +171,16 @@ function identitySection(power) {
   const suzerainId = suzerainOf(power);
   const suzerain = suzerainId != null ? Players.get(suzerainId) : null;
   const line = document.createElement('p');
-  line.classList.value = 'font-body-sm text-accent-2 text-center mt-3';
+  line.classList.value = 'font-body-sm text-accent-2 text-center mb-2';
   line.innerHTML = suzerain ? Locale.stylize('LOC_DIPLOMACY_SUZERAIN_OTHER', Locale.compose(suzerain.name)) : Locale.compose('LOC_DIPLOMACY_NO_SUZERAIN');
   section.appendChild(line);
   const bonus = cityStateBonus(power.id);
   if (bonus) {
     section.appendChild(header('LOC_ZOM_OBSERVER_SUZERAIN_BONUS'));
-    section.appendChild(textLine(bonus.name, 'font-title-sm text-accent-2 text-center mt-2'));
-    section.appendChild(textLine(bonus.description, 'font-body-sm text-accent-3 text-center mt-1 px-4'));
+    section.appendChild(textLine(bonus.name, 'font-title-sm text-secondary uppercase text-center mt-2'));
+    const description = textLine(bonus.description, 'font-body-sm text-accent-2 text-center mt-1 mb-1');
+    description.style.cssText = 'max-width: 21rem; line-height: 1.3;';
+    section.appendChild(description);
   }
   return section;
 }
@@ -183,7 +188,7 @@ function identitySection(power) {
 /** One leader's row: portrait and name, standing on the right, befriending progress under them. */
 function relationshipRow(power, leader, isSuzerain) {
   const row = document.createElement('div');
-  row.classList.value = 'flex flex-row items-center self-stretch mt-2 px-2';
+  row.classList.value = 'flex flex-row items-center self-stretch mt-3 px-3';
   row.appendChild(leaderPortrait(leader, 'size-10 mr-2'));
   const body = document.createElement('div');
   body.classList.value = 'flex flex-col flex-auto';

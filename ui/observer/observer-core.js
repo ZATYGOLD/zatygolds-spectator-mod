@@ -25,8 +25,13 @@
  * unless isObserverSeat() - other players are untouched.
  */
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { isObserverPlayer, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, isObserverPlayer, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
+
+const coreLog = createLogger('observer-core');
+const BUILD = '2026-10-05 23:40 ui-next banners';
+// One line per game load, so UI.log always says which build ran and for whom.
+engine.whenReady.then(() => coreLog(`build ${BUILD}; observer seat: ${isObserverSeat()}`));
 
 /** ContextManager.push options for the Observer's full screens. */
 const SCREEN_PROPS = { singleton: true, createMouseGuard: true };

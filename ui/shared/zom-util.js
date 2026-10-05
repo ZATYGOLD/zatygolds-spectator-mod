@@ -17,6 +17,7 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-registry.js';
 
 /**
  * Zatygold's Spectator - shared helpers (shell and game scope).
@@ -59,6 +60,19 @@ function wrapMethod(target, name, wrapper) {
   const base = target?.[name];
   if (typeof base !== 'function') return false;
   target[name] = function (...args) { return wrapper.call(this, (...a) => base.apply(this, a), ...args); };
+  return true;
+}
+
+/**
+ * Register wrap(current factory) as a ui-next component's factory. A
+ * component is resolved when each instance is created, so the override
+ * reaches every instance created from now on (not ones already rendered).
+ * Returns whether the component was registered.
+ */
+function overrideComponent(name, wrap, priority = 1) {
+  const base = ComponentRegistry.get(name)?.factory();
+  if (!base) return false;
+  ComponentRegistry.register(name, wrap(base), priority);
   return true;
 }
 
@@ -169,5 +183,5 @@ function isObserverPlayer(playerId) {
 export {
   OBSERVER_CIV_PREFIX, OBSERVER_LEADER, clamp, clearChildren, configLeader, createLogger, currentAgeChronology, deferOnce,
   filterParamValues, findAncestor, isAgeEnding, isAgeTransitionInProgress, isObserverCiv, isObserverPlayer, leaderTypeOf,
-  observerCivForAge, paramValue, setStyle, whenDefined, wrapMethod
+  observerCivForAge, overrideComponent, paramValue, setStyle, whenDefined, wrapMethod
 };
