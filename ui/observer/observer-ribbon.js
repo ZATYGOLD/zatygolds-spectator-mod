@@ -34,7 +34,7 @@ import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from '
 import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 import { faithBadges } from './observer-faith.js';
 import { openOverview } from './observer-overview.js';
-import { bestByType, productionItems, researchItems, scoreItems, worstByType, yieldsItems } from './observer-ribbon-data.js';
+import { bestByType, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
 import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markFaith, markRows, setRibbonHidden } from './observer-ribbon-style.js';
 import { placeViewButtons } from './observer-ribbon-toolbar.js';
 
@@ -104,10 +104,10 @@ function markCardState(panel) {
 
 const BEST_VIEWS = new Set([OBSERVER_VIEW.YIELDS, OBSERVER_VIEW.SCORE]);
 
-/** Highest and lowest value per row (Yields and Victories views) and negative numbers. */
+/** Highest value per row (Yields and Victories views) and negative numbers. */
 function markBest(panel) {
   const ids = BEST_VIEWS.has(viewMode) ? watchedPlayers().filter((p) => isKnownInPerspective(p.id)).map((p) => p.id) : null;
-  markRows(panel, ids && bestByType(ids), ids && worstByType(ids));
+  markRows(panel, ids && bestByType(ids));
 }
 
 /** Full rebuild of the HUD ribbon, keeping its scroll position (never in diplomacy screens). */

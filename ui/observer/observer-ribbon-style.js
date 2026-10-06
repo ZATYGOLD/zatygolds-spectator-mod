@@ -22,7 +22,7 @@
  * Zatygold's Spectator - Observer ribbon look (in-game scope).
  *
  * One injected stylesheet plus per-card marks: fixed card size across views,
- * compact coloured stat rows (lining digits, best / worst highlights, negatives
+ * compact coloured stat rows (lining digits, best highlight, negatives
  * in red), the banner tinted with the player's colour, alliance / war / celebration
  * highlights on portraits, and the leader's faith badges.
  */
@@ -38,7 +38,6 @@ const AT_WAR_CLASS = 'zom-at-war';
 const ALLY_CLASS_PREFIX = 'zom-ally-';
 const PIPS_CLASS = 'zom-war-pips';
 const BEST_CLASS = 'zom-best';
-const WORST_CLASS = 'zom-worst';
 const NEGATIVE_CLASS = 'zom-negative';
 const ROW_SHADOW = 'text-shadow: 0 0.0555555556rem 0.1111111111rem black, 0 0 0.3333333333rem black;';
 const OWN_CARD_CLASS = 'zom-observer-own-card';
@@ -101,8 +100,7 @@ function writeStyle() {
       .map((part) => `.${SIZED_CLASS} .${OWN_CARD_CLASS}.show-on-hover .${part} { display: flex; }`),
     `.${SIZED_CLASS} .${OWN_CARD_CLASS} .diplo-ribbon__yields { height: auto !important; min-height: 0 !important; max-height: 100rem !important; }`,
     `.${SIZED_CLASS} .${BEST_CLASS} { background-color: ${HIGHLIGHT.best}; font-weight: 900; ${ROW_SHADOW} }`,
-    `.${SIZED_CLASS} .${WORST_CLASS} { background-color: ${HIGHLIGHT.worst}; ${ROW_SHADOW} }`,
-    `.${SIZED_CLASS} .${BEST_CLASS} img, .${SIZED_CLASS} .${WORST_CLASS} img { filter: drop-shadow(0 0.0555555556rem 0.1111111111rem black); }`,
+    `.${SIZED_CLASS} .${BEST_CLASS} img { filter: drop-shadow(0 0.0555555556rem 0.1111111111rem black); }`,
     `.${SIZED_CLASS} .${NEGATIVE_CLASS} .yield-value { color: ${HIGHLIGHT.negative} !important; ${ROW_SHADOW} }`,
     `.${HIDDEN_CLASS} { display: none !important; }`,
     `.${FAITH_CLASS} { background-image: none !important; width: auto !important; height: 2.1rem !important; align-self: center; display: flex; flex-direction: row; justify-content: center; align-items: center; pointer-events: none !important; }`,
@@ -256,20 +254,17 @@ function markFaith(panel, badgesFor, actions = {}) {
 // ============================ Best in category ============================
 
 /**
- * Per-row marks on every card: highest and lowest leader in that row (type ->
- * Set of ids; null clears), negative numbers, and the body font (lining
- * digits).
+ * Per-row marks on every card: the highest leader in that row (type -> Set of
+ * ids; null clears), negative numbers, and the body font (lining digits).
  */
-function markRows(panel, best, worst = null) {
+function markRows(panel, best) {
   if (!panel) return;
   for (const row of panel.querySelectorAll('.diplo-ribbon__yields .yield-item')) {
     const id = parseInt(ancestorWithClass(row, 'diplo-ribbon__yields')?.getAttribute('data-leader-id') ?? '', 10);
     const typeClass = [...row.classList].find((c) => c.startsWith(ROW_TYPE_PREFIX));
     const type = typeClass?.slice(ROW_TYPE_PREFIX.length);
     row.classList.replace('font-title-base', 'font-body-sm');
-    const isBest = !!best && !!type && !!best.get(type)?.has(id);
-    row.classList.toggle(BEST_CLASS, isBest);
-    row.classList.toggle(WORST_CLASS, !isBest && !!worst && !!type && !!worst.get(type)?.has(id));
+    row.classList.toggle(BEST_CLASS, !!best && !!type && !!best.get(type)?.has(id));
     row.classList.toggle(NEGATIVE_CLASS, (row.querySelector('.yield-value')?.textContent ?? '').trim().startsWith('-'));
   }
 }

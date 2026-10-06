@@ -145,26 +145,19 @@ function yieldsItems(player, baseItems) {
   return items;
 }
 
-/** Row type -> ids of the leaders holding the marked value; nothing where every leader ties. */
-function leadersByType(playerIds, marked) {
+/** Row type -> ids of the leaders with the highest value (ties included; nothing when the best is 0 or every leader ties). */
+function bestByType(playerIds) {
   const marks = new Map();
   for (const [type, values] of rowValues) {
     const held = playerIds.filter((id) => values.has(id)).map((id) => [id, values.get(id)]);
     if (!held.length) continue;
     const low = Math.min(...held.map(([, value]) => value));
     const high = Math.max(...held.map(([, value]) => value));
-    const top = marked(low, high);
-    if (top == null || low === high) continue;
-    marks.set(type, new Set(held.filter(([, value]) => value === top).map(([id]) => id)));
+    if (high <= 0 || low === high) continue;
+    marks.set(type, new Set(held.filter(([, value]) => value === high).map(([id]) => id)));
   }
   return marks;
 }
-
-/** Row type -> ids of the leaders with the highest value (ties included; nothing when the best is 0). */
-const bestByType = (playerIds) => leadersByType(playerIds, (low, high) => (high > 0 ? high : null));
-
-/** Row type -> ids of the leaders with the lowest value (only from four leaders up). */
-const worstByType = (playerIds) => (playerIds.length < 4 ? new Map() : leadersByType(playerIds, (low) => low));
 
 // ============================ Research ============================
 
@@ -286,4 +279,4 @@ function scoreItems(player) {
   return items.length ? items : [scoreRow({ label: 'LOC_ZOM_OBSERVER_NONE' }, 0)];
 }
 
-export { bestByType, worstByType, yieldsItems, researchItems, productionItems, scoreItems };
+export { bestByType, yieldsItems, researchItems, productionItems, scoreItems };

@@ -39,8 +39,7 @@ the hidden **Spectator's Eye**, whose sight shows every unit live.
   **Research**, **Production** and **Victories**. Rows use lining digits
   that line up between rows, thousands separators,
   bright value colours on the slate background, the highest value in a row
-  on a light pill and the lowest (from four leaders) on a black one,
-  negative totals in bright red, and each card's banner tinted with the
+  on a light pill, negative totals in bright red, and each card's banner tinted with the
   player's colour.
 - Right-click your portrait to hide or show details (the game's "Always Show
   Ribbon Yields" option); left-click it to end a Perspective, or else to jump

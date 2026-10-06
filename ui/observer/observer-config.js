@@ -64,7 +64,6 @@ const HIGHLIGHT = {
   borderGlowSize: '0.3rem',             // tight glow on the hex border
   atWar: '#ff2a2a',
   best: 'rgba(229, 210, 172, 0.25)',    // highest value in a row
-  worst: 'rgba(0, 0, 0, 0.8)',          // lowest value in a row
   negative: '#ff6644',                  // negative totals (bright red on the slate background)
   celebration: '#ffc21a',
   pantheon: '#d9a441',                  // pantheon badge tint, apart from the white religion icons
