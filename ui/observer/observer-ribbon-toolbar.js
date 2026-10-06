@@ -160,13 +160,17 @@ function placeBannerToggles(card) {
   if (symbol) Object.assign(symbol.style, { marginTop: SYMBOL_TOP, width: SYMBOL_SIZE, height: SYMBOL_SIZE });
 }
 
-/** The portrait's tooltip: the Observer's name and what a right click does now. */
-function setPortraitTooltip(card) {
-  const hitbox = card?.querySelector('.diplo-ribbon__portrait-hitbox');
-  const name = Players.get(GameContext.localPlayerID)?.name;
-  if (!hitbox || !name) return;
-  const action = isDetailsHidden() ? 'LOC_ZOM_OBSERVER_SHOW_DETAILS' : 'LOC_ZOM_OBSERVER_HIDE_DETAILS';
-  hitbox.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_PORTRAIT_TT', Locale.compose(name), Locale.compose(action)));
+/** Every portrait's tooltip: the leader's name and what a right click does (the Observer's toggles every card's details; a leader's opens diplomacy). */
+function setPortraitTooltips(panel) {
+  for (const portrait of panel?.querySelectorAll('.diplo-ribbon__portrait[data-player-id]') ?? []) {
+    const hitbox = portrait.querySelector('.diplo-ribbon__portrait-hitbox');
+    const id = parseInt(portrait.getAttribute('data-player-id'), 10);
+    const name = Players.get(id)?.name;
+    if (!hitbox || !name) continue;
+    const own = id === GameContext.localPlayerID;
+    const action = own ? (isDetailsHidden() ? 'LOC_ZOM_OBSERVER_SHOW_DETAILS' : 'LOC_ZOM_OBSERVER_HIDE_DETAILS') : 'LOC_DIPLOMACY_OPEN_DIPLOMACY';
+    hitbox.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_PORTRAIT_TT', Locale.compose(name), Locale.compose(action)));
+  }
 }
 
 /** Fill the Observer's own stat area with the view buttons, centre its eye portrait in the hex and add the toggle. */
@@ -186,8 +190,7 @@ function placeViewButtons(panel, currentView, onSelect) {
   if (portrait) Object.assign(portrait.style, { top: '0', left: '0', width: '100%', height: '100%' });
   placeBannerToggles(card);
   refreshToggles(card);
-  setPortraitTooltip(card);
   markOwnCard(card);
 }
 
-export { placeViewButtons };
+export { placeViewButtons, setPortraitTooltips };

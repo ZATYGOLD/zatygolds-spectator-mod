@@ -127,7 +127,11 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 - The Spectator still takes part in the map's start-region split; its start
   is then moved to the ice.
 - The Eye shows as a generic ship, visible only to the Spectator.
-- Combat previews between other players' units are estimates.
+- Combat previews between other players' units are estimates: the game only
+  simulates the local player's own attacks. They count base strengths, damage,
+  each unit's flat and friendly-territory bonuses and the defender's terrain,
+  but not promotions, leader / civilization abilities, policies, fortifying
+  or river crossings.
 
 ---
 

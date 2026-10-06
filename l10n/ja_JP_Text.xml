@@ -134,7 +134,10 @@
 			<Text>戦争していません。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ja_JP">
-			<Text>推定: 基本戦闘力のみ</Text>
+			<Text>推定</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="ja_JP">
+			<Text>{1_Value} ユニットの能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ja_JP">
 			<Text>産出グラフ</Text>

@@ -134,7 +134,10 @@
 			<Text>未處於戰爭狀態。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="zh_Hant_HK">
-			<Text>估算：僅基礎戰鬥力</Text>
+			<Text>估算</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="zh_Hant_HK">
+			<Text>{1_Value} 單位能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hant_HK">
 			<Text>收益圖表</Text>

@@ -21,13 +21,13 @@
 /**
  * Zatygold's Spectator - Observer combat preview (in-game scope).
  *
- * With another player's combat unit selected, hovering another player's unit
- * shows the base combat preview window. The engine simulation is asked first,
- * but it only answers for the local player's own units, so the window is then
- * filled from an estimate: base strengths, -1 strength per 10 HP lost, and the
- * game's damage formula 30 * e^(strength difference / 25). Terrain,
- * fortification, difficulty and promotion bonuses are not exposed to the UI;
- * an "Estimate" note above the outcome says so.
+ * With another player's unit selected, hovering a target fills the game's
+ * combat window from an estimate: the engine's simulation only answers for
+ * the local player's own units (tested in game). The estimate uses what the
+ * engine and data expose - base strengths, the health penalty, each unit's
+ * flat strength and friendly-territory bonuses, and the defender's terrain
+ * (feature defense, rough terrain) - listed in the window's breakdown with
+ * the game's own wording, under an "Estimate" note.
  */
 import 'fs://game/base-standard/ui/unit-combat-preview/panel-unit-combat-preview.js';   // defines PREVIEW_TAG
 import { PlotCursor } from 'fs://game/core/ui/input/plot-cursor.js';
@@ -41,28 +41,70 @@ import { inspectableUnits, isForeign } from './observer-units.js';
 const log = createLogger('observer-combat');
 const PREVIEW_TAG = 'panel-unit-combat-preview';
 const ESTIMATE_CLASS = 'zom-combat-estimate';
-const DAMAGE_BASE = 30;
+const DAMAGE_BASE = 30;      // the game's damage formula: 30 * e^(strength difference / 25)
 const DAMAGE_SCALE = 25;
-const HP_PER_STRENGTH = 10;
+const HP_PER_STRENGTH = 10;  // -1 strength per 10 health lost
+const ROUGH_DEFENSE = 3;     // Civilopedia: rough terrain gives defenders +3
+
+let estimateCount = 0;       // tokens for estimated results
 
 // ============================ Estimate ============================
 
 const isRangedAttacker = (unit) => rangedStrength(unit) > meleeStrength(unit);
+const signed = (value) => (value > 0 ? `+${value}` : `${value}`);
 
-/** One side of the fight in the shape of a simulation result. */
-function estimatedSide(unit, strength, strengthType) {
+/** A unit's known strength modifiers: { total, health, terrain, other } (the breakdown's text lines). */
+function knownModifiers(unit, strengthType, defending) {
+  const mods = unit.Combat?.combatModifiers ?? {};
+  const result = { total: 0, health: [], terrain: [], other: [] };
+  const add = (list, value, text) => {
+    if (!value) return;
+    result.total += value;
+    list.push(text);
+  };
   const health = unit.Health;
-  const penalty = health ? Math.floor(health.damage / HP_PER_STRENGTH) : 0;
-  return { ID: unit.id, CombatStrength: strength, StrengthModifier: -penalty, CombatStrengthType: strengthType, MaxHitPoints: health?.maxDamage ?? 100, DamageTo: 0 };
+  if (health && !mods.isNoReductionForDamage) {
+    const penalty = -Math.floor(health.damage / HP_PER_STRENGTH);
+    add(result.health, penalty, Locale.compose('LOC_COMBAT_PREVIEW_DAMAGED_UNIT_DESC', penalty));
+  }
+  const flat = strengthType === CombatStrengthTypes.STRENGTH_RANGED ? mods.rangedStrengthModifier : mods.combatStrengthModifier;
+  add(result.other, flat ?? 0, Locale.compose('LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS', signed(flat)));
+  const loc = unit.location;
+  if (!loc) return result;
+  const territory = mods.friendlyTerritoryCombatMod ?? 0;
+  if (territory && GameplayMap.getOwner(loc.x, loc.y) === unit.owner) {
+    add(result.other, territory, Locale.compose('LOC_COMBAT_PREVIEW_FRIENDLY_TERRITORY_BONUS', territory));
+  }
+  if (defending) {
+    const feature = GameInfo.Features.lookup(GameplayMap.getFeatureType(loc.x, loc.y));
+    const featureDefense = feature?.DefenseModifier ?? 0;
+    add(result.terrain, featureDefense, Locale.compose(featureDefense > 0 ? 'LOC_COMBAT_PREVIEW_FEATURE_DEFENSE_BONUS' : 'LOC_COMBAT_PREVIEW_FEATURE_DEFENSE_PENALTY', featureDefense, feature?.Name ?? ''));
+    if (GameInfo.Terrains.lookup(GameplayMap.getTerrainType(loc.x, loc.y))?.Hills && !mods.ignoreRough) {
+      add(result.terrain, ROUGH_DEFENSE, Locale.compose('LOC_COMBAT_PREVIEW_ROUGH_TERRAIN_BONUS', ROUGH_DEFENSE));
+    }
+  }
+  return result;
 }
 
+/** One side of the fight in the shape of a simulation result. */
+function estimatedSide(unit, strength, strengthType, defending) {
+  const known = knownModifiers(unit, strengthType, defending);
+  return {
+    ID: unit.id, CombatStrength: strength, StrengthModifier: known.total, CombatStrengthType: strengthType,
+    MaxHitPoints: unit.Health?.maxDamage ?? 100, DamageTo: 0,
+    PreviewTextHealth: known.health, PreviewTextTerrain: known.terrain, PreviewTextModifier: known.other
+  };
+}
+
+/** An estimated simulation result for this attack, else null (districts are not estimated). */
 function estimateCombat(attackerId, defenderId, location, token) {
   const attacker = Units.get(attackerId);
   const defender = Units.get(defenderId);
   if (!attacker || !defender) return null;
   const ranged = isRangedAttacker(attacker);
-  const a = estimatedSide(attacker, ranged ? rangedStrength(attacker) : meleeStrength(attacker), ranged ? CombatStrengthTypes.STRENGTH_RANGED : CombatStrengthTypes.STRENGTH_MELEE);
-  const d = estimatedSide(defender, meleeStrength(defender), CombatStrengthTypes.STRENGTH_MELEE);
+  const attackType = ranged ? CombatStrengthTypes.STRENGTH_RANGED : CombatStrengthTypes.STRENGTH_MELEE;
+  const a = estimatedSide(attacker, ranged ? rangedStrength(attacker) : meleeStrength(attacker), attackType, false);
+  const d = estimatedSide(defender, meleeStrength(defender), CombatStrengthTypes.STRENGTH_MELEE, true);
   const diff = (a.CombatStrength + a.StrengthModifier) - (d.CombatStrength + d.StrengthModifier);
   d.DamageTo = Math.round(DAMAGE_BASE * Math.exp(diff / DAMAGE_SCALE));
   a.DamageTo = ranged ? 0 : Math.round(DAMAGE_BASE * Math.exp(-diff / DAMAGE_SCALE));
@@ -124,20 +166,19 @@ function patchPreview(proto) {
     return !attacker || ComponentID.isValid(target) || this.isTargetDistrict ? target : hoveredOpponent(attacker);
   });
 
+  // The engine does not simulate other players' attacks: the window gets the estimate directly.
   wrapMethod(proto, 'realizeCombatPreview', function (base, ...args) {
-    const attacker = isForeign(this.selectedUnitID) ? Units.get(this.selectedUnitID) : null;
-    if (!attacker || !this.location) return base(...args);
-    const CombatType = isRangedAttacker(attacker) ? CombatTypes.COMBAT_RANGED : CombatTypes.COMBAT_MELEE;
-    this.queryCombatID = Game.Combat.simulateAttackAsync(this.selectedUnitID, { Location: this.location, X: this.location.x, Y: this.location.y, CombatType });
+    if (!isForeign(this.selectedUnitID) || !this.location) return base(...args);
+    this.queryCombatID = { owner: PlayerIds.NO_PLAYER, id: ++estimateCount, type: 0 };
+    this.onSimulateCombatResult(estimateCombat(this.selectedUnitID, this.targetID, this.location, this.queryCombatID) ?? { QueryToken: this.queryCombatID });
   });
 
   wrapMethod(proto, 'onSimulateCombatResult', function (base, results, ...rest) {
     const ours = isForeign(this.selectedUnitID) && ComponentID.isMatch(results?.QueryToken, this.queryCombatID);
-    const estimate = ours && results?.Attacker == void 0 ? estimateCombat(this.selectedUnitID, this.targetID, this.location, this.queryCombatID) : null;
-    const result = base(estimate ?? results, ...rest);
+    const result = base(results, ...rest);
     if (ours) {
       this.Root.style.transform = CONFIG.combatPreviewLift;
-      setEstimateNote(this.Root, !!estimate);
+      setEstimateNote(this.Root, results?.Attacker != void 0);
       setOwnerIcon(this.attackerLeaderIcon, this.selectedUnitID);
       setOwnerIcon(this.targetLeaderIcon, this.targetID);
     }

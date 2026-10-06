@@ -36,7 +36,7 @@ import { faithBadges } from './observer-faith.js';
 import { openOverview } from './observer-overview.js';
 import { bestByType, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
 import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markFaith, markRows, setRibbonHidden } from './observer-ribbon-style.js';
-import { placeViewButtons } from './observer-ribbon-toolbar.js';
+import { placeViewButtons, setPortraitTooltips } from './observer-ribbon-toolbar.js';
 
 const log = createLogger('observer-ribbon');
 const RIGHT_EDGE_CLASS = 'right-4';   // the base panel uses right-24; the Observer's ribbon sits at the edge
@@ -92,6 +92,7 @@ function decorateRibbon(panel) {
     placeViewButtons(panel, viewMode, setView);
   }
   markCardState(panel);
+  setPortraitTooltips(panel);
   markPerspectiveCard(panel);
 }
 

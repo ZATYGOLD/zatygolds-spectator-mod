@@ -134,7 +134,10 @@
 			<Text>Nie prowadzi wojny.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="pl_PL">
-			<Text>Szacunek: tylko siła bazowa</Text>
+			<Text>Szacunek</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="pl_PL">
+			<Text>{1_Value} Zdolności jednostki</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="pl_PL">
 			<Text>Wykresy dochodów</Text>

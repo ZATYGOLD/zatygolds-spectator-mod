@@ -77,7 +77,10 @@
 			<Text>Not at war.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE">
-			<Text>Estimate: base strengths only</Text>
+			<Text>Estimation</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS">
+			<Text>{1_Value} Unit Abilities</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPHS_TITLE">
 			<Text>Yield Graphs</Text>

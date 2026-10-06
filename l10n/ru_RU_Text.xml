@@ -134,7 +134,10 @@
 			<Text>Не воюет.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ru_RU">
-			<Text>Оценка: только базовая сила</Text>
+			<Text>Оценка</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="ru_RU">
+			<Text>{1_Value} Способности отряда</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ru_RU">
 			<Text>Графики доходов</Text>

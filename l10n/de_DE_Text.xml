@@ -134,7 +134,10 @@
 			<Text>Nicht im Krieg.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="de_DE">
-			<Text>Schätzung: nur Grundstärken</Text>
+			<Text>Schätzung</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="de_DE">
+			<Text>{1_Value} Einheitenfähigkeiten</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="de_DE">
 			<Text>Ertragsdiagramme</Text>

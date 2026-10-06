@@ -134,7 +134,10 @@
 			<Text>Pas en guerre.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="fr_FR">
-			<Text>Estimation : puissances de base uniquement</Text>
+			<Text>Estimation</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="fr_FR">
+			<Text>{1_Value} Capacités de l'unité</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="fr_FR">
 			<Text>Graphiques des rendements</Text>

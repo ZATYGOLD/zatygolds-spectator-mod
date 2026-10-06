@@ -134,7 +134,10 @@
 			<Text>전쟁 중이 아닙니다.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ko_KR">
-			<Text>추정: 기본 전투력만 반영</Text>
+			<Text>추정</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="ko_KR">
+			<Text>{1_Value} 유닛 능력</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ko_KR">
 			<Text>산출량 그래프</Text>
