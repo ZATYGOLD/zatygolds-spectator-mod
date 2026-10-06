@@ -1,0 +1,138 @@
+/*
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
+ * Copyright (C) 2026  Zatygold
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+/**
+ * Zatygold's Spectator - Observer leader view (in-game scope).
+ *
+ * ZOMLeaderView: the leader the empire screens show (base-file overrides marked
+ * "ZOM:" read it), picked from a row of portraits shared by every such screen;
+ * a pick reopens the screen in place on the same tab. During a Perspective the
+ * viewed leader is shown with no picker. Screens stay read-only.
+ */
+import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
+import { createLogger, onActivate, setStyle } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { perspectivePlayer } from './observer-perspective.js';
+
+const log = createLogger('observer-leader-view', CONFIG.debug);
+const SELECTED_STYLE = 'border: 0.1666666667rem solid #e5d2ac; opacity: 1;';
+const OTHER_STYLE = 'border: 0.1666666667rem solid transparent; opacity: 0.65;';
+// A dark plate so the row reads over any background (Great Works sits over the map).
+const BAR_STYLE = 'background-color: rgba(10, 12, 18, 0.88); border: 0.0555555556rem solid rgba(229, 210, 172, 0.55); border-radius: 0.5rem; padding: 0.3rem 0.6rem;';
+
+const BAR_CLASS = 'zom-leader-bar';
+const SWITCHING_CLASS = 'zom-leader-switching';
+const STYLE_ID = 'zom-leader-view-style';
+const SETTLE_MS = 100;   // after two frames: the reopened screen has rendered
+
+let viewedId = null;
+const screenTags = new Set();   // screens that show the picker
+const openTabs = new Map();      // screen tag -> tab last shown to the Observer
+const restoreTabs = new Map();   // screen tag -> tab to show once the screen reopens
+const refreshers = new Map();    // screen tag -> rebuilds the open screen for the viewed leader (true when done)
+
+/** A screen rebuilt in place on a leader switch instead of being reopened. */
+function setRefresh(screenTag, refresh) { refreshers.set(screenTag, refresh); }
+
+/** The leader shown to the Observer (the Perspective's, else the picked one, first watched by default); undefined for everyone else. */
+function playerID() {
+  if (!isObserverSeat()) return undefined;
+  const perspective = perspectivePlayer();
+  if (perspective != null) return perspective;
+  if (viewedId == null || !Players.get(viewedId)?.isAlive) viewedId = watchedPlayers()[0]?.id ?? null;
+  return viewedId ?? undefined;
+}
+
+/** onTabChanged handler (it receives the active tab item) that remembers the Observer's open tab, then calls base. */
+function trackTab(screenTag, base) {
+  return (tab) => {
+    const name = typeof tab === 'string' ? tab : tab?.name;
+    if (name && isObserverSeat()) {
+      openTabs.set(screenTag, name);
+      if (restoreTabs.get(screenTag) === name) restoreTabs.delete(screenTag);   // restored: back to normal tab handling
+    }
+    base?.(tab);
+  };
+}
+
+/**
+ * The tab to reopen on after a leader switch, else undefined. Kept until that
+ * tab is reported open: the screen reads it several times while it builds.
+ */
+function restoredTab(screenTag) {
+  return restoreTabs.get(screenTag);
+}
+
+/** While a screen is rebuilt for another leader it skips its open animations and transitions. */
+function writeSwitchStyle() {
+  setStyle(STYLE_ID, [...screenTags].flatMap((t) => [`.${SWITCHING_CLASS} ${t}`, `.${SWITCHING_CLASS} ${t} *`]).join(', ') +
+    ' { animation: none !important; transition: none !important; }');
+}
+
+const afterFrames = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
+
+function reopen(screenTag, id) {
+  if (id === viewedId) return;
+  viewedId = id;
+  if (refreshers.get(screenTag)?.()) return;   // rebuilt in place
+  if (openTabs.has(screenTag)) restoreTabs.set(screenTag, openTabs.get(screenTag));
+  writeSwitchStyle();
+  document.body.classList.add(SWITCHING_CLASS);
+  setTimeout(() => {
+    ContextManager.pop(screenTag);
+    ContextManager.push(screenTag, SCREEN_PROPS);
+    afterFrames(() => setTimeout(() => document.body.classList.remove(SWITCHING_CLASS), SETTLE_MS));
+  }, 0);
+}
+
+function portraitButton(screenTag, player, selected) {
+  const btn = document.createElement('fxs-activatable');
+  btn.classList.value = 'size-14 mx-1 rounded-full pointer-events-auto';
+  btn.style.cssText = selected ? SELECTED_STYLE : OTHER_STYLE;
+  btn.setAttribute('data-tooltip-content', Locale.compose(player.name));
+  btn.appendChild(leaderPortrait(player, 'size-full'));
+  onActivate(btn, () => reopen(screenTag, player.id));
+  return btn;
+}
+
+/** One portrait per watched leader, the viewed one highlighted; null for everyone else and while a Perspective is shown. */
+function playerBar(screenTag) {
+  const viewed = playerID();
+  if (viewed === undefined || perspectivePlayer() != null) return null;
+  screenTags.add(screenTag);
+  const bar = document.createElement('div');
+  bar.classList.value = `${BAR_CLASS} flex flex-row flex-wrap justify-center items-center self-center mb-2 pointer-events-auto`;
+  bar.style.cssText = BAR_STYLE;
+  for (const player of watchedPlayers()) bar.appendChild(portraitButton(screenTag, player, player.id === viewed));
+  return bar;
+}
+
+globalThis.ZOMLeaderView = { playerID, playerBar, restoredTab, trackTab };
+
+// The overrides load only in a game flagged as having an Observer (modinfo criteria); report the flag for diagnosis.
+engine.whenReady.then(() => {
+  if (!isObserverSeat()) return;
+  let flag;
+  try { flag = Configuration.getGame().getValue('ZOM_OBSERVER_IN_GAME'); } catch (e) { flag = 'unreadable'; }
+  log.debug(`observer-in-game option: ${flag}`);
+});
+
+export { BAR_CLASS, playerBar, setRefresh, playerID as viewedPlayerID };

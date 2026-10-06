@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="ko_KR">
+			<Text>게임 내 관전자</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="ko_KR">
+			<Text>관전자</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="ko_KR">
+			<Text>플레이하지 않고 게임을 관전합니다. 관전자는 능력이 없고, 정착지를 건설하지 않으며, 지도 전체를 봅니다. 문명은 관찰자들입니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="ko_KR">
+			<Text>"모든 것을 보려면, 아무것도 쥐지 말라."</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="ko_KR">
+			<Text>전지적 시야</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="ko_KR">
+			<Text>정착지가 없어도 탈락하지 않습니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="ko_KR">
+			<Text>관찰자들</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="ko_KR">
+			<Text>관찰자들</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="ko_KR">
+			<Text>관찰자</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="ko_KR">
+			<Text>결코 정착하지 않는 문명입니다. 창시자 대신 관전자의 눈을 가지고 시작하며, 모든 타일과 모든 유닛을 봅니다. Zatygold's Spectator에서 추가.</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="ko_KR">
+			<Text>관전자</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="ko_KR">
+			<Text>창시자 대신 관전자의 눈을 가지고 시작합니다. 보너스 없음.</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="ko_KR">
+			<Text>전망대</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="ko_KR">
+			<Text>관전자의 눈</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="ko_KR">
+			<Text>지형과 식생을 넘어 지도 전체를 보며 모든 유닛을 시야에 둡니다. 다른 플레이어에게는 보이지 않으며, 도시를 건설하거나 피해를 입을 수 없습니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="ko_KR">
+			<Text>당신은 관전하기 위해 이곳에 있습니다. Zatygold's Spectator에서 추가.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="ko_KR">
+			<Text>도시도, 점수도 없다. 오직 풍경뿐.</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="ko_KR">
+			<Text>[B]관전자[/B](으)로 플레이.</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="ko_KR">
+			<Text>[B]관전자[/B]는 모든 시대에서 [B]관찰자들[/B]로 관전합니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="ko_KR">
+			<Text>관전자</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="ko_KR">
+			<Text>관전자는 팀이 없습니다. 플레이하려면 다른 지도자를 선택하세요.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="ko_KR">
+			<Text>지도자 세부 정보 숨기기</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="ko_KR">
+			<Text>지도자 세부 정보 표시</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="ko_KR">
+			<Text>{1_Leader}[N]우클릭: {2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="ko_KR">
+			<Text>자동 턴 종료: 켜짐</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ko_KR">
+			<Text>자동 턴 종료: 꺼짐</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ko_KR">
+			<Text>산출량</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="ko_KR">
+			<Text>생산</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="ko_KR">
+			<Text>점수</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="ko_KR">
+			<Text>기술 및 사회 제도</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="ko_KR">
+			<Text>연구 중</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="ko_KR">
+			<Text>현재 사회 제도</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="ko_KR">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="ko_KR">
+			<Text>시민</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="ko_KR">
+			<Text>완료한 기술</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="ko_KR">
+			<Text>완료한 사회 제도</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="ko_KR">
+			<Text>건설한 불가사의</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="ko_KR">
+			<Text>군사력</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="ko_KR">
+			<Text>아직 종교관이 없습니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="ko_KR">
+			<Text>{1_Leader}은(는) 아직 종교를 창시하지 않았습니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="ko_KR">
+			<Text>종교 교리는 대항해 시대와 함께 끝납니다. 종교와 신도는 그대로 남습니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="ko_KR">
+			<Text>종주국 보너스</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="ko_KR">
+			<Text>{1_Leader}와(과) 전쟁 중</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="ko_KR">
+			<Text>전쟁 중이 아닙니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ko_KR">
+			<Text>추정</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="ko_KR">
+			<Text>{1_Value} 유닛 능력</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ko_KR">
+			<Text>산출량 그래프</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ko_KR">
+			<Text>각 지도자의 턴당 {1_Yield}. 게임의 매 턴마다 기록됩니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="ko_KR">
+			<Text>아직 기록된 턴이 없습니다. 산출량은 매 턴 시작 시 기록됩니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ko_KR">
+			<Text>턴당 {1_Yield}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="ko_KR">
+			<Text>턴당</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ko_KR">
+			<Text>종합</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="ko_KR">
+			<Text>클릭하면 이 지도자의 선을 숨깁니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ko_KR">
+			<Text>클릭하면 이 지도자의 선을 표시합니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="ko_KR">
+			<Text>과학</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="ko_KR">
+			<Text>문화</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="ko_KR">
+			<Text>금</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="ko_KR">
+			<Text>영향력</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="ko_KR">
+			<Text>식량</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ko_KR">
+			<Text>생산력</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

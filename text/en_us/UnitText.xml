@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<EnglishText>
+		<Row Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME">
+			<Text>Spectator's Eye</Text>
+		</Row>
+		<Row Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION">
+			<Text>Sees the whole map through terrain and vegetation, and keeps every unit in sight. Hidden from other players; cannot found a city or be damaged.</Text>
+		</Row>
+	</EnglishText>
+</Database>

@@ -14,12 +14,14 @@ import { createEngineEvent } from '../../../../core/ui-next/utilities/game-core-
 
 /*
  * Zatygold's Spectator - base-game override.
- * Copied verbatim from the game's base-standard/ui-next/screens/victories/
- * victories-screen-model.js (build dated 2026-09-16). The only changes are
- * marked "ZOM:": Observer players (LEADER_ZOM_OBSERVER) are left out of every
- * player list on the Victories screens, and an Observer sees every leader's
- * real name instead of "An unmet Player". Re-apply after game updates.
+ * Copied verbatim from the game's base-standard/ui-next/screens/victories/victories-screen-model.js
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": Observer
+ * players (LEADER_ZOM_OBSERVER) are left out of every player list on the
+ * Victories screens, and an Observer sees every leader's real name instead of
+ * "An unmet Player" (diplomacy.hasMet read as zomHasMet).
+ * Re-apply after game updates; see ui/observer/observer-victory.js.
  */
+// ZOM: begin
 const ZOM_OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
 function zomIsObserver(playerId) {
   try {
@@ -32,6 +34,7 @@ function zomHasMet(diplomacy, playerId) {
   if (zomIsObserver(GameContext.localPlayerID)) return true;
   return diplomacy.hasMet(playerId);
 }
+// ZOM: end
 
 var VictoryTabType = /* @__PURE__ */ ((VictoryTabType2) => {
   VictoryTabType2[VictoryTabType2["Military"] = 0] = "Military";
@@ -515,7 +518,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
   }
   function getPlayerList() {
     const PlayerList = Players.getAlive().filter((player) => !zomIsObserver(player.id));   // ZOM: no observers
-    if (!zomIsObserver(GameContext.localPlayerID) && !PlayerList.find((player) => player.id == GameContext.localPlayerID)) {
+    if (!zomIsObserver(GameContext.localPlayerID) && !PlayerList.find((player) => player.id == GameContext.localPlayerID)) {   // ZOM
       const localPlayer = Players.get(GameContext.localPlayerID);
       if (localPlayer) {
         PlayerList.push(localPlayer);
@@ -827,7 +830,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
           if (localPlayer) {
             const localPlayerDiplomacy = localPlayer.Diplomacy;
             if (localPlayerDiplomacy) {
-              const hasMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;
+              const hasMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM
               tempSheet.metPlayer = hasMet;
               if (tempSheet.items.length > 0 || tempSheet.prereqs.length > 0) {
                 if (!hasMet) {
@@ -890,7 +893,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
           turnsProgress,
           turnsTotal,
           dominant,
-          hasMet: zomHasMet(localDiplo, player.id) || player.id == GameContext.localPlayerID,
+          hasMet: zomHasMet(localDiplo, player.id) || player.id == GameContext.localPlayerID,   // ZOM
           winner: isWinner
         });
       }
@@ -984,7 +987,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
         }
       }
       if (localPlayerDiplomacy) {
-        playerInfo.playerIsMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;
+        playerInfo.playerIsMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM
       }
     }
     if (player.Diplomacy) {
@@ -1150,7 +1153,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
             }
             const localPlayer = Players.get(GameContext.localPlayerID);
             if (localPlayer && localPlayer.Diplomacy) {
-              structureInfo.hasMet = zomHasMet(localPlayer.Diplomacy, player.id) || player.id == GameContext.localPlayerID;
+              structureInfo.hasMet = zomHasMet(localPlayer.Diplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM
             }
             playerMilDetail.structures.push(structureInfo);
           }

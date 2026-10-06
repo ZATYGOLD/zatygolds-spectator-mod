@@ -27,9 +27,9 @@ import { TRADE_ROUTE_CARD_MARGIN_RIGHT, TradeRouteCard } from './trade-route-car
  * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
  * leader picked in the screen's leader row. Game actions keep the real local
  * player.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: the leader the Observer views (everyone else: the local player)
+const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
 
 var _tmpl$ = /* @__PURE__ */ template(`<div class="flex flex-row flex-wrap flex-auto relative"></div>`), _tmpl$2 = /* @__PURE__ */ template(`<div class="top-0 right-3 flex flex-row items-center"><div class="font-title uppercase text-secondary"></div></div>`), _tmpl$3 = /* @__PURE__ */ template(`<div class="ml-2"></div>`), _tmpl$4 = /* @__PURE__ */ template(`<div class="w-full flex flex-row justify-center items-center mt-2 text-accent-2 p-4"></div>`), _tmpl$5 = /* @__PURE__ */ template(`<div></div>`);
 const TradeRoutesContainer = (props) => {

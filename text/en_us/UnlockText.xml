@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<EnglishText>
+		<Row Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION">
+			<Text>Play as [B]Spectator[/B].</Text>
+		</Row>
+		<Row Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP">
+			<Text>The [B]Spectator[/B] watches as the [B]Observers[/B] in every Age.</Text>
+		</Row>
+	</EnglishText>
+</Database>

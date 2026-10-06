@@ -4,6 +4,7 @@
         <Name>LOC_MOD_ZOM_NAME</Name>
         <Description>LOC_MOD_ZOM_DESCRIPTION</Description>
         <Authors>Zatygold</Authors>
+        <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
         <Version>1.0.0</Version>
@@ -12,7 +13,7 @@
     </Properties>
 
     <Dependencies>
-        <Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME" />
+        <Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME"/>
         <Mod id="age-antiquity" title="LOC_MODULE_AGE_ANTIQUITY_NAME"/>
         <Mod id="age-exploration" title="LOC_MODULE_AGE_EXPLORATION_NAME"/>
         <Mod id="age-modern" title="LOC_MODULE_AGE_MODERN_NAME"/>
@@ -21,16 +22,9 @@
     <ActionCriteria>
         <Criteria id="always"><AlwaysMet/></Criteria>
 
-<!--*************************** CRITERIA: OBSERVER ************************************************-->
-
-        <!-- A game with an Observer: a player's leader is the Observer, or the
-             hidden game option the lobby host sets when one is picked. -->
-        <Criteria id="zom-observer-in-game" any="true">
-            <ConfigurationValueContains>
-                <Group>Player</Group>
-                <ConfigurationId>LeaderTypeName</ConfigurationId>
-                <Value>LEADER_ZOM_OBSERVER</Value>
-            </ConfigurationValueContains>
+        <!-- A game with a Spectator: the hidden game option set at setup while any
+             player is the Spectator (ui/setup/setup-observer.js). -->
+        <Criteria id="zom-observer-in-game">
             <ConfigurationValueMatches>
                 <Group>Game</Group>
                 <ConfigurationId>ZOM_OBSERVER_IN_GAME</ConfigurationId>
@@ -39,127 +33,163 @@
         </Criteria>
     </ActionCriteria>
 
-<!--*************************** SHELL: LOBBY, TEXT & SETUP ***********************************************-->
-
     <ActionGroups>
+<!--*************************** SHELL: SETUP & LOBBY ***************************************************-->
+
         <ActionGroup id="zom-shell" scope="shell" criteria="always">
             <Properties><LoadOrder>1000</LoadOrder></Properties>
             <Actions>
                 <UpdateText>
-                    <Item>text/en_us/zom-text.xml</Item>
+                    <Item>text/en_us/ConfigText.xml</Item>
+                    <Item>text/en_us/LeaderText.xml</Item>
+                    <Item>text/en_us/CivilizationText.xml</Item>
+                    <Item>text/en_us/UnitText.xml</Item>
+                    <Item>text/en_us/LoadingText.xml</Item>
+                    <Item>text/en_us/UnlockText.xml</Item>
+                    <Item>text/en_us/UIText.xml</Item>
+                    <Item locale="de_DE">l10n/de_DE_Text.xml</Item>
+                    <Item locale="es_ES">l10n/es_ES_Text.xml</Item>
+                    <Item locale="fr_FR">l10n/fr_FR_Text.xml</Item>
+                    <Item locale="it_IT">l10n/it_IT_Text.xml</Item>
+                    <Item locale="ja_JP">l10n/ja_JP_Text.xml</Item>
+                    <Item locale="ko_KR">l10n/ko_KR_Text.xml</Item>
+                    <Item locale="pl_PL">l10n/pl_PL_Text.xml</Item>
+                    <Item locale="pt_BR">l10n/pt_BR_Text.xml</Item>
+                    <Item locale="ru_RU">l10n/ru_RU_Text.xml</Item>
+                    <Item locale="zh_Hans_CN">l10n/zh_Hans_CN_Text.xml</Item>
+                    <Item locale="zh_Hant_HK">l10n/zh_Hant_HK_Text.xml</Item>
                 </UpdateText>
                 <UpdateDatabase>
-                    <Item>config/SetupParameters.sql</Item>
-                    <Item>config/observer-config.xml</Item>
+                    <Item>config/setup-parameters.sql</Item>
+                    <Item>config/config.xml</Item>
+                    <Item>config/setup-rules.sql</Item>
                 </UpdateDatabase>
                 <ImportFiles>
-                    <Item>icons/zom_observer.png</Item>
-                    <Item>icons/zom_observer_civ.png</Item>
-                    <Item>icons/zom_observer_leader_256.png</Item>
-                    <Item>icons/zom_observer_leader_140.png</Item>
-                    <Item>icons/zom_observer_leader_128.png</Item>
-                    <Item>icons/zom_observer_leader_64.png</Item>
-                    <Item>icons/zom_observer_circle_256.png</Item>
-                    <Item>icons/zom_observer_circle_140.png</Item>
-                    <Item>icons/zom_observer_circle_128.png</Item>
-                    <Item>icons/zom_observer_circle_64.png</Item>
+                    <Item>art/icons/zom_observer.png</Item>
+                    <Item>art/icons/zom_observer_civ.png</Item>
+                    <Item>art/icons/zom_observer_leader_256.png</Item>
+                    <Item>art/icons/zom_observer_leader_128.png</Item>
+                    <Item>art/icons/zom_observer_leader_64.png</Item>
+                    <Item>art/icons/zom_observer_circle_256.png</Item>
+                    <Item>art/icons/zom_observer_circle_128.png</Item>
+                    <Item>art/icons/zom_observer_circle_64.png</Item>
+                    <Item>art/icons/zom_observer_portrait_140.png</Item>
+                    <Item>art/leaders/lsl_zom_observer.png</Item>
+                    <Item>art/backgrounds/cg_zom_observer_vert.png</Item>
                 </ImportFiles>
                 <UpdateIcons>
-                    <Item>data/observer/observer-icons.xml</Item>
+                    <Item>data/icons/icons.xml</Item>
                 </UpdateIcons>
                 <UpdateColors>
-                    <Item>data/observer/observer-colors.xml</Item>
+                    <Item>data/colors/playercolors.xml</Item>
                 </UpdateColors>
                 <UIScripts>
-                    <Item>ui/zom-shared/zom-util.js</Item>
-                    <Item>ui/mp-lobby/mp-lobby-config.js</Item>
-                    <Item>ui/mp-lobby/mp-lobby-observer.js</Item>
+                    <Item>ui/shared/zom-util.js</Item>
+                    <Item>ui/shared/zom-assets.js</Item>
+                    <Item>ui/setup/setup-config.js</Item>
+                    <Item>ui/setup/setup-observer.js</Item>
+                    <Item>ui/setup/lobby-observer.js</Item>
+                    <Item>ui/setup/create-game-observer.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>
 
-<!--***************************** GAME: TEXT & SHARED HELPERS *************************************-->
+<!--*************************** GAME: SPECTATOR LEADER, CIVILIZATIONS & UI *****************************-->
 
-        <ActionGroup id="zom-game-text" scope="game" criteria="always">
-            <Properties><LoadOrder>500</LoadOrder></Properties>
-            <Actions>
-                <UpdateText>
-                    <Item>text/en_us/zom-text.xml</Item>
-                </UpdateText>
-                <UIScripts>
-                    <Item>ui/zom-shared/zom-util.js</Item>
-                </UIScripts>
-            </Actions>
-        </ActionGroup>
-
-<!--*********************** GAME: OBSERVER LEADER & CIVILIZATIONS ******************************-->
-
-        <ActionGroup id="zom-observer" scope="game" criteria="always">
+        <ActionGroup id="zom-game" scope="game" criteria="always">
             <Properties><LoadOrder>1000</LoadOrder></Properties>
             <Actions>
-                <ImportFiles>
-                    <Item>maps/zom-observer-eye.js</Item>
-                </ImportFiles>
+                <UpdateText>
+                    <Item>text/en_us/ConfigText.xml</Item>
+                    <Item>text/en_us/LeaderText.xml</Item>
+                    <Item>text/en_us/CivilizationText.xml</Item>
+                    <Item>text/en_us/UnitText.xml</Item>
+                    <Item>text/en_us/LoadingText.xml</Item>
+                    <Item>text/en_us/UnlockText.xml</Item>
+                    <Item>text/en_us/UIText.xml</Item>
+                    <Item locale="de_DE">l10n/de_DE_Text.xml</Item>
+                    <Item locale="es_ES">l10n/es_ES_Text.xml</Item>
+                    <Item locale="fr_FR">l10n/fr_FR_Text.xml</Item>
+                    <Item locale="it_IT">l10n/it_IT_Text.xml</Item>
+                    <Item locale="ja_JP">l10n/ja_JP_Text.xml</Item>
+                    <Item locale="ko_KR">l10n/ko_KR_Text.xml</Item>
+                    <Item locale="pl_PL">l10n/pl_PL_Text.xml</Item>
+                    <Item locale="pt_BR">l10n/pt_BR_Text.xml</Item>
+                    <Item locale="ru_RU">l10n/ru_RU_Text.xml</Item>
+                    <Item locale="zh_Hans_CN">l10n/zh_Hans_CN_Text.xml</Item>
+                    <Item locale="zh_Hant_HK">l10n/zh_Hant_HK_Text.xml</Item>
+                </UpdateText>
                 <UpdateDatabase>
-                    <Item>data/observer/observer-leader.xml</Item>
-                    <Item>data/observer/observer-civilizations.xml</Item>
-                    <Item>data/observer/observer-units-gameeffects.xml</Item>
-                    <Item>data/observer/observer-units.xml</Item>
-                    <Item>data/observer/observer-legacies.sql</Item>
+                    <Item>data/leaders.xml</Item>
+                    <Item>data/civilizations.xml</Item>
+                    <Item>data/units-gameeffects.xml</Item>
+                    <Item>data/units.xml</Item>
+                    <Item>data/legacies.sql</Item>
+                    <Item>data/loading-info.xml</Item>
                 </UpdateDatabase>
                 <ImportFiles>
-                    <Item>icons/zom_observer.png</Item>
-                    <Item>icons/zom_observer_civ.png</Item>
-                    <Item>icons/zom_observer_leader_256.png</Item>
-                    <Item>icons/zom_observer_leader_140.png</Item>
-                    <Item>icons/zom_observer_leader_128.png</Item>
-                    <Item>icons/zom_observer_leader_64.png</Item>
-                    <Item>icons/zom_observer_circle_256.png</Item>
-                    <Item>icons/zom_observer_circle_140.png</Item>
-                    <Item>icons/zom_observer_circle_128.png</Item>
-                    <Item>icons/zom_observer_circle_64.png</Item>
+                    <Item>maps/zom-observer-eye.js</Item>
+                    <Item>art/icons/zom_observer.png</Item>
+                    <Item>art/icons/zom_observer_civ.png</Item>
+                    <Item>art/icons/zom_observer_leader_256.png</Item>
+                    <Item>art/icons/zom_observer_leader_128.png</Item>
+                    <Item>art/icons/zom_observer_leader_64.png</Item>
+                    <Item>art/icons/zom_observer_circle_256.png</Item>
+                    <Item>art/icons/zom_observer_circle_128.png</Item>
+                    <Item>art/icons/zom_observer_circle_64.png</Item>
+                    <Item>art/icons/zom_observer_portrait_140.png</Item>
+                    <Item>art/backgrounds/cg_zom_observer_vert.png</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer_1080.png</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer_720.png</Item>
                 </ImportFiles>
                 <UpdateIcons>
-                    <Item>data/observer/observer-icons.xml</Item>
+                    <Item>data/icons/icons.xml</Item>
                 </UpdateIcons>
                 <UpdateColors>
-                    <Item>data/observer/observer-colors.xml</Item>
+                    <Item>data/colors/playercolors.xml</Item>
                 </UpdateColors>
                 <UIScripts>
-                    <Item>ui/mp-observer/mp-observer-config.js</Item>
-                    <Item>ui/mp-observer/mp-observer-core.js</Item>
-                    <Item>ui/mp-observer/mp-observer-overview.js</Item>
-                    <Item>ui/mp-observer/mp-observer-screens.js</Item>
-                    <Item>ui/mp-observer/mp-observer-leader-view.js</Item>
-                    <Item>ui/mp-observer/mp-observer-leader-screens.js</Item>
-                    <Item>ui/mp-observer/mp-observer-civ-lists.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon-data.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon-style.js</Item>
-                    <Item>ui/mp-observer/mp-observer-history.js</Item>
-                    <Item>ui/mp-observer/mp-observer-graphs.js</Item>
-                    <Item>ui/mp-observer/mp-observer-turn.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon-toolbar.js</Item>
-                    <Item>ui/mp-observer/mp-observer-ribbon.js</Item>
-                    <Item>ui/mp-observer/mp-observer-navigation.js</Item>
-                    <Item>ui/mp-observer/mp-observer-victory.js</Item>
-                    <Item>ui/mp-observer/mp-observer-diplomacy.js</Item>
-                    <Item>ui/mp-observer/mp-observer-yields.js</Item>
-                    <Item>ui/mp-observer/mp-observer-hud.js</Item>
-                    <Item>ui/mp-observer/mp-observer-units.js</Item>
-                    <Item>ui/mp-observer/mp-observer-combat.js</Item>
-                    <Item>ui/mp-observer/mp-observer-eye.js</Item>
-                    <Item>ui/mp-observer/mp-observer-prompts.js</Item>
+                    <Item>ui/shared/zom-util.js</Item>
+                    <Item>ui/shared/zom-assets.js</Item>
+                    <Item>ui/observer/observer-config.js</Item>
+                    <Item>ui/observer/observer-core.js</Item>
+                    <Item>ui/observer/observer-faith.js</Item>
+                    <Item>ui/observer/observer-overview.js</Item>
+                    <Item>ui/observer/observer-screens.js</Item>
+                    <Item>ui/observer/observer-leader-view.js</Item>
+                    <Item>ui/observer/observer-leader-screens.js</Item>
+                    <Item>ui/observer/observer-civ-lists.js</Item>
+                    <Item>ui/observer/observer-ribbon-data.js</Item>
+                    <Item>ui/observer/observer-ribbon-style.js</Item>
+                    <Item>ui/observer/observer-history.js</Item>
+                    <Item>ui/observer/observer-graphs.js</Item>
+                    <Item>ui/observer/observer-turn.js</Item>
+                    <Item>ui/observer/observer-settlement-info.js</Item>
+                    <Item>ui/observer/observer-perspective.js</Item>
+                    <Item>ui/observer/observer-banners.js</Item>
+                    <Item>ui/observer/observer-ribbon-toolbar.js</Item>
+                    <Item>ui/observer/observer-ribbon.js</Item>
+                    <Item>ui/observer/observer-settlement.js</Item>
+                    <Item>ui/observer/observer-navigation.js</Item>
+                    <Item>ui/observer/observer-victory.js</Item>
+                    <Item>ui/observer/observer-diplomacy.js</Item>
+                    <Item>ui/observer/observer-yields.js</Item>
+                    <Item>ui/observer/observer-hud.js</Item>
+                    <Item>ui/observer/observer-units.js</Item>
+                    <Item>ui/observer/observer-combat.js</Item>
+                    <Item>ui/observer/observer-eye.js</Item>
+                    <Item>ui/observer/observer-prompts.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>
 
-<!--*********************** GAME: OBSERVER BASE-GAME OVERRIDES ***********************************-->
+<!--*************************** GAME: BASE-GAME OVERRIDES **********************************************-->
 
-        <!-- Copies of base-game files (changes marked "ZOM:"), loaded only in a
-             game with an Observer: every other game runs the untouched files,
-             or another mod's versions of them. Loaded after Multiplayer
-             Toolkit's copies (LoadOrder), so these win in this mod's games. -->
-        <ActionGroup id="zom-observer-overrides" scope="game" criteria="zom-observer-in-game">
+        <!-- Copies of base-game files (changes marked "ZOM:"), loaded only in a game
+             with a Spectator: every other game runs the untouched files, or another
+             mod's versions of them. LoadOrder 1100 lets these win over other mods'
+             copies in this mod's games. -->
+        <ActionGroup id="zom-game-overrides" scope="game" criteria="zom-observer-in-game">
             <Properties><LoadOrder>1100</LoadOrder></Properties>
             <Actions>
                 <ImportFiles>
@@ -184,12 +214,10 @@
                 </ImportFiles>
             </Actions>
         </ActionGroup>
-
     </ActionGroups>
 
-<!--************************* LOCALIZED TEXT ************************************************-->
-
     <LocalizedText>
-        <File>text/en_us/mod-info-text.xml</File>
+        <File>text/en_us/ModuleText.xml</File>
+        <File>l10n/ModuleText.xml</File>
     </LocalizedText>
 </Mod>

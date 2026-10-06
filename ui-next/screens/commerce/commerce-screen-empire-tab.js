@@ -26,9 +26,9 @@ import { useCommerceScreenContext } from './commerce-screen-model.js';
  * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
  * leader picked in the screen's leader row. Game actions keep the real local
  * player.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: the leader the Observer views (everyone else: the local player)
+const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
 
 var _tmpl$ = /* @__PURE__ */ template(`<div class="text-secondary self-center text-center text-accent-2"></div>`), _tmpl$2 = /* @__PURE__ */ template(`<div></div>`), _tmpl$3 = /* @__PURE__ */ template(`<div class="ml-1 text-white"></div>`), _tmpl$4 = /* @__PURE__ */ template(`<div class="flex flex-col w-full grow items-center mt-8"><div class="mb-2 w-full"></div><div class="w-full text-center items-center flex-col px-2"></div></div>`), _tmpl$5 = /* @__PURE__ */ template(`<div class="flex flex-col w-full justify-center items-center mt-1 mb-1"><div class="flex flex-row flex-wrap"></div></div>`), _tmpl$6 = /* @__PURE__ */ template(`<div class="mx-2 h-10 w-0\\.5 bg-accent"></div>`), _tmpl$7 = /* @__PURE__ */ template(`<div class="flex flex-row items-center mb-1 px-2"></div>`);
 const EmpireResourceContainer = (props) => {

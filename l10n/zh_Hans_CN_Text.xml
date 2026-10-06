@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="zh_Hans_CN">
+			<Text>观战者在游戏中</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="zh_Hans_CN">
+			<Text>观战者</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>不参与游戏，只观看对局。观战者没有任何能力，不建立定居点，并能看到整张地图。其文明为观察者。</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="zh_Hans_CN">
+			<Text>“欲观万物，须一无所持。”</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="zh_Hans_CN">
+			<Text>全知之眼</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>不会因没有定居点而被淘汰。</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="zh_Hans_CN">
+			<Text>观察者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="zh_Hans_CN">
+			<Text>观察者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="zh_Hans_CN">
+			<Text>观察者</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>一个从不定居的文明。它以观战者之眼代替奠基者开局，能看到每个单元格和每个单位。由 Zatygold's Spectator 添加。</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="zh_Hans_CN">
+			<Text>观战者</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>以观战者之眼代替奠基者开局。无加成。</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="zh_Hans_CN">
+			<Text>瞭望台</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="zh_Hans_CN">
+			<Text>观战者之眼</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>可透过地形与植被看到整张地图，并始终看到每个单位。对其他玩家隐藏；无法建立城市，也不会受到伤害。</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="zh_Hans_CN">
+			<Text>你在此只为观战。由 Zatygold's Spectator 添加。</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="zh_Hans_CN">
+			<Text>没有城市，没有分数——只有风景。</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>以[B]观战者[/B]身份游玩。</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="zh_Hans_CN">
+			<Text>[B]观战者[/B]在每个时代都以[B]观察者[/B]文明观战。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="zh_Hans_CN">
+			<Text>观战者</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="zh_Hans_CN">
+			<Text>观战者没有队伍。如需游玩，请选择其他领袖。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="zh_Hans_CN">
+			<Text>隐藏领袖详情</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="zh_Hans_CN">
+			<Text>显示领袖详情</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="zh_Hans_CN">
+			<Text>{1_Leader}[N]右键：{2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="zh_Hans_CN">
+			<Text>自动结束回合：开</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="zh_Hans_CN">
+			<Text>自动结束回合：关</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="zh_Hans_CN">
+			<Text>产量</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="zh_Hans_CN">
+			<Text>生产</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="zh_Hans_CN">
+			<Text>分数</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="zh_Hans_CN">
+			<Text>科技与市政</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="zh_Hans_CN">
+			<Text>正在研究</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="zh_Hans_CN">
+			<Text>当前市政</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="zh_Hans_CN">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="zh_Hans_CN">
+			<Text>市民</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="zh_Hans_CN">
+			<Text>已完成科技</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="zh_Hans_CN">
+			<Text>已完成市政</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="zh_Hans_CN">
+			<Text>已建奇观</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="zh_Hans_CN">
+			<Text>军事力量</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="zh_Hans_CN">
+			<Text>尚无万神殿。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="zh_Hans_CN">
+			<Text>{1_Leader}尚未创立宗教。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="zh_Hans_CN">
+			<Text>宗教信仰随探索时代结束。宗教及其信徒仍然保留。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="zh_Hans_CN">
+			<Text>宗主国加成</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="zh_Hans_CN">
+			<Text>正与{1_Leader}交战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="zh_Hans_CN">
+			<Text>未处于战争状态。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="zh_Hans_CN">
+			<Text>估算</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="zh_Hans_CN">
+			<Text>{1_Value} 单位能力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hans_CN">
+			<Text>产出图表</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>每位领袖每回合的{1_Yield}，在游戏的每个回合记录。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="zh_Hans_CN">
+			<Text>尚未记录任何回合。产出会在每回合开始时记录。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="zh_Hans_CN">
+			<Text>每回合{1_Yield}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="zh_Hans_CN">
+			<Text>每回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hans_CN">
+			<Text>总体</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="zh_Hans_CN">
+			<Text>点击隐藏该领袖的曲线。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="zh_Hans_CN">
+			<Text>点击显示该领袖的曲线。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="zh_Hans_CN">
+			<Text>科技</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="zh_Hans_CN">
+			<Text>文化</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="zh_Hans_CN">
+			<Text>金币</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="zh_Hans_CN">
+			<Text>影响力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="zh_Hans_CN">
+			<Text>食物</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="zh_Hans_CN">
+			<Text>生产力</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

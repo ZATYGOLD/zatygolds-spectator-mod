@@ -12,7 +12,7 @@ import { addAvailableCard, removeAvailableCard, getLegacyCardStyling, parseCardT
  * (build dated 2026-09-16). The only changes are marked "ZOM:": for the
  * Observer the dedications shown are the viewed leader's; game actions keep the
  * real local player.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 
 var DedicationsFilterOptions = /* @__PURE__ */ ((DedicationsFilterOptions2) => {
@@ -37,7 +37,7 @@ const CreateDedicationsModel = () => {
     const layoutModel = LayoutModel.get();
     return isMobileViewExperience || layoutModel.screenHeight() <= Layout.pixelsToScreenPixels(SMALL_SCREEN_MODE_MAX_HEIGHT) || layoutModel.screenWidth() <= Layout.pixelsToScreenPixels(SMALL_SCREEN_MODE_MAX_WIDTH);
   });
-  const realLocalPlayerID = useLocalPlayerId();
+  const realLocalPlayerID = useLocalPlayerId();   // ZOM: renamed
   const localPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? realLocalPlayerID();   // ZOM: the viewed leader
   const playerLegacyCompleted = createEngineEvent("PlayerLegacyCompleted");
   const [selectedDedicationFilter, setSelectedDedicationFilter] = createSignal(
@@ -407,14 +407,14 @@ const CreateDedicationsModel = () => {
         for (let i = 0; i < effect.amount; i++) {
           const args = { ID: effect.id };
           const result = Game.PlayerOperations.canStart(
-            realLocalPlayerID() /* ZOM: real local player */,
+            realLocalPlayerID(),   // ZOM: real local player
             PlayerOperationTypes.ADVANCED_START_USE_EFFECT,
             args,
             false
           );
           if (result.Success) {
             Game.PlayerOperations.sendRequest(
-              realLocalPlayerID() /* ZOM: real local player */,
+              realLocalPlayerID(),   // ZOM: real local player
               PlayerOperationTypes.ADVANCED_START_USE_EFFECT,
               args
             );

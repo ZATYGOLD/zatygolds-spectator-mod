@@ -1,5 +1,5 @@
 /*
- * Zatygold's Spectator - a playable Observer for multiplayer Civilization VII.
+ * Zatygold's Spectator - a playable Spectator for Civilization VII.
  * Copyright (C) 2026  Zatygold
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,15 +21,10 @@
 /**
  * Zatygold's Spectator - Observer's Eye placement (gameplay scripts).
  *
- * Shared by the two base-script overrides that run in the gameplay context:
- * maps/assign-starting-plots.js (new game) and
- * scripts/age-transition-post-load.js (each new Age, where units are reset).
- * The game never places the Observer's starting unit, so the Eye is created
- * here: on open water next to the Ocean / Marine / Ice tile nearest the
- * bottom-center of the map (out of every player's reach), then moved onto the
- * ice - the engine refuses to create a unit on impassable ice (it is left off
- * the map) but accepts the move. Without ice the Eye stays on the nearest
- * open water.
+ * Used by the start-plot and Age-transition overrides: creates each Observer's
+ * Eye on open water by the ocean ice nearest the bottom-center of the map, then
+ * moves it onto the ice (the engine refuses to create units on ice but allows
+ * the move).
  */
 const OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
 const EYE_UNIT = 'UNIT_ZOM_OBSERVER_EYE';

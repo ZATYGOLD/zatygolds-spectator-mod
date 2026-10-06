@@ -11,9 +11,9 @@ import { getLegacyCardStyling } from './legacies-support.js';
  * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
  * leader picked in the screen's leader row. Game actions keep the real local
  * player.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: the leader the Observer views (everyone else: the local player)
+const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
 
 var TriumphFilterOptions = /* @__PURE__ */ ((TriumphFilterOptions2) => {
   TriumphFilterOptions2["DEFAULT"] = "DEFAULT";

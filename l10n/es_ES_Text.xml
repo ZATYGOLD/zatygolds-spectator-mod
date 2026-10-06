@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+	<LocalizedText>
+		<Replace Tag="LOC_ZOM_OBSERVER_IN_GAME" Language="es_ES">
+			<Text>Espectador en la partida</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_NAME" Language="es_ES">
+			<Text>Espectador</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_DESCRIPTION" Language="es_ES">
+			<Text>Observa la partida sin jugar. El Espectador no tiene habilidades, no funda ningún asentamiento y ve todo el mapa. Su civilización son los Observadores.</Text>
+		</Replace>
+		<Replace Tag="LOC_LEADER_ZOM_OBSERVER_QUOTE" Language="es_ES">
+			<Text>«Para verlo todo, no hay que aferrarse a nada».</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_NAME" Language="es_ES">
+			<Text>Omnividente</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_LEADER_DESCRIPTION" Language="es_ES">
+			<Text>Nunca es eliminado por no tener asentamientos.</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_NAME" Language="es_ES">
+			<Text>Observadores</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_FULLNAME" Language="es_ES">
+			<Text>Los Observadores</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_ADJECTIVE" Language="es_ES">
+			<Text>observador</Text>
+		</Replace>
+		<Replace Tag="LOC_CIVILIZATION_ZOM_OBSERVER_DESCRIPTION" Language="es_ES">
+			<Text>Una civilización que nunca se asienta. En lugar de un Fundador, empieza con el Ojo del Espectador, que ve cada casilla y cada unidad. Añadido por Zatygold's Spectator.</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_NAME" Language="es_ES">
+			<Text>Espectador</Text>
+		</Replace>
+		<Replace Tag="LOC_TRAIT_ZOM_OBSERVER_DESCRIPTION" Language="es_ES">
+			<Text>Empieza con el Ojo del Espectador en lugar de un Fundador. Sin bonificaciones.</Text>
+		</Replace>
+		<Replace Tag="LOC_CITY_NAME_ZOM_OBSERVER1" Language="es_ES">
+			<Text>Mirador</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_NAME" Language="es_ES">
+			<Text>Ojo del Espectador</Text>
+		</Replace>
+		<Replace Tag="LOC_UNIT_ZOM_OBSERVER_EYE_DESCRIPTION" Language="es_ES">
+			<Text>Ve todo el mapa a través del terreno y la vegetación, y mantiene a la vista todas las unidades. Oculto para los demás jugadores; no puede fundar ciudades ni recibir daño.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_LEADER_INTRO_TEXT_ZOM_OBSERVER" Language="es_ES">
+			<Text>Estás aquí para observar. Añadido por Zatygold's Spectator.</Text>
+		</Replace>
+		<Replace Tag="LOC_LOADING_CIV_INTRO_TEXT_ZOM_OBSERVER" Language="es_ES">
+			<Text>Sin ciudades, sin puntuación: solo las vistas.</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_DESCRIPTION" Language="es_ES">
+			<Text>Juega como [B]Espectador[/B].</Text>
+		</Replace>
+		<Replace Tag="LOC_UNLOCK_PLAY_AS_ZOM_OBSERVER_TOOLTIP" Language="es_ES">
+			<Text>El [B]Espectador[/B] observa como los [B]Observadores[/B] en cada era.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER" Language="es_ES">
+			<Text>Espectador</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_TEAM_OBSERVER_DESC" Language="es_ES">
+			<Text>Los espectadores no tienen equipo. Elige otro líder para jugar.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_HIDE_DETAILS" Language="es_ES">
+			<Text>Ocultar detalles del líder</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SHOW_DETAILS" Language="es_ES">
+			<Text>Mostrar detalles del líder</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PORTRAIT_TT" Language="es_ES">
+			<Text>{1_Leader}[N]Clic derecho: {2_Action}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_ON" Language="es_ES">
+			<Text>Terminar turno automáticamente: Sí</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="es_ES">
+			<Text>Terminar turno automáticamente: No</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="es_ES">
+			<Text>Rendimientos</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_PRODUCTION" Language="es_ES">
+			<Text>Producción</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SCORE" Language="es_ES">
+			<Text>Puntuación</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_CIVICS" Language="es_ES">
+			<Text>Tecnologías y principios</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH" Language="es_ES">
+			<Text>Investigando</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC" Language="es_ES">
+			<Text>Principio actual</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NONE" Language="es_ES">
+			<Text>—</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CITIZENS" Language="es_ES">
+			<Text>Ciudadanos</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_TECHS_COMPLETED" Language="es_ES">
+			<Text>Tecnologías completadas</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_CIVICS_COMPLETED" Language="es_ES">
+			<Text>Principios completados</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_WONDERS_BUILT" Language="es_ES">
+			<Text>Maravillas construidas</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_MILITARY_STRENGTH" Language="es_ES">
+			<Text>Fuerza militar</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_PANTHEON" Language="es_ES">
+			<Text>Aún no hay panteón.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_RELIGION" Language="es_ES">
+			<Text>{1_Leader} aún no ha fundado una religión.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_BELIEFS_ENDED" Language="es_ES">
+			<Text>Las creencias religiosas terminan con la Era de los Descubrimientos. La religión y sus seguidores permanecen.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_SUZERAIN_BONUS" Language="es_ES">
+			<Text>Bonificación de suzerano</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_AT_WAR_WITH" Language="es_ES">
+			<Text>En guerra con {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="es_ES">
+			<Text>No está en guerra.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="es_ES">
+			<Text>Estimación</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="es_ES">
+			<Text>{1_Value} Habilidades de la unidad</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="es_ES">
+			<Text>Gráficos de rendimientos</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="es_ES">
+			<Text>{1_Yield} por turno de cada líder, registrado en cada turno de la partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="es_ES">
+			<Text>Aún no hay turnos registrados. Los rendimientos se registran al comienzo de cada turno.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="es_ES">
+			<Text>{1_Yield} por turno</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="es_ES">
+			<Text>Por turno</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="es_ES">
+			<Text>General</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="es_ES">
+			<Text>Haz clic para ocultar la línea de este líder.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="es_ES">
+			<Text>Haz clic para mostrar la línea de este líder.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="es_ES">
+			<Text>Ciencia</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CULTURE" Language="es_ES">
+			<Text>Cultura</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GOLD" Language="es_ES">
+			<Text>Oro</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="es_ES">
+			<Text>Influencia</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="es_ES">
+			<Text>Alimentos</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="es_ES">
+			<Text>Producción</Text>
+		</Replace>
+	</LocalizedText>
+</Database>

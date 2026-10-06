@@ -1,9 +1,9 @@
 # Zatygold's Spectator
 
-A playable **Observer** for multiplayer **Sid Meier's Civilization VII**, built
-on the game's own UI components. Current version: **1.0.0**.
+A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
+multiplayer, built on the game's own UI components. Current version: **1.0.0**.
 
-Pick **Observer** as your leader to watch a game as a real player with no
+Pick **Spectator** as your leader to watch a game as a real player with no
 empire: whole-map vision, every leader's stats, screens and yield graphs, the
 normal HUD and End Turn, through every Age, and you are never eliminated.
 
@@ -16,31 +16,72 @@ normal HUD and End Turn, through every Age, and you are never eliminated.
 
 ---
 
-## Observer (experimental)
+## Spectator (experimental)
 
-**Setup:** in the multiplayer lobby pick **Observer** as leader or
-civilization (the other follows; team and civ lock). At each Age transition
-the Observer civilization is picked automatically.
+**Setup:** in single player pick **Spectator** as your leader: its
+civilization, **the Observers**, follows, so the civilization step is skipped
+and the Overview shows the Spectator's own art. In the multiplayer lobby pick
+the Spectator leader or the Observers civilization (the other follows; team
+and civ lock). The Spectator plays no mementos: its memento slots are turned
+off. At each Age transition the Observers are picked automatically. Computer
+players never become the Spectator.
 
 **Playing:** you are a normal player who never settles and is never
 eliminated. Press **End Turn** or turn on **Auto End Turn** (the button on
 your ribbon card; it switches off when an Age completes so the Age transition
 action shows). Chat and every screen work. Your Founder is replaced by
-the hidden **Observer's Eye**, whose sight shows every unit live.
+the hidden **Spectator's Eye**, whose sight shows every unit live.
 
 **Ribbon:** every living leader, your card at the right edge.
 
-- Your card's buttons switch every card between **Yields** (compact rows incl.
-  food, production, citizens, military, techs / civics / wonders; best leader
-  highlighted, negatives banded red), **Research**, **Production** and
-  **Victories**.
+- Your card's buttons switch every card between **Yields** (compact rows
+  incl. food, production, citizens, military, techs / civics / wonders),
+  **Research**, **Production** and **Victories**. Rows use lining digits
+  that line up between rows, thousands separators,
+  bright value colours on the slate background, the highest value in a row
+  on a light pill, negative totals in bright red, and each card's banner tinted with the
+  player's colour.
 - Right-click your portrait to hide or show details (the game's "Always Show
-  Ribbon Yields" option); left-click it to jump to the Eye.
-- Left-click a leader to jump to their capital; right-click also opens their
-  leader panel (wars listed, no actions). Settlement banners and city centers
-  open the owner's panel.
-- Allies share a hex-border colour; leaders at war glow red with a pip per
-  war; celebrations glow gold. Antiquity cards show the leader's pantheon.
+  Ribbon Yields" option); left-click it to end a Perspective, or else to jump
+  to the Eye.
+- Left-click a leader to see their Perspective and jump to their capital;
+  right-click to jump there and open their leader panel (wars listed, no
+  actions). An independent's or city-state's panel shows its type, a
+  city-state's suzerain and their chosen bonus, then every leader's
+  relationship with it: friendly, neutral or hostile, at war (city-states),
+  and befriending progress.
+- Allies share a hex-border colour (no glow); leaders at war glow red with a
+  pip per war; celebrations glow gold. Each card shows the leader's
+  religion, or their pantheon (tinted amber) until they found one (with the
+  Multiplayer Balance Mod, pantheons stay for the whole game), and their
+  ideology. Hover a pantheon badge for its effects, or click it to see every
+  leader's pantheons, in any Age; the Religion screen lists a leader's
+  pantheon too, and after Exploration notes that religion beliefs have
+  ended.
+
+**Perspective:** left-click a leader's portrait to see the game as they see
+it: tiles they see now look normal, tiles they explored earlier are dark
+grey (with greyed resource icons), tiles they never explored are black, on
+the map and the minimap, and unit flags, settlement banners and floating map
+texts follow what they can see. The ribbon lists only the leaders they have
+met (and you); the top bar shows their yields; Resources & Trade, Legacies,
+Government, Great Works, Religion and the tech / civic trees show theirs,
+with no row of leader portraits. The camera keeps the game's normal zoom
+range meanwhile. The eye on their card, between portrait and civ symbol,
+marks whose view it is. Left-click another leader to switch; click the same
+leader again, or your own portrait, to see the whole game again. It only
+changes what you see, never the game.
+
+**Settlements:** click any settlement's banner or city center to open the
+settlement's details: population (urban / rural / specialists, with religion icons once spread),
+growth progress, connections (click one to open it), warehouse yields, a
+town's focus choices with the current one highlighted and its estimated
+bonuses, and the buildings and wonders standing. The arrows step through
+that leader's other settlements, and razing or unrest shows in red.
+Right-click a banner to open its owner's leader panel instead. Town banners
+show the town's focus beside the name, where the capital star sits; a
+city-state's type icon names
+its suzerain bonus on hover.
 
 **Yield Graphs:** a button in the HUD's screen dock opens line graphs of
 every leader's science, culture, gold, influence, food and production per
@@ -55,29 +96,42 @@ screen as theirs (read-only, same tab). The tech and civic buttons open the
 full tree directly. Click any unit to inspect it; with a combat unit selected,
 hover another unit for an estimated combat preview.
 
+**Languages:** English plus every language the game supports.
+
 **Quiet:** advisors, narrative events, diplomacy and meeting prompts,
 crisis / Age countdown popups, dedications and the Age transition choice are
 handled automatically. The camera zooms 30% closer and 55% further; the
-notification bar is 25% smaller. Observers never appear in victories,
+notification bar is 25% smaller. Spectators never appear in victories,
 rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 
 ### How it works
 
-- Data, not UI hacks: an Observer leader and one civ per Age, defined like the
+- Data, not UI hacks: a Spectator leader and one civ per Age, defined like the
   game's own, with no abilities. Defeat and every Triumph get an extra
-  "not the Observer" requirement.
+  "not the Spectator" requirement.
 - The Eye replaces the Founder (`UnitReplaces`), is created by the start-plot
   script near the bottom-centre of the map (moved onto ice when possible),
   sees 128 tiles through terrain, keeps every unit visible and is kept asleep.
-- UI only: the Observer counts as having met everyone, and screens read the
+- UI only: the Spectator counts as having met everyone, and screens read the
   picked leader through `ZOMLeaderView`.
+- The Spectator has no 3D leader or banner: leader select and diplomacy scenes
+  load the game's stand-ins (`zom-assets.js`: the Random leader in setup, the
+  game's fallback leader and banner in diplomacy). Setup lists it only for
+  human players, offers its civilization only to it, and resolves every
+  Random leader itself in single player.
 - Zoom past the engine's 0..1 range changes the field of view, as Zoom+ does.
 
 ### Known limits
 
-- Multiplayer only; a "Random" pick could resolve to the Observer.
-- The Eye shows as a generic ship, visible only to the Observer.
-- Combat previews between other players' units are estimates.
+- In multiplayer, a player on "Random" could still resolve to the Spectator.
+- The Spectator still takes part in the map's start-region split; its start
+  is then moved to the ice.
+- The Eye shows as a generic ship, visible only to the Spectator.
+- Combat previews between other players' units are estimates: the game only
+  simulates the local player's own attacks. They count base strengths, damage,
+  each unit's flat and friendly-territory bonuses and the defender's terrain,
+  but not promotions, leader / civilization abilities, policies, fortifying
+  or river crossings.
 
 ---
 
@@ -85,22 +139,25 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 
 ```
 zatygolds-observer-mode.modinfo   # manifest, zom-observer-in-game criteria
-├─ config/                       # lobby DB: Observer leader / civs, hidden "Observer in game" option
-├─ data/observer/                # gameplay DB: Observer leader, civs, Eye, Triumph / defeat exemptions
-├─ icons/                        # Observer art
-├─ maps/, scripts/               # base-game overrides: Observer start and Eye each Age
+├─ art/icons/, art/leaders/, art/backgrounds/  # icons, Overview portrait, civ card and loading screen
+├─ config/                       # setup DB: Spectator leader / civs, hidden "Spectator in game" option
+├─ data/                         # gameplay DB: leaders, civilizations, units (the Eye), legacies, loading info
+│  ├─ icons/                     # icon definitions
+│  └─ colors/                    # player colours
+├─ text/en_us/                   # English text, one file per category (as the base game)
+├─ l10n/                         # translations: <language>_Text.xml, ModuleText.xml
+├─ maps/, scripts/               # base-game overrides: Spectator start and Eye each Age
 ├─ ui-next/screens/, ui/policies/, ui/great-works/,
 │  ui/tech-tree/, ui/culture-tree/, ui/tree-grid/   # base-game overrides: screens for a picked leader
-├─ text/en_us/                   # mod info and in-game strings
 └─ ui/
-   ├─ zom-shared/                # logger, method wrapping, deferred patching, Observer identity
-   ├─ mp-lobby/                  # Observer lobby role
-   └─ mp-observer/               # in-game Observer (no-op for other players)
+   ├─ shared/                    # logger, method wrapping, deferred patching, Spectator identity
+   ├─ setup/                     # Spectator in game setup (multiplayer lobby, single player)
+   └─ observer/                  # in-game Spectator (no-op for other players)
 ```
 
-Each feature has a `*-config.js` for settings, and modules patch the base UI at
-runtime. Base-game overrides are verbatim copies with changes marked `ZOM:`;
-they load only in a game with an Observer (modinfo criteria
+Settings live in `ui/setup/setup-config.js` and `ui/observer/observer-config.js`
+(`debug: true` adds diagnostics); modules patch the base UI at runtime. Base-game overrides are verbatim copies with changes marked `ZOM:`;
+they load only in a game with a Spectator (modinfo criteria
 `zom-observer-in-game`), so other games run the untouched files. Diagnostics go to
 `UI.log`.
 
@@ -110,7 +167,61 @@ they load only in a game with an Observer (modinfo criteria
 
 ### 1.0.0
 
-- **Split from Multiplayer Toolkit** — the Observer is now its own mod
+- **Game setup** — the Spectator's leader-select portrait has the leaders'
+  ring (with the eye in place of a level); the civilization step is skipped
+  for it; the Overview's leader and civilization cards show the Spectator's
+  portrait and a slice of its loading-screen art, and the level ring shows
+  the eye. Changing the start Age keeps the matching Observers civilization.
+- **Perspective** — see the game as any leader sees it: their fog of war,
+  explored and unexplored tiles, only the unit flags and settlement banners
+  they can see, only the leaders they met, their yields in the top bar and
+  their empire screens and trees (left-click a leader's portrait; click it
+  again to return).
+- **Independents and city-states** — their panel shows the type, the
+  city-state's suzerain and chosen suzerain bonus, and every leader's
+  relationship and befriending progress (on the game's own progress bar);
+  the banner's type icon names the bonus; their map banners no longer go
+  missing in the whole-map view.
+- **Settlement details** — clicking a settlement opens the Spectator's own
+  details panel for it, read-only: population, growth, connections, warehouse yields, town focus
+  choices and buildings / wonders; right-clicking its banner opens the
+  owner's leader panel. Town banners show the town focus icon.
+- **Faith badges** — ribbon cards show the religion (or, before one is
+  founded, the pantheon, tinted amber) together with the ideology; with the
+  Multiplayer Balance Mod the pantheon stays after Antiquity (read from that
+  mod's own pantheon record), and clicking it opens every leader's pantheons
+  in any Age. The Religion screen lists the viewed leader's pantheon under
+  its own Pantheon heading, shows their religion as the game shows another
+  player's (no belief to add), notes in Modern that religion beliefs have
+  ended, and stays available in Modern, where the game drops its button. The
+  Multiplayer Balance Mod's third memento slot is turned off for the
+  Spectator too.
+- **The Observers** — the Spectator's civilization has its own name, so the
+  leader and the civilization no longer both read "Spectator" (every
+  language).
+- **No mementos** — the Spectator's memento slots are turned off in single
+  player, the multiplayer lobby (also the slots Advanced Settings Pro adds
+  there) and at Age transitions; becoming the Spectator unequips any memento.
+- **Single player** — pick the Spectator in game setup: its civilization is
+  paired automatically, the setup scene shows the Random leader's silhouette
+  and banner, and computer players never become the Spectator. The Eye,
+  screens and Age transitions work as in multiplayer (the hidden "Spectator
+  in game" option is now set in single player too).
+- **New art** — a hooded Spectator portrait framed like the base leaders
+  (head above the ribbon hex, body behind it), a hex-eye icon, a
+  civilization emblem and a loading screen, also used behind the
+  Government, Unlocks, Resources and Legacies screens.
+- **Renamed** — the mod is now Zatygold's Spectator (mod id unchanged).
+- **Translations** — every language the game supports: German, Spanish,
+  French, Italian, Japanese, Korean, Polish, Brazilian Portuguese, Russian,
+  Simplified and Traditional Chinese.
+- **Project layout** — follows the base game's: `config/`, `data/` (with
+  `icons/` and `colors/`), `text/en_us/`, `l10n/`, `art/`, and `ui/setup`,
+  `ui/observer`, `ui/shared`.
+- **Random leaders** — in single player every Random leader, yours included,
+  is resolved to a real leader; computer players are never offered the
+  lobby's Spectator team entry.
+- **Split from Multiplayer Toolkit** — the Spectator is now its own mod
   (`zatygolds-observer-mode`); the pause, Competitive timer and lobby tooltip
   features stay in Multiplayer Toolkit.
 - **Runs alongside Multiplayer Toolkit** — every identifier (leader, civs,
@@ -125,6 +236,12 @@ they load only in a game with an Observer (modinfo criteria
   Overall (the whole game) or one Age; no longer shows "Select an Item"
   when switching tabs.
 - **Graphs button** — redrawn in the dock icons' look and centred.
+
+---
+
+## Special thanks
+
+Special thanks to **ArKantiK** for all their feedback and testing.
 
 ---
 

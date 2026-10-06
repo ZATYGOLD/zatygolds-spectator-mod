@@ -14,9 +14,9 @@ import { activeTraditionCards, activePolicyCards, activeCrisisCards, availablePo
  * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
  * leader picked in the screen's leader row. Game actions keep the real local
  * player.
- * Re-apply after game updates; see ui/mp-observer/mp-observer-leader-view.js.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: the leader the Observer views (everyone else: the local player)
+const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
 
 var PolicyCardIdeology = /* @__PURE__ */ ((PolicyCardIdeology2) => {
   PolicyCardIdeology2[PolicyCardIdeology2["NONE"] = 0] = "NONE";
@@ -472,15 +472,15 @@ function createPoliciesModel() {
     policySlots: _policySlots,
     tradSlots: _tradSlots,
     crisisSlots: _crisisSlots,
-    canSwapPolicies: !zomReadOnly && canSwapNormalPolicies,   // ZOM
-    canSwapCrisis: !zomReadOnly && canSwapCrisisPolicies,   // ZOM
+    canSwapPolicies: !zomReadOnly && canSwapNormalPolicies,   // ZOM: read-only for the Observer
+    canSwapCrisis: !zomReadOnly && canSwapCrisisPolicies,   // ZOM: read-only for the Observer
     confirmDisable: false,
     isSmallScreen: isSmallScreenSize,
-    onCardClick: zomReadOnly ? () => {} : handleOnCardClick,   // ZOM
-    onConfirmClick: zomReadOnly ? handleOnClose : handleOnConfirmClick,   // ZOM
+    onCardClick: zomReadOnly ? () => {} : handleOnCardClick,   // ZOM: read-only for the Observer
+    onConfirmClick: zomReadOnly ? handleOnClose : handleOnConfirmClick,   // ZOM: read-only for the Observer
     onCloseClick: handleOnClose,
     clearArrays,
-    canSlotCard: zomReadOnly ? () => false : handleCanSlotCard,   // ZOM
+    canSlotCard: zomReadOnly ? () => false : handleCanSlotCard,   // ZOM: read-only for the Observer
     autoFocusCard: getAvailablePolicies()[0] != void 0 ? getAvailablePolicies()[0].$index : -1
   });
   return model;

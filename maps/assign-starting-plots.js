@@ -1,18 +1,18 @@
 import { g_MinLandmassSizeForIslandBias, g_DesiredBufferBetweenMajorStarts, g_RequiredBufferBetweenMajorStarts } from './map-globals.js';
 import { getSectorRegion, shuffle, isOceanAccess } from './map-utilities.js';
 import { profileScope } from '../scripts/profiling.js';
-import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-observer-eye.js';   // ZOM
+import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-observer-eye.js';   // ZOM: the Observer's Eye
 
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/maps/assign-starting-plots.js
- * (build dated 2026-09-16); the ONLY changes are the "ZOM:" import and block
- * below, which wrap StartPositioner.setStartPosition. Re-apply after game updates.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": an import and
+ * a block that wraps StartPositioner.setStartPosition.
+ * Re-apply after game updates; see maps/zom-observer-eye.js.
  *
- * ZOM: Observer players (leader LEADER_ZOM_OBSERVER) never start on land with
- * the other majors: their start plot becomes the marine ice tile chosen by
- * ./zom-observer-eye.js, and the Observer's Eye is created there.
+ * ZOM: Observers start on the marine ice tile chosen by ./zom-observer-eye.js, with their Eye.
  */
+// ZOM: begin
 (function zomObserverStartPositions() {
   const log = (m) => console.log('[ZOM observer-start] ' + m);
   try {
@@ -25,7 +25,16 @@ import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-obse
       let plots = null;
       try { plots = observerPlots(StartPositioner.zomObserverPlots); }
       catch (e) { log(`observer start failed for ${playerId}: ${e}`); }
-      const result = base(plots ? plots.start.index : plotIndex, playerId);
+      // A refused or failing start must never abort the other players' starts: fall back to the script's plot.
+      let result = false;
+      if (plots) {
+        try { result = base(plots.start.index, playerId); }
+        catch (e) { log(`eye start refused for ${playerId}: ${e}`); }
+      }
+      if (result === false) {
+        try { result = base(plotIndex, playerId); }
+        catch (e) { log(`start failed for ${playerId}: ${e}`); }
+      }
       try {
         const w = GameplayMap.getGridWidth();
         const script = { x: plotIndex % w, y: Math.floor(plotIndex / w) };
@@ -35,6 +44,7 @@ import { createObserverEye, isObserverPlayerId, observerPlots } from './zom-obse
     };
   } catch (e) { log('could not wrap StartPositioner: ' + e); }
 })();
+// ZOM: end
 
 class PlayerRegion {
   tiles = [];
