@@ -105,6 +105,10 @@ function clearMementos(playerID) {
 
 /** Leader and civ move together: Observer leader <-> Observer civ, team cleared. */
 function syncSelection(playerID, param, value) {
+  if (isComputerSlot(playerID) && (value === OBSERVER_LEADER || isObserverCiv(value))) {
+    setParam(playerID, param, RANDOM);   // computer players never observe
+    return;
+  }
   const civ = observerCivForStartAge();
   if (param === PARAM_LEADER) {
     if (value === OBSERVER_LEADER) {
@@ -145,11 +149,22 @@ function canWriteGameOptions() {
   try { return Network.getHostPlayerId() === GameContext.localPlayerID; } catch (e) { return false; }
 }
 
+/** A computer player left on the Observer (a human slot that became a computer one) goes back to Random. */
+function releaseComputerObservers(slots) {
+  for (let id = 0; id < slots; id++) {
+    if (!isComputerSlot(id) || !isObserverRow(id)) continue;
+    setParam(id, PARAM_LEADER, RANDOM);
+    setParam(id, PARAM_CIV, RANDOM);
+    log.debug(`computer player ${id} released from observing`);
+  }
+}
+
 /** The hidden game option follows whether any player is the Observer. */
 function syncObserverFlag() {
   if (!canWriteGameOptions()) return;
   try {
     const slots = Configuration.getMap().maxMajorPlayers ?? 0;
+    releaseComputerObservers(slots);
     let anyObserver = false;
     for (let id = 0; id < slots && !anyObserver; id++) anyObserver = configLeader(id) === OBSERVER_LEADER;
     const current = !!GameSetup.findGameParameter(PARAM_OBSERVER_IN_GAME)?.value?.value;
