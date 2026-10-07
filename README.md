@@ -109,9 +109,11 @@ rankings, Civ Unlocks or Age-transition choices, and complete no Triumphs.
 - Data, not UI hacks: a Spectator leader and one civ per Age, defined like the
   game's own, with no abilities. Defeat and every Triumph get an extra
   "not the Spectator" requirement.
-- The Eye replaces the Founder (`UnitReplaces`), is created by the start-plot
-  script near the bottom-centre of the map (moved onto ice when possible),
-  sees 128 tiles through terrain, keeps every unit visible and is kept asleep.
+- The Eye replaces the Founder (`UnitReplaces`) and is created when the map
+  script places the Spectator's start, near the bottom-centre of the map (moved
+  onto ice when possible). The hook lives in `map-globals.js`, which every map
+  imports, so the Earth maps and custom maps work too. The Eye sees 128 tiles
+  through terrain, keeps every unit visible and is kept asleep.
 - UI only: the Spectator counts as having met everyone, and screens read the
   picked leader through `ZOMLeaderView`.
 - The Spectator has no 3D leader or banner: leader select and diplomacy scenes
@@ -167,6 +169,9 @@ they load only in a game with a Spectator (modinfo criteria
 
 ### 1.0.0
 
+- **Every map** — the Spectator gets its Eye, and so its view of the whole
+  map, on the Earth maps and custom map scripts too, not only the game's
+  generated maps.
 - **Game setup** — the Spectator's leader-select portrait has the leaders'
   ring (with the eye in place of a level); the civilization step is skipped
   for it; the Overview's leader and civilization cards show the Spectator's

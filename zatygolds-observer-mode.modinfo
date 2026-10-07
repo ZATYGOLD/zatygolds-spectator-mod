@@ -193,7 +193,7 @@
             <Properties><LoadOrder>1100</LoadOrder></Properties>
             <Actions>
                 <ImportFiles>
-                    <Item>maps/assign-starting-plots.js</Item>
+                    <Item>maps/map-globals.js</Item>
                     <Item>scripts/age-transition-post-load.js</Item>
                     <Item>ui-next/screens/victories/victories-screen-model.js</Item>
                     <Item>ui-next/screens/commerce/commerce-screen.js</Item>
