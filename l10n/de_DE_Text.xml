@@ -140,7 +140,7 @@
 			<Text>{1_Value} Einheitenfähigkeiten</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="de_DE">
-			<Text>Diagramme</Text>
+			<Text>Chronik</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="de_DE">
 			<Text>{1_Yield} jedes Anführers pro Runde, in jeder Runde des Spiels erfasst.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="de_DE">
 			<Text>Einfluss</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="de_DE">
+			<Text>Zufriedenheit</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="de_DE">
 			<Text>Nahrung</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="de_DE">
 			<Text>Wann jeder Anführer Einheiten zerstört oder erbeutet hat, und welche.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="de_DE">
+			<Text>Reich</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="de_DE">
+			<Text>Bevölkerung</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="de_DE">
+			<Text>Wann die Siedlungen jedes Anführers wuchsen, nach städtischer und ländlicher Bevölkerung und Spezialisten.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="de_DE">
+			<Text>Siedlungen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="de_DE">
+			<Text>Wann jeder Anführer Siedlungen gründete, eroberte, verlor oder zur Stadt erhob.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="de_DE">
+			<Text>Gegründet</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="de_DE">
+			<Text>Verloren</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="de_DE">
+			<Text>Zur Stadt erhoben</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="de_DE">
+			<Text>Erobert</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="de_DE">
+			<Text>Eingegliedert</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="de_DE">
 			<Text>Ausgebildet</Text>

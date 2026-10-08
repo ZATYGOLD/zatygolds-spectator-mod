@@ -140,7 +140,7 @@
 			<Text>{1_Value} 单位能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hans_CN">
-			<Text>图表</Text>
+			<Text>编年史</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hans_CN">
 			<Text>每位领袖每回合的{1_Yield}，在游戏的每个回合记录。</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="zh_Hans_CN">
 			<Text>影响力</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="zh_Hans_CN">
+			<Text>幸福值</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="zh_Hans_CN">
 			<Text>食物</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="zh_Hans_CN">
 			<Text>每位领袖何时摧毁或俘获了哪些单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="zh_Hans_CN">
+			<Text>帝国</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="zh_Hans_CN">
+			<Text>人口</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="zh_Hans_CN">
+			<Text>各领袖的定居点何时增长（城区人口、乡村人口、专家）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="zh_Hans_CN">
+			<Text>定居点</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时建立、占领、失去定居点或将其升级为城市。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="zh_Hans_CN">
+			<Text>建立</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="zh_Hans_CN">
+			<Text>损失</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="zh_Hans_CN">
+			<Text>升级为城市</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="zh_Hans_CN">
+			<Text>占领</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="zh_Hans_CN">
+			<Text>并入</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="zh_Hans_CN">
 			<Text>训练</Text>

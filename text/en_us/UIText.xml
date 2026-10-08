@@ -83,7 +83,7 @@
 			<Text>{1_Value} Unit Abilities</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPHS_TITLE">
-			<Text>Graphs</Text>
+			<Text>Chronicle</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_DESCRIPTION">
 			<Text>Each leader's {1_Yield} per turn, recorded every turn of the game.</Text>
@@ -118,6 +118,9 @@
 		<Row Tag="LOC_ZOM_GRAPH_INFLUENCE">
 			<Text>Influence</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_HAPPINESS">
+			<Text>Happiness</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_FOOD">
 			<Text>Food</Text>
 		</Row>
@@ -135,6 +138,36 @@
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC">
 			<Text>When each leader destroyed or captured units, and which.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_EMPIRE">
+			<Text>Empire</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_POPULATION">
+			<Text>Population</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_POPULATION_DESC">
+			<Text>When each leader's settlements grew, in urban, rural and specialist citizens.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS">
+			<Text>Settlements</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC">
+			<Text>When each leader founded, captured, lost or upgraded settlements.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_FOUNDED">
+			<Text>Founded</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST">
+			<Text>Lost</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UPGRADED">
+			<Text>Upgraded to City</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_CAPTURED">
+			<Text>Captured</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_INCORPORATED">
+			<Text>Incorporated</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED">
 			<Text>Trained</Text>

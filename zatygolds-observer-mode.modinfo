@@ -164,8 +164,19 @@
                     <Item>ui/observer/observer-history.js</Item>
                     <Item>ui/observer/observer-crisis.js</Item>
                     <Item>ui/observer/observer-line-graph.js</Item>
+                    <Item>ui/observer/observer-event-log.js</Item>
                     <Item>ui/observer/observer-unit-log.js</Item>
-                    <Item>ui/observer/observer-unit-timeline.js</Item>
+                    <Item>ui/observer/observer-settlement-log.js</Item>
+                    <Item>ui/observer/observer-empire.js</Item>
+                    <Item>ui/observer/observer-timeline.js</Item>
+                    <Item>ui/observer/observer-graph-parts.js</Item>
+                    <Item>ui/observer/observer-graph-lines.js</Item>
+                    <Item>ui/observer/observer-graph-yields.js</Item>
+                    <Item>ui/observer/observer-graph-timelines.js</Item>
+                    <Item>ui/observer/observer-graph-units.js</Item>
+                    <Item>ui/observer/observer-graph-settlements.js</Item>
+                    <Item>ui/observer/observer-graph-population.js</Item>
+                    <Item>ui/observer/observer-graph-empire.js</Item>
                     <Item>ui/observer/observer-graphs.js</Item>
                     <Item>ui/observer/observer-turn.js</Item>
                     <Item>ui/observer/observer-settlement-info.js</Item>

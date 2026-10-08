@@ -140,7 +140,7 @@
 			<Text>{1_Value} Abilità dell'unità</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="it_IT">
-			<Text>Grafici</Text>
+			<Text>Cronaca</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="it_IT">
 			<Text>{1_Yield} per turno di ogni leader, registrato a ogni turno della partita.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="it_IT">
 			<Text>Influenza</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="it_IT">
+			<Text>Felicità</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="it_IT">
 			<Text>Cibo</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="it_IT">
 			<Text>Quando ogni leader ha distrutto o catturato unità, e quali.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="it_IT">
+			<Text>Impero</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="it_IT">
+			<Text>Popolazione</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="it_IT">
+			<Text>Quando sono cresciuti gli insediamenti di ogni leader, in popolazione urbana, rurale e specialisti.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="it_IT">
+			<Text>Insediamenti</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="it_IT">
+			<Text>Quando ogni leader ha fondato, conquistato, perso o elevato a città insediamenti.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="it_IT">
+			<Text>Fondato</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="it_IT">
+			<Text>Perso</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="it_IT">
+			<Text>Elevato a città</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="it_IT">
+			<Text>Conquistato</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="it_IT">
+			<Text>Incorporato</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="it_IT">
 			<Text>Addestrate</Text>

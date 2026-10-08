@@ -140,7 +140,7 @@
 			<Text>{1_Value} ユニットの能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ja_JP">
-			<Text>グラフ</Text>
+			<Text>年代記</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ja_JP">
 			<Text>各指導者の1ターンあたりの{1_Yield}。ゲーム中、毎ターン記録されます。</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="ja_JP">
 			<Text>影響力</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="ja_JP">
+			<Text>幸福度</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="ja_JP">
 			<Text>食料</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ja_JP">
 			<Text>各指導者がいつ、どのユニットを破壊または捕獲したか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ja_JP">
+			<Text>帝国</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="ja_JP">
+			<Text>人口</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="ja_JP">
+			<Text>各指導者の居住地がいつ成長したか（市街人口、農村人口、専門家）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ja_JP">
+			<Text>居住地</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="ja_JP">
+			<Text>各指導者がいつ居住地を建設、獲得、喪失、または都市に昇格させたか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ja_JP">
+			<Text>建設</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="ja_JP">
+			<Text>喪失</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ja_JP">
+			<Text>都市に昇格</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ja_JP">
+			<Text>獲得</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ja_JP">
+			<Text>編入</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ja_JP">
 			<Text>訓練</Text>

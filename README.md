@@ -4,7 +4,7 @@ A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
 multiplayer. Current version: **1.1.0**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
-empire: whole-map vision, every leader's stats, screens and yield graphs, the
+empire: whole-map vision, every leader's stats, screens and a Chronicle, the
 normal HUD and End Turn, through every Age. You are never eliminated.
 
 ## Installation
@@ -45,13 +45,19 @@ their focus; a city-state's icon names its suzerain bonus.
 **Independents and city-states** — Type, suzerain and chosen bonus, and every
 leader's relationship and befriending progress.
 
-**Graphs** — Saved with the game, for the whole game or one Age:
-- **Yields** — per-turn graphs of every leader's yields, each Age's turns
-  counted from 1.
-- **Units** — units each leader trained, lost and defeated, on a timeline of
-  Age progress: pins by land combat, naval combat, civilian or commander (with
+**Chronicle** — Saved with the game, for the whole game or one Age:
+- **Yields** — per-turn graphs of every leader's yields (happiness included),
+  each Age's turns counted from 1.
+- **Empire** — on a timeline of Age progress, the settlements each leader
+  founded, captured, lost and upgraded (a city or town pin for each, with the
+  other player on hover, an arc from a town to its upgrade into a city, and a
+  card of its cities and towns), and how its settlements grew (urban pins
+  showing the building, produced or purchased; rural pins the improvement;
+  specialist pins the buildings they joined; and a card of each).
+- **Units** — units each leader trained, lost and defeated, on the same
+  timeline: pins by land combat, naval combat, civilian or commander (with
   the other player on hover), and a card per leader for each commander type.
-- Both mark each crisis stage and, in Overall, where each Age starts.
+- All mark each crisis stage and, in Overall, where each Age starts.
 
 **Screens** — Resources & Trade, Legacies, Government, Great Works, Religion
 and the tech / civic trees can show any leader's view. Click any unit to
@@ -105,8 +111,10 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Ribbon** — the Spectator's card stays on screen however many leaders
   there are; other players' ribbons no longer show the Spectator.
 - **Multiplayer** — computer players can no longer be set to the Spectator.
-- **Graphs** — renamed from Yield Graphs, with a Yields / Units filter; Units
-  shows the units each leader trained, lost and defeated, on a timeline.
+- **Chronicle** — renamed from Yield Graphs, with a Yields / Empire / Units
+  filter: happiness joins the yields; Empire shows the settlements each
+  leader founded, captured, lost and upgraded and how they grew, and Units
+  the units each trained, lost and defeated, on a timeline.
 
 ### 1.0.0
 

@@ -140,7 +140,7 @@
 			<Text>{1_Value} 유닛 능력</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ko_KR">
-			<Text>그래프</Text>
+			<Text>연대기</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ko_KR">
 			<Text>각 지도자의 턴당 {1_Yield}. 게임의 매 턴마다 기록됩니다.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="ko_KR">
 			<Text>영향력</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="ko_KR">
+			<Text>행복도</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="ko_KR">
 			<Text>식량</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ko_KR">
 			<Text>각 지도자가 언제 어떤 유닛을 파괴하거나 포획했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ko_KR">
+			<Text>제국</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="ko_KR">
+			<Text>인구</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="ko_KR">
+			<Text>각 지도자의 정착지가 언제 성장했는지 (도시 인구, 농촌 인구, 전문가).</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ko_KR">
+			<Text>정착지</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제 정착지를 건설, 점령, 상실하거나 도시로 승격했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ko_KR">
+			<Text>건설</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="ko_KR">
+			<Text>손실</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ko_KR">
+			<Text>도시로 승격</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ko_KR">
+			<Text>점령</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ko_KR">
+			<Text>편입</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ko_KR">
 			<Text>훈련</Text>

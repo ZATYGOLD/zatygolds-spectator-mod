@@ -140,7 +140,7 @@
 			<Text>{1_Value} Habilidades de la unidad</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="es_ES">
-			<Text>Gráficos</Text>
+			<Text>Crónica</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="es_ES">
 			<Text>{1_Yield} por turno de cada líder, registrado en cada turno de la partida.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="es_ES">
 			<Text>Influencia</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="es_ES">
+			<Text>Felicidad</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="es_ES">
 			<Text>Alimentos</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="es_ES">
 			<Text>Cuándo destruyó o capturó unidades cada líder, y cuáles.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="es_ES">
+			<Text>Imperio</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="es_ES">
+			<Text>Población</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="es_ES">
+			<Text>Cuándo crecieron los asentamientos de cada líder, en población urbana, rural y especialistas.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="es_ES">
+			<Text>Asentamientos</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="es_ES">
+			<Text>Cuándo fundó, capturó, perdió o convirtió en ciudad asentamientos cada líder.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="es_ES">
+			<Text>Fundado</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="es_ES">
+			<Text>Perdido</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="es_ES">
+			<Text>Convertido en ciudad</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="es_ES">
+			<Text>Capturado</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="es_ES">
+			<Text>Incorporado</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="es_ES">
 			<Text>Entrenadas</Text>

@@ -35,23 +35,19 @@
  *
  * Each type falls in one of UNIT_CATEGORIES by its formation class. A unit's
  * type is cached while it is on the map, as a killed unit may already be gone
- * when the event arrives. The log is kept in the Observer's own player
- * properties, like the yield history (observer-history.js): saved with the
- * game and carried across Ages.
- *
- * Property text, one per Age:
- * "<playerId>,<turn>,<progress %>,<code>,<UnitType>,<otherPlayerId>,<count>;..."
- * (CODES: d defeated, l lost, t produced, p purchased, g granted).
+ * when the event arrives. The log is an event log (observer-event-log.js)
+ * with the fields "<code>,<UnitType>,<otherPlayerId>" (CODES: d defeated,
+ * l lost, t produced, p purchased, g granted).
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { canSave, onObserverReady, readSaved, writeSaved } from './observer-core.js';
+import { createEventLog } from './observer-event-log.js';
 
 const log = createLogger('observer-unit-log', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_UNIT_EVENTS_';
 const AWAY_KEY = 'ZOM_COMMANDERS_AWAY';
 const UNIT_LOG_EVENT = 'zom-unit-log-changed';
-const SAVE_DELAY_MS = 2000;
 const COMMANDER_REMOVAL_MS = 500;   // a combat event for the same commander wins over its removal
 const CITY_UNIT_MS = 500;           // a commander's production or purchase event, either side of its arrival
 
@@ -108,62 +104,14 @@ const isCommander = (type) => unitCategory(type) === COMMANDER;
 
 // ============================ Storage ============================
 
-let entries = null;                 // Map<age chronology, Map<"playerId,turn,progress,code,UnitType,other", count>>
-const dirtyAges = new Set();
-let saveTimer = 0;
+const events = createEventLog({ keyPrefix: KEY_PREFIX, fieldCount: 3, changeEvent: UNIT_LOG_EVENT, log });
 
-function decode(text) {
-  const counts = new Map();
-  for (const entry of (text ?? '').split(';')) {
-    const parts = entry.split(',');
-    if (parts.length === 7) counts.set(parts.slice(0, 6).join(','), Number(parts[6]) || 0);
-  }
-  return counts;
-}
-
-const encode = (counts) => [...counts].map(([key, count]) => `${key},${count}`).join(';');
-
-/** Every Age's entries (read from the save once per session). */
-function allEntries() {
-  if (entries) return entries;
-  if (!canSave()) return new Map();   // not cached: the save is read once it is available
-  entries = new Map();
-  try {
-    for (const age of GameInfo.Ages) {
-      const text = readSaved(KEY_PREFIX + age.ChronologyIndex);
-      if (typeof text === 'string' && text) entries.set(age.ChronologyIndex, decode(text));
-    }
-  } catch (e) { log(`unit log read failed: ${e}`); }
-  return entries;
-}
-
-function save() {
-  saveTimer = 0;
-  for (const age of dirtyAges) {
-    try { writeSaved(KEY_PREFIX + age, encode(allEntries().get(age) ?? new Map())); } catch (e) { log(`unit log write failed: ${e}`); }
-  }
-  dirtyAges.clear();
-}
-
-/** Every logged event: [{ age, turn, progress, playerId, kind, how, unitType, other, category, count }]. */
+/** Every logged event: [{ age, turn, progress, playerId, kind, how, type, other, category, count }]. */
 function unitLog() {
-  const out = [];
-  for (const [age, counts] of allEntries()) {
-    for (const [key, count] of counts) {
-      const [playerId, turn, progress, code, unitType, other] = key.split(',');
-      const category = unitCategory(unitType);
-      if (category == null || !count || !CODES[code]) continue;
-      out.push({ age, turn: Number(turn), progress: Number(progress), playerId: Number(playerId), ...CODES[code], unitType, other: Number(other), category, count });
-    }
-  }
-  return out;
-}
-
-/** The current Age's progress, 0-99 (the Culture tab's notches); 99 once the Age has no limit. */
-function ageProgress() {
-  const max = Game.AgeProgressManager.getMaxAgeProgressionPoints();
-  if (!(max > 0)) return 99;
-  return Math.max(0, Math.min(99, Math.floor((Game.AgeProgressManager.getCurrentAgeProgressionPoints() / max) * 100)));
+  return events.read().flatMap(({ fields: [code, type, other], ...entry }) => {
+    const category = unitCategory(type);
+    return category == null || !CODES[code] ? [] : [{ ...entry, ...CODES[code], type, other: Number(other), category }];
+  });
 }
 
 let away = null;   // Map<"owner:id", UnitType>: commanders away to respawn, this Age
@@ -189,16 +137,7 @@ function saveAway() {
 // ============================ Recording ============================
 
 function record(playerId, kind, unitType, { other = -1, how = null } = {}) {
-  if (playerId == null || playerId < 0 || !unitType || !canSave()) return;
-  const age = currentAgeChronology();
-  const all = allEntries();
-  const counts = all.get(age) ?? new Map();
-  all.set(age, counts);
-  const key = `${playerId},${Game.turn},${ageProgress()},${codeOf(kind, how)},${unitType},${other ?? -1}`;
-  counts.set(key, (counts.get(key) ?? 0) + 1);
-  dirtyAges.add(age);
-  if (!saveTimer) saveTimer = setTimeout(save, SAVE_DELAY_MS);
-  window.dispatchEvent(new CustomEvent(UNIT_LOG_EVENT));
+  if (unitType) events.record(playerId, [codeOf(kind, how), unitType, other ?? -1]);
 }
 
 const unitTypes = new Map();      // "owner:id" -> UnitType, for units on the map
@@ -355,4 +294,4 @@ onObserverReady(() => {
   engine.on('CityMadePurchase', (data) => onCityUnit('CityMadePurchase', data?.purchaseType, data?.unitType, 'purchased', data));
 });
 
-export { ageProgress, TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };
+export { TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };

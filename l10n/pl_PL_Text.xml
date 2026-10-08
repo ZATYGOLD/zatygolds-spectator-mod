@@ -140,7 +140,7 @@
 			<Text>{1_Value} Zdolności jednostki</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="pl_PL">
-			<Text>Wykresy</Text>
+			<Text>Kronika</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="pl_PL">
 			<Text>{1_Yield} na turę każdego przywódcy, zapisywane w każdej turze gry.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="pl_PL">
 			<Text>Wpływy</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="pl_PL">
+			<Text>Zadowolenie</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="pl_PL">
 			<Text>Żywność</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="pl_PL">
 			<Text>Kiedy każdy przywódca zniszczył lub przejął jednostki i jakie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="pl_PL">
+			<Text>Imperium</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="pl_PL">
+			<Text>Populacja</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="pl_PL">
+			<Text>Kiedy rosły osady każdego przywódcy, w populacji miejskiej, wiejskiej i specjalistach.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="pl_PL">
+			<Text>Osady</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca zakładał, zdobywał, tracił osady lub podnosił je do rangi miasta.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="pl_PL">
+			<Text>Założona</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="pl_PL">
+			<Text>Utracona</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="pl_PL">
+			<Text>Podniesiona do rangi miasta</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="pl_PL">
+			<Text>Zdobyta</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="pl_PL">
+			<Text>Przyłączona</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="pl_PL">
 			<Text>Wyszkolone</Text>

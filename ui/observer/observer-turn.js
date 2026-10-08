@@ -24,7 +24,8 @@
  * Auto End Turn (off by default, toggled from the ribbon): ends the Observer's
  * turn once nothing blocks it, never while paused or after the Observer
  * un-readied. A blocker that outlasts a few retries is logged and dismissed
- * when the game allows it. Switches off when an Age completes so the transition action shows,
+ * when the game allows it; a turn still open well after it began is logged and
+ * ended again (a watchdog). Switches off when an Age completes so the transition action shows,
  * and hides the End Turn button while the turn is ended. After every unpause
  * an ended turn is sent again (the engine drops completions sent while paused).
  */
@@ -45,6 +46,8 @@ let autoEnd = CONFIG.autoEndTurn;
 let retryTimer = null;
 let blockedRetries = 0;
 const BLOCK_PATIENCE = 3;   // blocked retries before the blocker is reported and, if allowed, dismissed
+const WATCHDOG_MS = 10000;  // a turn still open this long after it began is ended again
+let watchdog = null;
 
 const isPaused = () => !!Configuration.getGame().isPaused;
 const turnActive = () => !!Players.get(GameContext.localPlayerID)?.isTurnActive;
@@ -64,10 +67,37 @@ function clearBlocker(report) {
   const type = Game.Notifications.getEndTurnBlockingType(me);
   const id = Game.Notifications.findEndTurnBlocking(me, type);
   if (report) {
-    const name = Object.keys(EndTurnBlockingTypes).find((k) => EndTurnBlockingTypes[k] === type) ?? type;
-    log(`turn blocked by ${name}${id ? ` (${Game.Notifications.getTypeName?.(Game.Notifications.getType(id)) ?? ''})` : ''}`);
+    log(`turn blocked by ${enumName(EndTurnBlockingTypes, type)}${id ? ` (${Game.Notifications.getTypeName?.(Game.Notifications.getType(id)) ?? ''})` : ''}`);
   }
   if (id && Game.Notifications.canUserDismissNotification(id)) Game.Notifications.dismiss(id);
+}
+
+const enumName = (values, value) => Object.keys(values).find((k) => values[k] === value) ?? value;
+
+/** The turn's state, for the log: what blocks it, what was sent, the pending notifications. */
+function describeTurn() {
+  const me = GameContext.localPlayerID;
+  const notifications = (Game.Notifications.getIdsForPlayer(me) ?? []).map((id) => Game.Notifications.getTypeName?.(Game.Notifications.getType(id)) ?? '?');
+  return `blocking ${enumName(EndTurnBlockingTypes, Game.Notifications.getEndTurnBlockingType(me))}, sent ${GameContext.hasSentTurnComplete()}, `
+    + `unready ${GameContext.hasSentTurnUnreadyThisTurn()}, ageEnding ${isAgeEnding()}, notifications [${notifications.join(', ')}]`;
+}
+
+/** A turn still open long after it began: logged, then ended again (or retried). */
+function checkStuckTurn() {
+  watchdog = null;
+  if (!endsAutomatically() || !isObserverSeat() || isPaused()) return;
+  try {
+    if (!turnActive()) return;
+    log(`turn ${Game.turn} still open: ${describeTurn()}`);
+    if (GameContext.hasSentTurnComplete()) sendTurnComplete();
+    else tryEndTurn();
+  } catch (e) { log(`watchdog failed: ${e}`); }
+  armWatchdog();
+}
+
+function armWatchdog() {
+  clearTimeout(watchdog);
+  watchdog = setTimeout(checkStuckTurn, WATCHDOG_MS);
 }
 
 const endsAutomatically = () => (autoEnd && !isAgeEnding()) || ageOver();
@@ -123,6 +153,7 @@ function onTurnState() {
   }
   updateEndTurnButton();
   tryEndTurn();
+  if (endsAutomatically()) armWatchdog();
 }
 
 function isAutoEndTurn() { return autoEnd; }

@@ -19,31 +19,33 @@
  */
 
 /**
- * Zatygold's Spectator - unit timeline (in-game scope).
+ * Zatygold's Spectator - timeline (in-game scope).
  *
  * One leader's horizontal notched bar in the style of the Victories screen's
  * Culture tab (culture-victory-tab.js): a notch per percent of Age progress
  * (the current progress, crisis stages and Age changes marked, and labelled
- * on the first bar), and a
- * pin per group of logged units where they happened: pin and dot in the
- * unit category's colour (commanders glow), the unit's own icon (the Culture
- * "+" when it holds several), the count below, and a tooltip listing each
- * unit type with the other player involved or how it was trained.
+ * on the first and last bars), and a pin per group of logged things (such as
+ * units) where they happened: pin and dot in the category's colour
+ * (with a glow for some), the thing's own icon (the Culture "+" when it holds
+ * several), the count below, and a tooltip listing each type.
  *
- * Props: pins ([{ position, category, unitType, count, turns: [first, last],
- * sources: [{ unitType, category, other, how, count }] }]), notches ([{ position,
- * highlight, color, divider }]: a colour replaces the notch colours, a
- * divider spans the bar's height at its position, between Ages), labels ([{
- * position, text, color, start, bottom }]: centred on their notch or from
- * it, over or under the bar), showTopLabels / showBottomLabels (the first and
- * last bars), title (the tooltip heading).
+ * Props: subject ({ categories: [{ color, glow }], pinIcon(source),
+ * pinColor(source) (else the category's), icon(source), name(source),
+ * detail(source) }: what is logged), pins ([{ position, category,
+ * lead (the source it shows), count, turns: [first, last], sources: [{ type, category, count, ... }]
+ * }]), notches ([{ position, highlight, color, divider }]: a colour replaces
+ * the notch colours, a divider spans the bar's height at its position, between
+ * Ages), labels ([{ position, text, color, start, bottom }]: centred on their
+ * notch or from it, over or under the bar), showTopLabels / showBottomLabels
+ * (the first and last bars), title (the tooltip heading), links ([[from, to]]
+ * pin positions joined by the Culture tab's dashed arc).
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createEffect, For, onCleanup, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { CardFrame } from 'fs://game/core/ui-next/components/card-frame.js';
 import { Divider } from 'fs://game/core/ui-next/components/divider.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
-import { TRAIN_METHODS, UNIT_CATEGORIES } from './observer-unit-log.js';
+import { drawDashedQuadraticBezier } from 'fs://game/core/ui-next/utilities/canvas-utilities.js';
 
 // The Culture tab's notch colours.
 const NOTCH = { color: 'rgba(97, 98, 102, 0.6)', highlight: 'rgba(120, 139, 179, 0.9)', divider: 'rgba(225, 214, 180, 0.6)' };
@@ -52,9 +54,12 @@ const AGE_LABEL_GAP = '0.75rem';   // between an Age's divider and its name
 const BOTTOM_LABEL_GAP = '0.15rem';   // between the notches and a label under them
 const NOTCH_BOTTOM = 90;              // where the notches end, in % of the bar's height (drawNotches)
 const NOTCH_WIDTH = 0.8;   // a notch's width in % of the bar (drawNotches)
+// The Culture tab's arc between pins: colour, width, dash and gap, end inset, and height by distance.
+const ARC = { color: '#616266', width: 2, dash: 6, gap: 4, inset: 6, min: 1, max: 64, linear: 0.38, root: 0.06 };
+const DOT_CLASS = 'zom-pin-dot';
 
 const T = {
-  bar: template(`<div class="absolute top-0 bottom-0"><div class="absolute inset-0 pointer-events-none"><canvas class="size-full"></canvas></div></div>`),
+  bar: template(`<div class="absolute top-0 bottom-0"><div class="absolute inset-0 pointer-events-none"><canvas class="size-full"></canvas></div><div class="absolute inset-0 pointer-events-none"><canvas class="size-full"></canvas></div></div>`),
   label: template(`<div class="absolute text-xs whitespace-nowrap pointer-events-none"></div>`),
   pin: template(`<div class="flex flex-col absolute items-center justify-center h-full pointer-events-auto -translate-x-1\\/2"><div class="size-3 mb-1"></div></div>`),
   pinFace: template(`<div class="relative size-14 mb-1 mt-1"><div class="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"></div><div class="absolute inset-0 bg-contain bg-center bg-no-repeat"></div><div class="absolute size-7 top-1\\.5 left-3\\.5 bg-no-repeat bg-center bg-contain"></div></div>`),
@@ -68,14 +73,6 @@ const T = {
 const turnText = ([first, last]) => (first === last
   ? Locale.compose('LOC_VICTORIES_ITEM_TOOLTIP_TURN', first)
   : Locale.compose('LOC_ZOM_GRAPH_TURNS', first, last));
-
-/** The category, with the other player involved or how the unit was trained: "Land Combat · <player>". */
-function sourceDetail(source) {
-  const category = Locale.compose(UNIT_CATEGORIES[source.category]?.label ?? '');
-  const other = source.other >= 0 ? Players.get(source.other)?.name : null;
-  const detail = other ?? TRAIN_METHODS.find((m) => m.id === source.how)?.label;
-  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, Locale.compose(detail)) : category;
-}
 
 const PinTooltip = (props) => createComponent(Tooltip.Frame, {
   'class': 'relative flex flex-col p-2 items-center justify-center',
@@ -93,9 +90,9 @@ const PinTooltip = (props) => createComponent(Tooltip.Frame, {
             const row = T.source();
             const icon = row.firstChild;
             const text = icon.nextSibling;
-            icon.style.backgroundImage = UI.getIconCSS(source.unitType);
-            text.firstChild.textContent = Locale.compose(GameInfo.Units.lookup(source.unitType)?.Name ?? '');
-            text.lastChild.textContent = sourceDetail(source);
+            icon.style.backgroundImage = props.subject.icon(source);
+            text.firstChild.textContent = props.subject.name(source);
+            text.lastChild.textContent = props.subject.detail(source);
             text.nextSibling.textContent = `${source.count}`;
             insert(row, createComponent(Divider.Vertical, { margin: 2, length: '13' }), text);
             return [row, createComponent(Show, {
@@ -112,9 +109,9 @@ const PinTooltip = (props) => createComponent(Tooltip.Frame, {
 const PIN_ART = 'url(blp:culture_pin_minor)';
 const GLOW = { scale: 1.3, origin: '50% 45%', blur: '0.3rem', opacity: '0.9' };   // a larger, blurred copy of the pin behind it
 
-/** The pin itself: tinted pin art, the unit icon, the "+" when grouped and a glow if the category has one. */
-function pinFace(pin) {
-  const category = UNIT_CATEGORIES[pin.category] ?? {};
+/** The pin itself: tinted pin art, the thing's icon, the "+" when grouped and a glow if the category has one. */
+function pinFace(pin, subject) {
+  const category = subject.categories[pin.category] ?? {};
   const face = T.pinFace();
   const [glow, art, icon] = Array.from(face.children);
   art.style.backgroundImage = PIN_ART;
@@ -126,8 +123,8 @@ function pinFace(pin) {
     glow.style.filter = `blur(${GLOW.blur})`;
     glow.style.opacity = GLOW.opacity;
   }
-  art.style.setProperty('fxs-background-image-tint', category.color ?? '#ffffff');
-  icon.style.backgroundImage = UI.getIconCSS(pin.unitType, 'UNIT_FLAG');
+  art.style.setProperty('fxs-background-image-tint', subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff');
+  icon.style.backgroundImage = subject.pinIcon(pin.lead);
   if (pin.sources.length > 1) {
     const plus = T.plus();
     plus.style.backgroundImage = 'url(blp:victories_culturePlus)';
@@ -140,8 +137,9 @@ function pinFace(pin) {
 const Pin = (props) => {
   const root = T.pin();
   const dot = root.firstChild;
+  dot.classList.add(DOT_CLASS);
   root.style.left = `${props.pin.position}%`;
-  dot.style.backgroundColor = UNIT_CATEGORIES[props.pin.category]?.color ?? '#ffffff';
+  dot.style.backgroundColor = props.subject.categories[props.pin.category]?.color ?? '#ffffff';
   dot.style.border = '2px solid black';
   dot.style.borderRadius = '50%';
   insert(root, createComponent(Tooltip, {
@@ -149,8 +147,8 @@ const Pin = (props) => {
     initialHPosition: TooltipHorizontalPosition.CENTER,
     get children() {
       return [
-        createComponent(Tooltip.Trigger, { children: pinFace(props.pin) }),
-        createComponent(Tooltip.Content, { get children() { return createComponent(PinTooltip, { pin: props.pin, title: props.title }); } })
+        createComponent(Tooltip.Trigger, { children: pinFace(props.pin, props.subject) }),
+        createComponent(Tooltip.Content, { get children() { return createComponent(PinTooltip, { pin: props.pin, title: props.title, subject: props.subject }); } })
       ];
     }
   }), dot);
@@ -198,9 +196,32 @@ function drawNotches(canvas, notches) {
   }
 }
 
-const UnitTimeline = (props) => {
+/** The Culture tab's dashed arcs between linked pins, from dot to dot. */
+function drawLinks(canvas, bar, links) {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  const ctx = canvas.getContext('2d');
+  const dot = bar.querySelector('.' + DOT_CLASS);
+  if (!ctx || !rect.width || !dot) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const dotRect = dot.getBoundingClientRect();
+  const y = dotRect.top + dotRect.height / 2 - rect.top;
+  ctx.strokeStyle = ARC.color;
+  ctx.lineWidth = ARC.width;
+  for (const [from, to] of links) {
+    const startX = (from / 100) * canvas.width + ARC.inset;
+    const endX = (to / 100) * canvas.width - ARC.inset;
+    const distance = Math.abs(endX - startX);
+    const height = Math.min(ARC.max, ARC.min + distance * ARC.linear + Math.sqrt(distance) * ARC.root);
+    drawDashedQuadraticBezier(ctx, startX, y, (startX + endX) / 2, y - height, endX, y, ARC.dash, ARC.gap);
+  }
+}
+
+const Timeline = (props) => {
   const bar = T.bar();
   const canvas = bar.firstChild.firstChild;
+  const linkCanvas = bar.children[1].firstChild;
   bar.style.left = '1.5%';
   bar.style.right = '2%';
   for (const bottom of [false, true]) {
@@ -211,16 +232,23 @@ const UnitTimeline = (props) => {
   }
   insert(bar, createComponent(For, {
     get each() { return props.pins; },
-    children: (pin) => createComponent(Pin, { pin, get title() { return props.title; } })
+    children: (pin) => createComponent(Pin, { pin, subject: props.subject, get title() { return props.title; } })
   }), null);
   let frame = 0;
   createEffect(() => {
-    const notches = props.notches;
+    const { notches, links } = props;
+    void props.pins;   // the arcs follow the pins' layout
     cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(() => requestAnimationFrame(() => drawNotches(canvas, notches)));
+    frame = requestAnimationFrame(() => requestAnimationFrame(() => {
+      drawNotches(canvas, notches);
+      drawLinks(linkCanvas, bar, links ?? []);
+    }));
   });
-  onCleanup(() => { cancelAnimationFrame(frame); canvas.width = 0; canvas.height = 0; });
+  onCleanup(() => {
+    cancelAnimationFrame(frame);
+    for (const c of [canvas, linkCanvas]) { c.width = 0; c.height = 0; }
+  });
   return bar;
 };
 
-export { NOTCH_WIDTH, UnitTimeline };
+export { NOTCH_WIDTH, Timeline };

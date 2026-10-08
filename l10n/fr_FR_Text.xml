@@ -140,7 +140,7 @@
 			<Text>{1_Value} Capacités de l'unité</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="fr_FR">
-			<Text>Graphiques</Text>
+			<Text>Chronique</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="fr_FR">
 			<Text>{1_Yield} par tour de chaque dirigeant, enregistré à chaque tour de la partie.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="fr_FR">
 			<Text>Influence</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="fr_FR">
+			<Text>Bonheur</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="fr_FR">
 			<Text>Nourriture</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="fr_FR">
 			<Text>Quand chaque dirigeant a détruit ou capturé des unités, et lesquelles.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="fr_FR">
+			<Text>Empire</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="fr_FR">
+			<Text>Population</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="fr_FR">
+			<Text>Quand les colonies de chaque dirigeant ont grandi, en population urbaine, rurale et spécialistes.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="fr_FR">
+			<Text>Colonies</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant a fondé, capturé, perdu ou élevé en ville des colonies.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="fr_FR">
+			<Text>Fondée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="fr_FR">
+			<Text>Perdue</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="fr_FR">
+			<Text>Devenue ville</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="fr_FR">
+			<Text>Capturée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="fr_FR">
+			<Text>Incorporée</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="fr_FR">
 			<Text>Formées</Text>

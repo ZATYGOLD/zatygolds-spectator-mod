@@ -140,7 +140,7 @@
 			<Text>{1_Value} Способности отряда</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ru_RU">
-			<Text>Графики</Text>
+			<Text>Летопись</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ru_RU">
 			<Text>{1_Yield} за ход у каждого лидера, записывается каждый ход игры.</Text>
@@ -175,6 +175,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="ru_RU">
 			<Text>Влияние</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="ru_RU">
+			<Text>Довольство</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="ru_RU">
 			<Text>Пища</Text>
 		</Replace>
@@ -192,6 +195,36 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ru_RU">
 			<Text>Когда и какие отряды каждый лидер уничтожил или захватил.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ru_RU">
+			<Text>Империя</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="ru_RU">
+			<Text>Население</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="ru_RU">
+			<Text>Когда росли поселения каждого лидера: городское и сельское население, специалисты.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ru_RU">
+			<Text>Поселения</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="ru_RU">
+			<Text>Когда каждый лидер основывал, захватывал, терял поселения или превращал их в города.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ru_RU">
+			<Text>Основано</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="ru_RU">
+			<Text>Потеряно</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ru_RU">
+			<Text>Стало городом</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ru_RU">
+			<Text>Захвачено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ru_RU">
+			<Text>Присоединено</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ru_RU">
 			<Text>Обучено</Text>
