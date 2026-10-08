@@ -162,6 +162,10 @@
                     <Item>ui/observer/observer-ribbon-data.js</Item>
                     <Item>ui/observer/observer-ribbon-style.js</Item>
                     <Item>ui/observer/observer-history.js</Item>
+                    <Item>ui/observer/observer-crisis.js</Item>
+                    <Item>ui/observer/observer-line-graph.js</Item>
+                    <Item>ui/observer/observer-unit-log.js</Item>
+                    <Item>ui/observer/observer-unit-timeline.js</Item>
                     <Item>ui/observer/observer-graphs.js</Item>
                     <Item>ui/observer/observer-turn.js</Item>
                     <Item>ui/observer/observer-settlement-info.js</Item>

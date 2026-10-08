@@ -140,7 +140,7 @@
 			<Text>{1_Value} 유닛 능력</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ko_KR">
-			<Text>산출량 그래프</Text>
+			<Text>그래프</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ko_KR">
 			<Text>각 지도자의 턴당 {1_Yield}. 게임의 매 턴마다 기록됩니다.</Text>
@@ -180,6 +180,51 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ko_KR">
 			<Text>생산력</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ko_KR">
+			<Text>산출량</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="ko_KR">
+			<Text>유닛</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ko_KR">
+			<Text>격파</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제 어떤 유닛을 파괴하거나 포획했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ko_KR">
+			<Text>훈련</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ko_KR">
+			<Text>손실</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제, 누구에게 유닛을 파괴되거나 포획당했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="ko_KR">
+			<Text>{1_Category} · {2_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ko_KR">
+			<Text>사령관</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ko_KR">
+			<Text>생산</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ko_KR">
+			<Text>구매</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ko_KR">
+			<Text>획득</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제 어떤 유닛을 훈련하거나 구매했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ko_KR">
+			<Text>{1_First}~{2_Last}턴</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ko_KR">
+			<Text>합계</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

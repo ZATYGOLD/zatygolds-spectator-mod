@@ -140,7 +140,7 @@
 			<Text>{1_Value} Einheitenfähigkeiten</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="de_DE">
-			<Text>Ertragsdiagramme</Text>
+			<Text>Diagramme</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="de_DE">
 			<Text>{1_Yield} jedes Anführers pro Runde, in jeder Runde des Spiels erfasst.</Text>
@@ -180,6 +180,51 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="de_DE">
 			<Text>Produktion</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="de_DE">
+			<Text>Erträge</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="de_DE">
+			<Text>Einheiten</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="de_DE">
+			<Text>Besiegt</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="de_DE">
+			<Text>Wann jeder Anführer Einheiten zerstört oder erbeutet hat, und welche.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="de_DE">
+			<Text>Ausgebildet</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="de_DE">
+			<Text>Verloren</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="de_DE">
+			<Text>Wann jeder Anführer Einheiten durch Zerstörung oder Gefangennahme verlor, und an wen.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="de_DE">
+			<Text>{1_Category} · {2_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="de_DE">
+			<Text>Kommandanten</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="de_DE">
+			<Text>Produziert</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="de_DE">
+			<Text>Gekauft</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="de_DE">
+			<Text>Erhalten</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="de_DE">
+			<Text>Wann jeder Anführer Einheiten ausgebildet oder gekauft hat, und welche.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="de_DE">
+			<Text>Runden {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="de_DE">
+			<Text>Gesamt</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

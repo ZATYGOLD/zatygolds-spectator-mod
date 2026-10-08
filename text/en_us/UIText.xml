@@ -83,7 +83,7 @@
 			<Text>{1_Value} Unit Abilities</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPHS_TITLE">
-			<Text>Yield Graphs</Text>
+			<Text>Graphs</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_DESCRIPTION">
 			<Text>Each leader's {1_Yield} per turn, recorded every turn of the game.</Text>
@@ -123,6 +123,51 @@
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PRODUCTION">
 			<Text>Production</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_YIELDS">
+			<Text>Yields</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS">
+			<Text>Units</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED">
+			<Text>Defeated</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC">
+			<Text>When each leader destroyed or captured units, and which.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED">
+			<Text>Trained</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST">
+			<Text>Lost</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC">
+			<Text>When each leader lost units to destruction or capture, and to whom.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNIT_SOURCE">
+			<Text>{1_Category} · {2_Player}</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_COMMANDERS">
+			<Text>Commanders</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_PRODUCED">
+			<Text>Produced</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_PURCHASED">
+			<Text>Purchased</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_GRANTED">
+			<Text>Granted</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC">
+			<Text>When each leader trained or bought units, and which.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TURNS">
+			<Text>Turns {1_First}–{2_Last}</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN">
+			<Text>Total</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GROUPED_DIGITS">
 			<Text>{1_Amount: number #,###;-#,###}</Text>

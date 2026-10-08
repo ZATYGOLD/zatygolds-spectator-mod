@@ -29,7 +29,7 @@ import { componentOf, createLogger, isObserverPlayer, leaderTypeOf, whenDefined,
 import { CONFIG } from './observer-config.js';
 
 const coreLog = createLogger('observer-core');
-const BUILD = '2026-10-07 20:05';
+const BUILD = '2026-10-08 18:55';
 // One line per game load, so UI.log always says which build ran and for whom.
 engine.whenReady.then(() => coreLog(`build ${BUILD}; observer seat: ${isObserverSeat()}`));
 

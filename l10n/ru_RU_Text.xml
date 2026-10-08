@@ -140,7 +140,7 @@
 			<Text>{1_Value} Способности отряда</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ru_RU">
-			<Text>Графики доходов</Text>
+			<Text>Графики</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ru_RU">
 			<Text>{1_Yield} за ход у каждого лидера, записывается каждый ход игры.</Text>
@@ -180,6 +180,51 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ru_RU">
 			<Text>Производство</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ru_RU">
+			<Text>Доходы</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="ru_RU">
+			<Text>Отряды</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ru_RU">
+			<Text>Побеждено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ru_RU">
+			<Text>Когда и какие отряды каждый лидер уничтожил или захватил.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ru_RU">
+			<Text>Обучено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ru_RU">
+			<Text>Потеряно</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ru_RU">
+			<Text>Когда каждый лидер терял отряды (уничтоженные или захваченные) и кому.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="ru_RU">
+			<Text>{1_Category} · {2_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ru_RU">
+			<Text>Командиры</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ru_RU">
+			<Text>Произведено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ru_RU">
+			<Text>Куплено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ru_RU">
+			<Text>Получено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ru_RU">
+			<Text>Когда и какие отряды каждый лидер обучил или купил.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ru_RU">
+			<Text>Ходы {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ru_RU">
+			<Text>Всего</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

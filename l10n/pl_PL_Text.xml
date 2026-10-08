@@ -140,7 +140,7 @@
 			<Text>{1_Value} Zdolności jednostki</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="pl_PL">
-			<Text>Wykresy dochodów</Text>
+			<Text>Wykresy</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="pl_PL">
 			<Text>{1_Yield} na turę każdego przywódcy, zapisywane w każdej turze gry.</Text>
@@ -180,6 +180,51 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="pl_PL">
 			<Text>Produkcja</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="pl_PL">
+			<Text>Dochody</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="pl_PL">
+			<Text>Jednostki</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="pl_PL">
+			<Text>Pokonane</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca zniszczył lub przejął jednostki i jakie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="pl_PL">
+			<Text>Wyszkolone</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="pl_PL">
+			<Text>Utracone</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca tracił jednostki przez zniszczenie lub przejęcie, i na rzecz kogo.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="pl_PL">
+			<Text>{1_Category} · {2_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="pl_PL">
+			<Text>Dowódcy</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="pl_PL">
+			<Text>Wyprodukowane</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="pl_PL">
+			<Text>Kupione</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="pl_PL">
+			<Text>Otrzymane</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca wyszkolił lub kupił jednostki i jakie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="pl_PL">
+			<Text>Tury {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="pl_PL">
+			<Text>Razem</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

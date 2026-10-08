@@ -45,8 +45,13 @@ their focus; a city-state's icon names its suzerain bonus.
 **Independents and city-states** — Type, suzerain and chosen bonus, and every
 leader's relationship and befriending progress.
 
-**Yield Graphs** — Per-turn graphs of every leader's yields, saved with the
-game, for the whole game or one Age.
+**Graphs** — Saved with the game, for the whole game or one Age:
+- **Yields** — per-turn graphs of every leader's yields, each Age's turns
+  counted from 1.
+- **Units** — units each leader trained, lost and defeated, on a timeline of
+  Age progress: pins by land combat, naval combat, civilian or commander (with
+  the other player on hover), and a card per leader for each commander type.
+- Both mark each crisis stage and, in Overall, where each Age starts.
 
 **Screens** — Resources & Trade, Legacies, Government, Great Works, Religion
 and the tech / civic trees can show any leader's view. Click any unit to
@@ -100,6 +105,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Ribbon** — the Spectator's card stays on screen however many leaders
   there are; other players' ribbons no longer show the Spectator.
 - **Multiplayer** — computer players can no longer be set to the Spectator.
+- **Graphs** — renamed from Yield Graphs, with a Yields / Units filter; Units
+  shows the units each leader trained, lost and defeated, on a timeline.
 
 ### 1.0.0
 

@@ -140,7 +140,7 @@
 			<Text>{1_Value} 单位能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hans_CN">
-			<Text>产出图表</Text>
+			<Text>图表</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hans_CN">
 			<Text>每位领袖每回合的{1_Yield}，在游戏的每个回合记录。</Text>
@@ -180,6 +180,51 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="zh_Hans_CN">
 			<Text>生产力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hans_CN">
+			<Text>产出</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="zh_Hans_CN">
+			<Text>单位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="zh_Hans_CN">
+			<Text>击败</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="zh_Hans_CN">
+			<Text>每位领袖何时摧毁或俘获了哪些单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="zh_Hans_CN">
+			<Text>训练</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="zh_Hans_CN">
+			<Text>损失</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时因摧毁或俘获而损失单位，以及败于谁手。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="zh_Hans_CN">
+			<Text>{1_Category} · {2_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="zh_Hans_CN">
+			<Text>指挥官</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="zh_Hans_CN">
+			<Text>生产</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="zh_Hans_CN">
+			<Text>购买</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="zh_Hans_CN">
+			<Text>获赠</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="zh_Hans_CN">
+			<Text>每位领袖何时训练或购买了哪些单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hans_CN">
+			<Text>第{1_First}–{2_Last}回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="zh_Hans_CN">
+			<Text>总计</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

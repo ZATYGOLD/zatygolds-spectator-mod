@@ -140,7 +140,7 @@
 			<Text>{1_Value} ユニットの能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ja_JP">
-			<Text>産出グラフ</Text>
+			<Text>グラフ</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ja_JP">
 			<Text>各指導者の1ターンあたりの{1_Yield}。ゲーム中、毎ターン記録されます。</Text>
@@ -180,6 +180,51 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ja_JP">
 			<Text>生産力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ja_JP">
+			<Text>産出</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="ja_JP">
+			<Text>ユニット</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ja_JP">
+			<Text>撃破</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ja_JP">
+			<Text>各指導者がいつ、どのユニットを破壊または捕獲したか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ja_JP">
+			<Text>訓練</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ja_JP">
+			<Text>喪失</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ja_JP">
+			<Text>各指導者がいつ、誰にユニットを破壊または捕獲されたか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="ja_JP">
+			<Text>{1_Category}・{2_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ja_JP">
+			<Text>指揮官</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ja_JP">
+			<Text>生産</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ja_JP">
+			<Text>購入</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ja_JP">
+			<Text>付与</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ja_JP">
+			<Text>各指導者がいつ、どのユニットを訓練または購入したか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ja_JP">
+			<Text>ターン{1_First}~{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ja_JP">
+			<Text>合計</Text>
 		</Replace>
 	</LocalizedText>
 </Database>
