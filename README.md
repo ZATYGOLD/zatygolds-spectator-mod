@@ -48,19 +48,26 @@ leader's relationship and befriending progress.
 **Chronicle** — Saved with the game, for the whole game or one Age:
 - **Yields** — per-turn graphs of every leader's yields (happiness included),
   each Age's turns counted from 1.
-- **Empire** — on a timeline of Age progress, the settlements each leader
-  founded, captured, lost and upgraded (a city or town pin for each, with the
-  other player on hover, an arc from a town to its upgrade into a city, and a
-  card of its cities and towns), and how its settlements grew (urban pins
-  showing the building, produced or purchased; rural pins the improvement;
-  specialist pins the buildings they joined; and a card of each).
+- **Empire** — on a timeline of Age progress:
+  - **Settlements** founded (or incorporated), captured, lost, razed and
+    upgraded, a city or town pin for each, arcs from a town to its upgrade
+    and from a capture or loss to its razing, and a card of cities and towns.
+  - **Population**: every new urban, rural and specialist citizen, pinned
+    with the building or improvement that added it.
 - **Military** — a per-turn graph of each leader's military strength, and on
-  the same timeline its units trained, lost and defeated (pins by land
-  combat, naval combat, civilian or commander), its commanders' promotions
-  and commendations (each commander told apart), its wars with other leaders
-  (a stripe in the enemy's colour for every turn at war, pins where war was
-  declared and peace made), and its battles, skirmishes and sieges (attacks
-  grouped into engagements), pillaging and razing.
+  the same timeline:
+  - **Units** trained (produced, purchased or granted), lost and defeated,
+    by land, naval, civilian or commander; only enemies' kills count.
+  - **Promotions** and commendations, each commander's joined by an arc.
+  - **Wars**: notches coloured for every turn at war (red when the leader
+    declared it, yellow when declared on; green where peace was made), pins
+    naming who attacked whom, and turns at war as the total.
+  - **Conflicts**: sieges, battles and skirmishes (attacks and pillage
+    between the same two sides, grouped into engagements), tiles pillaged by
+    enemy units, and the settlements captured, lost and razed, each linked to
+    what it followed from; the card names the leader's Nemesis.
+- Every tab has an info icon explaining what it counts; totals and cards
+  show their breakdown on hover.
 - All mark each crisis stage and, in Overall, where each Age starts.
 
 **Screens** — Resources & Trade, Legacies, Government, Great Works, Religion
@@ -116,9 +123,14 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   there are; other players' ribbons no longer show the Spectator.
 - **Multiplayer** — computer players can no longer be set to the Spectator.
 - **Chronicle** — renamed from Yield Graphs, with a Yields / Empire /
-  Military filter: happiness joins the yields; Empire shows the settlements
-  each leader founded, captured, lost and upgraded and how they grew, and
-  Military its wars, battles, units, promotions and strength.
+  Military filter: happiness joins the yields; Empire shows each leader's
+  settlements (founded, captured, lost, razed, upgraded) and population
+  growth; Military its strength, units, promotions, wars (aggression and
+  defense) and conflicts (sieges, battles, skirmishes, pillage and their
+  outcomes), each tab with an info panel.
+- **Translations** — terms aligned with the game's own in every language.
+- **Performance** — the Chronicle refreshes in batches and its timelines are
+  built faster in long games.
 
 ### 1.0.0
 
