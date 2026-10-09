@@ -22,10 +22,10 @@
  * Zatygold's Spectator - Military graphs (in-game scope).
  *
  * The Military view, the tabs busy from the start first: a Strength line graph
- * (observer-military-history.js), the unit timelines (observer-graph-units.js),
- * then Promotions, Wars and Conflicts (observer-graph-promotions.js,
- * observer-graph-wars.js, observer-graph-battles.js). Each tab names its source
- * ({ kind, read, changeEvents }) and, for a timeline, its subject.
+ * of each leader's share of the world's (observer-military-history.js), the
+ * unit timelines (observer-graph-units.js), then Promotions, Wars and Conflicts
+ * (observer-graph-promotions.js, observer-graph-wars.js, observer-graph-battles.js).
+ * Each tab names its source ({ kind, read, changeEvents }) and, for a timeline, its subject.
  */
 import { BATTLE_LOG_EVENT, battleLog } from './observer-battle-log.js';
 import { BATTLES_SUBJECT } from './observer-graph-battles.js';
@@ -55,7 +55,8 @@ const MILITARY_VIEW = {
         look: { color: '#d99a5b', background: 'bg_victory_military' },
         description: Locale.compose('LOC_ZOM_GRAPH_STRENGTH_DESC'),
         valueLabel: Locale.compose('LOC_ZOM_GRAPH_TOTAL_COLUMN'),
-        axisLabel: Locale.compose('LOC_ZOM_GRAPH_STRENGTH'),
+        axisLabel: Locale.compose('LOC_ZOM_GRAPH_STRENGTH_SHARE'),
+        share: true,
         source: { kind: 'line', read: militaryHistory, changeEvents: [MILITARY_EVENT] }
       },
       ...UNIT_LOGS.map((tab) => ({ ...tab, info: `${tab.label}_INFO`, subject: UNITS_SUBJECT, source: UNITS_SOURCE })),

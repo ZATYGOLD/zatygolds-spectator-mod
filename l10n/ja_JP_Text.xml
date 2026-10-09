@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ja_JP">
 			<Text>ターン{1_First}~{2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="ja_JP">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="ja_JP">
 			<Text>{1_First}・{2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>各指導者がいつ居住地を建設、獲得、喪失、破壊、または都市に昇格させたか。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ja_JP">
-			<Text>指導者が得た、失った、または都市に昇格させたすべての[B]居住地[/B]。[NN][BLIST][LI][B]ピン[/B]：都市は金、町は青[LI][B]点[/B]：建設（または併合）、獲得、喪失、破壊、都市に昇格[LI][B]破線の弧[/B]：町とその都市への昇格、獲得または喪失とその破壊を結ぶ[/LIST][NN][B]合計[/B]：現在保有する居住地（または時代の終わりの時点）。[N][B]カード[/B]：都市と町。</Text>
+			<Text>指導者が得た、失った、または都市に昇格させたすべての[B]居住地[/B]。[NN][BLIST][LI][B]ピン[/B]：都市は金、町は青、占領は緑、喪失は赤[LI][B]点[/B]：建設（または併合）、獲得、喪失、破壊、都市に昇格[LI][B]破線の弧[/B]：町とその都市への昇格、獲得または喪失とその破壊を結ぶ[/LIST][NN][B]合計[/B]：現在保有する居住地（または時代の終わりの時点）。カーソルを合わせると都市と町。[N][B]カード[/B]：都市化率。開発済みタイルのうち市街タイル（建造物、遺産、防衛施設。施設に対して）の割合。カーソルを合わせると最も都市化した居住地と最も郊外的な居住地（現在の時代）。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ja_JP">
 			<Text>建設</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ja_JP">
 			<Text>指導者の居住地が得たすべての市民。[NN][BLIST][LI][B]ピン[/B]：その市民を加えた建造物または施設、主な産出の色[LI][B]点[/B]：市街は金、郊外は銀[LI][B]専門家[/B]：光る金色のピン、そのタイルの建造物と共に[/LIST][NN]獲得した居住地は、獲得時の規模から数えます。[NN][B]合計[/B]：現在（または時代の終わり）の市民数。カーソルを合わせると市街・郊外・専門家別。[N][B]カード[/B]：専門家。カーソルを合わせると居住地・街区別。</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="ja_JP">
+			<Text>都市化率</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="ja_JP">
+			<Text>最も都市的</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="ja_JP">
+			<Text>最も郊外的</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="ja_JP">
+			<Text>市街タイル {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="ja_JP">
+			<Text>郊外タイル {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="ja_JP">
 			<Text>軍事</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>戦力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ja_JP">
-			<Text>各指導者の軍事力（全ユニットの戦闘力）。ゲームの毎ターン記録。</Text>
+			<Text>世界の軍事力（全指導者のユニットの戦闘力）に占める各指導者の割合。ゲームの毎ターン記録。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="ja_JP">
+			<Text>軍事力の世界シェア</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ja_JP">
 			<Text>司令官</Text>

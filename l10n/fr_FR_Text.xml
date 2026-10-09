@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="fr_FR">
 			<Text>Tours {1_First} à {2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="fr_FR">
+			<Text>{1_Value} %</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="fr_FR">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>Quand chaque dirigeant a fondé, capturé, perdu, rasé ou transformé en ville des colonies.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="fr_FR">
-			<Text>Chaque [B]colonie[/B] qu'un dirigeant gagne, perd ou fait évoluer.[NN][BLIST][LI][B]Épingle[/B] : dorée pour une ville, bleue pour une commune[LI][B]Point[/B] : Fondée (ou Absorbée), Capturée, Perdue, Rasée ou Devenue ville[LI][B]Arc pointillé[/B] : relie une commune à son évolution en ville, et une prise ou une perte à sa destruction[/LIST][NN][B]Total[/B] : colonies détenues actuellement (ou à la fin de l'ère).[N][B]Carte[/B] : villes et communes.</Text>
+			<Text>Chaque [B]colonie[/B] qu'un dirigeant gagne, perd ou fait évoluer.[NN][BLIST][LI][B]Épingle[/B] : dorée pour une ville, bleue pour une commune ; verte si capturée, rouge si perdue[LI][B]Point[/B] : Fondée (ou Absorbée), Capturée, Perdue, Rasée ou Devenue ville[LI][B]Arc pointillé[/B] : relie une commune à son évolution en ville, et une prise ou une perte à sa destruction[/LIST][NN][B]Total[/B] : colonies détenues actuellement (ou à la fin de l'ère) ; villes et communes au survol.[N][B]Carte[/B] : urbanisation, la part des cases aménagées qui sont urbaines (bâtiments, merveilles et fortifications, face aux aménagements) ; la colonie la plus urbaine et la plus rurale au survol (ère actuelle).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="fr_FR">
 			<Text>Fondée</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="fr_FR">
 			<Text>Chaque citoyen gagné par les colonies d'un dirigeant.[NN][BLIST][LI][B]Épingle[/B] : le bâtiment ou l'aménagement qui l'a ajouté, à la couleur de son rendement principal[LI][B]Point[/B] : doré pour urbain, argenté pour rural[LI][B]Spécialiste[/B] : une épingle dorée lumineuse, avec les bâtiments de sa case[/LIST][NN]Une colonie capturée compte à partir de sa taille au moment de la prise.[NN][B]Total[/B] : citoyens actuels (ou à la fin de l'ère) ; urbains, ruraux et spécialistes au survol.[N][B]Carte[/B] : spécialistes ; par colonie et par quartier au survol.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="fr_FR">
+			<Text>Urbanisation</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="fr_FR">
+			<Text>La plus urbaine</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="fr_FR">
+			<Text>La plus rurale</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="fr_FR">
+			<Text>Cases urbaines {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="fr_FR">
+			<Text>Cases rurales {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="fr_FR">
 			<Text>Militaire</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>Puissance</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="fr_FR">
-			<Text>La puissance militaire de chaque dirigeant, la puissance de combat de toutes ses unités, relevée à chaque tour de la partie.</Text>
+			<Text>La part de chaque dirigeant dans la puissance militaire mondiale (la puissance de combat des unités de tous les dirigeants), relevée à chaque tour de la partie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="fr_FR">
+			<Text>Part de la puissance mondiale (%)</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="fr_FR">
 			<Text>Commandants</Text>

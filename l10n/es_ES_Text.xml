@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="es_ES">
 			<Text>Turnos {1_First}–{2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="es_ES">
+			<Text>{1_Value} %</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="es_ES">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>Cuándo fundó, capturó, perdió, arrasó o convirtió en ciudad asentamientos cada líder.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="es_ES">
-			<Text>Cada [B]asentamiento[/B] que un líder gana, pierde o convierte en ciudad.[NN][BLIST][LI][B]Marcador[/B]: dorado para una ciudad, azul para un pueblo[LI][B]Punto[/B]: Fundado (o Incorporado), Capturado, Perdido, Arrasado o Convertido en ciudad[LI][B]Arco discontinuo[/B]: une un pueblo con su conversión en ciudad, y una captura o pérdida con su arrasamiento[/LIST][NN][B]Total[/B]: asentamientos que tiene ahora (o al final de la era).[N][B]Tarjeta[/B]: ciudades y pueblos.</Text>
+			<Text>Cada [B]asentamiento[/B] que un líder gana, pierde o convierte en ciudad.[NN][BLIST][LI][B]Marcador[/B]: dorado para una ciudad, azul para un pueblo; verde si fue capturado, rojo si se perdió[LI][B]Punto[/B]: Fundado (o Incorporado), Capturado, Perdido, Arrasado o Convertido en ciudad[LI][B]Arco discontinuo[/B]: une un pueblo con su conversión en ciudad, y una captura o pérdida con su arrasamiento[/LIST][NN][B]Total[/B]: asentamientos que tiene ahora (o al final de la era); ciudades y pueblos al pasar el cursor.[N][B]Tarjeta[/B]: urbanización, la proporción de casillas desarrolladas que son urbanas (edificios, maravillas y fortificaciones, frente a mejoras); el asentamiento más urbano y el más rural al pasar el cursor (era actual).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="es_ES">
 			<Text>Fundado</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="es_ES">
 			<Text>Cada ciudadano que ganan los asentamientos de un líder.[NN][BLIST][LI][B]Marcador[/B]: el edificio o la mejora que lo añadió, del color de su rendimiento principal[LI][B]Punto[/B]: dorado para urbano, plateado para rural[LI][B]Especialista[/B]: un marcador dorado brillante, con los edificios de su casilla[/LIST][NN]Un asentamiento capturado cuenta desde el tamaño que tenía al ser tomado.[NN][B]Total[/B]: ciudadanos actuales (o al final de la era); urbanos, rurales y especialistas al pasar el cursor.[N][B]Tarjeta[/B]: especialistas; por asentamiento y barrio al pasar el cursor.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="es_ES">
+			<Text>Urbanización</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="es_ES">
+			<Text>Más urbano</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="es_ES">
+			<Text>Más rural</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="es_ES">
+			<Text>Casillas urbanas {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="es_ES">
+			<Text>Casillas rurales {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="es_ES">
 			<Text>Militar</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>Fuerza</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="es_ES">
-			<Text>La fuerza militar de cada líder, la fuerza de combate de todas sus unidades, registrada en cada turno de la partida.</Text>
+			<Text>La proporción de la fuerza militar del mundo de cada líder (la fuerza de combate de las unidades de todos los líderes), registrada en cada turno de la partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="es_ES">
+			<Text>Porcentaje de la fuerza del mundo</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="es_ES">
 			<Text>Comandantes</Text>

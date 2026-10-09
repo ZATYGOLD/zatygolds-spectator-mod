@@ -28,7 +28,7 @@
  * "<code>,<kind>,<name>,<otherPlayerId>,<plot>" (CODES; kind city or town).
  */
 import { createLogger } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { CONFIG, OUTCOME_COLORS } from './observer-config.js';
 import { byTime, categoryIndex, createEventLog } from './observer-event-log.js';
 import { watchSettlements } from './observer-settlement-watch.js';
 
@@ -41,12 +41,12 @@ const SETTLEMENT_KINDS = {
   town: { label: 'LOC_UI_SETTLEMENT_TAB_BAR_TOWNS', icon: 'url(blp:Yield_Towns)', color: '#6f9fc8' }
 };
 
-/** What happened to a settlement, in display order: dot colour. */
+/** What happened to a settlement, in display order: dot colour (a capture's or loss's pin too). */
 const SETTLEMENT_CATEGORIES = [
   { id: 'founded', label: 'LOC_ZOM_GRAPH_FOUNDED', color: '#5fae4c' },
-  { id: 'captured', label: 'LOC_ZOM_GRAPH_CAPTURED', color: '#e0a03a' },
-  { id: 'lost', label: 'LOC_ZOM_GRAPH_SETTLEMENTS_LOST', color: '#c0504a' },
-  { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: '#5b2a86' },
+  { id: 'captured', label: 'LOC_ZOM_GRAPH_CAPTURED', color: OUTCOME_COLORS.captured, pin: true },
+  { id: 'lost', label: 'LOC_ZOM_GRAPH_SETTLEMENTS_LOST', color: OUTCOME_COLORS.lost, pin: true },
+  { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: OUTCOME_COLORS.razed },
   { id: 'upgraded', label: 'LOC_ZOM_GRAPH_UPGRADED', color: '#e8d27a' }
 ];
 const CATEGORY = categoryIndex(SETTLEMENT_CATEGORIES);

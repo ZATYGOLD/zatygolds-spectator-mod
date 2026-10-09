@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="pl_PL">
 			<Text>Tury {1_First}–{2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="pl_PL">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="pl_PL">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>Kiedy każdy przywódca zakładał, zdobywał, tracił, równał z ziemią lub podnosił do rangi miasta osiedla.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="pl_PL">
-			<Text>Każde [B]Osiedle[/B], które przywódca zyskuje, traci lub podnosi do rangi miasta.[NN][BLIST][LI][B]Znacznik[/B]: złoty dla miasta, niebieski dla miasteczka[LI][B]Kropka[/B]: Założone (lub Włączone), Zdobyte, Utracone, Zrównane z ziemią lub Podniesione do rangi miasta[LI][B]Przerywany łuk[/B]: łączy miasteczko z jego podniesieniem do rangi miasta, a zdobycie lub utratę ze zrównaniem z ziemią[/LIST][NN][B]Razem[/B]: osiedla posiadane obecnie (lub na koniec epoki).[N][B]Karta[/B]: miasta i miasteczka.</Text>
+			<Text>Każde [B]Osiedle[/B], które przywódca zyskuje, traci lub podnosi do rangi miasta.[NN][BLIST][LI][B]Znacznik[/B]: złoty dla miasta, niebieski dla miasteczka; zielony po zdobyciu, czerwony po utracie[LI][B]Kropka[/B]: Założone (lub Włączone), Zdobyte, Utracone, Zrównane z ziemią lub Podniesione do rangi miasta[LI][B]Przerywany łuk[/B]: łączy miasteczko z jego podniesieniem do rangi miasta, a zdobycie lub utratę ze zrównaniem z ziemią[/LIST][NN][B]Razem[/B]: osiedla posiadane obecnie (lub na koniec epoki); miasta i miasteczka po najechaniu kursorem.[N][B]Karta[/B]: urbanizacja, udział zagospodarowanych pól, które są miejskie (budynki, cuda i fortyfikacje, wobec ulepszeń); najbardziej zurbanizowane i najbardziej wiejskie osiedle po najechaniu kursorem (obecna epoka).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="pl_PL">
 			<Text>Założone</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="pl_PL">
 			<Text>Każdy mieszkaniec zyskany przez osiedla przywódcy.[NN][BLIST][LI][B]Znacznik[/B]: budowla lub ulepszenie, które go dodało, w kolorze głównego dochodu[LI][B]Kropka[/B]: złota dla miejskich, srebrna dla wiejskich[LI][B]Specjalista[/B]: świecący złoty znacznik z budowlami na jego polu[/LIST][NN]Zdobyte osiedle liczy się od wielkości w chwili zdobycia.[NN][B]Razem[/B]: mieszkańcy obecnie (lub na koniec epoki); miejscy, wiejscy i specjaliści po najechaniu.[N][B]Karta[/B]: specjaliści; według osiedla i dzielnicy po najechaniu.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="pl_PL">
+			<Text>Urbanizacja</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="pl_PL">
+			<Text>Najbardziej miejskie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="pl_PL">
+			<Text>Najbardziej wiejskie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="pl_PL">
+			<Text>Pola miejskie {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="pl_PL">
+			<Text>Pola wiejskie {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="pl_PL">
 			<Text>Wojsko</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>Siła</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="pl_PL">
-			<Text>Siła militarna każdego przywódcy, siła bojowa wszystkich jego jednostek, zapisywana w każdej turze gry.</Text>
+			<Text>Udział każdego przywódcy w światowej sile militarnej (sile bojowej jednostek wszystkich przywódców), zapisywany w każdej turze gry.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="pl_PL">
+			<Text>Udział % w światowej sile</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="pl_PL">
 			<Text>Dowódcy</Text>

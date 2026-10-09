@@ -88,6 +88,9 @@ const PANEL_COLORS = {
   shadow: '#000000'
 };
 
+/** A settlement's change of hands, as the Chronicle's Settlements and Conflicts tabs colour it. */
+const OUTCOME_COLORS = { captured: '#4f9d69', lost: '#a33b3b', razed: '#5b2a86' };
+
 /** An independent's standing with a leader, and befriending progress. */
 const RELATIONSHIP_COLORS = { friendly: '#7ccf6e', neutral: PANEL_COLORS.parchment, hostile: '#e0604e', befriend: '#e0b96c' };
 
@@ -133,4 +136,4 @@ const ICONS = {
   perspective: ART.observerIcon
 };
 
-export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, PANEL_COLORS, RELATIONSHIP_COLORS, ROW_COLORS };
+export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, OUTCOME_COLORS, PANEL_COLORS, RELATIONSHIP_COLORS, ROW_COLORS };

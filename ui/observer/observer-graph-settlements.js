@@ -25,15 +25,18 @@
  * settlement log (observer-settlement-log.js): each leader's settlements
  * founded, captured, lost, razed and upgraded, a pin showing a city or a town
  * and a dashed arc from what each followed from; the settlements held as the
- * Total and its cities and towns on the card (now, or at the end of the Age).
+ * Total (cities and towns on hover) and its urbanization (urban share of its
+ * developed tiles) on the card, its most urban and most rural settlement on hover.
  */
-import { EMPIRE_KEYS, leaderDetails } from './observer-empire.js';
+import { currentAgeChronology } from '../shared/zom-util.js';
+import { EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, settlementDevelopment } from './observer-empire.js';
 import { byTime, categoryIndex } from './observer-event-log.js';
 import { detailText, opponentName } from './observer-graph-parts.js';
 import { SETTLEMENT_CATEGORIES, SETTLEMENT_KINDS } from './observer-settlement-log.js';
 
 const CATEGORY = categoryIndex(SETTLEMENT_CATEGORIES);
 const COUNTS = { city: EMPIRE_KEYS.cities, town: EMPIRE_KEYS.towns };
+const URBAN_ICON = POPULATION_KINDS.find((k) => k.id === 'urban').icon;
 
 const iconOf = (source) => SETTLEMENT_KINDS[source.settlement]?.icon ?? '';
 
@@ -60,10 +63,38 @@ function settlementLinks(events) {
   }));
 }
 
-/** The leader's cities and towns at the end of the view: { city, town }. */
-function settlementCounts(playerId, lastAge) {
+/** The % of developed tiles ({ urban, rural }) that are urban; null with none. */
+const urbanization = ({ urban, rural }) => (urban + rural > 0 ? Math.round((urban / (urban + rural)) * 100) : null);
+const percentText = (value) => (value == null ? '-' : Locale.compose('LOC_ZOM_GRAPH_PERCENT', value));
+
+/** The leader's settlements at the end of the view: { city, town, urbanization }. */
+function settlementState(playerId, lastAge) {
   const own = leaderDetails(playerId, lastAge);
-  return Object.fromEntries(Object.entries(COUNTS).map(([kind, key]) => [kind, own.get(key) ?? 0]));
+  return {
+    ...Object.fromEntries(Object.entries(COUNTS).map(([kind, key]) => [kind, own.get(key) ?? 0])),
+    urbanization: urbanization({ urban: own.get(EMPIRE_KEYS.urbanTiles) ?? 0, rural: own.get(EMPIRE_KEYS.ruralTiles) ?? 0 })
+  };
+}
+
+/** A settlement's row: its urbanization, its urban and rural tiles under it. */
+const settlementRow = (s) => ({
+  icon: SETTLEMENT_KINDS[s.town ? 'town' : 'city'].icon,
+  label: Locale.compose(s.name),
+  detail: detailText(Locale.compose('LOC_ZOM_GRAPH_URBAN_TILES', s.urban), Locale.compose('LOC_ZOM_GRAPH_RURAL_TILES', s.rural)),
+  value: percentText(s.share)
+});
+
+/** The card's hover: the most urbanized and the most rural settlement now (ties: the larger), else the leader's urbanization. */
+function urbanizationGroups(playerId, percent) {
+  const ranked = settlementDevelopment(playerId).map((s) => ({ ...s, share: urbanization(s) })).filter((s) => s.share != null);
+  const size = (s) => s.urban + s.rural;
+  const most = [...ranked].sort((a, b) => b.share - a.share || size(b) - size(a))[0];
+  const least = [...ranked].sort((a, b) => a.share - b.share || size(b) - size(a))[0];
+  if (!most) return [[{ icon: URBAN_ICON, label: Locale.compose('LOC_ZOM_GRAPH_URBANIZATION'), value: percent }]];
+  return [
+    { title: Locale.compose('LOC_ZOM_GRAPH_MOST_URBAN'), rows: [settlementRow(most)] },
+    { title: Locale.compose('LOC_ZOM_GRAPH_MOST_RURAL'), rows: least !== most ? [settlementRow(least)] : [] }
+  ];
 }
 
 /** What happened, with how or the other player involved: "Captured · Augustus". */
@@ -77,19 +108,23 @@ const SETTLEMENTS_SUBJECT = {
   categories: SETTLEMENT_CATEGORIES,
   priority: [CATEGORY.upgraded],
   pinIcon: iconOf,
-  pinColor: (source) => SETTLEMENT_KINDS[source.settlement]?.color,
+  pinColor: (source) => (SETTLEMENT_CATEGORIES[source.category]?.pin ? SETTLEMENT_CATEGORIES[source.category].color : SETTLEMENT_KINDS[source.settlement]?.color),   // green captured, red lost, else city or town
   icon: iconOf,
   name: (source) => Locale.compose(source.type),
   detail: settlementDetail,
   sourceOf: (event) => ({ settlement: event.settlement, other: event.other, how: event.how }),
   links: settlementLinks,
-  value: (playerId, { lastAge }) => { const counts = settlementCounts(playerId, lastAge); return counts.city + counts.town; },
+  value: (playerId, { lastAge }) => { const state = settlementState(playerId, lastAge); return state.city + state.town; },
+  totalGroups: (entry) => [Object.keys(COUNTS).map((kind) => ({ icon: SETTLEMENT_KINDS[kind].icon, label: Locale.compose(SETTLEMENT_KINDS[kind].label), value: entry?.card.state[kind] ?? 0 }))],
   card: (playerId, { lastAge }) => {
-    const counts = settlementCounts(playerId, lastAge);
-    return { cities: counts.city, cells: Object.keys(COUNTS).map((kind) => ({ icon: SETTLEMENT_KINDS[kind].icon, count: counts[kind] })) };
+    const state = settlementState(playerId, lastAge);
+    const percent = percentText(state.urbanization);
+    const groups = lastAge === currentAgeChronology()
+      ? urbanizationGroups(playerId, percent)
+      : [[{ icon: URBAN_ICON, label: Locale.compose('LOC_ZOM_GRAPH_URBANIZATION'), value: percent }]];   // settlements are not kept per Age
+    return { state, cells: [{ icon: URBAN_ICON, count: percent }], groups };
   },
-  cardHover: false,
-  tieBreak: (entry) => entry.card.cities
+  tieBreak: (entry) => entry.card.state.city
 };
 
 export { SETTLEMENTS_SUBJECT };

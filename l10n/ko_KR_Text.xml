@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ko_KR">
 			<Text>{1_First}~{2_Last}턴</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="ko_KR">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="ko_KR">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>각 지도자가 정착지를 건설, 점령, 상실, 파괴하거나 도시로 승격한 시점.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ko_KR">
-			<Text>지도자가 얻거나 잃거나 승격한 모든 [B]정착지[/B].[NN][BLIST][LI][B]핀[/B]: 도시는 금색, 마을은 파란색[LI][B]점[/B]: 건설(또는 통합), 점령, 손실, 파괴 또는 도시로 승격[LI][B]점선 호[/B]: 마을을 그 승격과, 점령 또는 손실을 그 파괴와 잇습니다[/LIST][NN][B]합계[/B]: 현재(또는 시대 종료 시) 보유한 정착지.[N][B]카드[/B]: 도시와 마을.</Text>
+			<Text>지도자가 얻거나 잃거나 승격한 모든 [B]정착지[/B].[NN][BLIST][LI][B]핀[/B]: 도시는 금색, 마을은 파란색, 점령은 초록색, 상실은 빨간색[LI][B]점[/B]: 건설(또는 통합), 점령, 손실, 파괴 또는 도시로 승격[LI][B]점선 호[/B]: 마을을 그 승격과, 점령 또는 손실을 그 파괴와 잇습니다[/LIST][NN][B]합계[/B]: 현재(또는 시대 종료 시) 보유한 정착지. 마우스를 올리면 도시와 마을.[N][B]카드[/B]: 도시화율, 개발된 타일 중 시가지 타일(건물, 불가사의, 방어 시설; 시설 대비)의 비율. 마우스를 올리면 가장 도시화된 정착지와 가장 교외적인 정착지(현재 시대).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ko_KR">
 			<Text>건설</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ko_KR">
 			<Text>지도자의 정착지가 얻은 모든 시민.[NN][BLIST][LI][B]핀[/B]: 시민을 추가한 건물 또는 시설, 주요 산출물의 색[LI][B]점[/B]: 시가지는 금색, 교외는 은색[LI][B]전문가[/B]: 빛나는 금색 핀, 해당 타일의 건물과 함께[/LIST][NN]점령한 정착지는 점령 당시 규모부터 셉니다.[NN][B]합계[/B]: 현재(또는 시대 종료 시) 시민 수. 마우스를 올리면 시가지·교외·전문가별.[N][B]카드[/B]: 전문가. 마우스를 올리면 정착지·구역별.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="ko_KR">
+			<Text>도시화율</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="ko_KR">
+			<Text>가장 도시적</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="ko_KR">
+			<Text>가장 교외적</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="ko_KR">
+			<Text>시가지 타일 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="ko_KR">
+			<Text>교외 타일 {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="ko_KR">
 			<Text>군사</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>전투력</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ko_KR">
-			<Text>각 지도자의 군사력(모든 유닛의 전투력), 게임의 매 턴 기록.</Text>
+			<Text>세계 군사력(모든 지도자 유닛의 전투력) 중 각 지도자의 비율, 게임의 매 턴 기록.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="ko_KR">
+			<Text>세계 군사력 지분 %</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ko_KR">
 			<Text>사령관</Text>

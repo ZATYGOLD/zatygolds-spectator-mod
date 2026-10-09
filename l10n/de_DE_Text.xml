@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="de_DE">
 			<Text>Runden {1_First}–{2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="de_DE">
+			<Text>{1_Value} %</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="de_DE">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>Wann jeder Anführer Siedlungen gründete, eroberte, verlor, niederbrannte oder zur Stadt erhob.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="de_DE">
-			<Text>Jede [B]Siedlung[/B], die ein Anführer gewinnt, verliert oder zur Stadt erhebt.[NN][BLIST][LI][B]Nadel[/B]: golden für eine Stadt, blau für eine Gemeinde[LI][B]Punkt[/B]: Gegründet (oder Eingemeindet), Erobert, Verloren, Niedergebrannt oder Zur Stadt erhoben[LI][B]Gestrichelter Bogen[/B]: verbindet eine Gemeinde mit ihrer Erhebung zur Stadt und eine Eroberung oder einen Verlust mit dem Niederbrennen[/LIST][NN][B]Gesamt[/B]: Siedlungen im Besitz, derzeit (oder am Ende des Zeitalters).[N][B]Karte[/B]: Städte und Gemeinden.</Text>
+			<Text>Jede [B]Siedlung[/B], die ein Anführer gewinnt, verliert oder zur Stadt erhebt.[NN][BLIST][LI][B]Nadel[/B]: golden für eine Stadt, blau für eine Gemeinde; grün bei Eroberung, rot bei Verlust[LI][B]Punkt[/B]: Gegründet (oder Eingemeindet), Erobert, Verloren, Niedergebrannt oder Zur Stadt erhoben[LI][B]Gestrichelter Bogen[/B]: verbindet eine Gemeinde mit ihrer Erhebung zur Stadt und eine Eroberung oder einen Verlust mit dem Niederbrennen[/LIST][NN][B]Gesamt[/B]: Siedlungen im Besitz, derzeit (oder am Ende des Zeitalters); Städte und Gemeinden beim Überfahren.[N][B]Karte[/B]: Urbanisierung, der Anteil der erschlossenen Felder, die städtisch sind (Gebäude, Weltwunder und Befestigungen, gegenüber Modernisierungen); die städtischste und die ländlichste Siedlung beim Überfahren (aktuelles Zeitalter).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="de_DE">
 			<Text>Gegründet</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="de_DE">
 			<Text>Jeder Bürger, den die Siedlungen eines Anführers gewinnen.[NN][BLIST][LI][B]Nadel[/B]: das Gebäude oder die Modernisierung, die ihn hinzufügte, in der Farbe ihres Hauptertrags[LI][B]Punkt[/B]: golden für städtisch, silbern für ländlich[LI][B]Spezialist[/B]: eine leuchtend goldene Nadel mit den Gebäuden auf seinem Feld[/LIST][NN]Eine eroberte Siedlung zählt ab ihrer Größe bei der Eroberung.[NN][B]Gesamt[/B]: Bürger derzeit (oder am Ende des Zeitalters); städtisch, ländlich und Spezialisten beim Darüberfahren.[N][B]Karte[/B]: Spezialisten; nach Siedlung und Viertel beim Darüberfahren.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="de_DE">
+			<Text>Urbanisierung</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="de_DE">
+			<Text>Am städtischsten</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="de_DE">
+			<Text>Am ländlichsten</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="de_DE">
+			<Text>Städtische Felder {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="de_DE">
+			<Text>Ländliche Felder {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="de_DE">
 			<Text>Militär</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>Stärke</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="de_DE">
-			<Text>Die militärische Stärke jedes Anführers, die Kampfstärke all seiner Einheiten, in jeder Runde des Spiels erfasst.</Text>
+			<Text>Der Anteil jedes Anführers an der militärischen Stärke der Welt (der Kampfstärke der Einheiten aller Anführer), in jeder Runde des Spiels erfasst.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="de_DE">
+			<Text>% Anteil an der globalen Stärke</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="de_DE">
 			<Text>Kommandanten</Text>

@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ru_RU">
 			<Text>Ходы {1_First}–{2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="ru_RU">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="ru_RU">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>Когда каждый лидер основывал, захватывал, терял, разрушал поселения или превращал их в города.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ru_RU">
-			<Text>Все [B]Поселения[/B], которые лидер получает, теряет или превращает в города.[NN][BLIST][LI][B]Метка[/B]: золотая для города, синяя для городка[LI][B]Точка[/B]: Основано (или Присоединено), Захвачено, Потеряно, Разрушено или Стало городом[LI][B]Пунктирная дуга[/B]: соединяет городок с его превращением в город, а захват или потерю — с разрушением[/LIST][NN][B]Всего[/B]: поселения сейчас (или на конец эпохи).[N][B]Карточка[/B]: города и городки.</Text>
+			<Text>Все [B]Поселения[/B], которые лидер получает, теряет или превращает в города.[NN][BLIST][LI][B]Метка[/B]: золотая для города, синяя для городка; зелёная при захвате, красная при потере[LI][B]Точка[/B]: Основано (или Присоединено), Захвачено, Потеряно, Разрушено или Стало городом[LI][B]Пунктирная дуга[/B]: соединяет городок с его превращением в город, а захват или потерю — с разрушением[/LIST][NN][B]Всего[/B]: поселения сейчас (или на конец эпохи); города и городки при наведении.[N][B]Карточка[/B]: урбанизация — доля освоенных клеток, которые городские (здания, чудеса и укрепления, против улучшений); самое урбанизированное и самое сельское поселение при наведении (текущая эпоха).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ru_RU">
 			<Text>Основано</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ru_RU">
 			<Text>Каждый житель, которого получают поселения лидера.[NN][BLIST][LI][B]Метка[/B]: здание или улучшение, которое его добавило, цвета его основного дохода[LI][B]Точка[/B]: золотая для городских, серебряная для сельских[LI][B]Специалист[/B]: светящаяся золотая метка со зданиями на его клетке[/LIST][NN]Захваченное поселение учитывается с размера на момент захвата.[NN][B]Всего[/B]: жители сейчас (или на конец эпохи); городские, сельские и специалисты при наведении.[N][B]Карточка[/B]: специалисты; по поселениям и кварталам при наведении.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="ru_RU">
+			<Text>Урбанизация</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="ru_RU">
+			<Text>Самое городское</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="ru_RU">
+			<Text>Самое сельское</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="ru_RU">
+			<Text>Городские клетки {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="ru_RU">
+			<Text>Сельские клетки {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="ru_RU">
 			<Text>Армия</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>Сила</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ru_RU">
-			<Text>Военная сила каждого лидера — боевая сила всех его отрядов, по каждому ходу игры.</Text>
+			<Text>Доля каждого лидера в мировой военной силе (боевой силе отрядов всех лидеров), по каждому ходу игры.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="ru_RU">
+			<Text>Доля в мировой силе в %</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ru_RU">
 			<Text>Командиры</Text>

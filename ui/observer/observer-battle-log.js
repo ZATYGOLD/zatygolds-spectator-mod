@@ -28,7 +28,7 @@
  * "<code>,<type>,<otherPlayerId>" (CODES, ENGAGEMENT_CODES).
  */
 import { createLogger, deferOnce } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { CONFIG, OUTCOME_COLORS } from './observer-config.js';
 import { areEnemies, onObserverReady } from './observer-core.js';
 import { byTime, categoryIndex, createEventLog, payloadLogger } from './observer-event-log.js';
 import { watchSettlements } from './observer-settlement-watch.js';
@@ -47,9 +47,9 @@ const PILLAGE = { building: 2, rural: 1 };   // an engagement's pillage per tile
  * else an `outcome` (what a conflict led to).
  */
 const BATTLE_CATEGORIES = [
-  { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: '#5b2a86', outcome: true },
-  { id: 'captured', label: 'LOC_ZOM_GRAPH_CAPTURED', color: '#4f9d69', outcome: true },
-  { id: 'lost', label: 'LOC_ZOM_GRAPH_SETTLEMENTS_LOST', color: '#a33b3b', outcome: true },
+  { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: OUTCOME_COLORS.razed, outcome: true },
+  { id: 'captured', label: 'LOC_ZOM_GRAPH_CAPTURED', color: OUTCOME_COLORS.captured, outcome: true },
+  { id: 'lost', label: 'LOC_ZOM_GRAPH_SETTLEMENTS_LOST', color: OUTCOME_COLORS.lost, outcome: true },
   { id: 'siege', label: 'LOC_ZOM_GRAPH_SIEGE', color: '#e0a03a', counted: true },
   { id: 'battle', label: 'LOC_ZOM_GRAPH_BATTLE', color: '#d9534f', counted: true },
   { id: 'skirmish', label: 'LOC_ZOM_GRAPH_SKIRMISH', color: '#5fa8d3', counted: true },

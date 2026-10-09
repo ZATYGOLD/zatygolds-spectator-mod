@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="it_IT">
 			<Text>Turni {1_First}–{2_Last}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="it_IT">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="it_IT">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>Quando ogni leader ha fondato, conquistato, perso, raso al suolo o elevato a città insediamenti.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="it_IT">
-			<Text>Ogni [B]insediamento[/B] che un leader guadagna, perde o eleva a città.[NN][BLIST][LI][B]Segnaposto[/B]: dorato per una città, blu per un paese[LI][B]Punto[/B]: Fondato (o Assorbito), Conquistato, Perso, Raso al suolo o Elevato a città[LI][B]Arco tratteggiato[/B]: unisce un paese alla sua elevazione, e una conquista o perdita alla sua distruzione[/LIST][NN][B]Totale[/B]: insediamenti posseduti ora (o alla fine dell'era).[N][B]Scheda[/B]: città e paesi.</Text>
+			<Text>Ogni [B]insediamento[/B] che un leader guadagna, perde o eleva a città.[NN][BLIST][LI][B]Segnaposto[/B]: dorato per una città, blu per un paese; verde se conquistato, rosso se perso[LI][B]Punto[/B]: Fondato (o Assorbito), Conquistato, Perso, Raso al suolo o Elevato a città[LI][B]Arco tratteggiato[/B]: unisce un paese alla sua elevazione, e una conquista o perdita alla sua distruzione[/LIST][NN][B]Totale[/B]: insediamenti posseduti ora (o alla fine dell'era); città e paesi al passaggio del cursore.[N][B]Scheda[/B]: urbanizzazione, la quota di caselle sviluppate che sono urbane (edifici, meraviglie e fortificazioni, rispetto ai miglioramenti); l'insediamento più urbano e quello più rurale al passaggio del cursore (era attuale).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="it_IT">
 			<Text>Fondato</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="it_IT">
 			<Text>Ogni cittadino guadagnato dagli insediamenti di un leader.[NN][BLIST][LI][B]Segnaposto[/B]: l'edificio o il miglioramento che l'ha aggiunto, nel colore della sua resa principale[LI][B]Punto[/B]: oro per urbano, argento per rurale[LI][B]Specialista[/B]: un segnaposto dorato luminoso, con gli edifici della sua casella[/LIST][NN]Un insediamento conquistato conta dalla dimensione che aveva al momento della conquista.[NN][B]Totale[/B]: cittadini ora (o alla fine dell'era); urbani, rurali e specialisti al passaggio del cursore.[N][B]Scheda[/B]: specialisti; per insediamento e quartiere al passaggio del cursore.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="it_IT">
+			<Text>Urbanizzazione</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="it_IT">
+			<Text>Più urbano</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="it_IT">
+			<Text>Più rurale</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="it_IT">
+			<Text>Caselle urbane {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="it_IT">
+			<Text>Caselle rurali {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="it_IT">
 			<Text>Militare</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>Forza</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="it_IT">
-			<Text>La forza militare di ogni leader, la forza di combattimento di tutte le sue unità, registrata a ogni turno della partita.</Text>
+			<Text>La quota di ogni leader della forza militare mondiale (la forza di combattimento delle unità di tutti i leader), registrata a ogni turno della partita.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="it_IT">
+			<Text>% della forza mondiale</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="it_IT">
 			<Text>Comandanti</Text>

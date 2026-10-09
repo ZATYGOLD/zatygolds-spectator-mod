@@ -28,9 +28,11 @@
  * (observer-line-graph.js), each Age's turns counted from 1, with a divider at
  * each Age's start (Overall) and a flag where each crisis stage began. A tab:
  *
- *   { id, slot, label, look: { color, background }, description, valueLabel, axisLabel }
+ *   { id, slot, label, look: { color, background }, description, valueLabel, axisLabel, share }
  *
- * The value column shows each leader's latest value in the view.
+ * The value column shows each leader's latest value in the view; a `share`
+ * tab graphs each leader's % of all leaders' value per turn (as the Economic
+ * tab graphs the share of world GDP).
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createMemo, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -91,6 +93,13 @@ const graphLines = (samples, slot, hidden) => leaderIds(samples).filter((id) => 
   points: samples.map((s, i) => ({ x: i + 1, y: s.values.get(id)?.[slot] })).filter((p) => p.y != null)
 }));
 
+/** The samples with each leader's value in `slot` as a % of the sample's total. */
+const shareSamples = (samples, slot) => samples.map((s) => {
+  const total = [...s.values.values()].reduce((sum, v) => sum + (v[slot] ?? 0), 0);
+  const share = (value) => (value == null ? value : total > 0 ? Math.round((value / total) * 1000) / 10 : 0);
+  return { ...s, values: new Map([...s.values].map(([id, v]) => [id, Object.assign([...v], { [slot]: share(v[slot]) })])) };
+});
+
 const yieldValues = (samples, slot) => samples.flatMap((s) => [...s.values.values()].map((v) => v[slot] ?? 0));
 
 /** A round axis bound beyond the value (1, 2 or 5 times a power of ten), 0 when there is none. */
@@ -108,7 +117,9 @@ const LineBody = (props) => {
   body.firstChild.style.marginBottom = '0';   // the Economic tab keeps room below for its legend
   const height = rowHeight(fillPanel(body));
   const axis = createMemo(() => turnAxis(props.samples(), props.crises(), props.age() === OVERALL));
-  const values = createMemo(() => yieldValues(props.samples(), props.slot));
+  const plotted = createMemo(() => (props.tab.share ? shareSamples(props.samples(), props.slot) : props.samples()));
+  const values = createMemo(() => yieldValues(plotted(), props.slot));
+  const maxY = () => roundBound(Math.max(0, ...values())) || 10;
   insert(body, createComponent(ScrollArea, {
     'class': 'victories-scroll-base w-full victories-econ-cols-1-and-2-and-4',
     useProxy: true,
@@ -135,9 +146,9 @@ const LineBody = (props) => {
       return createComponent(TurnLineGraph, {
         'class': 'opacity-100',
         width: LINE_WIDTH,
-        get lines() { return graphLines(props.samples(), props.slot, props.hidden()); },
+        get lines() { return graphLines(plotted(), props.slot, props.hidden()); },
         get maxX() { return Math.max(props.samples().length, 2); },
-        get maxY() { return roundBound(Math.max(0, ...values())) || 10; },
+        get maxY() { return props.tab.share ? Math.min(100, maxY()) : maxY(); },
         get minY() { return roundBound(Math.min(0, ...values())); },
         get ticks() { return axis().ticks; },
         get tickLabel() { return axis().label; },

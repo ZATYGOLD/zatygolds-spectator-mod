@@ -51,11 +51,12 @@ leader's relationship and befriending progress.
 - **Empire** — on a timeline of Age progress:
   - **Settlements** founded (or incorporated), captured, lost, razed and
     upgraded, a city or town pin for each, arcs from a town to its upgrade
-    and from a capture or loss to its razing, and a card of cities and towns.
+    and from a capture or loss to its razing, cities and towns on the
+    total's hover, and the leader's urbanization on the card.
   - **Population**: every new urban, rural and specialist citizen, pinned
     with the building or improvement that added it.
-- **Military** — a per-turn graph of each leader's military strength, and on
-  the same timeline:
+- **Military** — a per-turn graph of each leader's share of the world's
+  military strength (its own strength as the total), and on the same timeline:
   - **Units** trained (produced, purchased or granted), lost and defeated,
     by land, naval, civilian or commander; only enemies' kills count.
   - **Promotions** and commendations, each commander's joined by an arc.
@@ -125,8 +126,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Chronicle** — renamed from Yield Graphs, with a Yields / Empire /
   Military filter: happiness joins the yields; Empire shows each leader's
   settlements (founded, captured, lost, razed, upgraded) and population
-  growth; Military its strength, units, promotions, wars (aggression and
-  defense) and conflicts (sieges, battles, skirmishes, pillage and their
+  growth; Military its share of world strength, units, promotions, wars
+  (aggression and defense) and conflicts (sieges, battles, skirmishes, pillage and their
   outcomes), each tab with an info panel.
 - **Translations** — terms aligned with the game's own in every language.
 - **Performance** — the Chronicle refreshes in batches and its timelines are

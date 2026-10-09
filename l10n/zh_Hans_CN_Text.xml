@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hans_CN">
 			<Text>第{1_First}–{2_Last}回合</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="zh_Hans_CN">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="zh_Hans_CN">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>各领袖何时建立、占领、失去、夷平或升级定居点。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="zh_Hans_CN">
-			<Text>领袖获得、失去或升级的每个[B]定居点[/B]。[NN][BLIST][LI][B]图钉[/B]：金色为城市，蓝色为城镇[LI][B]圆点[/B]：建立（或纳入）、占领、损失、夷平或升级为城市[LI][B]虚线弧[/B]：将城镇与其升级相连，并将占领或损失与其后的夷平相连[/LIST][NN][B]总计[/B]：当前（或时代结束时）拥有的定居点。[N][B]卡片[/B]：城市与城镇。</Text>
+			<Text>领袖获得、失去或升级的每个[B]定居点[/B]。[NN][BLIST][LI][B]图钉[/B]：金色为城市，蓝色为城镇；被占领为绿色，失去为红色[LI][B]圆点[/B]：建立（或纳入）、占领、损失、夷平或升级为城市[LI][B]虚线弧[/B]：将城镇与其升级相连，并将占领或损失与其后的夷平相连[/LIST][NN][B]总计[/B]：当前（或时代结束时）拥有的定居点；悬停显示城市与城镇。[N][B]卡片[/B]：城市化率，即已开发单元格中市区单元格（建筑、奇观与防御工事，相对于改良设施）所占比例；悬停显示城市化程度最高与最低的定居点（当前时代）。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="zh_Hans_CN">
 			<Text>建立</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="zh_Hans_CN">
 			<Text>领袖的定居点增加的每位市民。[NN][BLIST][LI][B]图钉[/B]：带来该市民的建筑或改良设施，颜色为其主要产出[LI][B]圆点[/B]：市区为金色，乡村为银色[LI][B]专家[/B]：发光的金色图钉，附其所在单元格上的建筑[/LIST][NN]占领的定居点从被夺取时的规模开始计算。[NN][B]总计[/B]：当前（或时代结束时）的市民；悬停可查看市区、乡村与专家人数。[N][B]卡片[/B]：专家；悬停可按定居点与城区查看。</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="zh_Hans_CN">
+			<Text>城市化率</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="zh_Hans_CN">
+			<Text>城市化最高</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="zh_Hans_CN">
+			<Text>乡村化最高</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="zh_Hans_CN">
+			<Text>市区单元格 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="zh_Hans_CN">
+			<Text>乡村单元格 {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="zh_Hans_CN">
 			<Text>军事</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>战力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hans_CN">
-			<Text>各领袖的军事实力（所有单位的战斗力），记录于游戏的每个回合。</Text>
+			<Text>各领袖在世界军事实力（所有领袖单位的战斗力）中的占比，记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="zh_Hans_CN">
+			<Text>世界军事实力占比</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="zh_Hans_CN">
 			<Text>指挥官</Text>

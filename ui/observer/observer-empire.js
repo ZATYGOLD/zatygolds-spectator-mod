@@ -47,11 +47,13 @@ const KIND_OF_CODE = new Map(POPULATION_KINDS.map((k, i) => [k.code, i]));
 const [URBAN, RURAL] = [0, 1];
 const PURCHASE_MS = 1000;   // a purchased building's own production event, if any
 
-/** Breakdown keys: a leader's cities and towns, and each kind of citizen. */
+/** Breakdown keys: a leader's cities and towns, each kind of citizen, and its urban and rural tiles (developmentOf). */
 const EMPIRE_KEYS = {
   cities: 'cities',
   towns: 'towns',
-  ...Object.fromEntries(POPULATION_KINDS.map((k) => [k.id, k.id]))
+  ...Object.fromEntries(POPULATION_KINDS.map((k) => [k.id, k.id])),
+  urbanTiles: 'urbanTiles',
+  ruralTiles: 'ruralTiles'
 };
 
 const citizens = (city) => POPULATION_KINDS.map((k) => Number(k.of(city)) || 0);
@@ -66,6 +68,9 @@ function liveDetails(player) {
   for (const city of player?.Cities?.getCities?.() ?? []) {
     add(own, city.isTown ? EMPIRE_KEYS.towns : EMPIRE_KEYS.cities);
     citizens(city).forEach((count, i) => add(own, POPULATION_KINDS[i].id, count));
+    const { urban, rural } = developmentOf(city);
+    add(own, EMPIRE_KEYS.urbanTiles, urban);
+    add(own, EMPIRE_KEYS.ruralTiles, rural);
   }
   return own;
 }
@@ -149,12 +154,31 @@ const tileWorkers = new Map();   // settlement plot -> Map<tile plot, specialist
 
 const placements = (city) => new Map((city.Workers?.GetAllPlacementInfo?.() ?? []).map((info) => [info.PlotIndex, info.NumWorkers ?? 0]));
 
-/** The buildings on a tile: "<type>+<type>". */
-function buildingsAt(tile) {
+/** The constructibles on a tile (their database rows). */
+function constructiblesAt(tile) {
   const { x, y } = GameplayMap.getLocationFromIndex(tile);
-  return (MapConstructibles.getConstructibles(x, y) ?? []).map((id) => GameInfo.Constructibles.lookup(Constructibles.getByComponentID(id)?.type))
-    .filter(isBuilding).map((def) => def.ConstructibleType).join('+');
+  return (MapConstructibles.getConstructibles(x, y) ?? []).map((id) => GameInfo.Constructibles.lookup(Constructibles.getByComponentID(id)?.type)).filter(Boolean);
 }
+
+/** The buildings on a tile: "<type>+<type>". */
+const buildingsAt = (tile) => constructiblesAt(tile).filter(isBuilding).map((def) => def.ConstructibleType).join('+');
+
+const URBAN_CLASSES = ['BUILDING', 'WONDER'];   // fortifications (walls) are buildings
+
+/** A settlement's developed tiles: urban (a building, wonder or fortification), else rural (an improvement). */
+function developmentOf(city) {
+  const development = { urban: 0, rural: 0 };
+  for (const tile of city.getPurchasedPlots?.() ?? []) {
+    const classes = constructiblesAt(tile).map((def) => def.ConstructibleClass);
+    if (classes.some((c) => URBAN_CLASSES.includes(c))) development.urban++;
+    else if (classes.includes('IMPROVEMENT')) development.rural++;
+  }
+  return development;
+}
+
+/** The leader's settlements now, each with its developed tiles: [{ name, town, urban, rural }]. */
+const settlementDevelopment = (playerId) => (Players.get(playerId)?.Cities?.getCities?.() ?? [])
+  .map((city) => ({ name: city.name, town: city.isTown, ...developmentOf(city) }));
 
 /** The leader's settlements with specialists now: [{ name, tiles: [{ buildings ("<type>+<type>"), count }] }], most first. */
 function specialistTiles(playerId) {
@@ -272,4 +296,4 @@ onObserverReady(() => {
   scheduleRecord(true);
 });
 
-export { EMPIRE_EVENT, EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, populationLog, specialistTiles };
+export { EMPIRE_EVENT, EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, populationLog, settlementDevelopment, specialistTiles };

@@ -163,6 +163,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hant_HK">
 			<Text>第{1_First}–{2_Last}回合</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="zh_Hant_HK">
+			<Text>{1_Value}%</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="zh_Hant_HK">
 			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
@@ -212,7 +215,7 @@
 			<Text>各領袖何時建立、佔領、失去、夷平或升級聚落。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="zh_Hant_HK">
-			<Text>領袖獲得、失去或升級的每個[B]聚落[/B]。[NN][BLIST][LI][B]圖釘[/B]：金色為城市，藍色為城鎮[LI][B]圓點[/B]：建立（或整合）、佔領、損失、夷平或升級為城市[LI][B]虛線弧[/B]：將城鎮與其升級相連，並將佔領或損失與其後的夷平相連[/LIST][NN][B]總計[/B]：目前（或時代結束時）擁有的聚落。[N][B]卡片[/B]：城市與城鎮。</Text>
+			<Text>領袖獲得、失去或升級的每個[B]聚落[/B]。[NN][BLIST][LI][B]圖釘[/B]：金色為城市，藍色為城鎮；被佔領為綠色，失去為紅色[LI][B]圓點[/B]：建立（或整合）、佔領、損失、夷平或升級為城市[LI][B]虛線弧[/B]：將城鎮與其升級相連，並將佔領或損失與其後的夷平相連[/LIST][NN][B]總計[/B]：目前（或時代結束時）擁有的聚落；懸停顯示城市與城鎮。[N][B]卡片[/B]：城市化率，即已開發格子中都會格子（建築、奇觀與防禦工事，相對於改良設施）所佔比例；懸停顯示城市化程度最高與最低的聚落（當前時代）。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="zh_Hant_HK">
 			<Text>建立</Text>
@@ -241,6 +244,21 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="zh_Hant_HK">
 			<Text>領袖的聚落增加的每位市民。[NN][BLIST][LI][B]圖釘[/B]：帶來該市民的建築或改良設施，顏色為其主要產出[LI][B]圓點[/B]：都會為金色，鄉村為銀色[LI][B]專家[/B]：發光的金色圖釘，附其所在單元格上的建築[/LIST][NN]佔領的聚落從被奪取時的規模開始計算。[NN][B]總計[/B]：目前（或時代結束時）的市民；懸停可查看都會、鄉村與專家人數。[N][B]卡片[/B]：專家；懸停可按聚落與城區查看。</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="zh_Hant_HK">
+			<Text>城市化率</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="zh_Hant_HK">
+			<Text>城市化最高</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="zh_Hant_HK">
+			<Text>鄉村化最高</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="zh_Hant_HK">
+			<Text>都會格子 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="zh_Hant_HK">
+			<Text>鄉村格子 {1_Num}</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="zh_Hant_HK">
 			<Text>軍事</Text>
 		</Replace>
@@ -248,7 +266,10 @@
 			<Text>戰力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hant_HK">
-			<Text>各領袖的軍事實力（所有單位的戰鬥力），記錄於遊戲的每個回合。</Text>
+			<Text>各領袖在世界軍事實力（所有領袖單位的戰鬥力）中的佔比，記錄於遊戲的每個回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="zh_Hant_HK">
+			<Text>世界軍事實力佔比</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="zh_Hant_HK">
 			<Text>指揮官</Text>
