@@ -21,43 +21,32 @@
 /**
  * Zatygold's Spectator - Observer unit log (in-game scope).
  *
- * Records, per leader, Age, turn and Age progress, the units each leader
- * defeated (killed in combat or captured), lost the same way, and trained,
- * by unit type, with the other player involved (the defeated unit's owner,
- * or who defeated it) or how the unit was trained (TRAIN_METHODS).
- *
- * Commanders are counted as they appear on and leave the map: they are often
- * granted rather than produced, and a defeated commander leaves the map to
- * respawn rather than being killed. Who defeated it comes from the kill event,
- * else its combat this turn or the last; a unit counts as defeated only by an
- * enemy (at war, or an Independent Power), and a commander leaving the map
- * otherwise is not lost. A commander away to respawn is remembered (saved
- * with the game), so its return is not counted as trained.
- *
- * Each type falls in one of UNIT_CATEGORIES by its formation class. A unit's
- * type is cached while it is on the map, as a killed unit may already be gone
- * when the event arrives. The log is an event log (observer-event-log.js)
- * with the fields "<code>,<UnitType>,<otherPlayerId>" (CODES: d defeated,
- * l lost, t produced, p purchased, g granted).
+ * Records, per leader, the units it trained (TRAIN_METHODS), defeated and lost
+ * (to an enemy: at war, or an Independent Power), by type, with the other
+ * player involved. Commanders count as they arrive on and leave the map, as
+ * they are often granted and respawn after defeat. An event log
+ * (observer-event-log.js) with the fields "<code>,<UnitType>,<otherPlayerId>" (CODES).
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
-import { canSave, onObserverReady, readSaved, writeSaved } from './observer-core.js';
+import { CONFIG, HIGHLIGHT } from './observer-config.js';
+import { areEnemies, canSave, onObserverReady, readSaved, writeSaved } from './observer-core.js';
 import { createEventLog, payloadLogger } from './observer-event-log.js';
 
 const log = createLogger('observer-unit-log', CONFIG.debug);
+const showPayload = payloadLogger(log);
 const KEY_PREFIX = 'ZOM_UNIT_EVENTS_';
 const AWAY_KEY = 'ZOM_COMMANDERS_AWAY';
 const UNIT_LOG_EVENT = 'zom-unit-log-changed';
 const COMMANDER_REMOVAL_MS = 500;   // a combat event for the same commander wins over its removal
-const CITY_UNIT_MS = 500;           // a commander's production or purchase event, either side of its arrival
+const CITY_UNIT_MS = 500;           // a commander's arrival waits this long for its production or purchase event
+const CITY_UNIT_WINDOW_MS = 2000;   // how old that event may be
 
 /** Unit categories in display order: pin and dot colour, and a glow for commanders. */
 const UNIT_CATEGORIES = [
   { id: 'land', label: 'LOC_PEDIA_PAGEGROUP_LAND_COMBAT_UNITS_NAME', color: '#5fae4c' },
   { id: 'naval', label: 'LOC_PEDIA_PAGEGROUP_NAVAL_COMBAT_UNITS_NAME', color: '#4f8fd8' },
   { id: 'civilian', label: 'LOC_PEDIA_PAGEGROUP_CIVILIAN_UNITS_NAME', color: '#ecd94a' },
-  { id: 'commander', label: 'LOC_ZOM_GRAPH_COMMANDERS', color: '#d9a21e', glow: 'rgba(255, 200, 50, 0.85)' }
+  { id: 'commander', label: 'LOC_ZOM_GRAPH_COMMANDERS', color: '#d9a21e', glow: HIGHLIGHT.pinGlow }
 ];
 const COMMANDER = UNIT_CATEGORIES.findIndex((c) => c.id === 'commander');
 
@@ -75,7 +64,7 @@ const TRAIN_METHODS = [
   { id: 'granted', label: 'LOC_ZOM_GRAPH_GRANTED' }
 ];
 
-/** The saved letter of each kind and training method. */
+/** Each saved letter: the kind and training method (d defeated, l lost, t produced, p purchased, g granted). */
 const CODES = {
   d: { kind: 'defeated', how: null },
   l: { kind: 'lost', how: null },
@@ -117,6 +106,7 @@ function unitLog() {
 
 let away = null;   // Map<"owner:id", UnitType>: commanders away to respawn, this Age
 
+/** Commanders away to respawn (saved with the game), so their return is not counted as trained. */
 function awayCommanders() {
   if (away) return away;
   if (!canSave()) return new Map();
@@ -137,8 +127,9 @@ function saveAway() {
 
 // ============================ Recording ============================
 
+/** A unit's event for a leader, with the other player involved or how it was trained. */
 function record(playerId, kind, unitType, { other = -1, how = null } = {}) {
-  if (unitType) events.record(playerId, [codeOf(kind, how), unitType, other ?? -1]);
+  if (unitType && Players.get(playerId)?.isMajor) events.record(playerId, [codeOf(kind, how), unitType, other]);
 }
 
 const unitTypes = new Map();      // "owner:id" -> UnitType, for units on the map
@@ -148,6 +139,7 @@ const lastCombat = new Map();     // commander "owner:id" -> { by: opponent, tur
 const cityUnits = new Map();      // "owner:UnitType" -> { how, at }: a commander's production or purchase
 const unitKey = (id) => `${id.owner}:${id.id}`;
 
+/** A unit's type, noted while it is on the map (a defeated unit may be gone when its event arrives). */
 function remember(id) {
   const unit = id && Units.get(id);
   const type = unit && typeName(unit.type);
@@ -155,6 +147,7 @@ function remember(id) {
   if (id) knownUnits.add(unitKey(id));
 }
 
+/** A unit's type, on the map or as last noted; null when unknown. */
 function typeOfUnit(id) {
   const unit = Units.get(id);
   return (unit && typeName(unit.type)) ?? unitTypes.get(unitKey(id)) ?? null;
@@ -176,10 +169,6 @@ function returning(id, type, isNew) {
   return true;
 }
 
-const isIndependent = (id) => { const p = Players.get(id); return !!p && (p.isIndependent ?? (!p.isMajor && !p.isMinor)); };
-/** Whether two players are enemies: at war, or either an Independent Power (always hostile). */
-const areEnemies = (a, b) => a != null && b != null && a !== b && (isIndependent(a) || isIndependent(b) || !!Players.get(a)?.Diplomacy?.isAtWarWith?.(b));
-
 /** A unit removed by an enemy: defeated by that player, lost by its owner; false when not (no enemy took it). */
 function defeated(victim, winner, type = typeOfUnit(victim)) {
   if (!victim || !areEnemies(winner, victim.owner)) return false;
@@ -191,8 +180,6 @@ function defeated(victim, winner, type = typeOfUnit(victim)) {
   record(victim.owner, 'lost', type, { other: winner });
   return true;
 }
-
-const showPayload = payloadLogger(log);
 
 function onKilled(data) {
   showPayload('UnitKilledInCombat', data);
@@ -229,7 +216,7 @@ function takeCityUnit(owner, type) {
   const key = `${owner}:${type}`;
   const city = cityUnits.get(key);
   cityUnits.delete(key);
-  return city && Date.now() - city.at < CITY_UNIT_MS * 4 ? city.how : null;
+  return city && Date.now() - city.at < CITY_UNIT_WINDOW_MS ? city.how : null;
 }
 
 /** A commander new to the map is trained (produced, purchased or granted), unless it returns from respawn. */
@@ -242,7 +229,7 @@ function onAdded(data) {
   if (!isCommander(type) || returning(id, type, isNew) || !isNew) return;
   setTimeout(() => {
     const how = takeCityUnit(id.owner, type) ?? 'granted';
-    log(`commander trained: ${type} of ${id.owner} (${how})`);
+    log.debug(`commander trained: ${type} of ${id.owner} (${how})`);
     record(id.owner, 'trained', type, { how });
   }, CITY_UNIT_MS);
 }
@@ -262,7 +249,7 @@ function onRemoved(data) {
     lastCombat.delete(key);
     if (defeatedUnits.delete(key) || !Players.get(id.owner)?.isAlive) return;
     const winner = combat && combat.turn >= Game.turn - 1 ? combat.by : null;
-    log(`commander removed: ${type} of ${id.owner}, defeated by ${winner}`);
+    log.debug(`commander removed: ${type} of ${id.owner}, defeated by ${winner}`);
     if (defeated(id, winner, type)) defeatedUnits.delete(key);
     else sendAway(id, type);
   }, COMMANDER_REMOVAL_MS);
@@ -285,4 +272,4 @@ onObserverReady(() => {
   engine.on('CityMadePurchase', (data) => onCityUnit('CityMadePurchase', data?.purchaseType, data?.unitType, 'purchased', data));
 });
 
-export { areEnemies, TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };
+export { TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };

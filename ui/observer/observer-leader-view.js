@@ -28,15 +28,15 @@
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { createLogger, onActivate, setStyle } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
-import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { CONFIG, PANEL_COLORS } from './observer-config.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { perspectivePlayer } from './observer-perspective.js';
 
 const log = createLogger('observer-leader-view', CONFIG.debug);
-const SELECTED_STYLE = 'border: 0.1666666667rem solid #e5d2ac; opacity: 1;';
+const SELECTED_STYLE = `border: 0.1666666667rem solid ${PANEL_COLORS.parchment}; opacity: 1;`;
 const OTHER_STYLE = 'border: 0.1666666667rem solid transparent; opacity: 0.65;';
 // A dark plate so the row reads over any background (Great Works sits over the map).
-const BAR_STYLE = 'background-color: rgba(10, 12, 18, 0.88); border: 0.0555555556rem solid rgba(229, 210, 172, 0.55); border-radius: 0.5rem; padding: 0.3rem 0.6rem;';
+const BAR_STYLE = `background-color: ${PANEL_COLORS.bar}; border: 0.0555555556rem solid ${PANEL_COLORS.parchmentFaint}; border-radius: 0.5rem; padding: 0.3rem 0.6rem;`;
 
 const BAR_CLASS = 'zom-leader-bar';
 const SWITCHING_CLASS = 'zom-leader-switching';

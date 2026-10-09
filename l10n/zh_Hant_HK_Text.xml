@@ -142,26 +142,44 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hant_HK">
 			<Text>編年史</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hant_HK">
-			<Text>每位領袖每回合的{1_Yield}，於遊戲的每個回合記錄。</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hant_HK">
+			<Text>總體</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="zh_Hant_HK">
 			<Text>尚未記錄任何回合。收益會在每回合開始時記錄。</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="zh_Hant_HK">
-			<Text>每回合{1_Yield}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="zh_Hant_HK">
+			<Text>尚無</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="zh_Hant_HK">
+			<Text>總計</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="zh_Hant_HK">
+			<Text>回合</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="zh_Hant_HK">
 			<Text>每回合</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hant_HK">
-			<Text>總體</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hant_HK">
+			<Text>第{1_First}–{2_Last}回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="zh_Hant_HK">
+			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="zh_Hant_HK">
 			<Text>點擊以隱藏此領袖的曲線。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="zh_Hant_HK">
 			<Text>點擊以顯示此領袖的曲線。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hant_HK">
+			<Text>收益</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hant_HK">
+			<Text>每位領袖每回合的{1_Yield}，於遊戲的每個回合記錄。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="zh_Hant_HK">
+			<Text>每回合{1_Yield}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="zh_Hant_HK">
 			<Text>科技</Text>
@@ -184,53 +202,47 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="zh_Hant_HK">
 			<Text>生產力</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hant_HK">
-			<Text>收益</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="zh_Hant_HK">
-			<Text>擊敗單位</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="zh_Hant_HK">
-			<Text>每位領袖何時摧毀或俘獲了哪些單位。</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="zh_Hant_HK">
 			<Text>帝國</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="zh_Hant_HK">
+			<Text>聚落</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="zh_Hant_HK">
+			<Text>各領袖何時建立、佔領、失去、夷平或升級聚落。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="zh_Hant_HK">
+			<Text>領袖獲得、失去或升級的每個[B]聚落[/B]。[NN][BLIST][LI][B]圖釘[/B]：金色為城市，藍色為城鎮[LI][B]圓點[/B]：建立（或整合）、佔領、損失、夷平或升級為城市[LI][B]虛線弧[/B]：將城鎮與其升級相連，並將佔領或損失與其後的夷平相連[/LIST][NN][B]總計[/B]：目前（或時代結束時）擁有的聚落。[N][B]卡片[/B]：城市與城鎮。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="zh_Hant_HK">
+			<Text>建立</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="zh_Hant_HK">
+			<Text>整合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="zh_Hant_HK">
+			<Text>佔領</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="zh_Hant_HK">
+			<Text>損失</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="zh_Hant_HK">
+			<Text>夷平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="zh_Hant_HK">
+			<Text>升級為城市</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="zh_Hant_HK">
 			<Text>人口</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="zh_Hant_HK">
-			<Text>各領袖的定居點何時增長（城區人口、鄉村人口、專家）。</Text>
+			<Text>各領袖的聚落何時增長（都會人口、鄉村人口、專家）。</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="zh_Hant_HK">
-			<Text>定居點</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="zh_Hant_HK">
-			<Text>各領袖何時建立、佔領、失去定居點或將其升級為城市。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="zh_Hant_HK">
-			<Text>建立</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="zh_Hant_HK">
-			<Text>損失</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="zh_Hant_HK">
-			<Text>升級為城市</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="zh_Hant_HK">
+			<Text>領袖的聚落增加的每位市民。[NN][BLIST][LI][B]圖釘[/B]：帶來該市民的建築或改良設施，顏色為其主要產出[LI][B]圓點[/B]：都會為金色，鄉村為銀色[LI][B]專家[/B]：發光的金色圖釘，附其所在單元格上的建築[/LIST][NN]佔領的聚落從被奪取時的規模開始計算。[NN][B]總計[/B]：目前（或時代結束時）的市民；懸停可查看都會、鄉村與專家人數。[N][B]卡片[/B]：專家；懸停可按聚落與城區查看。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="zh_Hant_HK">
 			<Text>軍事</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="zh_Hant_HK">
-			<Text>戰爭</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="zh_Hant_HK">
-			<Text>各領袖何時與誰交戰，以及每場戰爭如何開始與結束。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="zh_Hant_HK">
-			<Text>衝突</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="zh_Hant_HK">
-			<Text>各領袖的會戰、小規模衝突與圍城及其對手，以及夷平的定居點與遭劫掠的單元格。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="zh_Hant_HK">
 			<Text>戰力</Text>
@@ -238,29 +250,77 @@
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hant_HK">
 			<Text>各領袖的軍事實力（所有單位的戰鬥力），記錄於遊戲的每個回合。</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="zh_Hant_HK">
+			<Text>指揮官</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="zh_Hant_HK">
+			<Text>生產</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="zh_Hant_HK">
+			<Text>購買</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="zh_Hant_HK">
+			<Text>獲贈</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="zh_Hant_HK">
+			<Text>訓練單位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="zh_Hant_HK">
+			<Text>各領袖何時生產、購買或獲贈單位，以及是哪些單位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="zh_Hant_HK">
+			<Text>領袖[B]生產[/B]、[B]購買[/B]或[B]獲贈[/B]的每個單位。[NN][BLIST][LI][B]圖釘[/B]：陸地、海軍、平民或指揮官[LI][B]指揮官[/B]：只計一次，戰敗後歸來時不再計入[/LIST][NN][B]總計[/B]：訓練的單位；懸停可查看各類別。[N][B]卡片[/B]：訓練的每種指揮官，若無則為訓練最多的單位；懸停可按類別查看所有單位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="zh_Hant_HK">
+			<Text>損失單位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="zh_Hant_HK">
+			<Text>各領袖何時因摧毀或俘獲而損失單位，以及敗於誰手。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="zh_Hant_HK">
+			<Text>領袖被敵人摧毀或俘獲而損失的每個單位。[NN][BLIST][LI][B]圖釘[/B]：陸地、海軍、平民或指揮官，以及奪取者[LI][B]排名[/B]：損失最少者在前[/LIST][NN][B]總計[/B]：損失的單位；懸停可查看各類別。[N][B]卡片[/B]：損失的每種指揮官，若無則為損失最多的單位；懸停可按類別查看所有單位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="zh_Hant_HK">
+			<Text>擊敗單位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="zh_Hant_HK">
+			<Text>每位領袖何時摧毀或俘獲了哪些單位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="zh_Hant_HK">
+			<Text>領袖摧毀或俘獲的每個敵方單位。[NN][BLIST][LI][B]圖釘[/B]：陸地、海軍、平民或指揮官，以及其所屬者[/LIST][NN][B]總計[/B]：擊敗的單位；懸停可查看各類別。[N][B]卡片[/B]：擊敗的每種指揮官，若無則為擊敗最多的單位；懸停可按類別查看所有單位。</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="zh_Hant_HK">
-			<Text>晉升</Text>
+			<Text>強化</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="zh_Hant_HK">
-			<Text>各領袖的指揮官何時獲得了哪些晉升與嘉獎。</Text>
+			<Text>各領袖的指揮官何時獲得了哪些強化與嘉獎。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="zh_Hant_HK">
+			<Text>領袖的指揮官獲得的每次[B]強化[/B]與[B]嘉獎[/B]。[NN][BLIST][LI][B]強化[/B]：所屬分支的圖示，圖釘為該分支的顏色[LI][B]嘉獎[/B]：嘉獎圖示，圖釘為發光的金色[LI][B]詳情[/B]：指揮官，以及這是其第幾次強化[LI][B]虛線弧[/B]：連接每位指揮官的強化；圓點顏色用於區分指揮官[/LIST][NN][B]總計[/B]：強化與嘉獎；懸停可查看每一項。[N][B]卡片[/B]：獲得最多的嘉獎與強化最多的分支；懸停可查看每種嘉獎與分支。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="zh_Hant_HK">
 			<Text>嘉獎</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="zh_Hant_HK">
-			<Text>尚無晉升</Text>
+			<Text>尚無強化</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="zh_Hant_HK">
-			<Text>會戰</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="zh_Hant_HK">
+			<Text>{1_Commander}，第{2_Number}次強化</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="zh_Hant_HK">
-			<Text>小規模衝突</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="zh_Hant_HK">
+			<Text>戰爭</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="zh_Hant_HK">
-			<Text>圍城</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="zh_Hant_HK">
+			<Text>各領袖何時與誰交戰，以及每場戰爭如何開始與結束。</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="zh_Hant_HK">
-			<Text>尚無</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="zh_Hant_HK">
+			<Text>領袖之間的戰爭；獨立軍勢力始終敵對，不計入。戰爭會延續到新時代，直至達成和平。[NN]刻度顯示每個回合：[NN][BLIST][LI][B]紅色[/B]：侵略，由該領袖宣戰[LI][B]黃色[/B]：防禦，該領袖遭到宣戰[LI][B]灰色[/B]：和平[/LIST][NN]同時進行的多場戰爭共享一個刻度；達成和平的刻度以綠色填滿。顯示敵人的圖釘標記每場戰爭的開始處，[B]綠色[/B]圖釘標記達成和平之處；每個圖釘都註明誰攻擊了誰。[NN][B]回合[/B]：處於戰爭狀態的回合數；懸停可查看宣戰、遭宣戰與達成和平的次數。[N][B]卡片[/B]：交戰時間最長的敵人（並列時全部顯示）；懸停可查看每場戰爭。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="zh_Hant_HK">
+			<Text>交戰回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="zh_Hant_HK">
+			<Text>外交</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="zh_Hant_HK">
 			<Text>侵略</Text>
@@ -286,26 +346,56 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="zh_Hant_HK">
 			<Text>與{1_Leader}和平</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="zh_Hant_HK">
+			<Text>衝突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="zh_Hant_HK">
+			<Text>各領袖何時與誰進行攻城、會戰與亂戰，以及佔領、夷平或掠奪了甚麼。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="zh_Hant_HK">
+			<Text>領袖的衝突。[B]戰鬥[/B]指同樣兩方之間在3格範圍內、間隔不超過5回合的所有攻擊與掠奪。只有當雙方都以可作戰的單位（非開拓者或偵察兵）互相攻擊後才會計入；每次攻擊對雙方都計入，掠奪建築計2，掠奪鄉村單元格計1。[NN]按優先順序：[NN][BLIST][LI][B]夷平[/B]：被夷平的聚落，從地圖上消失後計入[LI][B]佔領[/B]：奪取的聚落[LI][B]損失[/B]：被奪走的聚落[LI][B]攻城[/B]：被圍攻的聚落；同一敵人在5回合內再次圍攻，視為同一次攻城[LI][B]會戰[/B]：在首回合或持續滿3回合時有3次或以上攻擊或4或以上掠奪的戰鬥、有5個回合發生作戰的戰鬥，或雙方之間發生過攻城的戰鬥[LI][B]亂戰[/B]：其他規模較小的戰鬥[LI][B]掠奪[/B]：被敵方單位掠奪的單元格，洪水、火山爆發或風暴造成的不計；[B]遭掠奪[/B]（該領袖自己的單元格）也計入此項[/LIST][NN]圓點表示對手：領袖為金色，城邦為藍色，獨立軍勢力為銀色；圖釘優先顯示領袖，其次為城邦，再次為獨立軍勢力。刻度顯示每場攻城（橙色）、會戰（紅色）和亂戰（藍色）進行期間的回合；重疊時共享刻度，靠前者佔據大部分。虛線弧將每個事件與其起因相連：亂戰連到其升級成的會戰，作戰連到攻城，攻城連到佔領或損失，後者再連到夷平。[NN][B]總計[/B]：攻城、會戰、亂戰與掠奪；懸停時另行顯示其結果：夷平、佔領與損失。[N][B]卡片[/B]：宿敵，即作戰次數最多的玩家（領袖優先於城邦和獨立軍勢力）；懸停可查看其他所有對手。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="zh_Hant_HK">
+			<Text>結果</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="zh_Hant_HK">
+			<Text>攻城</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="zh_Hant_HK">
 			<Text>會戰</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="zh_Hant_HK">
-			<Text>小規模衝突</Text>
+			<Text>亂戰</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="zh_Hant_HK">
-			<Text>圍城</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="zh_Hant_HK">
+			<Text>攻城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="zh_Hant_HK">
+			<Text>會戰</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="zh_Hant_HK">
+			<Text>亂戰</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="zh_Hant_HK">
+			<Text>掠奪</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="zh_Hant_HK">
+			<Text>遭掠奪</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="zh_Hant_HK">
-			<Text>遭{1_Player}圍城</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="zh_Hant_HK">
-			<Text>遭{1_Player}夷平</Text>
+			<Text>遭{1_Player}攻城</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="zh_Hant_HK">
 			<Text>遭{1_Player}佔領</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="zh_Hant_HK">
-			<Text>結果</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="zh_Hant_HK">
+			<Text>遭{1_Player}夷平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="zh_Hant_HK">
+			<Text>攻擊 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="zh_Hant_HK">
+			<Text>掠奪 {1_Num}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="zh_Hant_HK">
 			<Text>宿敵</Text>
@@ -313,95 +403,8 @@
 		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="zh_Hant_HK">
 			<Text>對手</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="zh_Hant_HK">
-			<Text>{1_Commander}，第{2_Number}次晉升</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="zh_Hant_HK">
-			<Text>領袖獲得、失去或升級的每個[B]定居點[/B]。[NN][BLIST][LI][B]圖釘[/B]：城市為金色，城鎮為藍色[LI][B]圓點[/B]：建立（或併入）、佔領、損失、夷平或升級為城市[LI][B]虛線弧[/B]：將城鎮與其升級、佔領或損失與其夷平相連[/LIST][NN][B]合計[/B]：目前的定居點（或時代結束時）。[N][B]卡片[/B]：城市與城鎮。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="zh_Hant_HK">
-			<Text>領袖定居點獲得的每位市民。[NN][BLIST][LI][B]圖釘[/B]：帶來它的建築或改良設施，顯示為其主要產出的顏色[LI][B]圓點[/B]：城區為金色，鄉村為銀色[LI][B]專家[/B]：發光的金色圖釘，附其單元格上的建築[/LIST][NN]佔領的定居點從佔領時的規模開始計算。[NN][B]合計[/B]：人口（懸停可查看城區、鄉村與專家）。[N][B]卡片[/B]：專家（懸停可按定居點與街區查看）。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="zh_Hant_HK">
-			<Text>領袖[B]生產[/B]、[B]購買[/B]或[B]獲得[/B]的每個單位。[NN][BLIST][LI][B]圖釘[/B]：陸地、海軍、平民或指揮官[LI][B]指揮官[/B]：只計一次，被擊敗後返回時不再計入[/LIST][NN][B]合計[/B]：訓練的單位，懸停可按類別查看。[N][B]卡片[/B]：訓練的每種指揮官，若無則為訓練最多的單位。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="zh_Hant_HK">
-			<Text>領袖被其他玩家消滅或俘獲的每個單位。[NN][BLIST][LI][B]圖釘[/B]：陸地、海軍、平民或指揮官，以及奪取者[LI][B]排名[/B]：損失最少者優先[/LIST][NN][B]合計[/B]：損失的單位，懸停可按類別查看。[N][B]卡片[/B]：損失的每種指揮官，若無則為損失最多的單位。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="zh_Hant_HK">
-			<Text>領袖消滅或俘獲的其他玩家的每個單位。[NN][BLIST][LI][B]圖釘[/B]：陸地、海軍、平民或指揮官，以及其所屬者[/LIST][NN][B]合計[/B]：擊敗的單位，懸停可按類別查看。[N][B]卡片[/B]：擊敗的每種指揮官，若無則為擊敗最多的單位。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="zh_Hant_HK">
-			<Text>領袖的指揮官獲得的每次[B]晉升[/B]與[B]嘉獎[/B]。[NN][BLIST][LI][B]晉升[/B]：其分支的圖示，圖釘為分支顏色[LI][B]嘉獎[/B]：嘉獎圖示，圖釘為發光的金色[LI][B]詳情[/B]：指揮官及這是其第幾次晉升[/LIST][NN]虛線弧連接每位指揮官的晉升；圓點顏色區分不同指揮官。[NN][B]合計[/B]：晉升與嘉獎。[N][B]卡片[/B]：獲得最多的嘉獎，其次為晉升最多的分支（懸停可按嘉獎與分支查看）。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="zh_Hant_HK">
-			<Text>領袖之間的戰爭；獨立勢力始終敵對，不計入。刻度顯示每個回合：[NN][BLIST][LI][B]紅色[/B]：侵略，由領袖宣戰[LI][B]黃色[/B]：防禦，領袖遭宣戰[LI][B]灰色[/B]：和平[/LIST][NN]同時進行的戰爭共享刻度；達成和平的刻度全為綠色。敵方圖釘標記每場戰爭的開始，[B]綠色[/B]圖釘標記達成和平；每個圖釘都註明誰進攻了誰。[NN][B]回合[/B]：交戰回合數。[N][B]卡片[/B]：交戰最久的敵人（並列則全部），懸停顯示每場戰爭。戰爭會延續到新時代，直至和平。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="zh_Hant_HK">
-			<Text>交戰回合</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="zh_Hant_HK">
-			<Text>外交</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="zh_Hant_HK">
-			<Text>回合</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="zh_Hant_HK">
-			<Text>領袖的衝突，按優先順序：[NN][BLIST][LI][B]夷平[/B]：從地圖上消失的被夷平定居點[LI][B]佔領[/B]：奪取的定居點[LI][B]損失[/B]：被奪走的定居點[LI][B]圍城[/B]：遭圍困的定居點（同一敵人在5回合內再次圍困，視為同一次圍城）[LI][B]會戰[/B]：3次及以上攻擊或4及以上劫掠的交戰（首回合，或持續3回合後），或持續5回合作戰，或雙方之間發生圍城[LI][B]小規模衝突[/B]：未達上述的交戰[LI][B]劫掠[/B]：劫掠的單元格[/LIST][NN]圓點表示對手：領袖為金色，城邦為藍色，獨立勢力為銀色。圖釘依次優先顯示領袖、城邦、獨立勢力。刻度顯示每場圍城（橙）、會戰（紅）和小規模衝突（藍）持續的回合，重疊處共享刻度，靠前者佔大部分。[NN][B]交戰[/B]指同樣兩方在3格範圍內、間隔不超過5回合的所有攻擊與劫掠。只有雙方都以可作戰的單位（非開拓者或偵察兵）相互攻擊後才計入，每次攻擊對雙方都計入；劫掠建築計2，鄉村單元格計1。虛線弧將每個事件與其起因相連：小規模衝突與其發展成的會戰、戰鬥與圍城、圍城與佔領或損失，以及其與夷平。[B]遭劫掠[/B]（自己的單元格）也計入[B]劫掠[/B]。只計入敵方單位的劫掠，洪水、火山噴發和風暴不計入。[NN][B]合計[/B]：圍城、會戰、小規模衝突與劫掠；夷平、佔領與損失是其結果，懸停時單獨顯示。[N][B]卡片[/B]：宿敵，交戰最多的對手（依次為領袖、城邦與獨立勢力）；懸停顯示其他對手。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="zh_Hant_HK">
-			<Text>攻擊 {1_Num}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="zh_Hant_HK">
-			<Text>劫掠 {1_Num}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="zh_Hant_HK">
-			<Text>劫掠</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="zh_Hant_HK">
-			<Text>遭劫掠</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="zh_Hant_HK">
-			<Text>夷平</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="zh_Hant_HK">
-			<Text>佔領</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="zh_Hant_HK">
-			<Text>併入</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="zh_Hant_HK">
-			<Text>訓練單位</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="zh_Hant_HK">
-			<Text>損失單位</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="zh_Hant_HK">
-			<Text>各領袖何時因摧毀或俘獲而損失單位，以及敗於誰手。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="zh_Hant_HK">
-			<Text>{1_Category} · {2_Player}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="zh_Hant_HK">
-			<Text>指揮官</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="zh_Hant_HK">
-			<Text>生產</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="zh_Hant_HK">
-			<Text>購買</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="zh_Hant_HK">
-			<Text>獲贈</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="zh_Hant_HK">
-			<Text>每位領袖何時訓練或購買了哪些單位。</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hant_HK">
-			<Text>第{1_First}–{2_Last}回合</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="zh_Hant_HK">
-			<Text>總計</Text>
+		<Replace Tag="LOC_ZOM_GROUPED_DIGITS" Language="zh_Hant_HK">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

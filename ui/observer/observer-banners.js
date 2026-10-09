@@ -17,6 +17,7 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 /**
  * Zatygold's Spectator - Observer settlement banners (in-game scope).
  *
@@ -27,12 +28,13 @@
  */
 import { mergeProps } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { ancestorWithClass, createLogger, deferOnce, overrideComponent } from '../shared/zom-util.js';
+import { PANEL_COLORS } from './observer-config.js';
 import { onObserverReady } from './observer-core.js';
 import { bannerOf, bannerSubject, cityStateBonus, cityStateType, forEachBanner, townFocus } from './observer-settlement-info.js';
 
 const log = createLogger('observer-banners');
 const ICON_CLASS = 'zom-settlement-icon';
-const ICON_SHADOW = 'drop-shadow(0.0277777778rem 0.0555555556rem 0.0555555556rem #000000)';
+const ICON_SHADOW = `drop-shadow(0.0277777778rem 0.0555555556rem 0.0555555556rem ${PANEL_COLORS.shadow})`;
 const TYPE_ICON_CLASS = 'city-banner__city-state-container';
 // The game's own town-star classes: its size and margins in the name row.
 const ICON_CLASSES = `${ICON_CLASS} city-banner__original-capital-star city-banner__town-original-capital-star w-6 h-6 bg-cover bg-no-repeat pointer-events-auto`;

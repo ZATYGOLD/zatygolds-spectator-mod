@@ -23,7 +23,7 @@
  *
  * Lets the Observer select other players' units with the game's own selection
  * (so the unit panel shows them), and guards every step that assumes ownership:
- * no move / attack decorations (they hung the GPU) and no orders sent.
+ * no move / attack decorations (they stall the renderer) and no orders sent.
  */
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import UnitSelection from 'fs://game/base-standard/ui/unit-selection/unit-selection.js';
@@ -85,16 +85,18 @@ function patchSelection() {
 
 function patchGuards() {
   const decorations = UnitMapDecorationSupport.manager;
-  wrapMethod(decorations, 'activate', (base, unitId, ...rest) => (isForeign(unitId) ? undefined : base(unitId, ...rest)));
-  wrapMethod(decorations, 'update', (base, ...args) => (isForeign(decorations.unitID) ? undefined : base(...args)));
-
   const headIsForeign = () => isForeign(UI.Player.getHeadSelectedUnit());
-  wrapMethod(WorldInput, 'doActionOnPlot', (base, ...args) => (headIsForeign() ? undefined : base(...args)));
-  wrapMethod(WorldInput, 'actionMouseRightButton', (base, ...args) => (headIsForeign() ? InputHandlerState.Handled : base(...args)));
-  wrapMethod(WorldInput, 'requestMoveOperation', (base, unitId, ...rest) => (isForeign(unitId) ? false : base(unitId, ...rest)));
-  for (const library of [Game.UnitOperations, Game.UnitCommands]) {
-    try { wrapMethod(library, 'sendRequest', (base, unitId, ...rest) => (isForeign(unitId) ? undefined : base(unitId, ...rest))); }
-    catch (e) { log(`order guard unavailable: ${e}`); }
+  const guards = [
+    [decorations, 'activate', (base, unitId, ...rest) => (isForeign(unitId) ? undefined : base(unitId, ...rest))],
+    [decorations, 'update', (base, ...args) => (isForeign(decorations.unitID) ? undefined : base(...args))],
+    [WorldInput, 'doActionOnPlot', (base, ...args) => (headIsForeign() ? undefined : base(...args))],
+    [WorldInput, 'actionMouseRightButton', (base, ...args) => (headIsForeign() ? InputHandlerState.Handled : base(...args))],
+    [WorldInput, 'requestMoveOperation', (base, unitId, ...rest) => (isForeign(unitId) ? false : base(unitId, ...rest))],
+    ...[Game.UnitOperations, Game.UnitCommands].map((library) => [library, 'sendRequest', (base, unitId, ...rest) => (isForeign(unitId) ? undefined : base(unitId, ...rest))])
+  ];
+  for (const [target, name, guard] of guards) {
+    try { if (!wrapMethod(target, name, guard)) log(`guard unavailable: ${name}`); }
+    catch (e) { log(`guard unavailable: ${name} (${e})`); }
   }
 }
 

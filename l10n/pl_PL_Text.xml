@@ -142,26 +142,44 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="pl_PL">
 			<Text>Kronika</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="pl_PL">
-			<Text>{1_Yield} na turę każdego przywódcy, zapisywane w każdej turze gry.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="pl_PL">
+			<Text>Całość</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="pl_PL">
 			<Text>Nie zapisano jeszcze żadnych tur. Dochody są zapisywane na początku każdej tury.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="pl_PL">
-			<Text>{1_Yield} na turę</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="pl_PL">
+			<Text>Jeszcze brak</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="pl_PL">
+			<Text>Razem</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="pl_PL">
+			<Text>Tury</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="pl_PL">
 			<Text>Na turę</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="pl_PL">
-			<Text>Całość</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="pl_PL">
+			<Text>Tury {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="pl_PL">
+			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="pl_PL">
 			<Text>Kliknij, aby ukryć linię tego przywódcy.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="pl_PL">
 			<Text>Kliknij, aby pokazać linię tego przywódcy.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="pl_PL">
+			<Text>Dochody</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="pl_PL">
+			<Text>{1_Yield} na turę każdego przywódcy, zapisywane w każdej turze gry.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="pl_PL">
+			<Text>{1_Yield} na turę</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="pl_PL">
 			<Text>Nauka</Text>
@@ -184,53 +202,47 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="pl_PL">
 			<Text>Produkcja</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="pl_PL">
-			<Text>Dochody</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="pl_PL">
-			<Text>Pokonane jednostki</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="pl_PL">
-			<Text>Kiedy każdy przywódca zniszczył lub przejął jednostki i jakie.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="pl_PL">
 			<Text>Imperium</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="pl_PL">
+			<Text>Osiedla</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca zakładał, zdobywał, tracił, równał z ziemią lub podnosił do rangi miasta osiedla.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="pl_PL">
+			<Text>Każde [B]Osiedle[/B], które przywódca zyskuje, traci lub podnosi do rangi miasta.[NN][BLIST][LI][B]Znacznik[/B]: złoty dla miasta, niebieski dla miasteczka[LI][B]Kropka[/B]: Założone (lub Włączone), Zdobyte, Utracone, Zrównane z ziemią lub Podniesione do rangi miasta[LI][B]Przerywany łuk[/B]: łączy miasteczko z jego podniesieniem do rangi miasta, a zdobycie lub utratę ze zrównaniem z ziemią[/LIST][NN][B]Razem[/B]: osiedla posiadane obecnie (lub na koniec epoki).[N][B]Karta[/B]: miasta i miasteczka.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="pl_PL">
+			<Text>Założone</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="pl_PL">
+			<Text>Włączone</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="pl_PL">
+			<Text>Zdobyte</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="pl_PL">
+			<Text>Utracone</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="pl_PL">
+			<Text>Zrównane z ziemią</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="pl_PL">
+			<Text>Podniesione do rangi miasta</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="pl_PL">
 			<Text>Populacja</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="pl_PL">
-			<Text>Kiedy rosły osady każdego przywódcy, w populacji miejskiej, wiejskiej i specjalistach.</Text>
+			<Text>Kiedy rosły osiedla każdego przywódcy: mieszkańcy miejscy, wiejscy i specjaliści.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="pl_PL">
-			<Text>Osady</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="pl_PL">
-			<Text>Kiedy każdy przywódca zakładał, zdobywał, tracił osady lub podnosił je do rangi miasta.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="pl_PL">
-			<Text>Założona</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="pl_PL">
-			<Text>Utracona</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="pl_PL">
-			<Text>Podniesiona do rangi miasta</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="pl_PL">
+			<Text>Każdy mieszkaniec zyskany przez osiedla przywódcy.[NN][BLIST][LI][B]Znacznik[/B]: budowla lub ulepszenie, które go dodało, w kolorze głównego dochodu[LI][B]Kropka[/B]: złota dla miejskich, srebrna dla wiejskich[LI][B]Specjalista[/B]: świecący złoty znacznik z budowlami na jego polu[/LIST][NN]Zdobyte osiedle liczy się od wielkości w chwili zdobycia.[NN][B]Razem[/B]: mieszkańcy obecnie (lub na koniec epoki); miejscy, wiejscy i specjaliści po najechaniu.[N][B]Karta[/B]: specjaliści; według osiedla i dzielnicy po najechaniu.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="pl_PL">
 			<Text>Wojsko</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="pl_PL">
-			<Text>Wojny</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="pl_PL">
-			<Text>Kiedy każdy przywódca prowadził wojnę, z kim, oraz jak każda wojna się zaczęła i skończyła.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="pl_PL">
-			<Text>Konflikty</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="pl_PL">
-			<Text>Bitwy, potyczki i oblężenia każdego przywódcy oraz przeciw komu, a także zniszczone osady i złupione pola.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="pl_PL">
 			<Text>Siła</Text>
@@ -238,11 +250,53 @@
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="pl_PL">
 			<Text>Siła militarna każdego przywódcy, siła bojowa wszystkich jego jednostek, zapisywana w każdej turze gry.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="pl_PL">
+			<Text>Dowódcy</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="pl_PL">
+			<Text>Wyprodukowane</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="pl_PL">
+			<Text>Kupione</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="pl_PL">
+			<Text>Otrzymane</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="pl_PL">
+			<Text>Wyszkolone jednostki</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca produkował, kupował lub otrzymywał jednostki, i jakie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="pl_PL">
+			<Text>Każda jednostka, którą przywódca [B]produkuje[/B], [B]kupuje[/B] lub [B]otrzymuje[/B].[NN][BLIST][LI][B]Znacznik[/B]: lądowa, morska, cywilna lub dowódca[LI][B]Dowódcy[/B]: liczeni raz, nie ponownie, gdy wracają po porażce[/LIST][NN][B]Razem[/B]: wyszkolone jednostki; każda kategoria po najechaniu.[N][B]Karta[/B]: każdy wyszkolony typ dowódcy, a w przeciwnym razie najczęściej szkolona jednostka; wszystkie jednostki według kategorii po najechaniu.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="pl_PL">
+			<Text>Utracone jednostki</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca tracił jednostki przez zniszczenie lub przejęcie, i na rzecz kogo.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="pl_PL">
+			<Text>Każda jednostka, którą przywódca traci na rzecz wroga, zniszczona lub przejęta.[NN][BLIST][LI][B]Znacznik[/B]: lądowa, morska, cywilna lub dowódca, oraz kto ją pokonał[LI][B]Ranking[/B]: najpierw najmniej strat[/LIST][NN][B]Razem[/B]: utracone jednostki; każda kategoria po najechaniu.[N][B]Karta[/B]: każdy utracony typ dowódcy, a w przeciwnym razie najczęściej tracona jednostka; wszystkie jednostki według kategorii po najechaniu.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="pl_PL">
+			<Text>Pokonane jednostki</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca zniszczył lub przejął jednostki i jakie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="pl_PL">
+			<Text>Każda wroga jednostka, którą przywódca niszczy lub przejmuje.[NN][BLIST][LI][B]Znacznik[/B]: lądowa, morska, cywilna lub dowódca, oraz do kogo należała[/LIST][NN][B]Razem[/B]: pokonane jednostki; każda kategoria po najechaniu.[N][B]Karta[/B]: każdy pokonany typ dowódcy, a w przeciwnym razie najczęściej pokonywana jednostka; wszystkie jednostki według kategorii po najechaniu.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="pl_PL">
 			<Text>Awanse</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="pl_PL">
 			<Text>Kiedy dowódcy każdego przywódcy zdobywali awanse i odznaczenia, i jakie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="pl_PL">
+			<Text>Każdy [B]awans[/B] i [B]odznaczenie[/B] zdobyte przez dowódców przywódcy.[NN][BLIST][LI][B]Awans[/B]: ikona jego drzewka na znaczniku w kolorze drzewka[LI][B]Odznaczenie[/B]: jego ikona na świecącym złotym znaczniku[LI][B]Szczegóły[/B]: dowódca i który to jego awans[LI][B]Przerywany łuk[/B]: łączy awanse każdego dowódcy; kolor kropki odróżnia dowódców[/LIST][NN][B]Razem[/B]: awanse i odznaczenia; poszczególne po najechaniu.[N][B]Karta[/B]: najczęściej zdobywane odznaczenie i drzewko z największą liczbą awansów; każde odznaczenie i drzewko po najechaniu.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="pl_PL">
 			<Text>Odznaczenia</Text>
@@ -250,17 +304,23 @@
 		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="pl_PL">
 			<Text>Brak awansów</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="pl_PL">
-			<Text>Bitwy</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="pl_PL">
+			<Text>{1_Commander}, awans {2_Number}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="pl_PL">
-			<Text>Potyczki</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="pl_PL">
+			<Text>Wojny</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="pl_PL">
-			<Text>Oblężenia</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca prowadził wojnę, z kim, oraz jak każda wojna się zaczęła i skończyła.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="pl_PL">
-			<Text>Jeszcze brak</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="pl_PL">
+			<Text>Wojny między przywódcami; niezależne siły są zawsze wrogie i się nie liczą. Wojna trwa także w nowej epoce, aż do zawarcia pokoju.[NN]Kreski pokazują każdą turę:[NN][BLIST][LI][B]Czerwony[/B]: agresja, przywódca wypowiedział wojnę[LI][B]Żółty[/B]: obrona, wojnę wypowiedziano przywódcy[LI][B]Szary[/B]: pokój[/LIST][NN]Równoczesne wojny dzielą kreskę; zawarty pokój wypełnia swoją kreskę na zielono. Znacznik z wrogiem oznacza początek każdej wojny, a [B]zielony[/B] znacznik zawarcie pokoju; każdy pokazuje, kto kogo zaatakował.[NN][B]Tury[/B]: tury wojny; wojny wypowiedziane i otrzymane oraz zawarte pokoje po najechaniu.[N][B]Karta[/B]: wróg, z którym wojna trwała najdłużej (przy remisie wszyscy); każda wojna po najechaniu.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="pl_PL">
+			<Text>Tury wojny</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="pl_PL">
+			<Text>Dyplomacja</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="pl_PL">
 			<Text>Agresja</Text>
@@ -275,10 +335,10 @@
 			<Text>Zawarto pokój</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER" Language="pl_PL">
-			<Text>Wypowiedział wojnę: {1_Leader}</Text>
+			<Text>Wypowiedziano wojnę: {1_Leader}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER" Language="pl_PL">
-			<Text>Zaatakowany przez: {1_Leader}</Text>
+			<Text>Atakujący: {1_Leader}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR_WITH" Language="pl_PL">
 			<Text>Wojna z: {1_Leader}</Text>
@@ -286,26 +346,56 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="pl_PL">
 			<Text>Pokój z: {1_Leader}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="pl_PL">
+			<Text>Konflikty</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="pl_PL">
+			<Text>Kiedy każdy przywódca prowadził oblężenia, bitwy i potyczki, przeciw komu, oraz co zostało zdobyte, zrównane z ziemią lub splądrowane.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="pl_PL">
+			<Text>Konflikty przywódcy. [B]Starcie[/B] to wszystkie ataki i plądrowania między tymi samymi dwiema stronami w promieniu 3 pól, w odstępach nie większych niż 5 tur. Liczy się, gdy obie strony zaatakowały się nawzajem jednostkami zdolnymi do walki (nie osadnikami ani zwiadowcami); każdy atak liczy się obu stronom, a plądrowanie liczy się jako 2 za budowlę i 1 za pole wiejskie.[NN]Według priorytetu:[NN][BLIST][LI][B]Zrównane z ziemią[/B]: osiedle zrównane z ziemią, gdy zniknie z mapy[LI][B]Zdobyte[/B]: osiedle przejęte przez przywódcę[LI][B]Utracone[/B]: osiedle odebrane przywódcy[LI][B]Oblężenie[/B]: oblężone osiedle; ponowne oblężenie przez tego samego wroga w ciągu 5 tur to to samo oblężenie[LI][B]Bitwa[/B]: starcie z co najmniej 3 atakami lub plądrowaniem o wartości co najmniej 4 w pierwszej turze lub gdy trwa już 3 tury, z walkami w 5 turach albo z oblężeniem między obiema stronami[LI][B]Potyczka[/B]: każde mniejsze starcie[LI][B]Plądrowanie[/B]: pole splądrowane przez wrogą jednostkę, nie przez powodzie, erupcje ani burze; [B]Splądrowano[/B], własne pola przywódcy, też liczy się tutaj[/LIST][NN]Kropka pokazuje przeciwnika: złota dla przywódcy, niebieska dla miasta-państwa, srebrna dla niezależnej siły; znacznik pokazuje najpierw przywódcę, potem miasto-państwo, potem niezależną siłę. Kreski pokazują każde oblężenie (pomarańczowy), bitwę (czerwony) i potyczkę (niebieski), dopóki trwają; gdy się nakładają, dzielą kreskę, a pierwsze zajmuje jej większość. Przerywany łuk łączy każde z tym, z czego wynikło: potyczkę z bitwą, w którą się przerodziła, walki z oblężeniem, oblężenie ze zdobyciem lub utratą, a to ze zrównaniem z ziemią.[NN][B]Razem[/B]: oblężenia, bitwy, potyczki i plądrowanie; po najechaniu, osobno, ich skutki: osiedla zrównane z ziemią, zdobyte i utracone.[N][B]Karta[/B]: nemezis, gracz, z którym walczono najczęściej (przywódcy przed miastami-państwami i niezależnymi siłami); wszyscy pozostali przeciwnicy po najechaniu.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="pl_PL">
+			<Text>Skutki</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="pl_PL">
+			<Text>Oblężenie</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="pl_PL">
 			<Text>Bitwa</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="pl_PL">
 			<Text>Potyczka</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="pl_PL">
-			<Text>Oblężenie</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="pl_PL">
+			<Text>Oblężenia</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="pl_PL">
+			<Text>Bitwy</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="pl_PL">
+			<Text>Potyczki</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="pl_PL">
+			<Text>Plądrowanie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="pl_PL">
+			<Text>Splądrowano</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="pl_PL">
 			<Text>Oblegane przez: {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="pl_PL">
-			<Text>Zrównane z ziemią przez: {1_Player}</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="pl_PL">
 			<Text>Zdobyte przez: {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="pl_PL">
-			<Text>Skutki</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="pl_PL">
+			<Text>Zrównane z ziemią przez: {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="pl_PL">
+			<Text>Ataki {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="pl_PL">
+			<Text>Plądrowanie {1_Num}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="pl_PL">
 			<Text>Nemezis</Text>
@@ -313,95 +403,8 @@
 		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="pl_PL">
 			<Text>Przeciwnicy</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="pl_PL">
-			<Text>{1_Commander}, awans {2_Number}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="pl_PL">
-			<Text>Każda [B]osada[/B], którą przywódca zyskuje, traci lub podnosi do rangi miasta.[NN][BLIST][LI][B]Znacznik[/B]: złoty dla miasta, niebieski dla osady[LI][B]Kropka[/B]: Założona (lub przyłączona), Zdobyta, Utracona, Zrównana z ziemią lub Podniesiona do rangi miasta[LI][B]Przerywany łuk[/B]: łączy osadę z jej awansem, a zdobycie lub utratę ze zniszczeniem[/LIST][NN][B]Suma[/B]: obecne osady (lub na koniec epoki).[N][B]Karta[/B]: miasta i osady.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="pl_PL">
-			<Text>Każdy mieszkaniec zyskany przez osady przywódcy.[NN][BLIST][LI][B]Znacznik[/B]: budowla lub ulepszenie, które go dodało, w kolorze głównego plonu[LI][B]Kropka[/B]: złota dla miejskich, srebrna dla wiejskich[LI][B]Specjalista[/B]: świecący złoty znacznik z budowlami na jego polu[/LIST][NN]Zdobyta osada liczy się od wielkości w chwili zdobycia.[NN][B]Suma[/B]: populacja (miejscy, wiejscy i specjaliści po najechaniu).[N][B]Karta[/B]: specjaliści, według osady i dzielnicy po najechaniu.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="pl_PL">
-			<Text>Każda jednostka, którą przywódca [B]wyprodukował[/B], [B]kupił[/B] lub [B]otrzymał[/B].[NN][BLIST][LI][B]Znacznik[/B]: lądowa, morska, cywilna lub dowódca[LI][B]Dowódcy[/B]: liczeni raz, nie ponownie po powrocie po porażce[/LIST][NN][B]Suma[/B]: wyszkolone jednostki, według kategorii po najechaniu.[N][B]Karta[/B]: każdy wyszkolony typ dowódcy, a bez nich najczęściej szkolona jednostka.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="pl_PL">
-			<Text>Każda jednostka, którą przywódca stracił na rzecz innego gracza, zabita lub pojmana.[NN][BLIST][LI][B]Znacznik[/B]: lądowa, morska, cywilna lub dowódca, z tym, kto ją przejął[LI][B]Ranking[/B]: najmniej strat najpierw[/LIST][NN][B]Suma[/B]: utracone jednostki, według kategorii po najechaniu.[N][B]Karta[/B]: każdy utracony typ dowódcy, a bez nich najczęściej tracona jednostka.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="pl_PL">
-			<Text>Każda jednostka innego gracza, którą przywódca zabił lub pojmał.[NN][BLIST][LI][B]Znacznik[/B]: lądowa, morska, cywilna lub dowódca, z tym, do kogo należała[/LIST][NN][B]Suma[/B]: pokonane jednostki, według kategorii po najechaniu.[N][B]Karta[/B]: każdy pokonany typ dowódcy, a bez nich najczęściej pokonywana jednostka.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="pl_PL">
-			<Text>Każdy [B]awans[/B] i [B]odznaczenie[/B] zdobyte przez dowódców przywódcy.[NN][BLIST][LI][B]Awans[/B]: ikona jego drzewka na znaczniku w kolorze drzewka[LI][B]Odznaczenie[/B]: jego ikona na świecącym złotym znaczniku[LI][B]Szczegóły[/B]: dowódca i który to jego awans[/LIST][NN]Przerywany łuk łączy awanse każdego dowódcy; kolor kropki odróżnia dowódców.[NN][B]Suma[/B]: awanse i odznaczenia.[N][B]Karta[/B]: najczęstsze odznaczenie, potem najczęściej rozwijane drzewko; każde odznaczenie i drzewko po najechaniu.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="pl_PL">
-			<Text>Wojny między przywódcami; niezależne potęgi są zawsze wrogie i się nie liczą. Kreski pokazują każdą turę:[NN][BLIST][LI][B]Czerwony[/B]: agresja, przywódca wypowiedział wojnę[LI][B]Żółty[/B]: obrona, wojnę wypowiedziano przywódcy[LI][B]Szary[/B]: pokój[/LIST][NN]Równoczesne wojny dzielą kreskę; zawarty pokój wypełnia swoją kreskę na zielono. Znacznik wroga oznacza początek każdej wojny, a [B]zielony[/B] znacznik zawarcie pokoju; każdy pokazuje, kto kogo zaatakował.[NN][B]Tury[/B]: tury wojny.[N][B]Karta[/B]: wróg, z którym wojna trwała najdłużej (przy remisie każdy), każda wojna po najechaniu. Wojna trwa w nowej epoce aż do pokoju.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="pl_PL">
-			<Text>Tury wojny</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="pl_PL">
-			<Text>Dyplomacja</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="pl_PL">
-			<Text>Tury</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="pl_PL">
-			<Text>Konflikty przywódcy według priorytetu:[NN][BLIST][LI][B]Zrównana z ziemią[/B]: zniszczona osada, gdy zniknie z mapy[LI][B]Zdobyta[/B]: zdobyta osada[LI][B]Utracona[/B]: osada odebrana przywódcy[LI][B]Oblężenie[/B]: oblężona osada; ponowne oblężenie przez tego samego wroga w ciągu 5 tur to to samo oblężenie[LI][B]Bitwa[/B]: starcie z 3 lub więcej atakami albo 4 lub więcej grabieży, w pierwszej turze lub gdy trwa już 3 tury, albo walką przez 5 tur, albo oblężenie między stronami[LI][B]Potyczka[/B]: starcie z mniejszą liczbą[LI][B]Grabież[/B]: złupione pole[/LIST][NN]Kropka pokazuje przeciwnika: złota dla przywódcy, niebieska dla miasta-państwa, srebrna dla niezależnej potęgi. Znacznik pokazuje najpierw przywódcę, potem miasto-państwo, potem niezależną potęgę. Kreski pokazują każde oblężenie (pomarańczowy), bitwę (czerwony) i potyczkę (niebieski), dopóki trwają; gdy się pokrywają, dzielą kreskę, a pierwsze zajmuje jej większość.[NN][B]Starcie[/B] to wszystkie ataki i grabieże między tymi samymi dwiema stronami w promieniu 3 pól, w odstępach nie większych niż 5 tur. Liczy się dopiero, gdy obie strony zaatakowały się jednostkami zdolnymi do walki (nie osadnikami ani zwiadowcami), a każdy atak liczy się obu stronom; grabież to 2 za budowlę, 1 za pole wiejskie. Przerywany łuk łączy każde zdarzenie z tym, z którego wynikło: potyczkę z bitwą, którą się stała, walki z oblężeniem, oblężenie ze zdobyciem lub utratą, a to ze zniszczeniem. [B]Złupiono[/B] (własne pola) też się liczy, w pozycji [B]Grabież[/B]. Liczy się tylko grabież wrogich jednostek, nie powodzie, erupcje ani burze.[NN][B]Suma[/B]: oblężenia, bitwy, potyczki i grabieże; zniszczenia, zdobycia i utraty to ich skutki, pokazane osobno po najechaniu.[N][B]Karta[/B]: nemezis, gracz, z którym walczył najczęściej (przywódcy przed miastami-państwami i niezależnymi potęgami); pozostali przeciwnicy po najechaniu.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="pl_PL">
-			<Text>Ataki {1_Num}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="pl_PL">
-			<Text>Grabież {1_Num}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="pl_PL">
-			<Text>Grabież</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="pl_PL">
-			<Text>Złupiono</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="pl_PL">
-			<Text>Zrównana z ziemią</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="pl_PL">
-			<Text>Zdobyta</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="pl_PL">
-			<Text>Przyłączona</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="pl_PL">
-			<Text>Wyszkolone jednostki</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="pl_PL">
-			<Text>Utracone jednostki</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="pl_PL">
-			<Text>Kiedy każdy przywódca tracił jednostki przez zniszczenie lub przejęcie, i na rzecz kogo.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="pl_PL">
-			<Text>{1_Category} · {2_Player}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="pl_PL">
-			<Text>Dowódcy</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="pl_PL">
-			<Text>Wyprodukowane</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="pl_PL">
-			<Text>Kupione</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="pl_PL">
-			<Text>Otrzymane</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="pl_PL">
-			<Text>Kiedy każdy przywódca wyszkolił lub kupił jednostki i jakie.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="pl_PL">
-			<Text>Tury {1_First}–{2_Last}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="pl_PL">
-			<Text>Razem</Text>
+		<Replace Tag="LOC_ZOM_GROUPED_DIGITS" Language="pl_PL">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

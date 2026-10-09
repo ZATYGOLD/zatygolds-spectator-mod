@@ -21,51 +21,30 @@
 /**
  * Zatygold's Spectator - Observer battle log (in-game scope).
  *
- * Records, per leader, Age, turn and Age progress, each conflict with
- * another player - an engagement (the attacks and pillaging between the same
- * two sides within ENGAGEMENT_RANGE of anywhere it has been fought, going on
- * while they fight on with no pause longer than CONFLICT_GAP turns), a siege
- * of a settlement, a settlement captured or lost, a settlement razed (once gone from the map,
- * also for the player it was taken from) and a tile pillaged by the leader or
- * on its land - with the other player involved (a besieger the enemy around
- * it or lately striking it, a pillager an enemy unit ordered to pillage it;
- * other damage, such as a flood's, is not counted).
- * An attack counts only between sides that can fight (not on a settler or
- * scout), for both sides; an engagement is one once both have attacked each
- * other. It is a skirmish, and a battle (BATTLE) with enough attacks or
- * pillage (a building PILLAGE.building, a rural tile PILLAGE.rural) on its
- * first turn; a skirmish becomes one with enough of either once it has gone
- * on for BATTLE.escalation turns, or after fighting on BATTLE.turns turns, or
- * with a siege between the two sides while it goes on; a skirmish that
- * becomes a battle on a later turn reads as both, the skirmish not counted
- * again. A settlement besieged again by the same enemy within CONFLICT_GAP
- * turns is the same siege. Each event is linked to the one it follows from
- * (see chain).
- * Settlements are checked when a district takes damage, when a settlement
- * changes hands or leaves the map and at the start of every turn. The log is
- * an event log (observer-event-log.js) with the fields
- * "<code>,<type>,<otherPlayerId>" (CODES; engagements ENGAGEMENT_CODES, their
- * type the plot it began on, their count the attacks or pillage; else the
- * type a settlement's name or a constructible).
+ * Records, per leader, each conflict with another player: engagements (attacks
+ * and pillage between two sides, see engagementEvents), sieges, settlements
+ * captured, lost or razed, and tiles pillaged by an enemy unit or on its land.
+ * An event log (observer-event-log.js) with the fields
+ * "<code>,<type>,<otherPlayerId>" (CODES, ENGAGEMENT_CODES).
  */
-import { createLogger } from '../shared/zom-util.js';
+import { createLogger, deferOnce } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { onObserverReady } from './observer-core.js';
-import { createEventLog, payloadLogger } from './observer-event-log.js';
-import { cityAt } from './observer-settlement-info.js';
-import { areEnemies, typeOfUnit } from './observer-unit-log.js';
+import { areEnemies, onObserverReady } from './observer-core.js';
+import { byTime, categoryIndex, createEventLog, payloadLogger } from './observer-event-log.js';
+import { watchSettlements } from './observer-settlement-watch.js';
+import { typeOfUnit } from './observer-unit-log.js';
 
 const log = createLogger('observer-battle-log', CONFIG.debug);
 const showPayload = payloadLogger(log);
 const BATTLE_LOG_EVENT = 'zom-battle-log-changed';
 const ENGAGEMENT_RANGE = 3;   // tiles from anywhere an engagement was fought
-const BATTLE = { attacks: 3, pillage: 4, escalation: 3, turns: 5 };   // a battle: attacks or pillage on its first turn or from its escalation turn on, or turns of fighting
-const PILLAGE = { building: 2, rural: 1 };             // an engagement's pillage per tile
-const CONFLICT_GAP = 5;   // turns within which fighting or a siege taken up again between the same sides is the same one
+const CONFLICT_GAP = 5;       // turns within which fighting or a siege taken up again between the same sides is the same one
+const BATTLE = { attacks: 3, pillage: 4, escalation: 3, turns: 5 };   // a battle: attacks or pillage on its first turn or from its escalation turn on, or turns fought
+const PILLAGE = { building: 2, rural: 1 };   // an engagement's pillage per tile
 
 /**
- * What happened, by priority (a pin shows the first it holds): pin and dot
- * colour; `counted` toward the Total, else `outcome` (what a conflict led to).
+ * What happened, by priority: pin and dot colour; `counted` toward the Total,
+ * else an `outcome` (what a conflict led to).
  */
 const BATTLE_CATEGORIES = [
   { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: '#5b2a86', outcome: true },
@@ -78,17 +57,14 @@ const BATTLE_CATEGORIES = [
   { id: 'pillaged', label: 'LOC_ZOM_GRAPH_PILLAGED', color: '#9b6a3a', counted: true },
   { id: 'raided', label: 'LOC_ZOM_GRAPH_RAIDED', color: '#8a8a94', counted: true }
 ];
-const CATEGORY = Object.fromEntries(BATTLE_CATEGORIES.map((c, i) => [c.id, i]));
+const CATEGORY = categoryIndex(BATTLE_CATEGORIES);
+
 /**
- * Each code's category, and whether the type is a settlement (engagements:
- * ENGAGEMENT_CODES). An attack is A (made) or D (taken); pillage is X, R and P; the x, r and p logged before
- * pillage was told from other damage are not read. A siege is S (besieged)
- * or B (besieging); s, logged before, has no side. A settlement is C
- * (captured) or L (lost) when it changes hands, and Y (razed it) or W (its
- * settlement razed) once gone; z and Z, logged when a razing began, are not read.
+ * Each saved letter of an event with a settlement or constructible as its
+ * type: its category and the leader's side. X pillaged, R was pillaged; S
+ * besieged, B besieging; C captured, L lost; Y razed it, W its settlement razed.
  */
 const CODES = {
-  s: { category: CATEGORY.siege, settlement: true },
   S: { category: CATEGORY.siege, settlement: true, side: 'besieged' },
   B: { category: CATEGORY.siege, settlement: true, side: 'besieging' },
   X: { category: CATEGORY.pillaged },
@@ -98,8 +74,8 @@ const CODES = {
   Y: { category: CATEGORY.razed, settlement: true, side: 'razing' },
   W: { category: CATEGORY.razed, settlement: true, side: 'razed' }
 };
-const ENGAGEMENT_CODES = {   // what each adds and who struck: the leader (self), the other side, or (e, logged before) either
-  e: { measure: 'attacks', by: ['self', 'other'] },
+/** Each saved letter of an engagement step (its type the plot the engagement began on): what it adds, and who struck. */
+const ENGAGEMENT_CODES = {
   A: { measure: 'attacks', by: ['self'] },
   D: { measure: 'attacks', by: ['other'] },
   P: { measure: 'pillage', by: [] }
@@ -113,7 +89,7 @@ const events = createEventLog({ keyPrefix: 'ZOM_CONFLICT_LOG_', fieldCount: 3, c
  * of a skirmish, battle or siege ({ age, turn, progress }); `after` is the id of the event it follows from, see chain).
  */
 function battleLog() {
-  const entries = [...events.read()].sort((a, b) => a.age - b.age || a.turn - b.turn);
+  const entries = events.read().sort(byTime);
   const logged = entries.flatMap(({ fields: [code, type, other], ...entry }) => {
     const known = CODES[code];
     return known ? [{ ...entry, kind: 'battles', category: known.category, settlement: !!known.settlement, side: known.side, type, other: Number(other), attacks: 0, pillage: 0, turns: 0 }] : [];
@@ -146,7 +122,6 @@ function joinSieges(logged) {
   });
 }
 
-const before = (a, b) => a.age - b.age || a.turn - b.turn;
 const ENGAGED = [CATEGORY.battle, CATEGORY.skirmish, CATEGORY.escalated];
 const HANDS = [CATEGORY.captured, CATEGORY.lost];
 
@@ -159,28 +134,34 @@ const HANDS = [CATEGORY.captured, CATEGORY.lost];
  * its siege).
  */
 function chain(all) {
-  all.sort(before).forEach((e, i) => { e.id = `${e.playerId}:${i}`; });
-  const latest = (e, match) => all.filter((p) => p !== e && p.playerId === e.playerId && before(p, e) <= 0 && match(p)).pop();
+  all.sort(byTime).forEach((e, i) => { e.id = `${e.playerId}:${i}`; });
+  const byPlayer = new Map();
+  for (const e of all) {
+    if (!byPlayer.has(e.playerId)) byPlayer.set(e.playerId, []);
+    byPlayer.get(e.playerId).push(e);
+  }
   const fighting = (e) => (p) => ENGAGED.includes(p.category) && p.other === e.other && p.age === e.age && p.lastTurn >= e.turn - CONFLICT_GAP;
   const at = (e, categories) => (p) => p.settlement && p.type === e.type && categories.includes(p.category);
   const besieging = (e) => (p) => p.category === CATEGORY.siege && p.other === e.other && p.age === e.age && p.lastTurn + 1 >= e.turn;
-  for (const e of all) {
-    const from = e.category === CATEGORY.battle && e.link ? latest(e, (p) => p.link === e.link && p.category === CATEGORY.escalated)
-      : ENGAGED.includes(e.category) ? latest(e, besieging(e))
-        : e.category === CATEGORY.siege ? latest(e, (p) => fighting(e)(p) && before(p, e) < 0)   // begun before it (else it follows the siege)
-          : HANDS.includes(e.category) ? latest(e, at(e, [CATEGORY.siege])) ?? latest(e, fighting(e))
-            : e.category === CATEGORY.razed ? latest(e, at(e, HANDS)) ?? latest(e, at(e, [CATEGORY.siege])) : null;
-    if (from) e.after = from.id;
+  for (const own of byPlayer.values()) {
+    const latest = (e, match) => own.filter((p) => p !== e && byTime(p, e) <= 0 && match(p)).pop();
+    for (const e of own) {
+      const from = e.category === CATEGORY.battle && e.link ? latest(e, (p) => p.link === e.link && p.category === CATEGORY.escalated)
+        : ENGAGED.includes(e.category) ? latest(e, besieging(e))
+          : e.category === CATEGORY.siege ? latest(e, (p) => fighting(e)(p) && byTime(p, e) < 0)   // begun before it (else it follows the siege)
+            : HANDS.includes(e.category) ? latest(e, at(e, [CATEGORY.siege])) ?? latest(e, fighting(e))
+              : e.category === CATEGORY.razed ? latest(e, at(e, HANDS)) ?? latest(e, at(e, [CATEGORY.siege])) : null;
+      if (from) e.after = from.id;
+    }
   }
   return all;
 }
 
 /**
- * Engagement entries (attacks and pillage) of the same two sides joined into
- * one engagement while they go on, within CONFLICT_GAP turns of its last, and
- * within ENGAGEMENT_RANGE of any tile the engagement has been fought from
- * (whichever tile each was logged at): [{ key, playerId, other, steps: [entry + attacks, pillage, by] }].
- * Only fighting out of range of it, or after a longer pause, is another.
+ * Engagement steps (attacks and pillage) of the same two sides joined into
+ * one engagement while they go on: within CONFLICT_GAP turns of its last, and
+ * within ENGAGEMENT_RANGE of any tile it has been fought at:
+ * [{ key, playerId, other, steps: [entry + attacks, pillage, by] }].
  */
 function joinEngagements(entries) {
   const open = new Map();   // "player:other" -> its engagements going on
@@ -222,36 +203,42 @@ function mutualStep(steps) {
 }
 
 /**
- * An engagement's events, each with its tally, once both sides have attacked
- * each other (one-sided fighting is none): a battle where it became one (a
- * skirmish before it, on an earlier turn, linked to it, with the tally until
- * then), else a skirmish. A siege between the two sides while it goes on (or
- * the turn after) makes it a battle then.
+ * An engagement's events, once both sides have attacked each other (one-sided
+ * fighting is none), each with its tally. It is a battle with BATTLE.attacks
+ * attacks or BATTLE.pillage pillage (PILLAGE per tile) on its first turn or
+ * once it has lasted BATTLE.escalation turns, once fought on BATTLE.turns
+ * turns, or with a siege between the two sides while it goes on (or the turn
+ * after); else a skirmish. One that became a battle on a later turn is both:
+ * a skirmish (escalated, not counted) until then, linked to the battle.
  */
 function engagementEvents({ key, playerId, other, steps }, sieges) {
-  const lastTurn = steps[steps.length - 1].turn;
-  const event = (step, category, upTo) => ({ age: step.age, turn: step.turn, progress: step.progress, playerId, kind: 'battles', category, settlement: false, type: String(other), other, ...tally(upTo), lastTurn, until: upTo[upTo.length - 1], count: 1 });
   const start = mutualStep(steps);
   if (start < 0) return [];
+  const firstTurn = steps[0].turn;
+  const lastTurn = steps[steps.length - 1].turn;
+  const besiegers = sieges.filter((s) => s.playerId === playerId && s.other === other && s.lastTurn + 1 >= firstTurn);
+  const event = (step, category, upTo) => ({ age: step.age, turn: step.turn, progress: step.progress, playerId, kind: 'battles', category, settlement: false, type: String(other), other, ...tally(upTo), lastTurn, until: upTo[upTo.length - 1], count: 1 });
   const skirmish = steps[start];
-  for (let i = start; i < steps.length; i++) {
-    const sofar = tally(steps.slice(0, i + 1));
-    const step = steps[i];
-    const firstTurn = step.turn === steps[0].turn;
+  const sofar = { attacks: 0, pillage: 0, fought: new Set() };
+  for (const [i, step] of steps.entries()) {
+    sofar.attacks += step.attacks;
+    sofar.pillage += step.pillage;
+    sofar.fought.add(step.turn);
+    if (i < start) continue;
     const enough = sofar.attacks >= BATTLE.attacks || sofar.pillage >= BATTLE.pillage;
-    const besieged = sieges.some((s) => s.playerId === playerId && s.other === other && s.age === step.age && s.turn <= step.turn + 1 && s.lastTurn + 1 >= steps[0].turn);
-    if (!besieged && !(enough && (firstTurn || sofar.turns >= BATTLE.escalation)) && sofar.fought < BATTLE.turns) continue;
+    const escalating = step.turn === firstTurn || step.turn - firstTurn + 1 >= BATTLE.escalation;
+    const besieged = besiegers.some((s) => s.age === step.age && s.turn <= step.turn + 1);
+    if (!besieged && !(enough && escalating) && sofar.fought.size < BATTLE.turns) continue;
     if (skirmish.turn >= step.turn) return [event(skirmish, CATEGORY.battle, steps)];
     const link = `e:${key}:${skirmish.age}:${skirmish.turn}`;
-    const before = steps.filter((s) => s.turn < step.turn);
-    return [{ ...event(skirmish, CATEGORY.escalated, before), link }, { ...event(step, CATEGORY.battle, steps), link }];
+    const earlier = steps.filter((s) => s.turn < step.turn);
+    return [{ ...event(skirmish, CATEGORY.escalated, earlier), link }, { ...event(step, CATEGORY.battle, steps), link }];
   }
   return [event(skirmish, CATEGORY.skirmish, steps)];
 }
 
-/** A field without the log's separators (a settlement may carry a player's own name). */
-const field = (text) => String(text ?? '').replace(/[,;|]/g, ' ');
-const record = (playerId, code, type, other = -1, count = 1) => { if (Players.get(playerId)?.isMajor) events.record(playerId, [code, field(type), other ?? -1], count); };
+/** An event of a leader (and the other player involved). */
+const record = (playerId, code, type, other = -1, count = 1) => { if (Players.get(playerId)?.isMajor) events.record(playerId, [code, type, other], count); };
 
 // ============================ Engagements ============================
 
@@ -312,20 +299,10 @@ function onCombat(data) {
   if (canFight(attacker) && canFight(defender)) engage(attacker.owner, defender.owner, location);
 }
 
-// ============================ Sieges and razing ============================
+// ============================ Sieges and settlements ============================
 
-const besieged = new Set();   // settlement plots under siege
-const held = new Map();       // settlement plot -> { owner, name, from (who it was taken from, else null) }, as last checked
-
-/** A settlement newly in `set` by `now`: noted, and recorded unless only seeding. */
-function newly(set, plot, now, seed) {
-  const fresh = now && !set.has(plot);
-  if (now) set.add(plot);
-  else set.delete(plot);
-  return fresh && !seed;
-}
-
-const SIEGE_REACH = 2;   // tiles from a settlement its besiegers stand within (ranged units included)
+const SIEGE_REACH = 2;          // tiles from a settlement its besiegers stand within (ranged units included)
+const besieged = new Set();     // settlement plots under siege
 
 /**
  * A settlement's besieger: the enemy with the most units nearest it (within
@@ -345,70 +322,41 @@ function besiegerOf(location, owner) {
   return recent.sort((a, b) => b.turn - a.turn)[0]?.owner ?? -1;
 }
 
-/**
- * Settlements newly under siege (for both sides; the first check, on load,
- * only notes them), and those gone from the map razed.
- */
-function checkSettlements(seed = false) {
+/** Settlements newly under siege, for both sides (the first check, on load, only notes them). */
+function checkSieges(seed = false) {
   for (const player of Players.getAlive()) {
     const districts = Players.Districts.get(player.id);
     for (const city of player.Cities?.getCities?.() ?? []) {
       const plot = GameplayMap.getIndexFromLocation(city.location);
-      if (newly(besieged, plot, !!districts?.getDistrictIsBesieged?.(city.location), seed)) {
-        const besieger = besiegerOf(city.location, player.id);
-        record(player.id, 'S', city.name, besieger);
-        record(besieger, 'B', city.name, player.id);
+      const now = !!districts?.getDistrictIsBesieged?.(city.location);
+      if (!now) {
+        besieged.delete(plot);
+        continue;
       }
-      note(plot, city);
+      if (besieged.has(plot)) continue;
+      besieged.add(plot);
+      if (seed) continue;
+      const besieger = besiegerOf(city.location, player.id);
+      record(player.id, 'S', city.name, besieger);
+      record(besieger, 'B', city.name, player.id);
     }
   }
-  for (const [plot, last] of held) {
-    if (cityAt(plot)) continue;
-    held.delete(plot);
+}
+const checkSiegesSoon = deferOnce(() => checkSieges());   // district damage comes in bursts
+
+watchSettlements({
+  transferred: ({ name }, { from, to, incorporated }) => {   // not when a city-state is incorporated
+    if (incorporated) return;
+    record(to, 'C', name, from);
+    record(from, 'L', name, to);
+  },
+  razed: ({ plot, owner, name, from }) => {   // by its last owner, if it took it, and for the player it was taken from
     besieged.delete(plot);
-    if (!seed) razed(last);
+    if (from == null) return;
+    record(owner, 'Y', name, from);
+    record(from, 'W', name, owner);
   }
-}
-
-/** A settlement noted as it is now, keeping who it was taken from while its owner is the same. */
-function note(plot, city) {
-  const last = held.get(plot);
-  const from = last?.owner === city.owner ? last.from : (last?.owner ?? (city.originalOwner !== city.owner ? city.originalOwner : null));
-  held.set(plot, { owner: city.owner, name: city.name, from });
-}
-
-/** A settlement gone: razed by its last owner, for it and for the player it was taken from. */
-function razed({ owner, name, from }) {
-  if (from == null) return;
-  record(owner, 'Y', name, from);
-  record(from, 'W', name, owner);
-}
-
-/** The plot of a settlement a player just lost: one of its own no longer held by it. */
-function plotLostBy(owner) {
-  return [...held].find(([plot, last]) => last.owner === owner && cityAt(plot)?.owner !== owner)?.[0];
-}
-
-/**
- * A settlement changing hands (fromPlayer to the new owner): captured by the
- * new owner and lost by the last (not when a city-state is incorporated),
- * noted even when it is gone at once; then every settlement checked.
- */
-function onTransfered(data) {
-  const from = data?.fromPlayer;
-  const to = data?.cityID?.owner;
-  const city = data?.cityID && Cities.get(data.cityID);
-  const plot = city ? GameplayMap.getIndexFromLocation(city.location) : plotLostBy(from);
-  const name = (plot != null ? held.get(plot)?.name : null) ?? city?.name;
-  if (name && from != null && to != null && from !== to) {
-    if (plot != null) held.set(plot, { owner: to, name, from });
-    if (data.transferType !== CityTransferTypes.BY_INCORPORATE_CITY_STATE) {
-      record(to, 'C', name, from);
-      record(from, 'L', name, to);
-    }
-  }
-  setTimeout(checkSettlements, 0);   // once the map has settled
-}
+});
 
 // ============================ Pillage ============================
 
@@ -416,7 +364,6 @@ const damaged = new Set();   // "owner:id" of constructibles seen damaged
 const PILLAGE_REACH = 1;     // tiles from its unit a pillage order may target
 const PILLAGE_WAIT = 250;    // ms a damage waits for its order, which may be told just after it
 let orders = [];             // this turn's pillage orders: [{ owner, location, turn }]
-
 
 /** A unit ordered to pillage: its owner and where it stands, for this turn. */
 function onOperationStarted(data) {
@@ -471,14 +418,13 @@ function notePillage(def, location, owner) {
 }
 
 onObserverReady(() => {
-  try { checkSettlements(true); } catch (e) { log(`settlements not checked: ${e}`); }
+  try { checkSieges(true); } catch (e) { log(`sieges not checked: ${e}`); }
   engine.on('Combat', onCombat);
   engine.on('ConstructibleChanged', onConstructibleChanged);
   engine.on('UnitOperationStarted', onOperationStarted);
-  engine.on('DistrictDamageChanged', (data) => { showPayload('DistrictDamageChanged', data); checkSettlements(); });
-  engine.on('CityTransfered', onTransfered);
-  engine.on('TurnBegin', () => checkSettlements());
-  engine.on('CityRemovedFromMap', () => setTimeout(checkSettlements, 0));
+  engine.on('DistrictDamageChanged', (data) => { showPayload('DistrictDamageChanged', data); checkSiegesSoon(); });
+  engine.on('CityTransfered', checkSiegesSoon);
+  engine.on('TurnBegin', () => checkSieges());
 });
 
 export { BATTLE_CATEGORIES, BATTLE_LOG_EVENT, battleLog };

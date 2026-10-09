@@ -25,11 +25,10 @@
  * stylesheet, with two filters: the view and the Age (Overall or one Age).
  *  - Yields: line graphs of each leader's yields per turn
  *    (observer-graph-lines.js, observer-graph-yields.js).
- *  - Empire: timelines of the settlements each leader founded, captured, lost
- *    and upgraded and how they grew (observer-graph-empire.js).
- *  - Military: timelines of each leader's wars, battles, units trained, lost
- *    and defeated, and commanders' promotions, and a line graph of its
- *    military strength (observer-graph-military.js).
+ *  - Empire: timelines of each leader's settlements and citizens
+ *    (observer-graph-empire.js).
+ *  - Military: a line graph of each leader's military strength and timelines
+ *    of its units, promotions, wars and conflicts (observer-graph-military.js).
  * Every view marks each crisis stage (observer-crisis.js) and, in Overall,
  * where each Age starts; rows and graphs are fitted to the panel's height.
  * The screen opens from a button in the HUD's sub-system dock.

@@ -21,14 +21,11 @@
 /**
  * Zatygold's Spectator - Observer ribbon view buttons (in-game scope).
  *
- * The Observer's own card has no stats; its stat area holds round buttons
- * (the game's mini-map lens button with its own yield glyphs) that switch
- * every other card between Yields | Production, Research and Victories. The
- * card's banner, between the portrait and the civ symbol, holds the Auto End
- * Turn toggle (observer-turn.js); the civ symbol, smaller, sits under it.
- * The buttons form one column.
- * Right-clicking the card's portrait hides or shows every card's details
- * (observer-navigation.js); its tooltip says so.
+ * The Observer's own card has no stats: its stat area holds a column of round
+ * buttons (the game's mini-map lens button with yield glyphs) that switch every
+ * other card between Yields | Production, Research and Victories, and its
+ * banner the Auto End Turn toggle (observer-turn.js) above a smaller civ
+ * symbol. Its portrait's tooltip names the right-click (observer-navigation.js).
  */
 import { ancestorWithClass, onActivate } from '../shared/zom-util.js';
 import { ICONS, OBSERVER_VIEW } from './observer-config.js';

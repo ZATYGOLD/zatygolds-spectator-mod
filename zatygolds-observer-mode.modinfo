@@ -165,6 +165,7 @@
                     <Item>ui/observer/observer-crisis.js</Item>
                     <Item>ui/observer/observer-line-graph.js</Item>
                     <Item>ui/observer/observer-event-log.js</Item>
+                    <Item>ui/observer/observer-settlement-watch.js</Item>
                     <Item>ui/observer/observer-unit-log.js</Item>
                     <Item>ui/observer/observer-settlement-log.js</Item>
                     <Item>ui/observer/observer-empire.js</Item>

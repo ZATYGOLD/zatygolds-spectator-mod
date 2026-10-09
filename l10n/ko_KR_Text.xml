@@ -142,26 +142,44 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ko_KR">
 			<Text>연대기</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ko_KR">
-			<Text>각 지도자의 턴당 {1_Yield}. 게임의 매 턴마다 기록됩니다.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ko_KR">
+			<Text>종합</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="ko_KR">
 			<Text>아직 기록된 턴이 없습니다. 산출량은 매 턴 시작 시 기록됩니다.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ko_KR">
-			<Text>턴당 {1_Yield}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="ko_KR">
+			<Text>아직 없음</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ko_KR">
+			<Text>합계</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ko_KR">
+			<Text>턴</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="ko_KR">
 			<Text>턴당</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ko_KR">
-			<Text>종합</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ko_KR">
+			<Text>{1_First}~{2_Last}턴</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="ko_KR">
+			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="ko_KR">
 			<Text>클릭하면 이 지도자의 선을 숨깁니다.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ko_KR">
 			<Text>클릭하면 이 지도자의 선을 표시합니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ko_KR">
+			<Text>산출량</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ko_KR">
+			<Text>각 지도자의 턴당 {1_Yield}. 게임의 매 턴마다 기록됩니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ko_KR">
+			<Text>턴당 {1_Yield}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="ko_KR">
 			<Text>과학</Text>
@@ -184,53 +202,47 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ko_KR">
 			<Text>생산력</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ko_KR">
-			<Text>산출량</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ko_KR">
-			<Text>격파한 유닛</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ko_KR">
-			<Text>각 지도자가 언제 어떤 유닛을 파괴하거나 포획했는지.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ko_KR">
 			<Text>제국</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="ko_KR">
-			<Text>인구</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="ko_KR">
-			<Text>각 지도자의 정착지가 언제 성장했는지 (도시 인구, 농촌 인구, 전문가).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ko_KR">
 			<Text>정착지</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="ko_KR">
-			<Text>각 지도자가 언제 정착지를 건설, 점령, 상실하거나 도시로 승격했는지.</Text>
+			<Text>각 지도자가 정착지를 건설, 점령, 상실, 파괴하거나 도시로 승격한 시점.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ko_KR">
+			<Text>지도자가 얻거나 잃거나 승격한 모든 [B]정착지[/B].[NN][BLIST][LI][B]핀[/B]: 도시는 금색, 마을은 파란색[LI][B]점[/B]: 건설(또는 통합), 점령, 손실, 파괴 또는 도시로 승격[LI][B]점선 호[/B]: 마을을 그 승격과, 점령 또는 손실을 그 파괴와 잇습니다[/LIST][NN][B]합계[/B]: 현재(또는 시대 종료 시) 보유한 정착지.[N][B]카드[/B]: 도시와 마을.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ko_KR">
 			<Text>건설</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ko_KR">
+			<Text>통합</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ko_KR">
+			<Text>점령</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="ko_KR">
 			<Text>손실</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="ko_KR">
+			<Text>파괴</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ko_KR">
 			<Text>도시로 승격</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="ko_KR">
+			<Text>인구</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="ko_KR">
+			<Text>각 지도자의 정착지가 언제 성장했는지 (시가지 인구, 교외 인구, 전문가).</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ko_KR">
+			<Text>지도자의 정착지가 얻은 모든 시민.[NN][BLIST][LI][B]핀[/B]: 시민을 추가한 건물 또는 시설, 주요 산출물의 색[LI][B]점[/B]: 시가지는 금색, 교외는 은색[LI][B]전문가[/B]: 빛나는 금색 핀, 해당 타일의 건물과 함께[/LIST][NN]점령한 정착지는 점령 당시 규모부터 셉니다.[NN][B]합계[/B]: 현재(또는 시대 종료 시) 시민 수. 마우스를 올리면 시가지·교외·전문가별.[N][B]카드[/B]: 전문가. 마우스를 올리면 정착지·구역별.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="ko_KR">
 			<Text>군사</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="ko_KR">
-			<Text>전쟁</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="ko_KR">
-			<Text>각 지도자가 언제, 누구와 전쟁 중이었는지, 각 전쟁이 어떻게 시작되고 끝났는지.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="ko_KR">
-			<Text>분쟁</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="ko_KR">
-			<Text>각 지도자의 전투, 교전, 포위전과 그 상대, 파괴한 정착지와 약탈된 타일.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="ko_KR">
 			<Text>전투력</Text>
@@ -238,11 +250,53 @@
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ko_KR">
 			<Text>각 지도자의 군사력(모든 유닛의 전투력), 게임의 매 턴 기록.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ko_KR">
+			<Text>사령관</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ko_KR">
+			<Text>생산</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ko_KR">
+			<Text>구매</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ko_KR">
+			<Text>획득</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ko_KR">
+			<Text>훈련한 유닛</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제 어떤 유닛을 생산, 구매하거나 획득했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="ko_KR">
+			<Text>지도자가 [B]생산[/B] 또는 [B]구매[/B]하거나 [B]획득[/B]한 모든 유닛.[NN][BLIST][LI][B]핀[/B]: 지상, 해상, 민간 또는 사령관[LI][B]사령관[/B]: 한 번만 세며, 패배 후 복귀해도 다시 세지 않습니다[/LIST][NN][B]합계[/B]: 훈련한 유닛. 마우스를 올리면 범주별.[N][B]카드[/B]: 훈련한 사령관 유형별, 없으면 가장 많이 훈련한 유닛. 마우스를 올리면 범주별 모든 유닛.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ko_KR">
+			<Text>잃은 유닛</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제, 누구에게 유닛을 파괴되거나 포획당했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="ko_KR">
+			<Text>지도자가 적에게 격파되거나 포획되어 잃은 모든 유닛.[NN][BLIST][LI][B]핀[/B]: 지상, 해상, 민간 또는 사령관과 이를 빼앗은 상대[LI][B]순위[/B]: 손실이 적은 순[/LIST][NN][B]합계[/B]: 잃은 유닛. 마우스를 올리면 범주별.[N][B]카드[/B]: 잃은 사령관 유형별, 없으면 가장 많이 잃은 유닛. 마우스를 올리면 범주별 모든 유닛.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ko_KR">
+			<Text>격파한 유닛</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제 어떤 유닛을 파괴하거나 포획했는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="ko_KR">
+			<Text>지도자가 격파하거나 포획한 모든 적 유닛.[NN][BLIST][LI][B]핀[/B]: 지상, 해상, 민간 또는 사령관과 그 소유자[/LIST][NN][B]합계[/B]: 격파한 유닛. 마우스를 올리면 범주별.[N][B]카드[/B]: 격파한 사령관 유형별, 없으면 가장 많이 격파한 유닛. 마우스를 올리면 범주별 모든 유닛.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="ko_KR">
 			<Text>진급</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="ko_KR">
 			<Text>각 지도자의 사령관이 언제 어떤 진급과 훈장을 받았는지.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="ko_KR">
+			<Text>지도자의 사령관이 얻은 모든 [B]진급[/B]과 [B]훈장[/B].[NN][BLIST][LI][B]진급[/B]: 트리 아이콘, 트리 색 핀[LI][B]훈장[/B]: 훈장 아이콘, 빛나는 금색 핀[LI][B]세부[/B]: 사령관과 몇 번째 진급인지[LI][B]점선 호[/B]: 각 사령관의 진급을 잇습니다. 점의 색으로 사령관을 구분합니다[/LIST][NN][B]합계[/B]: 진급과 훈장. 마우스를 올리면 각각 표시.[N][B]카드[/B]: 가장 많이 받은 훈장과 가장 많이 진급한 트리. 마우스를 올리면 훈장·트리별.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="ko_KR">
 			<Text>훈장</Text>
@@ -250,17 +304,23 @@
 		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="ko_KR">
 			<Text>아직 진급이 없습니다</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="ko_KR">
-			<Text>전투</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="ko_KR">
+			<Text>{1_Commander}, {2_Number}번째 진급</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="ko_KR">
-			<Text>교전</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="ko_KR">
+			<Text>전쟁</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="ko_KR">
-			<Text>포위전</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제, 누구와 전쟁 중이었는지, 각 전쟁이 어떻게 시작되고 끝났는지.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="ko_KR">
-			<Text>아직 없음</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="ko_KR">
+			<Text>지도자 간 전쟁. 독립 세력은 항상 적대적이므로 세지 않습니다. 전쟁은 평화 협정을 맺을 때까지 새 시대에도 이어집니다.[NN]눈금은 매 턴을 나타냅니다:[NN][BLIST][LI][B]빨간색[/B]: 침략, 지도자가 선전포고함[LI][B]노란색[/B]: 방어, 지도자가 선전포고를 받음[LI][B]회색[/B]: 평화[/LIST][NN]동시에 진행 중인 전쟁은 눈금을 나누며, 평화 협정을 맺은 눈금은 초록색으로 채워집니다. 적을 표시한 핀은 각 전쟁이 시작된 시점을, [B]초록색[/B] 핀은 평화 협정을 맺은 시점을 나타내며, 각각 누가 누구를 공격했는지 보여줍니다.[NN][B]턴[/B]: 전쟁 중인 턴 수. 마우스를 올리면 선전포고함, 선전포고받음, 평화 협정 횟수.[N][B]카드[/B]: 가장 오래 전쟁한 적(동률이면 모두). 마우스를 올리면 모든 전쟁.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="ko_KR">
+			<Text>전쟁 중인 턴</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="ko_KR">
+			<Text>외교</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="ko_KR">
 			<Text>침략</Text>
@@ -286,74 +346,35 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="ko_KR">
 			<Text>{1_Leader}와(과) 평화</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="ko_KR">
-			<Text>전투</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="ko_KR">
+			<Text>분쟁</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="ko_KR">
-			<Text>교전</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="ko_KR">
+			<Text>각 지도자가 언제 누구를 상대로 공성, 전투, 소규모 교전을 벌였는지, 그리고 무엇이 점령, 파괴, 약탈되었는지.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="ko_KR">
-			<Text>포위전</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="ko_KR">
-			<Text>{1_Player}에게 포위됨</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="ko_KR">
-			<Text>{1_Player}에게 파괴됨</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="ko_KR">
-			<Text>{1_Player}에게 점령됨</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="ko_KR">
+			<Text>지도자의 분쟁. [B]교전[/B]은 같은 두 세력 사이에 3타일 이내에서 5턴 이하 간격으로 이어진 모든 공격과 약탈입니다. 양측이 전투 가능한 유닛(개척자, 정찰병 제외)으로 서로 공격해야 셉니다. 각 공격은 양측 모두에 세며, 약탈은 건물 2, 교외 타일 1로 셉니다.[NN]우선순위 순:[NN][BLIST][LI][B]파괴[/B]: 파괴되어 지도에서 사라진 정착지[LI][B]점령[/B]: 빼앗은 정착지[LI][B]손실[/B]: 지도자가 빼앗긴 정착지[LI][B]공성[/B]: 포위된 정착지. 같은 적이 5턴 이내에 다시 포위하면 같은 공성[LI][B]전투[/B]: 첫 턴 또는 3턴 지속된 시점에 공격 3회 이상 또는 약탈 4 이상인 교전, 5턴 동안 싸움이 있었던 교전, 또는 양측 간 공성이 있는 교전[LI][B]소규모 교전[/B]: 그보다 작은 모든 교전[LI][B]약탈[/B]: 홍수, 분화, 폭풍이 아닌 적 유닛이 약탈한 타일. 지도자 자신의 타일인 [B]약탈당함[/B]도 여기에 셉니다[/LIST][NN]점은 상대를 나타냅니다: 지도자는 금색, 도시 국가는 파란색, 독립 세력은 은색. 핀은 지도자, 도시 국가, 독립 세력 순으로 우선 표시합니다. 눈금은 각 공성(주황색), 전투(빨간색), 소규모 교전(파란색)이 진행되는 동안을 나타내며, 겹치는 곳은 눈금을 나누어 먼저 시작된 것이 대부분을 차지합니다. 점선 호는 각 사건을 그 발단과 잇습니다: 소규모 교전을 그것이 발전한 전투와, 싸움을 공성과, 공성을 점령 또는 손실과, 그리고 그것을 파괴와.[NN][B]합계[/B]: 공성, 전투, 소규모 교전, 약탈. 마우스를 올리면 이와 별도로 그 결과(파괴, 점령, 손실)를 표시합니다.[N][B]카드[/B]: 숙적, 가장 많이 싸운 플레이어(지도자를 도시 국가와 독립 세력보다 우선). 마우스를 올리면 다른 모든 상대.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="ko_KR">
 			<Text>결과</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="ko_KR">
-			<Text>숙적</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="ko_KR">
+			<Text>공성</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="ko_KR">
-			<Text>상대</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="ko_KR">
+			<Text>전투</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="ko_KR">
-			<Text>{1_Commander}, {2_Number}번째 진급</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="ko_KR">
+			<Text>소규모 교전</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ko_KR">
-			<Text>지도자가 얻거나 잃거나 승격한 [B]정착지[/B].[NN][BLIST][LI][B]핀[/B]: 도시는 금색, 마을은 파란색[LI][B]점[/B]: 건설(또는 편입), 점령, 손실, 파괴, 도시로 승격[LI][B]점선 호[/B]: 마을과 그 승격, 점령 또는 손실과 파괴를 잇습니다[/LIST][NN][B]합계[/B]: 현재 정착지(또는 시대 종료 시).[N][B]카드[/B]: 도시와 마을.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="ko_KR">
+			<Text>공성</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ko_KR">
-			<Text>지도자의 정착지가 얻은 시민.[NN][BLIST][LI][B]핀[/B]: 이를 추가한 건물 또는 시설, 주요 산출물의 색[LI][B]점[/B]: 도시는 금색, 농촌은 은색[LI][B]전문가[/B]: 빛나는 금색 핀과 해당 타일의 건물[/LIST][NN]점령한 정착지는 점령 시 규모부터 셉니다.[NN][B]합계[/B]: 인구(마우스를 올리면 도시·농촌·전문가별).[N][B]카드[/B]: 전문가(마우스를 올리면 정착지·지구별).</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="ko_KR">
+			<Text>전투</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="ko_KR">
-			<Text>지도자가 [B]생산[/B], [B]구매[/B]하거나 [B]받은[/B] 유닛.[NN][BLIST][LI][B]핀[/B]: 지상, 해상, 민간 또는 사령관[LI][B]사령관[/B]: 한 번만 세며, 패배 후 복귀 시 다시 세지 않습니다[/LIST][NN][B]합계[/B]: 훈련한 유닛(마우스를 올리면 범주별).[N][B]카드[/B]: 훈련한 사령관 유형, 없으면 가장 많이 훈련한 유닛.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="ko_KR">
-			<Text>지도자가 다른 플레이어에게 잃은 유닛(처치 또는 포획).[NN][BLIST][LI][B]핀[/B]: 지상, 해상, 민간 또는 사령관과 빼앗은 상대[LI][B]순위[/B]: 손실이 적은 순[/LIST][NN][B]합계[/B]: 잃은 유닛(마우스를 올리면 범주별).[N][B]카드[/B]: 잃은 사령관 유형, 없으면 가장 많이 잃은 유닛.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="ko_KR">
-			<Text>지도자가 처치하거나 포획한 다른 플레이어의 유닛.[NN][BLIST][LI][B]핀[/B]: 지상, 해상, 민간 또는 사령관과 그 소유자[/LIST][NN][B]합계[/B]: 격파한 유닛(마우스를 올리면 범주별).[N][B]카드[/B]: 격파한 사령관 유형, 없으면 가장 많이 격파한 유닛.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="ko_KR">
-			<Text>지도자의 사령관이 얻은 [B]진급[/B]과 [B]훈장[/B].[NN][BLIST][LI][B]진급[/B]: 트리 아이콘, 핀은 트리 색[LI][B]훈장[/B]: 훈장 아이콘, 핀은 빛나는 금색[LI][B]세부[/B]: 사령관과 몇 번째 진급인지[/LIST][NN]점선 호는 각 사령관의 진급을 잇고, 점의 색으로 사령관을 구분합니다.[NN][B]합계[/B]: 진급과 훈장.[N][B]카드[/B]: 가장 많이 받은 훈장, 그다음 가장 많이 진급한 트리(마우스를 올리면 훈장·트리별).</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="ko_KR">
-			<Text>지도자 간 전쟁. 독립 세력은 항상 적대적이므로 세지 않습니다. 눈금은 매 턴을 나타냅니다:[NN][BLIST][LI][B]빨간색[/B]: 침략, 지도자가 선전포고[LI][B]노란색[/B]: 방어, 지도자가 선전포고를 받음[LI][B]회색[/B]: 평화[/LIST][NN]동시에 벌어진 전쟁은 눈금을 나누며, 평화 협정의 눈금은 초록색으로 채워집니다. 적의 핀은 각 전쟁의 시작을, [B]초록색[/B] 핀은 평화 협정을 표시하며, 누가 누구를 공격했는지 보여줍니다.[NN][B]턴[/B]: 전쟁 중인 턴.[N][B]카드[/B]: 가장 오래 전쟁한 적(동률이면 모두). 마우스를 올리면 각 전쟁을 표시합니다. 전쟁은 평화 협정 전까지 새 시대에도 이어집니다.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="ko_KR">
-			<Text>전쟁 중인 턴</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="ko_KR">
-			<Text>외교</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ko_KR">
-			<Text>턴</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="ko_KR">
-			<Text>지도자의 분쟁(우선순위 순):[NN][BLIST][LI][B]파괴[/B]: 지도에서 사라진 파괴된 정착지[LI][B]점령[/B]: 빼앗은 정착지[LI][B]손실[/B]: 빼앗긴 정착지[LI][B]포위전[/B]: 포위된 정착지(같은 적이 5턴 안에 다시 포위하면 같은 포위전)[LI][B]전투[/B]: 공격 3회 이상 또는 약탈 4 이상인 교전(첫 턴이거나 3턴 이상 지속된 후), 또는 5턴 동안 싸운 교전, 또는 양측 간 포위전이 있는 교전[LI][B]교전[/B]: 그보다 적은 교전(소규모)[LI][B]약탈[/B]: 약탈한 타일[/LIST][NN]점은 상대를 나타냅니다: 지도자는 금색, 도시국가는 파란색, 독립 세력은 은색. 핀은 지도자, 도시국가, 독립 세력 순으로 표시됩니다. 눈금은 포위전(주황색), 전투(빨간색), 교전(파란색)이 이어지는 동안을 나타내며, 겹치는 곳은 눈금을 나누어 앞의 것이 대부분을 차지합니다.[NN][B]교전[/B]은 같은 두 세력이 3타일 이내에서 5턴 이내 간격으로 이어진 모든 공격과 약탈입니다. 양측이 전투 가능한 유닛(개척자, 정찰병 제외)으로 서로 공격해야 세며, 각 공격은 양측 모두에 셉니다. 약탈은 건물 2, 농촌 타일 1입니다. 점선 호는 각 사건을 그 발단과 잇습니다: 교전과 그것이 발전한 전투, 전투와 포위전, 포위전과 점령 또는 손실, 그리고 그것과 파괴. [B]약탈당함[/B](자신의 타일)도 [B]약탈[/B]에 포함해 셉니다. 적 유닛의 약탈만 세며, 홍수, 분화, 폭풍은 세지 않습니다.[NN][B]합계[/B]: 포위전, 전투, 교전, 약탈. 파괴, 점령, 손실은 그 결과로, 마우스를 올리면 따로 표시됩니다.[N][B]카드[/B]: 숙적, 가장 많이 싸운 상대(지도자, 도시국가, 독립 세력 순). 마우스를 올리면 다른 상대를 표시합니다.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="ko_KR">
-			<Text>공격 {1_Num}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="ko_KR">
-			<Text>약탈 {1_Num}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="ko_KR">
+			<Text>소규모 교전</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="ko_KR">
 			<Text>약탈</Text>
@@ -361,47 +382,29 @@
 		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="ko_KR">
 			<Text>약탈당함</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="ko_KR">
-			<Text>파괴</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="ko_KR">
+			<Text>{1_Player}에게 포위됨</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ko_KR">
-			<Text>점령</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="ko_KR">
+			<Text>{1_Player}에게 점령됨</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ko_KR">
-			<Text>편입</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="ko_KR">
+			<Text>{1_Player}에게 파괴됨</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ko_KR">
-			<Text>훈련한 유닛</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="ko_KR">
+			<Text>공격 {1_Num}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ko_KR">
-			<Text>잃은 유닛</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="ko_KR">
+			<Text>약탈 {1_Num}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ko_KR">
-			<Text>각 지도자가 언제, 누구에게 유닛을 파괴되거나 포획당했는지.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="ko_KR">
+			<Text>숙적</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="ko_KR">
-			<Text>{1_Category} · {2_Player}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="ko_KR">
+			<Text>상대</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ko_KR">
-			<Text>사령관</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ko_KR">
-			<Text>생산</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ko_KR">
-			<Text>구매</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ko_KR">
-			<Text>획득</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ko_KR">
-			<Text>각 지도자가 언제 어떤 유닛을 훈련하거나 구매했는지.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ko_KR">
-			<Text>{1_First}~{2_Last}턴</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ko_KR">
-			<Text>합계</Text>
+		<Replace Tag="LOC_ZOM_GROUPED_DIGITS" Language="ko_KR">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

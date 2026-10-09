@@ -22,12 +22,10 @@
  * Zatygold's Spectator - Observer civilizations kept out of civilization lists
  * (in-game scope, every player).
  *
- *   - Age-transition civilization choice: a real leader is never offered an
- *     Observer civilization; the Observer is offered only Observer ones.
- *   - Legacies "Civ Unlocks" tab: Observer civilizations are never listed; for
- *     the Observer, unlock states, current and previous civilization are the
- *     viewed leader's (observer-leader-view.js). Installed through the
- *     model registry's override priority, wrapping the base model.
+ * At the Age transition a real leader is never offered an Observer
+ * civilization, and the Observer only those. The Legacies "Civ Unlocks" tab
+ * never lists them; for the Observer it shows the viewed leader's unlocks and
+ * civilizations (observer-leader-view.js), wrapping the base model.
  */
 import { CivUnlocksModel, createCivUnlocksModel } from 'fs://game/core/ui-next/screens/unlocks/civ-unlocks-model.js';
 import { ModelRegistry, ModelLifecycle } from 'fs://game/core/ui-next/services/model-registry.js';

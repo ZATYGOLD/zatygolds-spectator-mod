@@ -22,11 +22,10 @@
  * Zatygold's Spectator - Observer perspective (in-game scope).
  *
  * Shows the map as one leader sees it (toggled from the ribbon portraits):
- * unexplored tiles blacked out (colour filter + overlay), seen tiles greyed,
- * the minimap masked, resources shown as the game shows fog-of-war resources,
- * and flags, district bars, banners and world texts hidden where the leader
- * cannot see. The UI's revealed-state lookups for the local seat answer for
- * the viewed leader while active. Drawing only; never game state.
+ * unexplored tiles black, seen ones grey, the minimap masked, resources as the
+ * fog of war shows them, and flags, district bars, banners and world texts
+ * hidden where the leader cannot see; the UI's revealed-state lookups answer
+ * for the viewed leader. Drawing only; never game state.
  */
 import LensManager from 'fs://game/core/ui/lenses/lens-manager.js';
 import { ResourceLensLayer } from 'fs://game/base-standard/ui/lenses/layer/resource-layer.js';
@@ -118,7 +117,6 @@ function unitState(unitId) {
     return loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) === RevealedStates.VISIBLE ? RevealedStates.VISIBLE : RevealedStates.HIDDEN;
   }
 }
-
 
 // ============================ Map ============================
 

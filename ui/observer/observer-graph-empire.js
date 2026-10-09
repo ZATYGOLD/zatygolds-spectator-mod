@@ -22,10 +22,8 @@
  * Zatygold's Spectator - Empire graphs (in-game scope).
  *
  * The Empire timeline view (observer-graph-timelines.js): a Settlements tab
- * of the settlements each leader founded, captured and lost
- * (observer-graph-settlements.js) and a Population tab of how each leader's
- * settlements grew (observer-graph-population.js), each tab with its own
- * subject.
+ * (observer-graph-settlements.js) and a Population tab
+ * (observer-graph-population.js), each with its own subject.
  */
 import { EMPIRE_EVENT, populationLog } from './observer-empire.js';
 import { POPULATION_SUBJECT } from './observer-graph-population.js';

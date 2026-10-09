@@ -61,7 +61,7 @@ let refreshing = false;      // refreshRibbon rebuilds itself after the model up
 
 // ============================ Moods ============================
 
-function isAtWar(player) {
+function isAtWarWithAnyLeader(player) {
   try { return !!player.Diplomacy?.isAtWarWithAnyMajorCiv?.(); } catch (e) { return false; }
 }
 
@@ -70,7 +70,7 @@ function isCelebrating(player) {
 }
 
 function moodContext(player) {
-  if (isAtWar(player)) return 'LEADER_ANGRY';
+  if (isAtWarWithAnyLeader(player)) return 'LEADER_ANGRY';
   return isCelebrating(player) ? 'LEADER_HAPPY' : '';
 }
 

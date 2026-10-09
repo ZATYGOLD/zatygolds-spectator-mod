@@ -21,30 +21,37 @@
 /**
  * Zatygold's Spectator - Observer event logs (in-game scope).
  *
- * A counted log of what each leader did, per Age, turn and Age progress,
- * kept in the Observer's own player properties like the yield history
- * (observer-history.js): saved with the game and carried across Ages. A log
- * has fields of its own (observer-unit-log.js, observer-settlement-log.js,
- * observer-empire.js).
- *
+ * A counted log of what each leader did, per Age, turn and Age progress, kept
+ * in the Observer's own player properties like the yield history
+ * (observer-history.js): saved with the game and carried across Ages.
  * Property text, one per Age: "<playerId>,<turn>,<progress %>,<field>,...,<count>;...".
  */
-import { currentAgeChronology } from '../shared/zom-util.js';
+import { clamp, currentAgeChronology, deferOnce } from '../shared/zom-util.js';
 import { canSave, readSaved, writeSaved } from './observer-core.js';
 
 const SAVE_DELAY_MS = 2000;
-const BASE_PARTS = 3;   // playerId, turn, progress
+const ANNOUNCE_MS = 250;   // changes announced together (an AI turn's fighting logs in bursts)
+const BASE_PARTS = 3;      // playerId, turn, progress
 
 /** The current Age's progress, 0-99 (the Culture tab's notches); 99 once the Age has no limit. */
 function ageProgress() {
   const max = Game.AgeProgressManager.getMaxAgeProgressionPoints();
   if (!(max > 0)) return 99;
-  return Math.max(0, Math.min(99, Math.floor((Game.AgeProgressManager.getCurrentAgeProgressionPoints() / max) * 100)));
+  return clamp(Math.floor((Game.AgeProgressManager.getCurrentAgeProgressionPoints() / max) * 100), 0, 99);
 }
+
+/** Oldest first: by Age, then turn. */
+const byTime = (a, b) => a.age - b.age || a.turn - b.turn;
+
+/** A category list's index by id: { [id]: index }. */
+const categoryIndex = (categories) => Object.fromEntries(categories.map((c, i) => [c.id, i]));
+
+/** A field without the log's separators (a settlement may carry a player's own name). */
+const field = (value) => String(value ?? '').replace(/[,;|]/g, ' ');
 
 /**
  * A log saved under `keyPrefix` + Age, with `fieldCount` fields of its own per
- * entry, announcing each change with the window event `changeEvent`.
+ * entry, announcing changes with the window event `changeEvent`.
  * record(playerId, fields, count) counts `count` more (one by default); read() lists
  * [{ age, playerId, turn, progress, fields, count }].
  */
@@ -53,6 +60,7 @@ function createEventLog({ keyPrefix, fieldCount, changeEvent, log }) {
   let entries = null;   // Map<age chronology, Map<entry key, count>>
   const dirtyAges = new Set();
   let saveTimer = 0;
+  const announce = deferOnce(() => window.dispatchEvent(new CustomEvent(changeEvent)), ANNOUNCE_MS);
 
   function decode(text) {
     const counts = new Map();
@@ -93,11 +101,11 @@ function createEventLog({ keyPrefix, fieldCount, changeEvent, log }) {
     const all = allEntries();
     const counts = all.get(age) ?? new Map();
     all.set(age, counts);
-    const key = [playerId, Game.turn, ageProgress(), ...fields].join(',');
+    const key = [playerId, Game.turn, ageProgress(), ...fields.map(field)].join(',');
     counts.set(key, (counts.get(key) ?? 0) + count);
     dirtyAges.add(age);
     if (!saveTimer) saveTimer = setTimeout(save, SAVE_DELAY_MS);
-    window.dispatchEvent(new CustomEvent(changeEvent));
+    announce();
   }
 
   function read() {
@@ -125,4 +133,4 @@ function payloadLogger(log) {
   };
 }
 
-export { ageProgress, createEventLog, payloadLogger };
+export { ageProgress, byTime, categoryIndex, createEventLog, payloadLogger };

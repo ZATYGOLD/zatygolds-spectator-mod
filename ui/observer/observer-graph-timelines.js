@@ -21,26 +21,25 @@
 /**
  * Zatygold's Spectator - timeline graphs (in-game scope).
  *
- * The Chronicle views of logged things (Empire, Units), laid out like
- * the Victories screen's Culture tab: a tab per kind logged, each leader's
- * total, a notched timeline of Age progress (observer-timeline.js) with a pin
- * where things were logged, and a card after it (where the Culture tab counts
- * Great Works). A view reads what it logs (read(), changeEvents) for its tabs
- * ([{ id, label, description, info, valueLabel (else Total), lowFirst, subject }]); a tab's subject (its
- * own, else the view) describes what is logged there:
+ * The Chronicle views of logged things (Empire, Military), laid out like the
+ * Victories screen's Culture tab: per leader a Total, a notched timeline of
+ * Age progress (observer-timeline.js) with pins where things were logged, and
+ * a card. A view's tabs ([{ id, label, description, info, valueLabel (else
+ * Total), lowFirst, subject }]) read its source (read(), changeEvents); a
+ * tab's subject (its own, else the view's) describes what is logged there:
  *
  *   { looks: { [tab]: { color, background } }, categories: [{ color, glow, label }],
  *     priority (categories a pin shows first, in order; an array ranks its categories alike),
- *     sumFields (event fields summed into a pin's sources, e.g. attacks), sourceOrder(a, b) (sources, before the priority and their count),
- *     sliceEvents(events) (a pin's events as it shows them, e.g. merged; optional),
- *     sections (the pin tooltip's, see observer-timeline.js),
- *     pinIcon(source), pinColor(source), dotColor(source) (optional), icon(source), iconTint(source) (optional), name(source), detail(source), sourceOf(event) (extra source fields),
- *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, tint, count }], groups (its hover, as BreakdownCard's; optional) },
- *     cardHover (false: the card has no hover), pinCount (false: pins show no count),
- *     value(id, { lastAge, now, events }) (the Total, else the things logged; optional), tieBreak(entry),
- *     links(events) ([[from, to]] events joined by a line, optional),
- *     bands(events, { position, now }) ([{ from, to, color, layer, smooth, parts, solo }] spans whose notches take the colour, a layer's each sharing the notch (in `parts`, quarters by default), smooth ones fading between notches, a solo one taking its notches whole; optional),
- *     totalGroups(entry) (the Total's hover: groups of rows, optional) }
+ *     sourceOrder(a, b) (before the priority), sumFields (event fields summed into a pin's sources),
+ *     sliceEvents(events) (a pin's events as it shows them), sections (the pin tooltip's, see observer-timeline.js),
+ *     pinIcon, pinColor, dotColor, icon, iconTint, name, detail (each of a source), sourceOf(event) (extra source fields),
+ *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, tint, count }], groups (BreakdownCard's) },
+ *     cardHover (false: none), pinCount (false: none), value(id, { lastAge, now, events }) (else the count), tieBreak(entry),
+ *     links(events) ([[from, to]] joined by a dashed arc), totalGroups(entry) (the Total's hover),
+ *     bands(events, { position, now }) ([{ from, to, color, layer, smooth, parts, solo }]: spans whose notches take
+ *       the colour, one per layer sharing a notch in `parts` (quarters by default), smooth ones blending with their
+ *       neighbours, a solo one taking its notches whole) }
+ * Everything but looks, categories, pinIcon, icon, name, detail, card and tieBreak is optional.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createMemo, createRenderEffect } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -118,18 +117,26 @@ const byCount = (a, b) => b[1] - a[1];
 const rankedCells = (counts, iconOf, { max = CARD_LOOK.length, tint = () => null, order = byCount } = {}) => [...counts].sort(order).slice(0, max)
   .map(([key, count]) => ({ icon: iconOf(key), tint: tint(key), count }));
 
-/**
- * One leader's pins: the bar split into MAX_PINS slices, one pin per slice
- * with logged things, shown as its first thing (by the subject's priority,
- * after sourceOrder, then the most frequent), its things listed the same way.
- */
+/** A card with nothing yet: the icon with 0, and on hover the label ("None Yet"). */
+const emptyCard = (icon, label = 'LOC_ZOM_GRAPH_NONE_YET') => ({ cells: [{ icon, count: 0 }], groups: [[{ icon, label: Locale.compose(label), value: 0 }]] });
+
+/** A hover group of each category's Total, by its colour dot. */
+const categoryRows = (categories, entry) => [categories.map((c, i) => ({ color: c.color, label: Locale.compose(c.label), value: entry?.totals[i] ?? 0 }))];
+
+/** The pin slice of a bar position (0-100). */
 const sliceOf = (at) => Math.min(MAX_PINS - 1, Math.floor((at / 100) * MAX_PINS));
 
+/**
+ * One leader's pins: the bar split into MAX_PINS slices, one pin per slice
+ * with logged things, shown as its first thing (by sourceOrder, then the
+ * subject's priority, then the most frequent), its things listed the same way.
+ */
 function leaderPins(events, position, view) {
   const buckets = new Map();   // slice -> its events
   for (const event of events) {
     const index = sliceOf(position(event.age, event.progress));
-    buckets.set(index, [...(buckets.get(index) ?? []), event]);
+    if (!buckets.has(index)) buckets.set(index, []);
+    buckets.get(index).push(event);
   }
   const slices = new Map();
   for (const [index, bucket] of buckets) {
@@ -281,4 +288,4 @@ const TimelinePanel = (props) => {
   });
 };
 
-export { byCount, rankedCells, sumBy, TimelinePanel };
+export { byCount, categoryRows, emptyCard, rankedCells, sumBy, TimelinePanel };

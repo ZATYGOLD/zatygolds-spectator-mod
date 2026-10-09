@@ -17,6 +17,7 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 /**
  * Zatygold's Spectator - settlement facts (in-game scope).
  *

@@ -142,26 +142,44 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ru_RU">
 			<Text>Летопись</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ru_RU">
-			<Text>{1_Yield} за ход у каждого лидера, записывается каждый ход игры.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ru_RU">
+			<Text>Общее</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="ru_RU">
 			<Text>Пока не записано ни одного хода. Доходы записываются в начале каждого хода.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ru_RU">
-			<Text>{1_Yield} за ход</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="ru_RU">
+			<Text>Пока нет</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ru_RU">
+			<Text>Всего</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ru_RU">
+			<Text>Ходы</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="ru_RU">
 			<Text>За ход</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ru_RU">
-			<Text>Общее</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ru_RU">
+			<Text>Ходы {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="ru_RU">
+			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="ru_RU">
 			<Text>Нажмите, чтобы скрыть линию этого лидера.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ru_RU">
 			<Text>Нажмите, чтобы показать линию этого лидера.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ru_RU">
+			<Text>Доходы</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="ru_RU">
+			<Text>{1_Yield} за ход у каждого лидера, записывается каждый ход игры.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="ru_RU">
+			<Text>{1_Yield} за ход</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="ru_RU">
 			<Text>Наука</Text>
@@ -184,17 +202,35 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="ru_RU">
 			<Text>Производство</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ru_RU">
-			<Text>Доходы</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ru_RU">
-			<Text>Разбито отрядов</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ru_RU">
-			<Text>Когда и какие отряды каждый лидер уничтожил или захватил.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ru_RU">
 			<Text>Империя</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ru_RU">
+			<Text>Поселения</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="ru_RU">
+			<Text>Когда каждый лидер основывал, захватывал, терял, разрушал поселения или превращал их в города.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ru_RU">
+			<Text>Все [B]Поселения[/B], которые лидер получает, теряет или превращает в города.[NN][BLIST][LI][B]Метка[/B]: золотая для города, синяя для городка[LI][B]Точка[/B]: Основано (или Присоединено), Захвачено, Потеряно, Разрушено или Стало городом[LI][B]Пунктирная дуга[/B]: соединяет городок с его превращением в город, а захват или потерю — с разрушением[/LIST][NN][B]Всего[/B]: поселения сейчас (или на конец эпохи).[N][B]Карточка[/B]: города и городки.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ru_RU">
+			<Text>Основано</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ru_RU">
+			<Text>Присоединено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ru_RU">
+			<Text>Захвачено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="ru_RU">
+			<Text>Потеряно</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="ru_RU">
+			<Text>Разрушено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ru_RU">
+			<Text>Стало городом</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="ru_RU">
 			<Text>Население</Text>
@@ -202,35 +238,11 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="ru_RU">
 			<Text>Когда росли поселения каждого лидера: городское и сельское население, специалисты.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ru_RU">
-			<Text>Поселения</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="ru_RU">
-			<Text>Когда каждый лидер основывал, захватывал, терял поселения или превращал их в города.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="ru_RU">
-			<Text>Основано</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="ru_RU">
-			<Text>Потеряно</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ru_RU">
-			<Text>Стало городом</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ru_RU">
+			<Text>Каждый житель, которого получают поселения лидера.[NN][BLIST][LI][B]Метка[/B]: здание или улучшение, которое его добавило, цвета его основного дохода[LI][B]Точка[/B]: золотая для городских, серебряная для сельских[LI][B]Специалист[/B]: светящаяся золотая метка со зданиями на его клетке[/LIST][NN]Захваченное поселение учитывается с размера на момент захвата.[NN][B]Всего[/B]: жители сейчас (или на конец эпохи); городские, сельские и специалисты при наведении.[N][B]Карточка[/B]: специалисты; по поселениям и кварталам при наведении.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="ru_RU">
 			<Text>Армия</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="ru_RU">
-			<Text>Войны</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="ru_RU">
-			<Text>Когда каждый лидер воевал, с кем, и как начиналась и заканчивалась каждая война.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="ru_RU">
-			<Text>Конфликты</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="ru_RU">
-			<Text>Сражения, стычки и осады каждого лидера и против кого, а также разрушенные поселения и разграбленные клетки.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="ru_RU">
 			<Text>Сила</Text>
@@ -238,11 +250,53 @@
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ru_RU">
 			<Text>Военная сила каждого лидера — боевая сила всех его отрядов, по каждому ходу игры.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ru_RU">
+			<Text>Командиры</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ru_RU">
+			<Text>Произведено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ru_RU">
+			<Text>Куплено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ru_RU">
+			<Text>Получено</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ru_RU">
+			<Text>Обучено отрядов</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ru_RU">
+			<Text>Когда и какие отряды каждый лидер произвёл, купил или получил.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="ru_RU">
+			<Text>Каждый отряд, появившийся у лидера: [B]Произведено[/B], [B]Куплено[/B] или [B]Получено[/B].[NN][BLIST][LI][B]Метка[/B]: сухопутный, морской, гражданский или командир[LI][B]Командиры[/B]: учитываются один раз, а не повторно при возвращении после поражения[/LIST][NN][B]Всего[/B]: обученные отряды; по категориям при наведении.[N][B]Карточка[/B]: каждый обученный тип командира, иначе отряд, обученный чаще всего; все отряды по категориям при наведении.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ru_RU">
+			<Text>Потеряно отрядов</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ru_RU">
+			<Text>Когда каждый лидер терял отряды (уничтоженные или захваченные) и кому.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="ru_RU">
+			<Text>Каждый отряд лидера, уничтоженный или захваченный врагом.[NN][BLIST][LI][B]Метка[/B]: сухопутный, морской, гражданский или командир, и кто его забрал[LI][B]Место[/B]: сначала с наименьшими потерями[/LIST][NN][B]Всего[/B]: потерянные отряды; по категориям при наведении.[N][B]Карточка[/B]: каждый потерянный тип командира, иначе отряд, потерянный чаще всего; все отряды по категориям при наведении.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ru_RU">
+			<Text>Разбито отрядов</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ru_RU">
+			<Text>Когда и какие отряды каждый лидер уничтожил или захватил.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="ru_RU">
+			<Text>Каждый вражеский отряд, который лидер уничтожил или захватил.[NN][BLIST][LI][B]Метка[/B]: сухопутный, морской, гражданский или командир, и чей он был[/LIST][NN][B]Всего[/B]: побеждённые отряды; по категориям при наведении.[N][B]Карточка[/B]: каждый побеждённый тип командира, иначе отряд, побеждённый чаще всего; все отряды по категориям при наведении.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="ru_RU">
 			<Text>Повышения</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="ru_RU">
 			<Text>Когда и какие повышения и награды получали командиры каждого лидера.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="ru_RU">
+			<Text>Все [B]Повышения[/B] и [B]Награды[/B], полученные командирами лидера.[NN][BLIST][LI][B]Повышения[/B]: значок ветви на метке цвета ветви[LI][B]Награды[/B]: значок награды на светящейся золотой метке[LI][B]Подробно[/B]: командир и какое это его повышение по счёту[LI][B]Пунктирная дуга[/B]: соединяет повышения каждого командира; цвет точки различает командиров[/LIST][NN][B]Всего[/B]: повышения и награды; каждое при наведении.[N][B]Карточка[/B]: самая частая награда и ветвь с наибольшим числом повышений; каждая награда и ветвь при наведении.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="ru_RU">
 			<Text>Награды</Text>
@@ -250,17 +304,23 @@
 		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="ru_RU">
 			<Text>Повышений пока нет</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="ru_RU">
-			<Text>Сражения</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="ru_RU">
+			<Text>{1_Commander}, повышение {2_Number}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="ru_RU">
-			<Text>Стычки</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="ru_RU">
+			<Text>Войны</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="ru_RU">
-			<Text>Осады</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="ru_RU">
+			<Text>Когда каждый лидер воевал, с кем, и как начиналась и заканчивалась каждая война.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="ru_RU">
-			<Text>Пока нет</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="ru_RU">
+			<Text>Войны между лидерами; независимые силы всегда враждебны и не учитываются. Война продолжается в новой эпохе, пока не заключён мир.[NN]Деления показывают каждый ход:[NN][BLIST][LI][B]Красный[/B]: агрессия, лидер объявил войну[LI][B]Жёлтый[/B]: оборона, лидеру объявили войну[LI][B]Серый[/B]: мир[/LIST][NN]Одновременные войны делят деление; заключённый мир заполняет своё деление зелёным. Метка с врагом отмечает начало каждой войны, а [B]зелёная[/B] метка — заключение мира; каждая показывает, кто на кого напал.[NN][B]Ходы[/B]: ходы в состоянии войны; объявленные войны, войны, объявленные лидеру, и заключённые миры при наведении.[N][B]Карточка[/B]: враг, с которым война длилась дольше всего (при равенстве — все такие); все войны при наведении.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="ru_RU">
+			<Text>Ходов в войне</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="ru_RU">
+			<Text>Дипломатия</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="ru_RU">
 			<Text>Агрессия</Text>
@@ -286,74 +346,35 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="ru_RU">
 			<Text>Мир с: {1_Leader}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="ru_RU">
-			<Text>Сражение</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="ru_RU">
+			<Text>Конфликты</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="ru_RU">
-			<Text>Стычка</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="ru_RU">
+			<Text>Когда и с кем каждый лидер вёл осады, сражения и схватки, и что было захвачено, разрушено или разграблено.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="ru_RU">
-			<Text>Осада</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="ru_RU">
-			<Text>В осаде: {1_Player}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="ru_RU">
-			<Text>Разрушено: {1_Player}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="ru_RU">
-			<Text>Захвачено: {1_Player}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="ru_RU">
+			<Text>Конфликты лидера. [B]Столкновение[/B] — все атаки и грабежи между одними и теми же двумя сторонами в пределах 3 клеток с перерывами не более 5 ходов. Оно учитывается, когда обе стороны атаковали друг друга боевыми отрядами (не поселенцами и не разведчиками); каждая атака учитывается обеим сторонам, а грабёж — 2 за здание и 1 за сельскую клетку.[NN]В порядке приоритета:[NN][BLIST][LI][B]Разрушено[/B]: разрушенное поселение, после того как оно исчезло с карты[LI][B]Захвачено[/B]: захваченное поселение[LI][B]Потеряно[/B]: поселение, отнятое у лидера[LI][B]Осада[/B]: осаждённое поселение; повторная осада тем же врагом в течение 5 ходов — та же осада[LI][B]Сражение[/B]: столкновение с 3 и более атаками или 4 и более грабежа на первом ходу или после того, как оно длилось 3 хода, с боями на протяжении 5 ходов или с осадой между двумя сторонами[LI][B]Схватка[/B]: любое меньшее столкновение[LI][B]Грабёж[/B]: клетка, разграбленная вражеским отрядом, а не наводнением, извержением или бурей; [B]Разграблено[/B] — собственные клетки лидера — тоже учитывается здесь[/LIST][NN]Точка показывает противника: золотая — лидер, синяя — город-государство, серебряная — независимая сила; метка показывает сначала лидера, затем город-государство, затем независимую силу. Деления показывают каждую осаду (оранжевый), сражение (красный) и схватку (синий), пока они идут; где они совпадают, они делят деление, и первое занимает большую часть. Пунктирная дуга соединяет каждое событие с тем, из чего оно последовало: схватку — со сражением, в которое она переросла, бои — с осадой, осаду — с захватом или потерей, а их — с разрушением.[NN][B]Всего[/B]: осады, сражения, схватки и грабёж; при наведении, отдельно от них, их итоги: разрушения, захваты и потери.[N][B]Карточка[/B]: заклятый враг — игрок, с которым лидер сражался чаще всего (лидеры прежде городов-государств и независимых сил); все остальные противники при наведении.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="ru_RU">
 			<Text>Итоги</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="ru_RU">
-			<Text>Заклятый враг</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="ru_RU">
+			<Text>Осада</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="ru_RU">
-			<Text>Противники</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="ru_RU">
+			<Text>Сражение</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="ru_RU">
-			<Text>{1_Commander}, повышение {2_Number}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="ru_RU">
+			<Text>Схватка</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ru_RU">
-			<Text>Каждое [B]поселение[/B], которое лидер получает, теряет или превращает в город.[NN][BLIST][LI][B]Метка[/B]: золотая для города, синяя для посёлка[LI][B]Точка[/B]: Основано (или присоединено), Захвачено, Потеряно, Разрушено или Стало городом[LI][B]Пунктирная дуга[/B]: соединяет посёлок с его превращением, а захват или потерю — с разрушением[/LIST][NN][B]Итого[/B]: поселения сейчас (или на конец эпохи).[N][B]Карточка[/B]: города и посёлки.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="ru_RU">
+			<Text>Осады</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ru_RU">
-			<Text>Каждый житель, которого получили поселения лидера.[NN][BLIST][LI][B]Метка[/B]: здание или улучшение, которое его добавило, цвета его основного дохода[LI][B]Точка[/B]: золотая для городских, серебряная для сельских[LI][B]Специалист[/B]: светящаяся золотая метка со зданиями на его клетке[/LIST][NN]Захваченное поселение считается с размера на момент захвата.[NN][B]Итого[/B]: население (городские, сельские и специалисты при наведении).[N][B]Карточка[/B]: специалисты, по поселениям и кварталам при наведении.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="ru_RU">
+			<Text>Сражения</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="ru_RU">
-			<Text>Каждый отряд, который лидер [B]построил[/B], [B]купил[/B] или [B]получил[/B].[NN][BLIST][LI][B]Метка[/B]: сухопутный, морской, гражданский или командир[LI][B]Командиры[/B]: считаются один раз, не повторно при возвращении после поражения[/LIST][NN][B]Итого[/B]: обученные отряды, по категориям при наведении.[N][B]Карточка[/B]: каждый обученный тип командира, иначе самый обучаемый отряд.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="ru_RU">
-			<Text>Каждый отряд, который лидер потерял из-за другого игрока, уничтоженный или захваченный.[NN][BLIST][LI][B]Метка[/B]: сухопутный, морской, гражданский или командир, и кто его забрал[LI][B]Место[/B]: сначала с наименьшими потерями[/LIST][NN][B]Итого[/B]: потерянные отряды, по категориям при наведении.[N][B]Карточка[/B]: каждый потерянный тип командира, иначе самый теряемый отряд.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="ru_RU">
-			<Text>Каждый отряд другого игрока, который лидер уничтожил или захватил.[NN][BLIST][LI][B]Метка[/B]: сухопутный, морской, гражданский или командир, и чей он был[/LIST][NN][B]Итого[/B]: побеждённые отряды, по категориям при наведении.[N][B]Карточка[/B]: каждый побеждённый тип командира, иначе самый побеждаемый отряд.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="ru_RU">
-			<Text>Каждое [B]повышение[/B] и каждая [B]награда[/B], полученные командирами лидера.[NN][BLIST][LI][B]Повышение[/B]: значок его ветви на метке цвета ветви[LI][B]Награда[/B]: её значок на светящейся золотой метке[LI][B]Подробно[/B]: командир и какое это его повышение по счёту[/LIST][NN]Пунктирная дуга соединяет повышения каждого командира; цвет точки различает командиров.[NN][B]Итого[/B]: повышения и награды.[N][B]Карточка[/B]: самая частая награда, затем самая развитая ветвь; по наградам и ветвям при наведении.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="ru_RU">
-			<Text>Войны между лидерами; независимые державы всегда враждебны и не учитываются. Деления показывают каждый ход:[NN][BLIST][LI][B]Красный[/B]: агрессия, лидер объявил войну[LI][B]Жёлтый[/B]: оборона, лидеру объявили войну[LI][B]Серый[/B]: мир[/LIST][NN]Одновременные войны делят деление; заключённый мир заполняет своё деление зелёным. Метка врага отмечает начало каждой войны, а [B]зелёная[/B] метка — заключение мира; каждая показывает, кто на кого напал.[NN][B]Ходы[/B]: ходы войны.[N][B]Карточка[/B]: враг, с которым война длилась дольше всего (при равенстве — каждый), все войны при наведении. Война продолжается в новой эпохе до заключения мира.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="ru_RU">
-			<Text>Ходов в войне</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="ru_RU">
-			<Text>Дипломатия</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ru_RU">
-			<Text>Ходы</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="ru_RU">
-			<Text>Конфликты лидера в порядке приоритета:[NN][BLIST][LI][B]Разрушено[/B]: разрушенное поселение, исчезнувшее с карты[LI][B]Захвачено[/B]: захваченное поселение[LI][B]Потеряно[/B]: поселение, отнятое у лидера[LI][B]Осада[/B]: осаждённое поселение; повторная осада тем же врагом в течение 5 ходов — та же осада[LI][B]Сражение[/B]: столкновение с 3 и более атаками или 4 и более грабежа, на первом ходу или после 3 ходов, или боями в течение 5 ходов, или осада между сторонами[LI][B]Стычка[/B]: столкновение с меньшим[LI][B]Грабёж[/B]: разграбленная клетка[/LIST][NN]Точка показывает противника: золотая — лидер, синяя — город-государство, серебряная — независимая держава. Метка показывает сначала лидера, затем город-государство, затем независимую державу. Деления показывают каждую осаду (оранжевый), сражение (красный) и стычку (синий), пока они идут; где они совпадают, они делят деление, и первое занимает большую часть.[NN][B]Столкновение[/B] — все атаки и грабежи между двумя одними и теми же сторонами в пределах 3 клеток с перерывами не более 5 ходов. Оно учитывается, только когда обе стороны атаковали друг друга боевыми отрядами (не поселенцами и не разведчиками), и каждая атака учитывается обеим сторонам; грабёж — 2 за здание, 1 за сельскую клетку. Пунктирная дуга соединяет каждое событие с тем, из которого оно последовало: стычку со сражением, в которое она переросла, бои с осадой, осаду с захватом или потерей, а их — с разрушением. [B]Разграблено[/B] (свои клетки) тоже учитывается, в пункте [B]Грабёж[/B]. Учитывается только грабёж вражескими отрядами, а не наводнения, извержения или бури.[NN][B]Итого[/B]: осады, сражения, стычки и грабежи; разрушения, захваты и потери — их итоги, показанные отдельно при наведении.[N][B]Карточка[/B]: заклятый враг, игрок, с которым он сражался чаще всего (лидеры прежде городов-государств и независимых держав); остальные противники при наведении.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="ru_RU">
-			<Text>Атаки {1_Num}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="ru_RU">
-			<Text>Грабёж {1_Num}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="ru_RU">
+			<Text>Схватки</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="ru_RU">
 			<Text>Грабёж</Text>
@@ -361,47 +382,29 @@
 		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="ru_RU">
 			<Text>Разграблено</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="ru_RU">
-			<Text>Разрушено</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="ru_RU">
+			<Text>В осаде: {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ru_RU">
-			<Text>Захвачено</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="ru_RU">
+			<Text>Захвачено: {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="ru_RU">
-			<Text>Присоединено</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="ru_RU">
+			<Text>Разрушено: {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ru_RU">
-			<Text>Обучено отрядов</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="ru_RU">
+			<Text>Атаки {1_Num}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ru_RU">
-			<Text>Потеряно отрядов</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="ru_RU">
+			<Text>Грабёж {1_Num}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ru_RU">
-			<Text>Когда каждый лидер терял отряды (уничтоженные или захваченные) и кому.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="ru_RU">
+			<Text>Заклятый враг</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="ru_RU">
-			<Text>{1_Category} · {2_Player}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="ru_RU">
+			<Text>Противники</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="ru_RU">
-			<Text>Командиры</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="ru_RU">
-			<Text>Произведено</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="ru_RU">
-			<Text>Куплено</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="ru_RU">
-			<Text>Получено</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="ru_RU">
-			<Text>Когда и какие отряды каждый лидер обучил или купил.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ru_RU">
-			<Text>Ходы {1_First}–{2_Last}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ru_RU">
-			<Text>Всего</Text>
+		<Replace Tag="LOC_ZOM_GROUPED_DIGITS" Language="ru_RU">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

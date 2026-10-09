@@ -25,20 +25,18 @@
  * combat strength of all its combat units (each unit's best of melee, ranged
  * and bombard), recorded as a history (observer-history.js) for the graphs.
  */
+import { unitStrength } from './observer-core.js';
 import { createSampleHistory } from './observer-history.js';
 
 const MILITARY_EVENT = 'zom-military-history-changed';
 
-function unitStrength(unit) {
-  const combat = unit.Combat;
-  if (!combat?.isCombat) return 0;
-  return Math.max(Number(combat.getMeleeStrength?.(false)) || 0, Number(combat.rangedStrength) || 0, Number(combat.bombardStrength) || 0);
-}
+/** A combat unit's strength (0 for any other). */
+const combatStrength = (unit) => (unit.Combat?.isCombat ? Number(unitStrength(unit)) || 0 : 0);
 
 const militaryHistory = createSampleHistory({
   keyPrefix: 'ZOM_MILITARY_HISTORY_',
   changeEvent: MILITARY_EVENT,
-  measure: (player) => [(player.Units?.getUnits?.() ?? []).reduce((sum, unit) => sum + unitStrength(unit), 0)],
+  measure: (player) => [(player.Units?.getUnits?.() ?? []).reduce((sum, unit) => sum + combatStrength(unit), 0)],
   liveEvents: ['UnitAddedToMap', 'UnitRemovedFromMap', 'UnitPromoted', 'Combat']   // this turn's strength follows its units
 });
 

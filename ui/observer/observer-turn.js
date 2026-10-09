@@ -22,12 +22,11 @@
  * Zatygold's Spectator - Observer turn ending (in-game scope).
  *
  * Auto End Turn (off by default, toggled from the ribbon): ends the Observer's
- * turn once nothing blocks it, never while paused or after the Observer
- * un-readied. A blocker that outlasts a few retries is logged and dismissed
- * when the game allows it; a turn still open well after it began is logged and
- * ended again (a watchdog). Switches off when an Age completes so the transition action shows,
- * and hides the End Turn button while the turn is ended. After every unpause
- * an ended turn is sent again (the engine drops completions sent while paused).
+ * turn once nothing blocks it, never while paused or un-readied. A lasting
+ * blocker is logged and dismissed when allowed; a turn still open long after
+ * it began is ended again (a watchdog), and after an unpause an ended turn is
+ * sent again (the engine drops completions sent while paused). Off once an Age
+ * completes; the End Turn button hides while turns end automatically.
  */
 import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
@@ -42,13 +41,15 @@ const STYLE = [
   `.${HIDE_CLASS} panel-action { transform: translateY(120%); opacity: 0; pointer-events: none; }`
 ].join('\n');
 
+const BLOCK_PATIENCE = 3;   // blocked retries before the blocker is reported and, if allowed, dismissed
+const WATCHDOG_MS = 10000;  // a turn still open this long after it began is ended again
+
 let autoEnd = CONFIG.autoEndTurn;
 let retryTimer = null;
 let blockedRetries = 0;
-const BLOCK_PATIENCE = 3;   // blocked retries before the blocker is reported and, if allowed, dismissed
-const WATCHDOG_MS = 10000;  // a turn still open this long after it began is ended again
 let watchdog = null;
 
+const enumName = (values, value) => Object.keys(values).find((k) => values[k] === value) ?? value;
 const isPaused = () => !!Configuration.getGame().isPaused;
 const turnActive = () => !!Players.get(GameContext.localPlayerID)?.isTurnActive;
 const blocked = () => Game.Notifications.getEndTurnBlockingType(GameContext.localPlayerID) !== EndTurnBlockingTypes.NONE;
@@ -71,8 +72,6 @@ function clearBlocker(report) {
   }
   if (id && Game.Notifications.canUserDismissNotification(id)) Game.Notifications.dismiss(id);
 }
-
-const enumName = (values, value) => Object.keys(values).find((k) => values[k] === value) ?? value;
 
 /** The turn's state, for the log: what blocks it, what was sent, the pending notifications. */
 function describeTurn() {
@@ -161,9 +160,15 @@ function isAutoEndTurn() { return autoEnd; }
 function setAutoEndTurn(on) {
   autoEnd = !!on;
   updateEndTurnButton();
-  if (autoEnd) { tryEndTurn(); return; }
+  if (autoEnd) {
+    tryEndTurn();
+    armWatchdog();
+    return;
+  }
   clearTimeout(retryTimer);
+  clearTimeout(watchdog);
   retryTimer = null;
+  watchdog = null;
   try { if (Players.get(GameContext.localPlayerID)?.canUnreadyTurn) GameContext.sendUnreadyTurn(); }
   catch (e) { log(`unready failed: ${e}`); }
 }

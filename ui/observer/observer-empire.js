@@ -21,30 +21,14 @@
 /**
  * Zatygold's Spectator - Observer empire record (in-game scope).
  *
- * At the start of every turn, and soon after a settlement grows, builds or
- * changes hands, each watched leader's settlements and population:
- *  - the details (cities, towns, urban and rural population, specialists) go
- *    into the current Age's breakdown, replaced each time, for the cards;
- *  - each settlement's growth since the last record goes into the population
- *    log, an event log (observer-event-log.js) with the fields
- *    "<code>,<type>,<how>" (POPULATION_KINDS: u urban, r rural, s
- *    specialist; how produced or purchased), one entry per citizen. A
- *    settlement new to its owner counts from its current population
- *    (captured) or from none (founded); the first record of a game only notes
- *    where each settlement stands.
- *
- * Each urban citizen is put to a building the settlement completed this turn
- * (produced or purchased, the latest first, each building once), each rural
- * one to an improvement made on its land and each specialist to the
- * buildings of the tile it was placed on ("<type>+<type>"); a building that
- * adds no citizen (an overbuild) is not counted, and a citizen without one
- * keeps no type.
- *
- * Breakdown text, one per Age: "<playerId>:<key>=<count>,...;...".
- * Settlement text: "<plot>:<owner>:<urban>:<rural>:<specialists>;...".
+ * Each turn, and soon after a settlement grows, builds or changes hands, each
+ * watched leader's settlements and citizens: the current Age's breakdown (for
+ * the cards) and the population log of each new citizen, put to what brought
+ * it (recordGrowth). Breakdown text, one per Age: "<playerId>:<key>=<count>,...;...";
+ * settlement text: "<plot>:<owner>:<urban>:<rural>:<specialists>;...".
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { CONFIG, HIGHLIGHT } from './observer-config.js';
 import { canSave, isObserverSeat, onObserverReady, readSaved, watchedPlayers, writeSaved } from './observer-core.js';
 import { createEventLog } from './observer-event-log.js';
 
@@ -57,7 +41,7 @@ const EMPIRE_EVENT = 'zom-empire-changed';
 const POPULATION_KINDS = [
   { id: 'urban', code: 'u', label: 'LOC_ATTR_URBAN_POPULATION', color: '#f0c040', icon: 'url(blp:fi_city_urban_64)', of: (city) => city.urbanPopulation },
   { id: 'rural', code: 'r', label: 'LOC_ATTR_RURAL_POPULATION', color: '#c9ccd6', icon: 'url(blp:fi_city_rural_64)', of: (city) => city.ruralPopulation },
-  { id: 'specialist', code: 's', label: 'LOC_PLOT_TOOLTIP_SPECIALISTS', color: '#e3b341', glow: 'rgba(255, 200, 50, 0.85)', icon: 'url(blp:fi_specialist_64)', of: (city) => city.Workers?.getNumWorkers?.(false) }
+  { id: 'specialist', code: 's', label: 'LOC_PLOT_TOOLTIP_SPECIALISTS', color: '#e3b341', glow: HIGHLIGHT.pinGlow, icon: 'url(blp:fi_specialist_64)', of: (city) => city.Workers?.getNumWorkers?.(false) }
 ];
 const KIND_OF_CODE = new Map(POPULATION_KINDS.map((k, i) => [k.code, i]));
 const [URBAN, RURAL] = [0, 1];
@@ -115,8 +99,9 @@ function leaderDetails(playerId, age) {
   return ageDetails(age).get(playerId) ?? new Map();
 }
 
-// ============================ Population log
+// ============================ Population log ============================
 
+/** One entry per citizen: "<code>,<type>,<how>" (POPULATION_KINDS code; how produced or purchased). */
 const events = createEventLog({ keyPrefix: 'ZOM_GROWTH_EVENTS_', fieldCount: 3, changeEvent: EMPIRE_EVENT, log });
 
 /** Every logged citizen: [{ age, turn, progress, playerId, kind, category, type, how, count }] (type '' when unknown). */
@@ -216,7 +201,13 @@ function recordCitizens(playerId, kind, count, constructions = []) {
   events.record(playerId, [POPULATION_KINDS[kind].code, '', ''], count - typed.length);
 }
 
-/** Each watched leader's settlements' growth since the last record, by kind of citizen (every settlement is kept). */
+/**
+ * Each watched leader's settlements' growth since the last record, by kind of
+ * citizen: urban ones put to the buildings completed this turn (an overbuild
+ * adds none), rural ones to improvements made on its land, specialists to the
+ * buildings of their tile. A settlement new to its owner counts from its size
+ * (captured) or from none (founded); the first record only notes them.
+ */
 function recordGrowth(watched) {
   const before = knownSettlements();
   const ids = new Set(watched.map((player) => player.id));

@@ -19,31 +19,25 @@
  */
 
 /**
- * Zatygold's Spectator - Battles timeline (in-game scope).
+ * Zatygold's Spectator - Conflicts timeline (in-game scope).
  *
- * The Military view's Battles tab (observer-graph-military.js) of the battle
- * log (observer-battle-log.js): each leader's conflicts on one bar - a pin
- * leading with a leader, then a city-state, then an independent power, and
- * by razing, capture, loss, siege, battle, skirmish and pillage (by it or on
- * its land), its hover a panel for each with the turns each went on; the
- * notches coloured while battles, sieges and skirmishes go on; a dashed
- * arc joining each to what it followed from (a skirmish to the battle it
- * became, the engagement to a siege, the siege to a capture or loss, that to
- * the razing). Sieges, battles, skirmishes and pillage are the Total -
- * razings, captures and losses, their outcomes, apart on its hover (pillage
- * together) - and the card its Nemesis, the player it fought most, leaders
- * before city-states and independent powers (every other opponent on hover);
- * an independent or city-state shows its type icon in its own colour.
+ * The Military view's Conflicts tab (observer-graph-military.js) of the battle
+ * log (observer-battle-log.js): each leader's razings, captures, losses,
+ * sieges, battles, skirmishes and pillage, the notches coloured while sieges,
+ * battles and skirmishes go on, a dashed arc to what each followed from;
+ * the counted conflicts as the Total (their outcomes apart on hover) and its
+ * Nemesis on the card.
  */
 import { BATTLE_CATEGORIES } from './observer-battle-log.js';
-import { byKindThenCount, leaderIcon, leaderRow, leaderTint, opponentName, playerKind, playerKindColor } from './observer-graph-parts.js';
-import { rankedCells, sumBy } from './observer-graph-timelines.js';
+import { categoryIndex } from './observer-event-log.js';
+import { byKindThenCount, detailText, leaderIcon, leaderRow, leaderTint, opponentName, playerKind, playerKindColor } from './observer-graph-parts.js';
+import { emptyCard, rankedCells, sumBy } from './observer-graph-timelines.js';
 import { turnText } from './observer-timeline.js';
 
-const CATEGORY = Object.fromEntries(BATTLE_CATEGORIES.map((c, i) => [c.id, i]));
+const CATEGORY = categoryIndex(BATTLE_CATEGORIES);
 const CITY_ICON = 'url(blp:Yield_Cities)';
 const OPPONENTS = 1;   // on the card
-/** Each kind's icon on the Total's hover: the game's razed, fortified city, war, combat, pillage and damaged icons. */
+/** Each kind's icon on the Total's hover: the game's razed, city, fortified city, war, combat and pillage icons. */
 const CATEGORY_ICONS = {
   razed: 'url("blp:icon_razed.png")',
   captured: CITY_ICON,
@@ -85,6 +79,7 @@ function nameOf(source) {
 
 /** Who did it, by the side the leader was on: a besieger or razer, the leader itself or the other player. */
 const DOERS = { besieging: 'self', taking: 'self', razing: 'self', besieged: 'other', taken: 'other', razed: 'other' };
+/** Who did it, named under a siege, capture, loss or razing. */
 const BY_KEYS = {
   [CATEGORY.siege]: 'LOC_ZOM_GRAPH_BESIEGED_BY',
   [CATEGORY.captured]: 'LOC_ZOM_GRAPH_CAPTURED_BY',
@@ -102,14 +97,14 @@ const turnsOf = (source) => turnText([source.from, source.until ?? source.from])
  */
 function battleDetail(source) {
   if (isEngagement(source.category)) {
-    return [turnsOf(source), ...[['LOC_ZOM_GRAPH_ATTACKS_COUNT', source.attacks], ['LOC_ZOM_GRAPH_PILLAGE_COUNT', source.pillage]]
-      .filter(([, n]) => n > 0).map(([key, n]) => Locale.compose(key, n))].join(' · ');
+    const counts = [['LOC_ZOM_GRAPH_ATTACKS_COUNT', source.attacks], ['LOC_ZOM_GRAPH_PILLAGE_COUNT', source.pillage]];
+    return detailText(turnsOf(source), ...counts.map(([key, n]) => (n > 0 ? Locale.compose(key, n) : '')));
   }
   const by = source.by >= 0 ? Locale.compose(BY_KEYS[source.category], opponentName(source.by)) : '';
-  return source.category === CATEGORY.siege ? [by, turnsOf(source)].filter(Boolean).join(' · ') : by;
+  return source.category === CATEGORY.siege ? detailText(by, turnsOf(source)) : by;
 }
 
-/** The notches: each siege (orange), battle (red) and skirmish (blue) from its start to its last turn, sharing a notch in that order and fading into the next. */
+/** The notches: each siege (orange), battle (red) and skirmish (blue) from its start to its last turn, sharing a notch in that order. */
 const LAYERS = { [CATEGORY.siege]: 0, [CATEGORY.battle]: 1, [CATEGORY.skirmish]: 2, [CATEGORY.escalated]: 2 };
 const conflictBands = (events, { position }) => events.filter((e) => e.until && e.category in LAYERS)
   .map((e) => ({ from: position(e.age, e.progress), to: position(e.until.age, e.until.progress), color: BATTLE_CATEGORIES[e.category].color, layer: LAYERS[e.category], smooth: true }));
@@ -162,7 +157,7 @@ const BATTLES_SUBJECT = {
   },
   card: (playerId, { events }) => {
     const byOpponent = sumBy(events.filter((e) => isCounted(e.category) && e.other >= 0), (e) => e.other);
-    if (!byOpponent.size) return { cells: [{ icon: categoryIcon(CATEGORY.battle), count: 0 }], groups: [[{ icon: categoryIcon(CATEGORY.battle), label: Locale.compose('LOC_ZOM_GRAPH_NONE_YET'), value: 0 }]] };
+    if (!byOpponent.size) return emptyCard(categoryIcon(CATEGORY.battle));
     return {
       cells: rankedCells(byOpponent, leaderIcon, { max: OPPONENTS, tint: leaderTint, order: byKindThenCount }),
       groups: groupsOf([...byOpponent].sort(byKindThenCount).map(([id, count]) => leaderRow(id, count)))

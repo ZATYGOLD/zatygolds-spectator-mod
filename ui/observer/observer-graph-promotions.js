@@ -23,16 +23,12 @@
  *
  * The Military view's Promotions tab (observer-graph-military.js) of the
  * promotion log (observer-promotion-log.js): each leader's commanders'
- * promotions (the discipline's icon, as the promotion tree shows it, on a pin
- * in the tree's colour) and commendations (the commendation icon on a glowing
- * gold pin) on one bar, each with its commander
- * and which of the commander's promotions it was - each commander's
- * promotions joined by a dashed arc, its dot in the commander's colour;
- * promotions and commendations as the Total (each on hover), and a card of its most earned commendation and most promoted
- * tree (each on hover; none yet when empty) - as the unit tabs show theirs.
+ * promotions (the tree's icon on a pin in its colour) and commendations (on a
+ * glowing gold pin), each commander's joined by a dashed arc; both as the
+ * Total and the most earned commendation and tree on the card.
  */
-import { unitTypeName } from './observer-graph-parts.js';
-import { byCount, rankedCells, sumBy } from './observer-graph-timelines.js';
+import { detailText, unitFlagIcon, unitTypeName } from './observer-graph-parts.js';
+import { byCount, categoryRows, emptyCard, rankedCells, sumBy } from './observer-graph-timelines.js';
 import { PROMOTION_CATEGORIES } from './observer-promotion-log.js';
 
 const COMMENDATION = PROMOTION_CATEGORIES.findIndex((c) => c.id === 'commendation');
@@ -55,7 +51,6 @@ const DISCIPLINES = {
 
 /** A commander type still in the database, else (an earlier Age's unique commander) the army commander it stood for. */
 const knownCommander = (type) => (GameInfo.Units.lookup(type) ? type : 'UNIT_ARMY_COMMANDER');
-const flagIcon = (type) => UI.getIconCSS(knownCommander(type), 'UNIT_FLAG');
 const disciplineName = (type) => GameInfo.UnitPromotionDisciplines.lookup(type)?.Name;
 const promotionName = (type) => Locale.compose(GameInfo.UnitPromotions.lookup(type)?.Name ?? '');
 const commanderName = (type) => unitTypeName(type) || unitTypeName(knownCommander(type));
@@ -94,7 +89,7 @@ function iconOf(source) {
 function promotionDetail(source) {
   const commander = Locale.compose('LOC_ZOM_GRAPH_COMMANDER_PROMOTION', commanderName(source.commander), source.nth);
   const discipline = disciplineName(source.discipline);
-  return discipline ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', commander, Locale.compose(discipline)) : commander;
+  return detailText(commander, discipline && Locale.compose(discipline));
 }
 
 const PROMOTIONS_SUBJECT = {
@@ -116,17 +111,16 @@ const PROMOTIONS_SUBJECT = {
       ...rankedCells(sumBy(commendations, (e) => e.type), () => COMMENDATION_ICON, { max: 1 }),
       ...rankedCells(sumBy(promotions, (e) => e.discipline), (discipline) => iconOf(promotions.find((e) => e.discipline === discipline)), { max: 1 })
     ];
+    if (!cells.length) return emptyCard(unitFlagIcon(NO_PROMOTIONS_TYPE), 'LOC_ZOM_GRAPH_NO_PROMOTIONS');
     return {
-      cells: cells.length ? cells : [{ icon: flagIcon(NO_PROMOTIONS_TYPE), count: 0 }],
-      groups: cells.length
-        ? [
-          countGroup('LOC_ZOM_GRAPH_COMMENDATIONS', commendations, (e) => e.type, (e) => ({ icon: COMMENDATION_ICON, label: promotionName(e.type) })),
-          countGroup('LOC_ZOM_GRAPH_PROMOTIONS', promotions, (e) => e.discipline, (e) => ({ icon: iconOf(e), label: Locale.compose(disciplineName(e.discipline) ?? '') }))
-        ]
-        : [[{ icon: flagIcon(NO_PROMOTIONS_TYPE), label: Locale.compose('LOC_ZOM_GRAPH_NO_PROMOTIONS'), value: 0 }]]
+      cells,
+      groups: [
+        countGroup('LOC_ZOM_GRAPH_COMMENDATIONS', commendations, (e) => e.type, (e) => ({ icon: COMMENDATION_ICON, label: promotionName(e.type) })),
+        countGroup('LOC_ZOM_GRAPH_PROMOTIONS', promotions, (e) => e.discipline, (e) => ({ icon: iconOf(e), label: Locale.compose(disciplineName(e.discipline) ?? '') }))
+      ]
     };
   },
-  totalGroups: (entry) => [PROMOTION_CATEGORIES.map((c, i) => ({ color: c.color, label: Locale.compose(c.label), value: entry?.totals[i] ?? 0 }))],
+  totalGroups: (entry) => categoryRows(PROMOTION_CATEGORIES, entry),
   tieBreak: (entry) => entry.totals[0]
 };
 

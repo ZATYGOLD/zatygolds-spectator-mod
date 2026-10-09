@@ -22,19 +22,17 @@
  * Zatygold's Spectator - Observer combat preview (in-game scope).
  *
  * With another player's unit selected, hovering a target fills the game's
- * combat window from an estimate: the engine's simulation only answers for
- * the local player's own units (tested in game). The estimate uses what the
- * engine and data expose - base strengths, the health penalty, each unit's
- * flat strength and friendly-territory bonuses, and the defender's terrain
- * (feature defense, rough terrain) - listed in the window's breakdown with
- * the game's own wording, under an "Estimate" note.
+ * combat window from an estimate (the engine's simulation answers only for the
+ * local player's units): base strengths, the health penalty, flat and
+ * friendly-territory bonuses and the defender's terrain, in the window's
+ * breakdown with the game's own wording, under an "Estimate" note.
  */
 import 'fs://game/base-standard/ui/unit-combat-preview/panel-unit-combat-preview.js';   // defines PREVIEW_TAG
 import { PlotCursor } from 'fs://game/core/ui/input/plot-cursor.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
 import { createLogger, leaderTypeOf, wrapMethod } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { CONFIG, PANEL_COLORS } from './observer-config.js';
 import { meleeStrength, rangedStrength } from './observer-core.js';
 import { inspectableUnits, isForeign } from './observer-units.js';
 
@@ -120,9 +118,8 @@ function hoveredOpponent(attacker) {
 }
 
 /**
- * The window's portrait for a unit's owner. The base window only sets it for
- * leaders, so independents and city-states kept the previous portrait; they
- * show their civilization symbol instead, as the plot tooltip does.
+ * The window's portrait for a unit's owner: a leader's portrait, else (the
+ * base window sets none) the civilization symbol, as the plot tooltip shows it.
  */
 function setOwnerIcon(icon, unitId) {
   const unit = Units.get(unitId);
@@ -152,7 +149,7 @@ function setEstimateNote(root, visible) {
     note = document.createElement('div');
     note.classList.add(ESTIMATE_CLASS, 'font-body', 'text-sm', 'text-accent-1');
     note.style.cssText = 'position: absolute; bottom: 100%; left: -2.5rem; right: -2.5rem; margin-bottom: 0.3rem; padding: 0.15rem 0.5rem; text-align: center; ' +
-      'border-radius: 0.3rem; background-color: rgba(10, 10, 12, 0.85); border: 0.0555555556rem solid rgba(140, 126, 98, 0.9);';
+      `border-radius: 0.3rem; background-color: ${PANEL_COLORS.plate}; border: 0.0555555556rem solid ${PANEL_COLORS.borderStrong};`;
     note.setAttribute('data-l10n-id', 'LOC_ZOM_OBSERVER_COMBAT_ESTIMATE');
     outcome.appendChild(note);
   }

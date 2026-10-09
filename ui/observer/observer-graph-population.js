@@ -22,19 +22,17 @@
  * Zatygold's Spectator - Population timeline (in-game scope).
  *
  * The Empire view's Population tab (observer-graph-empire.js) of the
- * population log (observer-empire.js): each leader's growth in urban, rural
- * and specialist citizens on one bar - an urban pin showing the building
- * (produced or purchased) and a rural one the improvement, each in the
- * colour of its main yield (its dot gold for urban, silver for rural), a
- * specialist one on a glowing gold pin naming the buildings it was placed
- * with - the leader's population as the Total (each kind on hover) and a card
- * of its specialists at the end of the view (now, for the current Age), on
- * hover each settlement's quarters and other tiles with specialists.
+ * population log (observer-empire.js): each leader's new urban, rural and
+ * specialist citizens, a pin showing the building or improvement that added
+ * each in its main yield's colour (specialists on a glowing gold pin); the
+ * citizens as the Total and the specialists on the card (now, or at the end
+ * of the Age), each settlement's tiles with specialists on hover.
  */
 import { currentAgeChronology } from '../shared/zom-util.js';
 import { leaderDetails, POPULATION_KINDS, specialistTiles } from './observer-empire.js';
-import { yieldColor } from './observer-graph-yields.js';
+import { detailText } from './observer-graph-parts.js';
 import { byCount, sumBy } from './observer-graph-timelines.js';
+import { yieldColor } from './observer-graph-yields.js';
 import { TRAIN_METHODS } from './observer-unit-log.js';
 
 const SPECIALIST = POPULATION_KINDS.findIndex((k) => k.id === 'specialist');
@@ -94,7 +92,7 @@ function populationDetail(source) {
   if (source.category === SPECIALIST) return source.type ? source.type.split('+').map(constructibleName).join(', ') : '';
   if (!source.type) return '';
   const how = TRAIN_METHODS.find((m) => m.id === source.how)?.label;
-  return how ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', kindLabel(source), Locale.compose(how)) : kindLabel(source);
+  return detailText(kindLabel(source), how && Locale.compose(how));
 }
 
 /** The leader's citizens of each kind at the end of the view. */

@@ -22,20 +22,17 @@
  * Zatygold's Spectator - Units timelines (in-game scope).
  *
  * The Military view's unit tabs (observer-graph-military.js) of the unit log
- * (observer-unit-log.js): Trained, Lost (ranked fewest first) and Defeated,
- * pins by land combat, naval combat, civilian or commander (a pin
- * holding a commander shows it), each unit with the other player involved or
- * how it was trained, the categories on the Total's hover and a card of each
- * commander type counted, else the most counted other unit, else none yet.
+ * (observer-unit-log.js): Trained, Lost (fewest first) and Defeated, pins by
+ * land, naval, civilian or commander (a pin holding a commander shows it),
+ * each with the other player involved or how it was trained; each category on
+ * the Total's hover and its commanders (else its most counted unit) on the card.
  */
-import { opponentName, unitTypeName as unitName } from './observer-graph-parts.js';
-import { byCount, sumBy } from './observer-graph-timelines.js';
+import { detailText, opponentName, unitFlagIcon, unitTypeName as unitName } from './observer-graph-parts.js';
+import { byCount, categoryRows, emptyCard, sumBy } from './observer-graph-timelines.js';
 import { TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, unitLog } from './observer-unit-log.js';
 
 const COMMANDER = UNIT_CATEGORIES.findIndex((c) => c.id === 'commander');
 const MILITARY = 'bg_victory_military';
-
-const flagIcon = (type) => UI.getIconCSS(type, 'UNIT_FLAG');
 
 const CARD_CELLS = 4;   // commanders, else the most counted other unit
 const NO_UNITS_ICON = 'url(blp:fi_nar_rew_combat_64)';   // an empty card's
@@ -54,18 +51,15 @@ function unitCard(playerId, { events }) {
   const shown = commanders.length ? commanders.slice(0, CARD_CELLS) : rankedTypes(events).slice(0, 1);
   const row = ([type, count]) => ({ icon: UI.getIconCSS(type), label: unitName(type), value: count });
   const groups = CARD_ORDER.map((i) => ({ title: Locale.compose(UNIT_CATEGORIES[i].label), rows: rankedTypes(events.filter((e) => e.category === i)).map(row) }));
-  return {
-    cells: shown.length ? shown.map(([type, count]) => ({ icon: flagIcon(type), count })) : [{ icon: NO_UNITS_ICON, count: 0 }],
-    groups: groups.some((g) => g.rows.length) ? groups : [[{ icon: NO_UNITS_ICON, label: Locale.compose('LOC_ZOM_GRAPH_NONE_YET'), value: 0 }]]
-  };
+  if (!shown.length) return emptyCard(NO_UNITS_ICON);
+  return { cells: shown.map(([type, count]) => ({ icon: unitFlagIcon(type), count })), groups };
 }
 
-/** The category, with the other player involved or how the unit was trained: "Land Combat · <player>". */
+/** The category, with the other player involved or how the unit was trained: "Land Combat Units · Augustus". */
 function unitDetail(source) {
-  const category = Locale.compose(UNIT_CATEGORIES[source.category]?.label ?? '');
   const how = TRAIN_METHODS.find((m) => m.id === source.how)?.label;
   const detail = source.other >= 0 ? opponentName(source.other) : how && Locale.compose(how);
-  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, detail) : category;
+  return detailText(Locale.compose(UNIT_CATEGORIES[source.category]?.label ?? ''), detail);
 }
 
 const UNITS_SOURCE = { kind: 'timeline', read: unitLog, changeEvents: [UNIT_LOG_EVENT] };
@@ -78,7 +72,7 @@ const UNITS_SUBJECT = {
   },
   categories: UNIT_CATEGORIES,
   priority: [COMMANDER],
-  pinIcon: (source) => flagIcon(source.type),
+  pinIcon: (source) => unitFlagIcon(source.type),
   pinIconOutline: true,   // the unit flags are white
   icon: (source) => UI.getIconCSS(source.type),
   name: (source) => unitName(source.type),
@@ -86,7 +80,7 @@ const UNITS_SUBJECT = {
   sourceOf: (event) => ({ other: event.other, how: event.how }),
   card: unitCard,
   tieBreak: (entry) => entry.totals[COMMANDER],
-  totalGroups: (entry) => [UNIT_CATEGORIES.map((c, i) => ({ color: c.color, label: Locale.compose(c.label), value: entry?.totals[i] ?? 0 }))]
+  totalGroups: (entry) => categoryRows(UNIT_CATEGORIES, entry)
 };
 
 export { UNITS_SOURCE, UNITS_SUBJECT };

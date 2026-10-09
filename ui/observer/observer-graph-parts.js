@@ -36,7 +36,7 @@ import { Dropdown, DropdownItem } from 'fs://game/core/ui-next/components/dropdo
 import { L10n } from 'fs://game/core/ui-next/components/l10n.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
 import { LeaderWithRibbon } from 'fs://game/base-standard/ui-next/components/leader-with-ribbon.js';
-import { createLogger, currentAgeChronology, findAncestor, isObserverPlayer, leaderTypeOf } from '../shared/zom-util.js';
+import { ancestorWithClass, createLogger, currentAgeChronology, isObserverPlayer, leaderTypeOf } from '../shared/zom-util.js';
 import { watchedPlayers } from './observer-core.js';
 import { CRISIS_STAGES } from './observer-crisis.js';
 import { cityStateType } from './observer-settlement-info.js';
@@ -145,6 +145,12 @@ function unitTypeName(type) {
   return text && text !== key ? text : '';
 }
 
+/** Details joined as the game's lists show them: "Captured · Augustus" (empty ones left out). */
+const detailText = (...parts) => parts.filter(Boolean).reduce((text, part) => (text ? Locale.compose('LOC_ZOM_GRAPH_DETAILS', text, part) : part), '');
+
+/** A unit type's flag icon (white art). */
+const unitFlagIcon = (type) => UI.getIconCSS(type, 'UNIT_FLAG');
+
 /** A player's breakdown row: its icon (tinted), name and value. */
 const leaderRow = (playerId, value) => ({ icon: leaderIcon(playerId), tint: leaderTint(playerId), label: opponentName(playerId), value });
 
@@ -166,7 +172,7 @@ function playerKindLabel(playerId) {
   if (player.isMinor) return Locale.compose('LOC_CIVILIZATION_CITY_STATE_NAME');
   const type = cityStateType(player);
   const independent = Locale.compose('LOC_PLOT_TOOLTIP_INDEPENDENT_CONQUEROR');
-  return type ? `${independent} · ${Locale.compose(type.name)}` : independent;
+  return type ? detailText(independent, Locale.compose(type.name)) : independent;
 }
 
 /** Any other player's name: its name as the map shows it, else what it is ("City-State", "Independent Power"). */
@@ -274,7 +280,7 @@ function fillPanel(body) {
   const [height, setHeight] = createSignal(0);
   let frame = 0;
   const measure = () => {
-    const panel = findAncestor(body, (node) => node.classList?.contains('victories-panel-container'));
+    const panel = ancestorWithClass(body, 'victories-panel-container');
     if (!panel) return;
     const available = Math.floor(panel.getBoundingClientRect().bottom - body.getBoundingClientRect().top - PANEL_GAP_REM * remPx());
     if (available <= 0) return;
@@ -290,7 +296,7 @@ function fillPanel(body) {
 }
 
 /** Each row's share of the height: one of ROW_SLOTS, at least ROW_MIN_REM (more rows scroll). */
-const rowHeight = (height) => () => (height() ? Math.floor(Math.max(ROW_MIN_REM * remPx(), height() / ROW_SLOTS)) : 0);
+const rowHeight = (height) => createMemo(() => (height() ? Math.floor(Math.max(ROW_MIN_REM * remPx(), height() / ROW_SLOTS)) : 0));
 
 // ============================ Rows ============================
 
@@ -374,11 +380,6 @@ const FilterDropdown = (props) => createComponent(Dropdown, {
   }
 });
 
-/**
- * The Victories panel shell shared by every tab: background art, description,
- * coloured title, the Rank / Leader / value header with the view and Age
- * filters (props.views: [{ id, label }]), then the tab's body.
- */
 /** The Victories screen's info icon at the end of a tab's title line: the tab and its view as the heading, what it shows and how, on hover. */
 const InfoTooltip = (props) => createComponent(Tooltip, {
   initialHPosition: TooltipHorizontalPosition.LEFT,
@@ -409,6 +410,11 @@ const InfoTooltip = (props) => createComponent(Tooltip, {
   }
 });
 
+/**
+ * The Victories panel shell shared by every tab: background art, description,
+ * coloured title, the Rank / Leader / value header with the view and Age
+ * filters (props.views: [{ id, label }]), then the tab's body.
+ */
 const GraphPanel = (props) => {
   const panel = T.panel();
   const background = panel.firstChild;
@@ -439,6 +445,7 @@ const GraphPanel = (props) => {
 const emptyText = (text) => { const empty = T.empty(); empty.textContent = text; return empty; };
 
 export {
-  ageName, BreakdownCard, byKindThenCount, crisisStages, emptyText, fillPanel, GraphPanel, HoverTooltip, inAge, leaderColor, leaderIcon, leaderName, leaderRow, leaderTint,
-  LeaderRow, opponentName, playerKind, playerKindColor, playerKindLabel, unitTypeName, LeaderRows, loggedLeaders, OVERALL, rowHeight, viewAges
+  ageName, BreakdownCard, byKindThenCount, crisisStages, detailText, emptyText, fillPanel, GraphPanel, HoverTooltip, inAge, leaderColor, leaderIcon, leaderName,
+  LeaderRow, leaderRow, LeaderRows, leaderTint, loggedLeaders, opponentName, OVERALL, playerKind, playerKindColor, playerKindLabel, rowHeight, unitFlagIcon,
+  unitTypeName, viewAges
 };

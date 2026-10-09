@@ -21,13 +21,11 @@
 /**
  * Zatygold's Spectator - Military graphs (in-game scope).
  *
- * The Military view, the tabs busy from the start first: a Strength line
- * graph of each leader's military strength per turn
- * (observer-military-history.js), the unit timelines - Units Trained, Lost,
- * Defeated (observer-graph-units.js) - and Promotions, Wars and Battles
- * timelines (observer-graph-promotions.js, observer-graph-wars.js,
- * observer-graph-battles.js). Each tab names its source ({ kind, read,
- * changeEvents }) and, for a timeline, its subject.
+ * The Military view, the tabs busy from the start first: a Strength line graph
+ * (observer-military-history.js), the unit timelines (observer-graph-units.js),
+ * then Promotions, Wars and Conflicts (observer-graph-promotions.js,
+ * observer-graph-wars.js, observer-graph-battles.js). Each tab names its source
+ * ({ kind, read, changeEvents }) and, for a timeline, its subject.
  */
 import { BATTLE_LOG_EVENT, battleLog } from './observer-battle-log.js';
 import { BATTLES_SUBJECT } from './observer-graph-battles.js';

@@ -21,18 +21,15 @@
 /**
  * Zatygold's Spectator - Observer war log (in-game scope).
  *
- * Records, per leader, Age, turn and Age progress, each war declared - by the
- * leader or on it - and each peace made, with the other leader. A war already
- * going when the log first sees it (a game saved before the mod) is noted as
- * ongoing. The log is an event log (observer-event-log.js) with the fields
- * "<code>,<otherPlayerId>" (CODES: d declared, a declared on, o ongoing,
- * D/A declared or declared on in an earlier Age and going on, p peace); a war
- * runs from its declaration (or note) to its peace, across Ages.
+ * Records, per leader, each war declared (by the leader or on it) and each
+ * peace made, with the other leader; a war runs from its declaration to its
+ * peace, across Ages. An event log (observer-event-log.js) with the fields
+ * "<code>,<otherPlayerId>" (CODES).
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { onObserverReady } from './observer-core.js';
-import { createEventLog, payloadLogger } from './observer-event-log.js';
+import { byTime, createEventLog, payloadLogger } from './observer-event-log.js';
 
 const log = createLogger('observer-war-log', CONFIG.debug);
 const showPayload = payloadLogger(log);
@@ -40,7 +37,7 @@ const WAR_LOG_EVENT = 'zom-war-log-changed';
 
 /**
  * What happened, in display order: pin, dot and (for the start of a war) the
- * notches' colour while it lasts; `against` names the enemy ("Declared On Augustus").
+ * notches' colour while it lasts; `against` names the enemy ("Declared on Augustus").
  */
 const WAR_CATEGORIES = [
   { id: 'declared', label: 'LOC_ZOM_GRAPH_DECLARED_WAR', against: 'LOC_ZOM_GRAPH_ATTACKING_LEADER', color: '#d9534f' },
@@ -48,9 +45,10 @@ const WAR_CATEGORIES = [
   { id: 'ongoing', label: 'LOC_ZOM_GRAPH_AT_WAR', against: 'LOC_ZOM_GRAPH_AT_WAR_WITH', color: '#b0507a' },
   { id: 'peace', label: 'LOC_ZOM_GRAPH_PEACE', against: 'LOC_ZOM_GRAPH_PEACE_WITH', color: '#8fd18f' }
 ];
-const PEACE = 3;
+const PEACE = WAR_CATEGORIES.findIndex((c) => c.id === 'peace');
 
-const CODES = { d: 0, a: 1, o: 2, p: PEACE, D: 0, A: 1 };   // D, A: a war declared (by, on) in an earlier Age, going on in this one
+/** Each saved letter's category: d declared, a declared on, o going on when first seen, p peace; D and A declared in an earlier Age, going on in this one. */
+const CODES = { d: 0, a: 1, o: 2, p: PEACE, D: 0, A: 1 };
 const CARRIED = ['D', 'A', 'o'];   // by the war's first category
 
 const events = createEventLog({ keyPrefix: 'ZOM_WAR_LOG_', fieldCount: 2, changeEvent: WAR_LOG_EVENT, log });
@@ -62,6 +60,7 @@ function warLog() {
 }
 
 const isLeader = (id) => !!Players.get(id)?.isMajor;
+/** A war event between two leaders. */
 const record = (playerId, code, other) => { if (isLeader(playerId) && isLeader(other)) events.record(playerId, [code, other]); };
 
 function onDeclareWar(data) {
@@ -84,7 +83,6 @@ function onMakePeace(data) {
  */
 function noteOngoing() {
   const open = new Map();   // "player:other" -> { start, lastAge }
-  const byTime = (a, b) => a.age - b.age || a.turn - b.turn;
   for (const e of warLog().sort(byTime)) {
     const key = `${e.playerId}:${e.other}`;
     if (e.category === PEACE) open.delete(key);

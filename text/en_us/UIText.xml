@@ -35,7 +35,7 @@
 			<Text>Techs &amp; Civics</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_RESEARCH_TECH">
-			<Text>Researching</Text>
+			<Text>Current Research</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_RESEARCH_CIVIC">
 			<Text>Current Civic</Text>
@@ -77,7 +77,7 @@
 			<Text>Not at war.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE">
-			<Text>Estimation</Text>
+			<Text>Estimate</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS">
 			<Text>{1_Value} Unit Abilities</Text>
@@ -85,26 +85,44 @@
 		<Row Tag="LOC_ZOM_GRAPHS_TITLE">
 			<Text>Chronicle</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_DESCRIPTION">
-			<Text>Each leader's {1_Yield} per turn, recorded every turn of the game.</Text>
+		<Row Tag="LOC_ZOM_GRAPH_OVERALL">
+			<Text>Overall</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_NO_DATA">
 			<Text>No turns recorded yet. Yields are recorded at the start of every turn.</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_PER_TURN">
-			<Text>{1_Yield} per Turn</Text>
+		<Row Tag="LOC_ZOM_GRAPH_NONE_YET">
+			<Text>None Yet</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN">
+			<Text>Total</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TURNS_COLUMN">
+			<Text>Turns</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN">
 			<Text>Per Turn</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_OVERALL">
-			<Text>Overall</Text>
+		<Row Tag="LOC_ZOM_GRAPH_TURNS">
+			<Text>Turns {1_First}–{2_Last}</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_DETAILS">
+			<Text>{1_First} · {2_Second}</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_HIDE_LINE">
 			<Text>Click to hide this leader's line.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_SHOW_LINE">
 			<Text>Click to show this leader's line.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_YIELDS">
+			<Text>Yields</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_DESCRIPTION">
+			<Text>Each leader's {1_Yield} per turn, recorded every turn of the game.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_PER_TURN">
+			<Text>{1_Yield} per Turn</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_SCIENCE">
 			<Text>Science</Text>
@@ -127,17 +145,35 @@
 		<Row Tag="LOC_ZOM_GRAPH_PRODUCTION">
 			<Text>Production</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_YIELDS">
-			<Text>Yields</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED">
-			<Text>Units Defeated</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC">
-			<Text>When each leader destroyed or captured units, and which.</Text>
-		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_EMPIRE">
 			<Text>Empire</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS">
+			<Text>Settlements</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC">
+			<Text>When each leader founded, captured, lost, razed or upgraded settlements.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO">
+			<Text>Every [B]Settlement[/B] a leader gains, loses or upgrades.[NN][BLIST][LI][B]Pin[/B]: gold for a City, blue for a Town[LI][B]Dot[/B]: Founded (or Incorporated), Captured, Lost, Razed or Upgraded to City[LI][B]Dashed Arc[/B]: joins a Town to its upgrade, and a capture or loss to its razing[/LIST][NN][B]Total[/B]: Settlements held now (or at the end of the Age).[N][B]Card[/B]: Cities and Towns.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_FOUNDED">
+			<Text>Founded</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_INCORPORATED">
+			<Text>Incorporated</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_CAPTURED">
+			<Text>Captured</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST">
+			<Text>Lost</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_RAZED">
+			<Text>Razed</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UPGRADED">
+			<Text>Upgraded to City</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_POPULATION">
 			<Text>Population</Text>
@@ -145,35 +181,11 @@
 		<Row Tag="LOC_ZOM_GRAPH_POPULATION_DESC">
 			<Text>When each leader's settlements grew, in urban, rural and specialist citizens.</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS">
-			<Text>Settlements</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC">
-			<Text>When each leader founded, captured, lost or upgraded settlements.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_FOUNDED">
-			<Text>Founded</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST">
-			<Text>Lost</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UPGRADED">
-			<Text>Upgraded to City</Text>
+		<Row Tag="LOC_ZOM_GRAPH_POPULATION_INFO">
+			<Text>Every citizen a leader's Settlements gain.[NN][BLIST][LI][B]Pin[/B]: the building or improvement that added it, in the color of its main yield[LI][B]Dot[/B]: gold for urban, silver for rural[LI][B]Specialist[/B]: a glowing gold pin, with the buildings on its tile[/LIST][NN]A captured Settlement counts from its size when taken.[NN][B]Total[/B]: citizens now (or at the end of the Age); urban, rural and specialists on hover.[N][B]Card[/B]: specialists; by Settlement and Quarter on hover.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_MILITARY">
 			<Text>Military</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_WARS">
-			<Text>Wars</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_WARS_DESC">
-			<Text>When each leader was at war, with whom, and how each war began and ended.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_BATTLES">
-			<Text>Conflicts</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_BATTLES_DESC">
-			<Text>Each leader's battles, skirmishes and sieges and against whom, with the settlements it razed and tiles pillaged.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_STRENGTH">
 			<Text>Strength</Text>
@@ -181,29 +193,77 @@
 		<Row Tag="LOC_ZOM_GRAPH_STRENGTH_DESC">
 			<Text>Each leader's military strength, the combat strength of all its units, recorded every turn of the game.</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_COMMANDERS">
+			<Text>Commanders</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_PRODUCED">
+			<Text>Produced</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_PURCHASED">
+			<Text>Purchased</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_GRANTED">
+			<Text>Granted</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED">
+			<Text>Units Trained</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC">
+			<Text>When each leader produced, purchased or was granted units, and which.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO">
+			<Text>Every unit a leader [B]produces[/B], [B]purchases[/B] or is [B]granted[/B].[NN][BLIST][LI][B]Pin[/B]: land, naval, civilian or commander[LI][B]Commanders[/B]: counted once, not again when they return after defeat[/LIST][NN][B]Total[/B]: units trained; each category on hover.[N][B]Card[/B]: each commander type trained, otherwise the most-trained unit; every unit by category on hover.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST">
+			<Text>Units Lost</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC">
+			<Text>When each leader lost units to destruction or capture, and to whom.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO">
+			<Text>Every unit a leader loses to an enemy, destroyed or captured.[NN][BLIST][LI][B]Pin[/B]: land, naval, civilian or commander, and who took it[LI][B]Rank[/B]: fewest lost first[/LIST][NN][B]Total[/B]: units lost; each category on hover.[N][B]Card[/B]: each commander type lost, otherwise the most-lost unit; every unit by category on hover.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED">
+			<Text>Units Defeated</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC">
+			<Text>When each leader destroyed or captured units, and which.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO">
+			<Text>Every enemy unit a leader destroys or captures.[NN][BLIST][LI][B]Pin[/B]: land, naval, civilian or commander, and whose it was[/LIST][NN][B]Total[/B]: units defeated; each category on hover.[N][B]Card[/B]: each commander type defeated, otherwise the most-defeated unit; every unit by category on hover.</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PROMOTIONS">
 			<Text>Promotions</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC">
 			<Text>When each leader's commanders earned promotions and commendations, and which.</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO">
+			<Text>Every [B]Promotion[/B] and [B]Commendation[/B] a leader's commanders earn.[NN][BLIST][LI][B]Promotion[/B]: its tree's icon, on a pin in the tree's color[LI][B]Commendation[/B]: its icon, on a glowing gold pin[LI][B]Detail[/B]: the commander, and which of its promotions it was[LI][B]Dashed Arc[/B]: joins each commander's promotions; the dot's color tells commanders apart[/LIST][NN][B]Total[/B]: Promotions and Commendations; each on hover.[N][B]Card[/B]: the most-earned Commendation and the most-promoted tree; each Commendation and tree on hover.</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_COMMENDATIONS">
 			<Text>Commendations</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS">
-			<Text>No promotions yet</Text>
+			<Text>No Promotions Yet</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_BATTLE_LIST">
-			<Text>Battles</Text>
+		<Row Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION">
+			<Text>{1_Commander}, promotion {2_Number}</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST">
-			<Text>Skirmishes</Text>
+		<Row Tag="LOC_ZOM_GRAPH_WARS">
+			<Text>Wars</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SIEGE_LIST">
-			<Text>Sieges</Text>
+		<Row Tag="LOC_ZOM_GRAPH_WARS_DESC">
+			<Text>When each leader was at war, with whom, and how each war began and ended.</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_NONE_YET">
-			<Text>None yet</Text>
+		<Row Tag="LOC_ZOM_GRAPH_WARS_INFO">
+			<Text>Wars between leaders; Independent Powers are always hostile and do not count. A war carries on into a new Age until peace is made.[NN]The notches show each turn:[NN][BLIST][LI][B]Red[/B]: Aggression, the leader declared the war[LI][B]Yellow[/B]: Defense, war was declared on the leader[LI][B]Gray[/B]: At Peace[/LIST][NN]Wars going on at once share a notch; a peace made fills its notch in green. A pin showing the enemy marks where each war began, and a [B]green[/B] pin where peace was made; each names who attacked whom.[NN][B]Turns[/B]: turns at war; wars declared, declared on and peace made on hover.[N][B]Card[/B]: the enemy it was at war with longest (all of them when tied); every war on hover.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR">
+			<Text>Turns at War</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_DIPLOMACY">
+			<Text>Diplomacy</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_DECLARED_WAR">
 			<Text>Aggression</Text>
@@ -218,16 +278,31 @@
 			<Text>Peace Made</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER">
-			<Text>Declared On {1_Leader}</Text>
+			<Text>Declared on {1_Leader}</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER">
-			<Text>Attacked By {1_Leader}</Text>
+			<Text>Attacked by {1_Leader}</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_AT_WAR_WITH">
-			<Text>At War With {1_Leader}</Text>
+			<Text>At War with {1_Leader}</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PEACE_WITH">
-			<Text>Peace With {1_Leader}</Text>
+			<Text>Peace with {1_Leader}</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_BATTLES">
+			<Text>Conflicts</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_BATTLES_DESC">
+			<Text>When each leader fought sieges, battles and skirmishes, against whom, and what was captured, razed or pillaged.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_BATTLES_INFO">
+			<Text>A leader's conflicts. An [B]engagement[/B] is every attack and pillage between the same two sides within 3 tiles, with no more than 5 turns between them. It counts once both sides have attacked each other with units that can fight (not settlers or scouts); each attack counts for both sides, and pillage counts 2 for a building and 1 for a rural tile.[NN]In order of priority:[NN][BLIST][LI][B]Razed[/B]: a Settlement razed, once gone from the map[LI][B]Captured[/B]: a Settlement taken[LI][B]Lost[/B]: a Settlement taken from the leader[LI][B]Siege[/B]: a Settlement besieged; besieged again by the same enemy within 5 turns, it is the same siege[LI][B]Battle[/B]: an engagement with 3 or more attacks or 4 or more pillage on its first turn or once it has lasted 3 turns, with fighting on 5 turns, or with a siege between the two sides[LI][B]Skirmish[/B]: any smaller engagement[LI][B]Pillaged[/B]: a tile pillaged by an enemy unit, not by floods, eruptions or storms; [B]Was Pillaged[/B], the leader's own tiles, counts here too[/LIST][NN]A dot shows the opponent: gold for a leader, blue for a City-State, silver for an Independent Power; a pin leads with a leader, then a City-State, then an Independent Power. The notches show each siege (orange), battle (red) and skirmish (blue) while it goes on; where they overlap they share the notch, the first taking most of it. A dashed arc joins each to what it followed from: a Skirmish to the Battle it became, the fighting to a Siege, a Siege to a capture or loss, and that to its razing.[NN][B]Total[/B]: sieges, battles, skirmishes and pillage; on hover, apart from them, their outcomes: razings, captures and losses.[N][B]Card[/B]: the Nemesis, the player fought most (leaders before City-States and Independent Powers); every other opponent on hover.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_OUTCOMES">
+			<Text>Outcomes</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SIEGE">
+			<Text>Siege</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_BATTLE">
 			<Text>Battle</Text>
@@ -235,68 +310,14 @@
 		<Row Tag="LOC_ZOM_GRAPH_SKIRMISH">
 			<Text>Skirmish</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SIEGE">
-			<Text>Siege</Text>
+		<Row Tag="LOC_ZOM_GRAPH_SIEGE_LIST">
+			<Text>Sieges</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_BESIEGED_BY">
-			<Text>Besieged By {1_Player}</Text>
+		<Row Tag="LOC_ZOM_GRAPH_BATTLE_LIST">
+			<Text>Battles</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_RAZED_BY">
-			<Text>Razed By {1_Player}</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_CAPTURED_BY">
-			<Text>Captured By {1_Player}</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_OUTCOMES">
-			<Text>Outcomes</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_NEMESIS">
-			<Text>Nemesis</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_OPPONENTS">
-			<Text>Opponents</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION">
-			<Text>{1_Commander}, promotion {2_Number}</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO">
-			<Text>Every [B]Settlement[/B] a leader gains, loses or upgrades.[NN][BLIST][LI][B]Pin[/B]: gold for a City, blue for a Town[LI][B]Dot[/B]: Founded (or Incorporated), Captured, Lost, Razed or Upgraded to City[LI][B]Dashed Arc[/B]: joins a Town to its upgrade, and a capture or loss to the razing[/LIST][NN][B]Total[/B]: Settlements held now (or at the end of the Age).[N][B]Card[/B]: Cities and Towns.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_POPULATION_INFO">
-			<Text>Every citizen a leader's Settlements gain.[NN][BLIST][LI][B]Pin[/B]: the building or improvement that added it, in the colour of its main yield[LI][B]Dot[/B]: gold for urban, silver for rural[LI][B]Specialist[/B]: a glowing gold pin, with the buildings on its tile[/LIST][NN]A captured Settlement counts from its size when taken.[NN][B]Total[/B]: population (urban, rural and specialists on hover).[N][B]Card[/B]: specialists, by settlement and quarter on hover.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO">
-			<Text>Every unit a leader [B]produced[/B], [B]purchased[/B] or was [B]granted[/B].[NN][BLIST][LI][B]Pin[/B]: land, naval, civilian or commander[LI][B]Commanders[/B]: counted once, not again when they return after defeat[/LIST][NN][B]Total[/B]: units trained, by category on hover.[N][B]Card[/B]: each commander type trained, else the most trained unit.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO">
-			<Text>Every unit a leader lost to another player, killed or captured.[NN][BLIST][LI][B]Pin[/B]: land, naval, civilian or commander, with who took it[LI][B]Rank[/B]: fewest lost first[/LIST][NN][B]Total[/B]: units lost, by category on hover.[N][B]Card[/B]: each commander type lost, else the most lost unit.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO">
-			<Text>Every unit of another player a leader killed or captured.[NN][BLIST][LI][B]Pin[/B]: land, naval, civilian or commander, with whose it was[/LIST][NN][B]Total[/B]: units defeated, by category on hover.[N][B]Card[/B]: each commander type defeated, else the most defeated unit.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO">
-			<Text>Every [B]Promotion[/B] and [B]Commendation[/B] a leader's commanders earn.[NN][BLIST][LI][B]Promotion[/B]: its tree's icon, on a pin in the tree's colour[LI][B]Commendation[/B]: its icon, on a glowing gold pin[LI][B]Detail[/B]: the commander and which of its promotions it was[/LIST][NN]A dashed arc joins each commander's promotions; the dot's colour tells commanders apart.[NN][B]Total[/B]: Promotions and Commendations.[N][B]Card[/B]: the most earned Commendation, then the most promoted tree; each Commendation and tree on hover.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_WARS_INFO">
-			<Text>Wars between leaders; Independent Powers are always hostile and don't count. The notches show each turn:[NN][BLIST][LI][B]Red[/B]: Aggression, the leader declared the war[LI][B]Yellow[/B]: Defense, war was declared on the leader[LI][B]Grey[/B]: At Peace[/LIST][NN]Wars going on at once share a notch; a peace made fills its notch in green. A pin of the enemy marks where each war began, and a [B]green[/B] pin where peace was made; each names who attacked whom.[NN][B]Turns[/B]: turns at war.[N][B]Card[/B]: the enemy it was at war with longest (each when tied), every war on hover. A war goes on into a new Age until peace.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR">
-			<Text>Turns at War</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_DIPLOMACY">
-			<Text>Diplomacy</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_TURNS_COLUMN">
-			<Text>Turns</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_BATTLES_INFO">
-			<Text>A leader's conflicts, in order of priority:[NN][BLIST][LI][B]Razed[/B]: a Settlement razed, once gone from the map[LI][B]Captured[/B]: a Settlement taken[LI][B]Lost[/B]: a Settlement taken from the leader[LI][B]Siege[/B]: a Settlement besieged; besieged again by the same enemy within 5 turns, it is the same siege[LI][B]Battle[/B]: an engagement with 3 or more attacks or 4 or more pillage, on its first turn or once it has lasted 3 turns, or fighting on 5 turns, or a siege between the two sides[LI][B]Skirmish[/B]: an engagement with less[LI][B]Pillaged[/B]: a tile pillaged[/LIST][NN]A dot shows who it was against: gold for a leader, blue for a City-State, silver for an Independent Power. A pin leads with a leader, then a City-State, then an Independent Power. The notches show each siege (orange), battle (red) and skirmish (blue) while it goes on; where they meet they share the notch, the first of them taking most of it.[NN]An [B]engagement[/B] is every attack and pillage between the same two sides within 3 tiles, with no more than 5 turns between them. It only counts once both sides have attacked each other with units that can fight (not settlers or scouts), and each attack counts for both sides; pillage is 2 for a building, 1 for a rural tile. A dashed arc joins each to what it followed from: a Skirmish to the Battle it became, the fighting to a Siege, a Siege to a capture or loss, and that to the razing. [B]Was Pillaged[/B] (its own tiles) counts too, under [B]Pillaged[/B]. Only pillaging by enemy units counts, not floods, eruptions or storms.[NN][B]Total[/B]: sieges, battles, skirmishes and pillage; razings, captures and losses are their outcomes, shown apart on hover.[N][B]Card[/B]: the Nemesis, the player fought most (leaders before City-States and Independent Powers); every other opponent on hover.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT">
-			<Text>Attacks {1_Num}</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT">
-			<Text>Pillage {1_Num}</Text>
+		<Row Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST">
+			<Text>Skirmishes</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PILLAGED">
 			<Text>Pillaged</Text>
@@ -304,47 +325,26 @@
 		<Row Tag="LOC_ZOM_GRAPH_RAIDED">
 			<Text>Was Pillaged</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_RAZED">
-			<Text>Razed</Text>
+		<Row Tag="LOC_ZOM_GRAPH_BESIEGED_BY">
+			<Text>Besieged by {1_Player}</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_CAPTURED">
-			<Text>Captured</Text>
+		<Row Tag="LOC_ZOM_GRAPH_CAPTURED_BY">
+			<Text>Captured by {1_Player}</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_INCORPORATED">
-			<Text>Incorporated</Text>
+		<Row Tag="LOC_ZOM_GRAPH_RAZED_BY">
+			<Text>Razed by {1_Player}</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED">
-			<Text>Units Trained</Text>
+		<Row Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT">
+			<Text>Attacks {1_Num}</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST">
-			<Text>Units Lost</Text>
+		<Row Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT">
+			<Text>Pillage {1_Num}</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC">
-			<Text>When each leader lost units to destruction or capture, and to whom.</Text>
+		<Row Tag="LOC_ZOM_GRAPH_NEMESIS">
+			<Text>Nemesis</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNIT_SOURCE">
-			<Text>{1_Category} · {2_Player}</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_COMMANDERS">
-			<Text>Commanders</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_PRODUCED">
-			<Text>Produced</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_PURCHASED">
-			<Text>Purchased</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_GRANTED">
-			<Text>Granted</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC">
-			<Text>When each leader trained or bought units, and which.</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_TURNS">
-			<Text>Turns {1_First}–{2_Last}</Text>
-		</Row>
-		<Row Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN">
-			<Text>Total</Text>
+		<Row Tag="LOC_ZOM_GRAPH_OPPONENTS">
+			<Text>Opponents</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GROUPED_DIGITS">
 			<Text>{1_Amount: number #,###;-#,###}</Text>

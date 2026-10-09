@@ -21,18 +21,14 @@
 /**
  * Zatygold's Spectator - Observer promotion log (in-game scope).
  *
- * Records, per leader, Age, turn and Age progress, each promotion and
- * commendation its commanders earned, with the discipline and the commander
- * (its type and id; each promotion numbered among the commander's own, so a
- * commander's progress reads in order). A commander's earned promotions are kept
- * from when it is first seen, so a promotion is the one it did not have
- * before. The log is an event log (observer-event-log.js) with the fields
- * "<UnitPromotionType>,<UnitPromotionDisciplineType>,<UnitType>,<unitId>".
+ * Records, per leader, each promotion and commendation its commanders earn: one
+ * a commander did not have when first seen. An event log (observer-event-log.js)
+ * with the fields "<UnitPromotionType>,<UnitPromotionDisciplineType>,<UnitType>,<unitId>".
  */
 import { createLogger } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
+import { CONFIG, HIGHLIGHT } from './observer-config.js';
 import { onObserverReady } from './observer-core.js';
-import { createEventLog, payloadLogger } from './observer-event-log.js';
+import { byTime, createEventLog, payloadLogger } from './observer-event-log.js';
 
 const log = createLogger('observer-promotion-log', CONFIG.debug);
 const showPayload = payloadLogger(log);
@@ -41,9 +37,9 @@ const PROMOTION_LOG_EVENT = 'zom-promotion-log-changed';
 /** Promotions and commendations: pin and dot colour. */
 const PROMOTION_CATEGORIES = [
   { id: 'promotion', label: 'LOC_ZOM_GRAPH_PROMOTIONS', color: '#c9ccd6' },
-  { id: 'commendation', label: 'LOC_ZOM_GRAPH_COMMENDATIONS', color: '#e3b341', glow: 'rgba(255, 200, 50, 0.85)' }
+  { id: 'commendation', label: 'LOC_ZOM_GRAPH_COMMENDATIONS', color: '#e3b341', glow: HIGHLIGHT.pinGlow }
 ];
-const COMMENDATION = 1;
+const COMMENDATION = PROMOTION_CATEGORIES.findIndex((c) => c.id === 'commendation');
 
 const events = createEventLog({ keyPrefix: 'ZOM_PROMOTION_EVENTS_', fieldCount: 4, changeEvent: PROMOTION_LOG_EVENT, log });
 
@@ -55,7 +51,7 @@ function promotionLog() {
     : [{ ...entry, kind: 'promotions', category: isCommendation(type) ? COMMENDATION : 0, type, discipline, commander, unit }]));
   const earnedSoFar = new Map();   // "player:unit" -> promotions so far
   const commanders = new Map();     // player -> [units, in the order first promoted]
-  return all.sort((a, b) => a.age - b.age || a.turn - b.turn).map((e) => {
+  return all.sort(byTime).map((e) => {
     const key = `${e.playerId}:${e.unit}`;
     const nth = (earnedSoFar.get(key) ?? 0) + 1;
     earnedSoFar.set(key, nth);
@@ -79,6 +75,7 @@ function promotionsOf(unit) {
   return has;
 }
 
+/** A commander's promotions when first seen. */
 function remember(id) {
   const unit = id && Units.get(id);
   if (isCommander(unit) && !earned.has(unitKey(id))) earned.set(unitKey(id), promotionsOf(unit));

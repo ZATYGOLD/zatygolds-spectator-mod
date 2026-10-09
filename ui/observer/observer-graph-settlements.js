@@ -23,37 +23,42 @@
  *
  * The Empire view's Settlements tab (observer-graph-empire.js) of the
  * settlement log (observer-settlement-log.js): each leader's settlements
- * founded, captured, lost, razed and upgraded on one bar - a pin coloured
- * and showing a city or a town, its dot by what happened, each with the other
- * player involved, and an arc from a town's founding or capture to its
- * upgrade into a city, and each capture, loss and razing from what came
- * before it (a town lost keeps showing as the town it was) - the leader's
- * settlements as the Total and a card of its cities and towns at the end of
- * the view (now, for the current Age).
+ * founded, captured, lost, razed and upgraded, a pin showing a city or a town
+ * and a dashed arc from what each followed from; the settlements held as the
+ * Total and its cities and towns on the card (now, or at the end of the Age).
  */
 import { EMPIRE_KEYS, leaderDetails } from './observer-empire.js';
-import { leaderName } from './observer-graph-parts.js';
+import { byTime, categoryIndex } from './observer-event-log.js';
+import { detailText, opponentName } from './observer-graph-parts.js';
 import { SETTLEMENT_CATEGORIES, SETTLEMENT_KINDS } from './observer-settlement-log.js';
 
+const CATEGORY = categoryIndex(SETTLEMENT_CATEGORIES);
 const COUNTS = { city: EMPIRE_KEYS.cities, town: EMPIRE_KEYS.towns };
 
 const iconOf = (source) => SETTLEMENT_KINDS[source.settlement]?.icon ?? '';
-const UPGRADED = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'upgraded');
-const LOST = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'lost');
-const order = (a, b) => a.age - b.age || a.turn - b.turn;
 
-const RAZED = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'razed');
-const CAPTURED = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'captured');
 /** What each later event of a settlement links back to: an upgrade to its founding or capture, else its latest event before. */
-const notRazed = (e) => e.category !== RAZED;
-const LINKED_FROM = { [UPGRADED]: (e) => e.category !== UPGRADED && e.category !== LOST && e.category !== RAZED, [CAPTURED]: notRazed, [LOST]: notRazed, [RAZED]: notRazed };
+const notRazed = (e) => e.category !== CATEGORY.razed;
+const LINKED_FROM = {
+  [CATEGORY.upgraded]: (e) => ![CATEGORY.upgraded, CATEGORY.lost, CATEGORY.razed].includes(e.category),
+  [CATEGORY.captured]: notRazed,
+  [CATEGORY.lost]: notRazed,
+  [CATEGORY.razed]: notRazed
+};
 
 /** Each upgrade, capture, loss and razing, linked to the latest event of the same settlement before it that it follows from. */
-const settlementLinks = (events) => events.filter((e) => LINKED_FROM[e.category]).flatMap((later) => {
-  const start = events.filter((e) => e.plot === later.plot && e !== later && LINKED_FROM[later.category](e) && order(e, later) <= 0)
-    .sort(order).pop();
-  return start ? [[start, later]] : [];
-});
+function settlementLinks(events) {
+  const byPlot = new Map();
+  for (const e of [...events].sort(byTime)) {
+    if (!byPlot.has(e.plot)) byPlot.set(e.plot, []);
+    byPlot.get(e.plot).push(e);
+  }
+  return [...byPlot.values()].flatMap((own) => own.flatMap((later) => {
+    const follows = LINKED_FROM[later.category];
+    const start = follows && own.filter((e) => e !== later && follows(e) && byTime(e, later) <= 0).pop();
+    return start ? [[start, later]] : [];
+  }));
+}
 
 /** The leader's cities and towns at the end of the view: { city, town }. */
 function settlementCounts(playerId, lastAge) {
@@ -61,17 +66,16 @@ function settlementCounts(playerId, lastAge) {
   return Object.fromEntries(Object.entries(COUNTS).map(([kind, key]) => [kind, own.get(key) ?? 0]));
 }
 
-/** What happened, with the other player involved or how: "Captured · <player>". */
+/** What happened, with how or the other player involved: "Captured · Augustus". */
 function settlementDetail(source) {
-  const category = Locale.compose(SETTLEMENT_CATEGORIES[source.category]?.label ?? '');
-  const detail = source.how ? Locale.compose(source.how) : (source.other >= 0 ? leaderName(source.other) : '');
-  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, detail) : category;
+  const how = source.how ? Locale.compose(source.how) : (source.other >= 0 ? opponentName(source.other) : '');
+  return detailText(Locale.compose(SETTLEMENT_CATEGORIES[source.category]?.label ?? ''), how);
 }
 
 const SETTLEMENTS_SUBJECT = {
   looks: { settlements: { color: '#d8c38a', background: 'bg_victory_economic3' } },
   categories: SETTLEMENT_CATEGORIES,
-  priority: [UPGRADED],
+  priority: [CATEGORY.upgraded],
   pinIcon: iconOf,
   pinColor: (source) => SETTLEMENT_KINDS[source.settlement]?.color,
   icon: iconOf,

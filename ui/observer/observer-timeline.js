@@ -21,27 +21,13 @@
 /**
  * Zatygold's Spectator - timeline (in-game scope).
  *
- * One leader's horizontal notched bar in the style of the Victories screen's
- * Culture tab (culture-victory-tab.js): a notch per percent of Age progress
- * (the current progress, crisis stages and Age changes marked, and labelled
- * on the first and last bars), and a pin per group of logged things (such as
- * units) where they happened: pin and dot in the category's colour
- * (with a glow for some), the thing's own icon (the Culture "+" when it holds
- * several), the count below, and a tooltip listing each type.
- *
- * Props: subject ({ categories: [{ color, glow }], pinIcon(source),
- * pinColor(source) and dotColor(source) (else the category's), pinIconOutline (a dark outline around white pin icons), icon(source), iconTint(source) (optional), name(source),
- * detail(source), sections ([{ title, categories, compact, by(source), head(sources) }]: the tooltip's
- * titled sections, a compact one a row per group of its things, named under it; optional) }: what is logged), pins ([{ position, category,
- * lead (the source it shows), count, turns: [first, last], sources: [{ type, category, count, ... }]
- * }]), notches ([{ position, highlight, crisis, divider }]: a crisis stage's
- * marker (as the line graphs draw it, in its dark colour) at each end of the notch, inside it; a
- * divider spans the bar's height at its position, between Ages), labels ([{ position, text, color, start, bottom }]: centred on their
- * notch or from it, over or under the bar), showTopLabels / showBottomLabels
- * (the first and last bars), title (the tooltip heading), links ([[from, to]]
- * pin positions joined by the Culture tab's dashed arc), bands ([{ from, to,
- * color }] spans whose notches take the colour, below the current progress
- * and crisis stages). A subject with pinCount false shows no count under its pins.
+ * One leader's notched bar in the style of the Victories screen's Culture tab
+ * (culture-victory-tab.js): a notch per percent of Age progress, and a pin per
+ * group of logged things with a tooltip listing them. Props: subject (see
+ * observer-graph-timelines.js), title (the tooltip heading), pins ([{ position,
+ * category, lead, count, turns: [first, last], sources }]), notches ([{ position,
+ * highlight, crisis, divider }]), labels ([{ position, text, color, start, bottom }]),
+ * showTopLabels / showBottomLabels, links ([[from, to]] pin positions) and bands.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createEffect, For, onCleanup, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -53,16 +39,17 @@ import { drawCrisisMark } from './observer-crisis.js';
 
 // The Culture tab's notch colours.
 const NOTCH = { color: 'rgba(97, 98, 102, 0.6)', highlight: 'rgba(120, 139, 179, 0.9)', divider: 'rgba(225, 214, 180, 0.6)' };
-const BAND_SHADE = 0.6;   // a band's notches darker than its colour, apart from the pins in it
+const BAND_SHADE = 0.6;               // a band's notches darker than its colour, apart from the pins in it
+const BAND_PARTS = 4;                 // a shared notch's default division (quarters), else a band's `parts`
 const DIVIDER_PX = 2;
-const AGE_LABEL_GAP = '0.75rem';   // between an Age's divider and its name
+const AGE_LABEL_GAP = '0.75rem';      // between an Age's divider and its name
 const BOTTOM_LABEL_GAP = '0.15rem';   // between the notches and a label under them
 const NOTCH_BOTTOM = 90;              // where the notches end, in % of the bar's height (drawNotches)
-const NOTCH_WIDTH = 0.8;   // a notch's width in % of the bar (drawNotches)
-// The Culture tab's arc between pins: colour, width, dash and gap, end inset, and height by distance.
-const CRISIS_MARK_SIZE = 0.6;    // a crisis marker's half width, in notch widths
-const PIN_BRIGHTNESS = 1.3;   // pin art is darker than its tint
+const NOTCH_WIDTH = 0.8;              // a notch's width in % of the bar (drawNotches)
+const CRISIS_MARK_SIZE = 0.6;         // a crisis marker's half width, in notch widths
+const PIN_BRIGHTNESS = 1.3;           // pin art is darker than its tint
 const PIN_ICON_OUTLINE = 'drop-shadow(0 0 0.1rem #000) drop-shadow(0 0 0.1rem #000)';
+// The Culture tab's arc between pins: colour, width, dash and gap, end inset, and height by distance.
 const ARC = { color: '#616266', width: 2, dash: 6, gap: 4, inset: 6, min: 1, max: 64, linear: 0.38, root: 0.06 };
 const DOT_CLASS = 'zom-pin-dot';
 
@@ -125,7 +112,8 @@ function compactRows(subject, section) {
   const groups = new Map();
   for (const s of section.sources) {
     const key = section.by?.(s) ?? '';
-    groups.set(key, [...(groups.get(key) ?? []), s]);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(s);
   }
   return [...groups.values()].map((sources) => {
     const head = section.head?.(sources) ?? { icon: subject.icon(sources[0]), tint: subject.iconTint?.(sources[0]), name: subject.name(sources[0]) };
@@ -229,22 +217,21 @@ function notchLabel({ position, text, color, start, bottom }) {
   return label;
 }
 
-/**
- * The colours of the bands the notch's slot (its share of the bar, `spacing`
- * wide) overlaps - the first of each layer (bands without one share a layer),
- * by layer - each with its share of the notch: [{ layer, color, share, smooth }].
- */
 /** A '#rrggbb' colour darkened by `factor` (0-1). */
 function shade(color, factor) {
   const n = parseInt(color.slice(1), 16);
   return `rgb(${[16, 8, 0].map((bit) => Math.round(((n >> bit) & 255) * factor)).join(', ')})`;
 }
 
-const BAND_PARTS = 4;   // a shared notch's default division (quarters), a band's `parts` else
-
 /** Parts of a notch for each of `count` colours: one each, the first (by layer) the rest ("3, 1" of quarters). */
 const sharesOf = (count, parts) => (count > 1 && count <= parts ? [parts - count + 1, ...Array(count - 1).fill(1)] : Array(count).fill(1));
 
+/**
+ * The colours of the bands the notch's slot (its share of the bar, `spacing`
+ * wide) overlaps - the first of each layer (bands without one share a layer),
+ * by layer - each with its share of the notch: [{ layer, color, share, smooth }].
+ * A solo band takes the whole notch.
+ */
 function notchMix(bands, position, spacing) {
   const centre = position + NOTCH_WIDTH / 2;
   const layers = new Map();
@@ -252,7 +239,7 @@ function notchMix(bands, position, spacing) {
   for (const b of bands) {
     const layer = b.layer ?? 0;
     if (!(centre - spacing / 2 <= b.to && centre + spacing / 2 > b.from) || layers.has(layer)) continue;   // a span ending on a slot's start (whole progress) fills it
-    if (b.solo) return [{ layer, color: shade(b.color, BAND_SHADE), share: 1, smooth: false }];   // the whole notch, as it is
+    if (b.solo) return [{ layer, color: shade(b.color, BAND_SHADE), share: 1, smooth: false }];
     layers.set(layer, { layer, color: shade(b.color, BAND_SHADE), smooth: !!b.smooth });
     parts = b.parts ?? parts;
   }
@@ -262,7 +249,7 @@ function notchMix(bands, position, spacing) {
   return mix.map((m, i) => ({ ...m, share: shares[i] / total }));
 }
 
-/** Each notch's mix eased toward its neighbours' (smooth bands only, not into a bare notch): conflicts fade from one to the next. */
+/** Each notch's mix eased toward its neighbours' (smooth bands only, not into a bare notch), so the colours blend from notch to notch. */
 function smoothMixes(mixes) {
   const smooth = (mix) => mix.length && mix.every((m) => m.smooth);
   return mixes.map((mix, i) => {
@@ -280,7 +267,7 @@ function smoothMixes(mixes) {
   });
 }
 
-/** The Culture tab's notches: thin bars over 80% of the height, highlighted ones brighter, band ones in their colours, darker (sharing the notch), crisis ones marked; dividers full height. */
+/** The Culture tab's notches: thin bars over 80% of the height, highlighted ones brighter, band ones in their (darkened) colours, crisis ones marked; dividers full height. */
 function drawNotches(canvas, notches, bands) {
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width;

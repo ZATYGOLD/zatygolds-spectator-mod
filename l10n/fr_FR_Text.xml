@@ -142,26 +142,44 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="fr_FR">
 			<Text>Chronique</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="fr_FR">
-			<Text>{1_Yield} par tour de chaque dirigeant, enregistré à chaque tour de la partie.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="fr_FR">
+			<Text>Général</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="fr_FR">
 			<Text>Aucun tour enregistré pour l'instant. Les rendements sont enregistrés au début de chaque tour.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="fr_FR">
-			<Text>{1_Yield} par tour</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="fr_FR">
+			<Text>Aucune pour l'instant</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="fr_FR">
+			<Text>Total</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="fr_FR">
+			<Text>Tours</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="fr_FR">
 			<Text>Par tour</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="fr_FR">
-			<Text>Général</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="fr_FR">
+			<Text>Tours {1_First} à {2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="fr_FR">
+			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="fr_FR">
 			<Text>Cliquez pour masquer la courbe de ce dirigeant.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="fr_FR">
 			<Text>Cliquez pour afficher la courbe de ce dirigeant.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="fr_FR">
+			<Text>Rendements</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="fr_FR">
+			<Text>{1_Yield} par tour de chaque dirigeant, enregistré à chaque tour de la partie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="fr_FR">
+			<Text>{1_Yield} par tour</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="fr_FR">
 			<Text>Science</Text>
@@ -184,17 +202,35 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="fr_FR">
 			<Text>Production</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="fr_FR">
-			<Text>Rendements</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="fr_FR">
-			<Text>Unités vaincues</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="fr_FR">
-			<Text>Quand chaque dirigeant a détruit ou capturé des unités, et lesquelles.</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="fr_FR">
 			<Text>Empire</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="fr_FR">
+			<Text>Colonies</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant a fondé, capturé, perdu, rasé ou transformé en ville des colonies.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="fr_FR">
+			<Text>Chaque [B]colonie[/B] qu'un dirigeant gagne, perd ou fait évoluer.[NN][BLIST][LI][B]Épingle[/B] : dorée pour une ville, bleue pour une commune[LI][B]Point[/B] : Fondée (ou Absorbée), Capturée, Perdue, Rasée ou Devenue ville[LI][B]Arc pointillé[/B] : relie une commune à son évolution en ville, et une prise ou une perte à sa destruction[/LIST][NN][B]Total[/B] : colonies détenues actuellement (ou à la fin de l'ère).[N][B]Carte[/B] : villes et communes.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="fr_FR">
+			<Text>Fondée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="fr_FR">
+			<Text>Absorbée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="fr_FR">
+			<Text>Capturée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="fr_FR">
+			<Text>Perdue</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="fr_FR">
+			<Text>Rasée</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="fr_FR">
+			<Text>Devenue ville</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="fr_FR">
 			<Text>Population</Text>
@@ -202,35 +238,11 @@
 		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="fr_FR">
 			<Text>Quand les colonies de chaque dirigeant ont grandi, en population urbaine, rurale et spécialistes.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="fr_FR">
-			<Text>Colonies</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="fr_FR">
-			<Text>Quand chaque dirigeant a fondé, capturé, perdu ou élevé en ville des colonies.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="fr_FR">
-			<Text>Fondée</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="fr_FR">
-			<Text>Perdue</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="fr_FR">
-			<Text>Devenue ville</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="fr_FR">
+			<Text>Chaque citoyen gagné par les colonies d'un dirigeant.[NN][BLIST][LI][B]Épingle[/B] : le bâtiment ou l'aménagement qui l'a ajouté, à la couleur de son rendement principal[LI][B]Point[/B] : doré pour urbain, argenté pour rural[LI][B]Spécialiste[/B] : une épingle dorée lumineuse, avec les bâtiments de sa case[/LIST][NN]Une colonie capturée compte à partir de sa taille au moment de la prise.[NN][B]Total[/B] : citoyens actuels (ou à la fin de l'ère) ; urbains, ruraux et spécialistes au survol.[N][B]Carte[/B] : spécialistes ; par colonie et par quartier au survol.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="fr_FR">
 			<Text>Militaire</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="fr_FR">
-			<Text>Guerres</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="fr_FR">
-			<Text>Quand chaque dirigeant était en guerre, contre qui, et comment chaque guerre a commencé et pris fin.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="fr_FR">
-			<Text>Conflits</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="fr_FR">
-			<Text>Les batailles, escarmouches et sièges de chaque dirigeant et contre qui, avec les colonies rasées et les cases pillées.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="fr_FR">
 			<Text>Puissance</Text>
@@ -238,11 +250,53 @@
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="fr_FR">
 			<Text>La puissance militaire de chaque dirigeant, la puissance de combat de toutes ses unités, relevée à chaque tour de la partie.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="fr_FR">
+			<Text>Commandants</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="fr_FR">
+			<Text>Produites</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="fr_FR">
+			<Text>Achetées</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="fr_FR">
+			<Text>Octroyées</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="fr_FR">
+			<Text>Unités formées</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant a produit, acheté ou reçu des unités, et lesquelles.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="fr_FR">
+			<Text>Chaque unité qu'un dirigeant [B]produit[/B], [B]achète[/B] ou se voit [B]octroyer[/B].[NN][BLIST][LI][B]Épingle[/B] : terrestre, navale, civile ou commandant[LI][B]Commandants[/B] : comptés une fois, pas de nouveau à leur retour après une défaite[/LIST][NN][B]Total[/B] : unités formées ; chaque catégorie au survol.[N][B]Carte[/B] : chaque type de commandant formé, sinon l'unité la plus formée ; toutes les unités par catégorie au survol.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="fr_FR">
+			<Text>Unités perdues</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant a perdu des unités, détruites ou capturées, et face à qui.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="fr_FR">
+			<Text>Chaque unité qu'un dirigeant perd face à un ennemi, détruite ou capturée.[NN][BLIST][LI][B]Épingle[/B] : terrestre, navale, civile ou commandant, et qui l'a prise[LI][B]Rang[/B] : le moins de pertes d'abord[/LIST][NN][B]Total[/B] : unités perdues ; chaque catégorie au survol.[N][B]Carte[/B] : chaque type de commandant perdu, sinon l'unité la plus perdue ; toutes les unités par catégorie au survol.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="fr_FR">
+			<Text>Unités vaincues</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant a détruit ou capturé des unités, et lesquelles.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="fr_FR">
+			<Text>Chaque unité ennemie qu'un dirigeant détruit ou capture.[NN][BLIST][LI][B]Épingle[/B] : terrestre, navale, civile ou commandant, et à qui elle appartenait[/LIST][NN][B]Total[/B] : unités vaincues ; chaque catégorie au survol.[N][B]Carte[/B] : chaque type de commandant vaincu, sinon l'unité la plus vaincue ; toutes les unités par catégorie au survol.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="fr_FR">
 			<Text>Promotions</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="fr_FR">
 			<Text>Quand les commandants de chaque dirigeant ont obtenu promotions et distinctions, et lesquelles.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="fr_FR">
+			<Text>Chaque [B]promotion[/B] et [B]distinction[/B] obtenue par les commandants d'un dirigeant.[NN][BLIST][LI][B]Promotion[/B] : l'icône de son arbre, sur une épingle à la couleur de l'arbre[LI][B]Distinction[/B] : son icône, sur une épingle dorée lumineuse[LI][B]Détail[/B] : le commandant, et le rang de cette promotion parmi les siennes[LI][B]Arc pointillé[/B] : relie les promotions de chaque commandant ; la couleur du point distingue les commandants[/LIST][NN][B]Total[/B] : promotions et distinctions ; chacune au survol.[N][B]Carte[/B] : la distinction la plus obtenue et l'arbre comptant le plus de promotions ; chaque distinction et chaque arbre au survol.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="fr_FR">
 			<Text>Distinctions</Text>
@@ -250,17 +304,23 @@
 		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="fr_FR">
 			<Text>Aucune promotion pour l'instant</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="fr_FR">
-			<Text>Batailles</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="fr_FR">
+			<Text>{1_Commander}, promotion {2_Number}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="fr_FR">
-			<Text>Escarmouches</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="fr_FR">
+			<Text>Guerres</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="fr_FR">
-			<Text>Sièges</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant était en guerre, contre qui, et comment chaque guerre a commencé et pris fin.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="fr_FR">
-			<Text>Aucune pour l'instant</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="fr_FR">
+			<Text>Guerres entre dirigeants ; les puissances indépendantes sont toujours hostiles et ne comptent pas. Une guerre se poursuit dans une nouvelle ère jusqu'à la conclusion de la paix.[NN]Les crans montrent chaque tour :[NN][BLIST][LI][B]Rouge[/B] : agression, le dirigeant a déclaré la guerre[LI][B]Jaune[/B] : défense, la guerre a été déclarée au dirigeant[LI][B]Gris[/B] : en paix[/LIST][NN]Les guerres simultanées se partagent un cran ; une paix conclue remplit son cran de vert. Une épingle montrant l'ennemi marque le début de chaque guerre, et une épingle [B]verte[/B] la conclusion de la paix ; chacune indique qui a attaqué qui.[NN][B]Tours[/B] : tours en guerre ; guerres déclarées, guerres subies et paix conclues au survol.[N][B]Carte[/B] : l'ennemi affronté le plus longtemps (tous en cas d'égalité) ; chaque guerre au survol.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="fr_FR">
+			<Text>Tours en guerre</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="fr_FR">
+			<Text>Diplomatie</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="fr_FR">
 			<Text>Agression</Text>
@@ -286,68 +346,50 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="fr_FR">
 			<Text>Paix avec {1_Leader}</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="fr_FR">
+			<Text>Conflits</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="fr_FR">
+			<Text>Quand chaque dirigeant a mené sièges, batailles et escarmouches, contre qui, et ce qui a été capturé, rasé ou pillé.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="fr_FR">
+			<Text>Les conflits d'un dirigeant. Un [B]engagement[/B] regroupe toutes les attaques et tous les pillages entre les deux mêmes camps dans un rayon de 3 cases, sans plus de 5 tours entre eux. Il compte dès que les deux camps se sont attaqués avec des unités capables de combattre (ni colons ni éclaireurs) ; chaque attaque compte pour les deux camps, et le pillage vaut 2 pour un bâtiment et 1 pour une case rurale.[NN]Par ordre de priorité :[NN][BLIST][LI][B]Rasée[/B] : une colonie rasée, une fois disparue de la carte[LI][B]Capturée[/B] : une colonie prise[LI][B]Perdue[/B] : une colonie prise au dirigeant[LI][B]Siège[/B] : une colonie assiégée ; assiégée de nouveau par le même ennemi en moins de 5 tours, c'est le même siège[LI][B]Bataille[/B] : un engagement comptant 3 attaques ou plus ou un pillage de 4 ou plus à son premier tour ou une fois qu'il a duré 3 tours, avec des combats sur 5 tours, ou avec un siège entre les deux camps[LI][B]Escarmouche[/B] : tout engagement de moindre ampleur[LI][B]Pillage[/B] : une case pillée par une unité ennemie, et non par des crues, des éruptions ou des tempêtes ; [B]Pillage subi[/B], sur les propres cases du dirigeant, compte aussi ici[/LIST][NN]Un point indique l'adversaire : doré pour un dirigeant, bleu pour une cité-État, argenté pour une puissance indépendante ; une épingle montre d'abord un dirigeant, puis une cité-État, puis une puissance indépendante. Les crans montrent chaque siège (orange), bataille (rouge) et escarmouche (bleu) tant qu'ils durent ; quand ils se chevauchent, ils se partagent le cran, le premier en occupant la plus grande partie. Un arc pointillé relie chacun à ce dont il découle : une escarmouche à la bataille qu'elle est devenue, les combats à un siège, un siège à une prise ou une perte, et celle-ci à sa destruction.[NN][B]Total[/B] : sièges, batailles, escarmouches et pillage ; au survol, à part, leurs résultats : colonies rasées, capturées et perdues.[N][B]Carte[/B] : la némésis, le joueur le plus affronté (les dirigeants avant les cités-États et les puissances indépendantes) ; tous les autres adversaires au survol.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="fr_FR">
+			<Text>Résultats</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="fr_FR">
+			<Text>Siège</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="fr_FR">
 			<Text>Bataille</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="fr_FR">
 			<Text>Escarmouche</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="fr_FR">
-			<Text>Siège</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="fr_FR">
+			<Text>Sièges</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="fr_FR">
+			<Text>Batailles</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="fr_FR">
+			<Text>Escarmouches</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="fr_FR">
+			<Text>Pillage</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="fr_FR">
+			<Text>Pillage subi</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="fr_FR">
 			<Text>Assiégée par {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="fr_FR">
-			<Text>Rasée par {1_Player}</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="fr_FR">
 			<Text>Prise par {1_Player}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="fr_FR">
-			<Text>Résultats</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="fr_FR">
-			<Text>Némésis</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="fr_FR">
-			<Text>Adversaires</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="fr_FR">
-			<Text>{1_Commander}, promotion {2_Number}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="fr_FR">
-			<Text>Chaque [B]colonie[/B] qu'un dirigeant gagne, perd ou élève.[NN][BLIST][LI][B]Épingle[/B] : dorée pour une ville, bleue pour une colonie[LI][B]Point[/B] : Fondée (ou incorporée), Capturée, Perdue, Rasée ou Devenue ville[LI][B]Arc pointillé[/B] : relie une colonie à son élévation, et une prise ou une perte à sa destruction[/LIST][NN][B]Total[/B] : colonies actuelles (ou à la fin de l'ère).[N][B]Carte[/B] : villes et colonies.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="fr_FR">
-			<Text>Chaque citoyen gagné par les colonies d'un dirigeant.[NN][BLIST][LI][B]Épingle[/B] : le bâtiment ou l'aménagement qui l'a ajouté, à la couleur de son rendement principal[LI][B]Point[/B] : doré pour urbain, argenté pour rural[LI][B]Spécialiste[/B] : une épingle dorée lumineuse, avec les bâtiments de sa case[/LIST][NN]Une colonie capturée compte à partir de sa taille lors de la prise.[NN][B]Total[/B] : population (urbains, ruraux et spécialistes au survol).[N][B]Carte[/B] : spécialistes, par colonie et quartier au survol.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="fr_FR">
-			<Text>Chaque unité qu'un dirigeant a [B]produite[/B], [B]achetée[/B] ou [B]reçue[/B].[NN][BLIST][LI][B]Épingle[/B] : terrestre, navale, civile ou commandant[LI][B]Commandants[/B] : comptés une fois, pas à leur retour après une défaite[/LIST][NN][B]Total[/B] : unités formées, par catégorie au survol.[N][B]Carte[/B] : chaque type de commandant formé, sinon l'unité la plus formée.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="fr_FR">
-			<Text>Chaque unité qu'un dirigeant a perdue face à un autre joueur, tuée ou capturée.[NN][BLIST][LI][B]Épingle[/B] : terrestre, navale, civile ou commandant, avec qui l'a prise[LI][B]Rang[/B] : le moins de pertes d'abord[/LIST][NN][B]Total[/B] : unités perdues, par catégorie au survol.[N][B]Carte[/B] : chaque type de commandant perdu, sinon l'unité la plus perdue.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="fr_FR">
-			<Text>Chaque unité d'un autre joueur qu'un dirigeant a tuée ou capturée.[NN][BLIST][LI][B]Épingle[/B] : terrestre, navale, civile ou commandant, avec à qui elle était[/LIST][NN][B]Total[/B] : unités vaincues, par catégorie au survol.[N][B]Carte[/B] : chaque type de commandant vaincu, sinon l'unité la plus vaincue.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="fr_FR">
-			<Text>Chaque [B]promotion[/B] et [B]distinction[/B] obtenue par les commandants d'un dirigeant.[NN][BLIST][LI][B]Promotion[/B] : l'icône de son arbre, sur une épingle à la couleur de l'arbre[LI][B]Distinction[/B] : son icône, sur une épingle dorée lumineuse[LI][B]Détail[/B] : le commandant et le rang de cette promotion parmi les siennes[/LIST][NN]Un arc pointillé relie les promotions de chaque commandant ; la couleur du point distingue les commandants.[NN][B]Total[/B] : promotions et distinctions.[N][B]Carte[/B] : la distinction la plus obtenue, puis l'arbre le plus promu ; chaque distinction et arbre au survol.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="fr_FR">
-			<Text>Guerres entre dirigeants ; les puissances indépendantes sont toujours hostiles et ne comptent pas. Les crans montrent chaque tour :[NN][BLIST][LI][B]Rouge[/B] : agression, le dirigeant a déclaré la guerre[LI][B]Jaune[/B] : défense, la guerre a été déclarée au dirigeant[LI][B]Gris[/B] : en paix[/LIST][NN]Les guerres simultanées se partagent un cran ; une paix conclue remplit son cran de vert. Une épingle de l'ennemi marque le début de chaque guerre, et une épingle [B]verte[/B] la conclusion de la paix ; chacune indique qui a attaqué qui.[NN][B]Tours[/B] : tours en guerre.[N][B]Carte[/B] : l'ennemi affronté le plus longtemps (tous en cas d'égalité), chaque guerre au survol. Une guerre se poursuit dans une nouvelle ère jusqu'à la paix.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="fr_FR">
-			<Text>Tours en guerre</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="fr_FR">
-			<Text>Diplomatie</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="fr_FR">
-			<Text>Tours</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="fr_FR">
-			<Text>Les conflits d'un dirigeant, par ordre de priorité :[NN][BLIST][LI][B]Rasée[/B] : une colonie rasée, une fois disparue de la carte[LI][B]Capturée[/B] : une colonie prise[LI][B]Perdue[/B] : une colonie prise au dirigeant[LI][B]Siège[/B] : une colonie assiégée ; assiégée de nouveau par le même ennemi en moins de 5 tours, c'est le même siège[LI][B]Bataille[/B] : un engagement de 3 attaques ou plus ou de 4 de pillage ou plus, à son premier tour ou après 3 tours, ou de combats sur 5 tours, ou un siège entre les deux camps[LI][B]Escarmouche[/B] : un engagement de moins[LI][B]Pillage[/B] : une case pillée[/LIST][NN]Un point indique l'adversaire : doré pour un dirigeant, bleu pour une cité-État, argenté pour une puissance indépendante. Une épingle montre d'abord un dirigeant, puis une cité-État, puis une puissance indépendante. Les crans montrent chaque siège (orange), bataille (rouge) et escarmouche (bleu) tant qu'ils durent ; quand ils coïncident, ils se partagent le cran, le premier en occupant la plus grande partie.[NN]Un [B]engagement[/B] regroupe toutes les attaques et pillages entre les deux mêmes camps à 3 cases, à 5 tours d'écart au plus. Il ne compte que lorsque les deux camps se sont attaqués avec des unités capables de combattre (ni colons ni éclaireurs), et chaque attaque compte pour les deux camps ; le pillage vaut 2 pour un bâtiment, 1 pour une case rurale. Un arc pointillé relie chaque événement à celui dont il découle : une escarmouche à la bataille qu'elle est devenue, les combats à un siège, un siège à une prise ou une perte, et celle-ci à la destruction. [B]Pillé[/B] (ses propres cases) compte aussi, sous [B]Pillage[/B]. Seul le pillage par des unités ennemies compte, pas les crues, éruptions ou tempêtes.[NN][B]Total[/B] : sièges, batailles, escarmouches et pillages ; destructions, prises et pertes en sont les résultats, affichés à part au survol.[N][B]Carte[/B] : la némésis, le joueur le plus affronté (les dirigeants avant les cités-États et les puissances indépendantes) ; les autres adversaires au survol.</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="fr_FR">
+			<Text>Rasée par {1_Player}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="fr_FR">
 			<Text>Attaques {1_Num}</Text>
@@ -355,53 +397,14 @@
 		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="fr_FR">
 			<Text>Pillage {1_Num}</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="fr_FR">
-			<Text>Pillage</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="fr_FR">
+			<Text>Némésis</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="fr_FR">
-			<Text>Pillé</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="fr_FR">
+			<Text>Adversaires</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="fr_FR">
-			<Text>Rasée</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="fr_FR">
-			<Text>Capturée</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="fr_FR">
-			<Text>Incorporée</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="fr_FR">
-			<Text>Unités formées</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="fr_FR">
-			<Text>Unités perdues</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="fr_FR">
-			<Text>Quand chaque dirigeant a perdu des unités, détruites ou capturées, et face à qui.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNIT_SOURCE" Language="fr_FR">
-			<Text>{1_Category} · {2_Player}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="fr_FR">
-			<Text>Commandants</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="fr_FR">
-			<Text>Produites</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="fr_FR">
-			<Text>Achetées</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="fr_FR">
-			<Text>Octroyées</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="fr_FR">
-			<Text>Quand chaque dirigeant a formé ou acheté des unités, et lesquelles.</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="fr_FR">
-			<Text>Tours {1_First} à {2_Last}</Text>
-		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="fr_FR">
-			<Text>Total</Text>
+		<Replace Tag="LOC_ZOM_GROUPED_DIGITS" Language="fr_FR">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
 		</Replace>
 	</LocalizedText>
 </Database>
