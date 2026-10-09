@@ -24,7 +24,8 @@
  * The Military view's Wars tab (observer-graph-military.js) of the war log
  * (observer-war-log.js): each leader's wars on one bar - its notches in the
  * war's colour while it lasts (red for aggression, the leader declared it;
- * yellow for defense, declared on it; grey is peace), a pin of the enemy where war was declared and
+ * yellow for defense, declared on it; grey is peace; wars at once share a
+ * notch; a peace made fills its notch in green), a pin of the enemy where war was declared and
  * peace made (green), each naming who attacked whom ("Declared On Augustus") -
  * the turns at war as the Total (with its wars on hover) and a card of the
  * leader it was at war with longest (each, when tied; on hover each war: who
@@ -36,6 +37,9 @@ import { yieldHistory } from './observer-history.js';
 import { PEACE, WAR_CATEGORIES } from './observer-war-log.js';
 
 const WAR_ICON = 'url(blp:fi_war_64)';
+/** The order wars share a notch in, the first taking most: aggression, defense, a war already going (peace made fills its own). */
+const LAYER_ORDER = ['peace', 'declared', 'declaredOn', 'ongoing'];
+const LAYERS = WAR_CATEGORIES.map((c) => LAYER_ORDER.indexOf(c.id));
 const byTime = (a, b) => a.age - b.age || a.turn - b.turn;
 
 /**
@@ -118,13 +122,11 @@ const WARS_SUBJECT = {
   detail: (source) => Locale.compose(WAR_CATEGORIES[source.category]?.label ?? ''),
   sourceOf: (event) => ({ other: event.other }),
   bands: (events, { position, now }) => {
-    const list = wars(events).sort((a, b) => a.start.category - b.start.category);
-    const peace = list.filter((war) => war.end).map((war) => { const at = position(war.end.age, war.end.progress); return { from: at, to: at, color: WAR_CATEGORIES[PEACE].color }; });
-    return [...peace, ...list.map((war) => ({   // the peace notch first, in green
-      from: position(war.start.age, war.start.progress),
-      to: war.end ? position(war.end.age, war.end.progress) : now ?? 100,   // else to the bar's end
-      color: WAR_CATEGORIES[war.start.category].color
-    }))];
+    const band = (category, from, to) => ({ from, to, color: WAR_CATEGORIES[category].color, layer: LAYERS[category], smooth: true, parts: 3 });   // a shared notch in thirds
+    return wars(events).flatMap((war) => {
+      const end = war.end && position(war.end.age, war.end.progress);
+      return [band(war.start.category, position(war.start.age, war.start.progress), end ?? now ?? 100), ...(war.end ? [{ ...band(PEACE, end, end), solo: true }] : [])];   // else to the bar's end; peace made fills its notch
+    });
   },
   value: (playerId, { events, lastAge }) => turnsAtWar(wars(events), lastAge),
   totalGroups: (entry) => [

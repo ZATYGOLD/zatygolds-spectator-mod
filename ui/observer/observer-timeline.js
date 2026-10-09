@@ -240,16 +240,24 @@ function shade(color, factor) {
   return `rgb(${[16, 8, 0].map((bit) => Math.round(((n >> bit) & 255) * factor)).join(', ')})`;
 }
 
-const SHARES = { 2: [3, 1], 3: [2, 1, 1] };   // quarters of a notch for each of its colours, the first (by layer) taking most
+const BAND_PARTS = 4;   // a shared notch's default division (quarters), a band's `parts` else
+
+/** Parts of a notch for each of `count` colours: one each, the first (by layer) the rest ("3, 1" of quarters). */
+const sharesOf = (count, parts) => (count > 1 && count <= parts ? [parts - count + 1, ...Array(count - 1).fill(1)] : Array(count).fill(1));
+
 function notchMix(bands, position, spacing) {
   const centre = position + NOTCH_WIDTH / 2;
   const layers = new Map();
+  let parts = BAND_PARTS;
   for (const b of bands) {
     const layer = b.layer ?? 0;
-    if (centre - spacing / 2 <= b.to && centre + spacing / 2 > b.from && !layers.has(layer)) layers.set(layer, { layer, color: shade(b.color, BAND_SHADE), smooth: !!b.smooth });   // a span ending on a slot's start (whole progress) fills it
+    if (!(centre - spacing / 2 <= b.to && centre + spacing / 2 > b.from) || layers.has(layer)) continue;   // a span ending on a slot's start (whole progress) fills it
+    if (b.solo) return [{ layer, color: shade(b.color, BAND_SHADE), share: 1, smooth: false }];   // the whole notch, as it is
+    layers.set(layer, { layer, color: shade(b.color, BAND_SHADE), smooth: !!b.smooth });
+    parts = b.parts ?? parts;
   }
   const mix = [...layers.values()].sort((x, y) => x.layer - y.layer);
-  const shares = SHARES[mix.length] ?? mix.map(() => 1);
+  const shares = sharesOf(mix.length, parts);
   const total = shares.reduce((x, y) => x + y, 0);
   return mix.map((m, i) => ({ ...m, share: shares[i] / total }));
 }

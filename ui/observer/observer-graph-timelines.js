@@ -39,7 +39,7 @@
  *     cardHover (false: the card has no hover), pinCount (false: pins show no count),
  *     value(id, { lastAge, now, events }) (the Total, else the things logged; optional), tieBreak(entry),
  *     links(events) ([[from, to]] events joined by a line, optional),
- *     bands(events, { position, now }) ([{ from, to, color, layer, smooth }] spans whose notches take the colour, a layer's each sharing the notch, smooth ones fading between notches; optional),
+ *     bands(events, { position, now }) ([{ from, to, color, layer, smooth, parts, solo }] spans whose notches take the colour, a layer's each sharing the notch (in `parts`, quarters by default), smooth ones fading between notches, a solo one taking its notches whole; optional),
  *     totalGroups(entry) (the Total's hover: groups of rows, optional) }
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';

@@ -29,9 +29,10 @@
  * Commanders are counted as they appear on and leave the map: they are often
  * granted rather than produced, and a defeated commander leaves the map to
  * respawn rather than being killed. Who defeated it comes from the kill event,
- * else its last combat, else an enemy on its plot. A commander away to
- * respawn is remembered (saved with the game), so its return is not counted
- * as trained.
+ * else its combat this turn or the last; a unit counts as defeated only by an
+ * enemy (at war, or an Independent Power), and a commander leaving the map
+ * otherwise is not lost. A commander away to respawn is remembered (saved
+ * with the game), so its return is not counted as trained.
  *
  * Each type falls in one of UNIT_CATEGORIES by its formation class. A unit's
  * type is cached while it is on the map, as a killed unit may already be gone
@@ -175,16 +176,20 @@ function returning(id, type, isNew) {
   return true;
 }
 
-/** A unit removed by another player: defeated by that player, lost by its owner. */
+const isIndependent = (id) => { const p = Players.get(id); return !!p && (p.isIndependent ?? (!p.isMajor && !p.isMinor)); };
+/** Whether two players are enemies: at war, or either an Independent Power (always hostile). */
+const areEnemies = (a, b) => a != null && b != null && a !== b && (isIndependent(a) || isIndependent(b) || !!Players.get(a)?.Diplomacy?.isAtWarWith?.(b));
+
+/** A unit removed by an enemy: defeated by that player, lost by its owner; false when not (no enemy took it). */
 function defeated(victim, winner, type = typeOfUnit(victim)) {
-  if (!victim) return;
+  if (!victim || !areEnemies(winner, victim.owner)) return false;
   if (isCommander(type)) {
     defeatedUnits.add(unitKey(victim));
     sendAway(victim, type);
   }
-  if (winner === victim.owner) return;
   record(winner, 'defeated', type, { other: victim.owner });
   record(victim.owner, 'lost', type, { other: winner });
+  return true;
 }
 
 const showPayload = payloadLogger(log);
@@ -242,32 +247,24 @@ function onAdded(data) {
   }, CITY_UNIT_MS);
 }
 
-/** Another player's unit on the plot, for a commander defeated without combat. */
-function enemyOn(location, owner) {
-  if (!location || location.x < 0) return null;
-  return (MapUnits.getUnits(location.x, location.y) ?? []).find((id) => id.owner !== owner)?.owner ?? null;
-}
-
-/** A commander leaving the map without a kill event: defeated by its last opponent, else lost to an unknown one. */
+/**
+ * A commander leaving the map without a kill event: defeated by the enemy it
+ * fought this turn or the last; else it left for another reason (not lost),
+ * noted as away so its return is not counted as trained.
+ */
 function onRemoved(data) {
   const id = data?.unit;
   const type = id && typeOfUnit(id);
   if (!isCommander(type)) return;
   const key = unitKey(id);
-  const location = Units.get(id)?.location;
   setTimeout(() => {
     const combat = lastCombat.get(key);
     lastCombat.delete(key);
     if (defeatedUnits.delete(key) || !Players.get(id.owner)?.isAlive) return;
-    const winner = combat && combat.turn >= Game.turn - 1 ? combat.by : enemyOn(location, id.owner);
+    const winner = combat && combat.turn >= Game.turn - 1 ? combat.by : null;
     log(`commander removed: ${type} of ${id.owner}, defeated by ${winner}`);
-    if (winner != null) {
-      defeated(id, winner, type);
-      defeatedUnits.delete(key);
-    } else {
-      sendAway(id, type);
-      record(id.owner, 'lost', type);
-    }
+    if (defeated(id, winner, type)) defeatedUnits.delete(key);
+    else sendAway(id, type);
   }, COMMANDER_REMOVAL_MS);
 }
 
@@ -288,4 +285,4 @@ onObserverReady(() => {
   engine.on('CityMadePurchase', (data) => onCityUnit('CityMadePurchase', data?.purchaseType, data?.unitType, 'purchased', data));
 });
 
-export { enemyOn, TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };
+export { areEnemies, TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };

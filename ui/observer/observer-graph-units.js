@@ -28,7 +28,7 @@
  * how it was trained, the categories on the Total's hover and a card of each
  * commander type counted, else the most counted other unit, else none yet.
  */
-import { unitTypeName as unitName } from './observer-graph-parts.js';
+import { opponentName, unitTypeName as unitName } from './observer-graph-parts.js';
 import { byCount, sumBy } from './observer-graph-timelines.js';
 import { TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, unitLog } from './observer-unit-log.js';
 
@@ -63,9 +63,9 @@ function unitCard(playerId, { events }) {
 /** The category, with the other player involved or how the unit was trained: "Land Combat · <player>". */
 function unitDetail(source) {
   const category = Locale.compose(UNIT_CATEGORIES[source.category]?.label ?? '');
-  const other = source.other >= 0 ? Players.get(source.other)?.name : null;
-  const detail = other ?? TRAIN_METHODS.find((m) => m.id === source.how)?.label;
-  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, Locale.compose(detail)) : category;
+  const how = TRAIN_METHODS.find((m) => m.id === source.how)?.label;
+  const detail = source.other >= 0 ? opponentName(source.other) : how && Locale.compose(how);
+  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, detail) : category;
 }
 
 const UNITS_SOURCE = { kind: 'timeline', read: unitLog, changeEvents: [UNIT_LOG_EVENT] };

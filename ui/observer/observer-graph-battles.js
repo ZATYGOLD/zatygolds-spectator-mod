@@ -36,7 +36,7 @@
  * an independent or city-state shows its type icon in its own colour.
  */
 import { BATTLE_CATEGORIES } from './observer-battle-log.js';
-import { byKindThenCount, leaderIcon, leaderName, leaderRow, leaderTint, playerKind, playerKindColor, playerKindLabel } from './observer-graph-parts.js';
+import { byKindThenCount, leaderIcon, leaderRow, leaderTint, opponentName, playerKind, playerKindColor } from './observer-graph-parts.js';
 import { rankedCells, sumBy } from './observer-graph-timelines.js';
 import { turnText } from './observer-timeline.js';
 
@@ -74,8 +74,6 @@ function iconOf(source) {
 /** A pin's icon: as iconOf, but pillage shows its kind (a pin may hold several tiles). */
 const pinIconOf = (source) => (isConstructible(source.category) ? categoryIcon(source.category) : iconOf(source));
 
-/** A player's name, else (one no longer in the game) what it was. */
-const opponentName = (id) => leaderName(id) || playerKindLabel(id) || Locale.compose('LOC_PLOT_TOOLTIP_INDEPENDENT_CONQUEROR');
 /** A pillage row's head: the other player (who pillaged, or whose tile it was). */
 const pillageHead = ([source]) => ({ icon: leaderIcon(source.other), tint: leaderTint(source.other), name: opponentName(source.other) });
 

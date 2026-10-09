@@ -146,7 +146,7 @@ function unitTypeName(type) {
 }
 
 /** A player's breakdown row: its icon (tinted), name and value. */
-const leaderRow = (playerId, value) => ({ icon: leaderIcon(playerId), tint: leaderTint(playerId), label: leaderName(playerId), value });
+const leaderRow = (playerId, value) => ({ icon: leaderIcon(playerId), tint: leaderTint(playerId), label: opponentName(playerId), value });
 
 /** Leaders first, then city-states, then independent powers. */
 function playerKind(playerId) {
@@ -168,6 +168,9 @@ function playerKindLabel(playerId) {
   const independent = Locale.compose('LOC_PLOT_TOOLTIP_INDEPENDENT_CONQUEROR');
   return type ? `${independent} · ${Locale.compose(type.name)}` : independent;
 }
+
+/** Any other player's name: its name as the map shows it, else what it is ("City-State", "Independent Power"). */
+const opponentName = (playerId) => leaderName(playerId) || playerKindLabel(playerId) || Locale.compose('LOC_PLOT_TOOLTIP_INDEPENDENT_CONQUEROR');
 
 /** A dot colour per kind of player (playerKind): leader, city-state, independent power. */
 const PLAYER_KIND_COLORS = ['#e3b341', '#4d9be0', '#b5b5b6'];
@@ -437,5 +440,5 @@ const emptyText = (text) => { const empty = T.empty(); empty.textContent = text;
 
 export {
   ageName, BreakdownCard, byKindThenCount, crisisStages, emptyText, fillPanel, GraphPanel, HoverTooltip, inAge, leaderColor, leaderIcon, leaderName, leaderRow, leaderTint,
-  LeaderRow, playerKind, playerKindColor, playerKindLabel, unitTypeName, LeaderRows, loggedLeaders, OVERALL, rowHeight, viewAges
+  LeaderRow, opponentName, playerKind, playerKindColor, playerKindLabel, unitTypeName, LeaderRows, loggedLeaders, OVERALL, rowHeight, viewAges
 };

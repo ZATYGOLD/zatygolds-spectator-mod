@@ -53,7 +53,7 @@ import { CONFIG } from './observer-config.js';
 import { onObserverReady } from './observer-core.js';
 import { createEventLog, payloadLogger } from './observer-event-log.js';
 import { cityAt } from './observer-settlement-info.js';
-import { typeOfUnit } from './observer-unit-log.js';
+import { areEnemies, typeOfUnit } from './observer-unit-log.js';
 
 const log = createLogger('observer-battle-log', CONFIG.debug);
 const showPayload = payloadLogger(log);
@@ -258,9 +258,6 @@ const record = (playerId, code, type, other = -1, count = 1) => { if (Players.ge
 const engagements = new Map();   // "sideA:sideB" -> [{ plot, tiles, lastTurn }]: where each engagement began, every tile fought at, and its last turn
 
 const locationOf = (id) => Units.get(id)?.location ?? Districts.get(id)?.location;
-const isIndependent = (id) => { const p = Players.get(id); return !!p && !p.isMajor && !p.isMinor; };
-/** Whether two players are enemies: at war, or either an Independent Power (always hostile). */
-const areEnemies = (a, b) => a !== b && (isIndependent(a) || isIndependent(b) || !!Players.get(a)?.Diplomacy?.isAtWarWith?.(b));
 
 /**
  * The engagement of two sides at a location: one going on between them
