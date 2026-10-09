@@ -71,11 +71,11 @@ function decode(text) {
 
 /**
  * A history saved under `keyPrefix`: measure(player) gives a leader's numbers
- * (by slot) at the start of each turn, `changeEvent` announces each new
- * sample. Returns the reader of every sample:
+ * (by slot) at the start of each turn (and again, replacing the turn's sample,
+ * after any of `liveEvents`), `changeEvent` announces each new sample. Returns the reader of every sample:
  * [{ age, turn, values: Map<playerId, number[]> }], oldest first.
  */
-function createSampleHistory({ keyPrefix, changeEvent, measure }) {
+function createSampleHistory({ keyPrefix, changeEvent, measure, liveEvents = [] }) {
   const countKey = `${keyPrefix}COUNT`;
   let samples = null;
   let nextIndex = 0;   // property index of the next new sample
@@ -114,9 +114,10 @@ function createSampleHistory({ keyPrefix, changeEvent, measure }) {
     window.dispatchEvent(new CustomEvent(changeEvent));
   }
 
-  const scheduleRecord = () => setTimeout(recordTurn, CONFIG.historyRecordDelayMs);
+  let pending = 0;
+  const scheduleRecord = () => { clearTimeout(pending); pending = setTimeout(recordTurn, CONFIG.historyRecordDelayMs); };
   onObserverReady(() => {
-    engine.on('TurnBegin', scheduleRecord);
+    for (const name of ['TurnBegin', ...liveEvents]) engine.on(name, scheduleRecord);
     scheduleRecord();
   });
   return read;

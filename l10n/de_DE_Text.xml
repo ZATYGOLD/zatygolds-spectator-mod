@@ -187,11 +187,8 @@
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="de_DE">
 			<Text>Erträge</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="de_DE">
-			<Text>Einheiten</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="de_DE">
-			<Text>Besiegt</Text>
+			<Text>Besiegte Einheiten</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="de_DE">
 			<Text>Wann jeder Anführer Einheiten zerstört oder erbeutet hat, und welche.</Text>
@@ -220,6 +217,153 @@
 		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="de_DE">
 			<Text>Zur Stadt erhoben</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="de_DE">
+			<Text>Militär</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="de_DE">
+			<Text>Kriege</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="de_DE">
+			<Text>Wann jeder Anführer im Krieg war, mit wem, und wie jeder Krieg begann und endete.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="de_DE">
+			<Text>Konflikte</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="de_DE">
+			<Text>Die Schlachten, Scharmützel und Belagerungen jedes Anführers und gegen wen, dazu niedergebrannte Siedlungen und geplünderte Felder.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="de_DE">
+			<Text>Stärke</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="de_DE">
+			<Text>Die militärische Stärke jedes Anführers, die Kampfstärke all seiner Einheiten, in jeder Runde des Spiels erfasst.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="de_DE">
+			<Text>Beförderungen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="de_DE">
+			<Text>Wann die Kommandanten jedes Anführers Beförderungen und Auszeichnungen erhielten, und welche.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="de_DE">
+			<Text>Auszeichnungen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="de_DE">
+			<Text>Noch keine Beförderungen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="de_DE">
+			<Text>Schlachten</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="de_DE">
+			<Text>Scharmützel</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="de_DE">
+			<Text>Belagerungen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="de_DE">
+			<Text>Noch keine</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="de_DE">
+			<Text>Aggression</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_ON" Language="de_DE">
+			<Text>Verteidigung</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR" Language="de_DE">
+			<Text>Im Krieg</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE" Language="de_DE">
+			<Text>Frieden geschlossen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER" Language="de_DE">
+			<Text>Krieg erklärt an {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER" Language="de_DE">
+			<Text>Angegriffen von {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR_WITH" Language="de_DE">
+			<Text>Im Krieg mit {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="de_DE">
+			<Text>Frieden mit {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="de_DE">
+			<Text>Schlacht</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="de_DE">
+			<Text>Scharmützel</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="de_DE">
+			<Text>Belagerung</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="de_DE">
+			<Text>Belagerung durch {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="de_DE">
+			<Text>Niedergebrannt von {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="de_DE">
+			<Text>Erobert von {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="de_DE">
+			<Text>Folgen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="de_DE">
+			<Text>Erzfeind</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="de_DE">
+			<Text>Gegner</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="de_DE">
+			<Text>{1_Commander}, Beförderung {2_Number}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="de_DE">
+			<Text>Jede [B]Siedlung[/B], die ein Anführer gewinnt, verliert oder erhebt.[NN][BLIST][LI][B]Nadel[/B]: golden für eine Stadt, blau für eine Siedlung[LI][B]Punkt[/B]: Gegründet (oder eingegliedert), Erobert, Verloren, Niedergebrannt oder Zur Stadt erhoben[LI][B]Gestrichelter Bogen[/B]: verbindet eine Siedlung mit ihrer Erhebung und eine Eroberung oder einen Verlust mit dem Niederbrennen[/LIST][NN][B]Gesamt[/B]: Siedlungen jetzt (oder am Ende des Zeitalters).[N][B]Karte[/B]: Städte und Siedlungen.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="de_DE">
+			<Text>Jeder Bürger, den die Siedlungen eines Anführers gewinnen.[NN][BLIST][LI][B]Nadel[/B]: das Gebäude oder die Modernisierung, die ihn hinzufügte, in der Farbe ihres Hauptertrags[LI][B]Punkt[/B]: golden für städtisch, silbern für ländlich[LI][B]Spezialist[/B]: eine leuchtend goldene Nadel mit den Gebäuden auf seinem Feld[/LIST][NN]Eine eroberte Siedlung zählt ab ihrer Größe bei der Eroberung.[NN][B]Gesamt[/B]: Bevölkerung (städtisch, ländlich und Spezialisten beim Darüberfahren).[N][B]Karte[/B]: Spezialisten, nach Siedlung und Viertel beim Darüberfahren.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="de_DE">
+			<Text>Jede Einheit, die ein Anführer [B]produzierte[/B], [B]kaufte[/B] oder [B]erhielt[/B].[NN][BLIST][LI][B]Nadel[/B]: Land, See, Zivil oder Kommandant[LI][B]Kommandanten[/B]: zählen einmal, nicht erneut bei der Rückkehr nach einer Niederlage[/LIST][NN][B]Gesamt[/B]: ausgebildete Einheiten, nach Kategorie beim Darüberfahren.[N][B]Karte[/B]: jeder ausgebildete Kommandantentyp, sonst die meistausgebildete Einheit.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="de_DE">
+			<Text>Jede Einheit, die ein Anführer an einen anderen Spieler verlor, getötet oder gefangen.[NN][BLIST][LI][B]Nadel[/B]: Land, See, Zivil oder Kommandant, mit wem sie nahm[LI][B]Rang[/B]: die wenigsten Verluste zuerst[/LIST][NN][B]Gesamt[/B]: verlorene Einheiten, nach Kategorie beim Darüberfahren.[N][B]Karte[/B]: jeder verlorene Kommandantentyp, sonst die meistverlorene Einheit.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="de_DE">
+			<Text>Jede Einheit eines anderen Spielers, die ein Anführer tötete oder gefangen nahm.[NN][BLIST][LI][B]Nadel[/B]: Land, See, Zivil oder Kommandant, mit wem sie gehörte[/LIST][NN][B]Gesamt[/B]: besiegte Einheiten, nach Kategorie beim Darüberfahren.[N][B]Karte[/B]: jeder besiegte Kommandantentyp, sonst die meistbesiegte Einheit.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="de_DE">
+			<Text>Jede [B]Beförderung[/B] und [B]Auszeichnung[/B], die die Kommandanten eines Anführers erhalten.[NN][BLIST][LI][B]Beförderung[/B]: das Symbol ihres Baums auf einer Nadel in der Farbe des Baums[LI][B]Auszeichnung[/B]: ihr Symbol auf einer leuchtend goldenen Nadel[LI][B]Detail[/B]: der Kommandant und die wievielte seiner Beförderungen es war[/LIST][NN]Ein gestrichelter Bogen verbindet die Beförderungen jedes Kommandanten; die Farbe des Punkts unterscheidet die Kommandanten.[NN][B]Gesamt[/B]: Beförderungen und Auszeichnungen.[N][B]Karte[/B]: die häufigste Auszeichnung, dann der meistbeförderte Baum; jede Auszeichnung und jeder Baum beim Darüberfahren.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="de_DE">
+			<Text>Kriege zwischen Anführern; unabhängige Mächte sind stets feindlich und zählen nicht. Die Kerben zeigen jede Runde:[NN][BLIST][LI][B]Rot[/B]: Aggression, der Anführer hat den Krieg erklärt[LI][B]Gelb[/B]: Verteidigung, dem Anführer wurde der Krieg erklärt[LI][B]Grau[/B]: Im Frieden[/LIST][NN]Eine Nadel des Feindes markiert den Beginn jedes Krieges, eine [B]grüne[/B] Nadel den Friedensschluss; jede nennt, wer wen angegriffen hat.[NN][B]Runden[/B]: Runden im Krieg.[N][B]Karte[/B]: der Feind mit den meisten Kriegsrunden (bei Gleichstand jeder), jeder Krieg beim Darüberfahren. Ein Krieg dauert bis zum Frieden an, auch in einem neuen Zeitalter.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="de_DE">
+			<Text>Runden im Krieg</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="de_DE">
+			<Text>Diplomatie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="de_DE">
+			<Text>Runden</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="de_DE">
+			<Text>Die Konflikte eines Anführers, nach Vorrang:[NN][BLIST][LI][B]Niedergebrannt[/B]: eine niedergebrannte Siedlung, sobald sie von der Karte verschwunden ist[LI][B]Erobert[/B]: eine eingenommene Siedlung[LI][B]Verloren[/B]: eine dem Anführer abgenommene Siedlung[LI][B]Belagerung[/B]: eine belagerte Siedlung; erneut vom selben Feind innerhalb von 5 Runden belagert, ist es dieselbe Belagerung[LI][B]Schlacht[/B]: ein Gefecht mit 3 oder mehr Angriffen oder 4 oder mehr Plünderung, in seiner ersten Runde oder sobald es 3 Runden dauert, oder Kämpfen über 5 Runden, oder eine Belagerung zwischen beiden Seiten[LI][B]Scharmützel[/B]: ein Gefecht mit weniger[LI][B]Geplündert[/B]: ein geplündertes Feld[/LIST][NN]Ein Punkt zeigt den Gegner: golden für einen Anführer, blau für einen Stadtstaat, silbern für eine unabhängige Macht. Eine Nadel zeigt zuerst einen Anführer, dann einen Stadtstaat, dann eine unabhängige Macht. Die Kerben zeigen jede Belagerung (orange), Schlacht (rot) und jedes Scharmützel (blau), solange sie andauern; wo sie zusammenfallen, teilen sie sich die Kerbe, die erste nimmt den größten Teil ein.[NN]Ein [B]Gefecht[/B] umfasst alle Angriffe und Plünderungen zwischen denselben zwei Seiten innerhalb von 3 Feldern, höchstens 5 Runden auseinander. Es zählt erst, wenn beide Seiten einander mit kampffähigen Einheiten (keine Siedler oder Späher) angegriffen haben, und jeder Angriff zählt für beide Seiten; Plünderung zählt 2 für ein Gebäude, 1 für ein ländliches Feld. Ein gestrichelter Bogen verbindet jedes Ereignis mit dem, woraus es folgte: ein Scharmützel mit der Schlacht, zu der es wurde, die Kämpfe mit einer Belagerung, eine Belagerung mit einer Eroberung oder einem Verlust und diese mit dem Niederbrennen. [B]Wurde geplündert[/B] (eigene Felder) zählt ebenfalls, unter [B]Geplündert[/B]. Nur Plünderungen feindlicher Einheiten zählen, keine Überschwemmungen, Ausbrüche oder Stürme.[NN][B]Gesamt[/B]: Belagerungen, Schlachten, Scharmützel und Plünderungen; Niederbrennen, Eroberungen und Verluste sind ihre Folgen, beim Darüberfahren getrennt gezeigt.[N][B]Karte[/B]: der Erzfeind, der meistbekämpfte Spieler (Anführer vor Stadtstaaten und unabhängigen Mächten); alle anderen Gegner beim Darüberfahren.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="de_DE">
+			<Text>Angriffe {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="de_DE">
+			<Text>Plünderung {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="de_DE">
+			<Text>Geplündert</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="de_DE">
+			<Text>Wurde geplündert</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="de_DE">
+			<Text>Niedergebrannt</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="de_DE">
 			<Text>Erobert</Text>
 		</Replace>
@@ -227,10 +371,10 @@
 			<Text>Eingegliedert</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="de_DE">
-			<Text>Ausgebildet</Text>
+			<Text>Ausgebildete Einheiten</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="de_DE">
-			<Text>Verloren</Text>
+			<Text>Verlorene Einheiten</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="de_DE">
 			<Text>Wann jeder Anführer Einheiten durch Zerstörung oder Gefangennahme verlor, und an wen.</Text>

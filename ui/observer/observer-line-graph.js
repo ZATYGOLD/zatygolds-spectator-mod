@@ -34,6 +34,7 @@
  */
 import { createEffect, onCleanup, onMount } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { Layout } from 'fs://game/core/ui/utilities/utilities-layout.js';
+import { drawCrisisMark } from './observer-crisis.js';
 
 /** The body font LineGraph uses for the current language. */
 const LOCALE_FONTS = { ko_KR: 'BodyFont-KR', ja_JP: 'BodyFont-JP', zh_Hans_CN: 'BodyFont-SC', zh_Hant_HK: 'BodyFont-TC' };
@@ -75,15 +76,7 @@ const marksPlugin = (marks) => ({
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = flag.color;
-      for (const [base, direction] of [[bottom, -1], [top, 1]]) {
-        ctx.beginPath();
-        ctx.moveTo(x - FLAG.size, base);
-        ctx.lineTo(x + FLAG.size, base);
-        ctx.lineTo(x, base + direction * tip);
-        ctx.closePath();
-        ctx.fill();
-      }
+      for (const [base, direction] of [[bottom, -1], [top, 1]]) drawCrisisMark(ctx, x, base, direction, flag.color, FLAG.size);
     }
     ctx.restore();
   }

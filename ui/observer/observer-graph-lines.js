@@ -29,6 +29,8 @@
  * each Age's start (Overall) and a flag where each crisis stage began. A tab:
  *
  *   { id, slot, label, look: { color, background }, description, valueLabel, axisLabel }
+ *
+ * The value column shows each leader's latest value in the view.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createMemo, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';

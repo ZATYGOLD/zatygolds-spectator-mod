@@ -37,6 +37,9 @@ const YIELD_LOOK = {
   production: { color: '#d99a5b', background: 'bg_victory_military' }
 };
 
+/** A yield type's colour (YIELD_FOOD...), as its graph draws it. */
+const yieldColor = (yieldType) => YIELD_LOOK[HISTORY_YIELDS.find((y) => y.yieldType === yieldType)?.id]?.color;
+
 const YIELDS_VIEW = {
   id: 'yields',
   kind: 'line',
@@ -59,4 +62,4 @@ const YIELDS_VIEW = {
   }
 };
 
-export { YIELDS_VIEW };
+export { yieldColor, YIELDS_VIEW };

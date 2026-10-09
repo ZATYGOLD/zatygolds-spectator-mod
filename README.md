@@ -54,9 +54,13 @@ leader's relationship and befriending progress.
   card of its cities and towns), and how its settlements grew (urban pins
   showing the building, produced or purchased; rural pins the improvement;
   specialist pins the buildings they joined; and a card of each).
-- **Units** — units each leader trained, lost and defeated, on the same
-  timeline: pins by land combat, naval combat, civilian or commander (with
-  the other player on hover), and a card per leader for each commander type.
+- **Military** — a per-turn graph of each leader's military strength, and on
+  the same timeline its units trained, lost and defeated (pins by land
+  combat, naval combat, civilian or commander), its commanders' promotions
+  and commendations (each commander told apart), its wars with other leaders
+  (a stripe in the enemy's colour for every turn at war, pins where war was
+  declared and peace made), and its battles, skirmishes and sieges (attacks
+  grouped into engagements), pillaging and razing.
 - All mark each crisis stage and, in Overall, where each Age starts.
 
 **Screens** — Resources & Trade, Legacies, Government, Great Works, Religion
@@ -111,10 +115,10 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Ribbon** — the Spectator's card stays on screen however many leaders
   there are; other players' ribbons no longer show the Spectator.
 - **Multiplayer** — computer players can no longer be set to the Spectator.
-- **Chronicle** — renamed from Yield Graphs, with a Yields / Empire / Units
-  filter: happiness joins the yields; Empire shows the settlements each
-  leader founded, captured, lost and upgraded and how they grew, and Units
-  the units each trained, lost and defeated, on a timeline.
+- **Chronicle** — renamed from Yield Graphs, with a Yields / Empire /
+  Military filter: happiness joins the yields; Empire shows the settlements
+  each leader founded, captured, lost and upgraded and how they grew, and
+  Military its wars, battles, units, promotions and strength.
 
 ### 1.0.0
 

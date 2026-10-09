@@ -37,8 +37,8 @@ const EMPIRE_VIEW = {
   kind: 'timeline',
   label: 'LOC_ZOM_GRAPH_EMPIRE',
   tabs: [
-    { id: 'settlements', label: 'LOC_ZOM_GRAPH_SETTLEMENTS', description: 'LOC_ZOM_GRAPH_SETTLEMENTS_DESC', subject: SETTLEMENTS_SUBJECT },
-    { id: 'population', label: 'LOC_ZOM_GRAPH_POPULATION', description: 'LOC_ZOM_GRAPH_POPULATION_DESC', subject: POPULATION_SUBJECT }
+    { id: 'settlements', label: 'LOC_ZOM_GRAPH_SETTLEMENTS', description: 'LOC_ZOM_GRAPH_SETTLEMENTS_DESC', info: 'LOC_ZOM_GRAPH_SETTLEMENTS_INFO', subject: SETTLEMENTS_SUBJECT },
+    { id: 'population', label: 'LOC_ZOM_GRAPH_POPULATION', description: 'LOC_ZOM_GRAPH_POPULATION_DESC', info: 'LOC_ZOM_GRAPH_POPULATION_INFO', subject: POPULATION_SUBJECT }
   ],
   read: () => [...settlementLog(), ...populationLog()],
   changeEvents: [SETTLEMENT_LOG_EVENT, EMPIRE_EVENT]

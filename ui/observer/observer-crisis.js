@@ -36,11 +36,34 @@ import { canSave, isObserverSeat, onObserverReady, readSaved, writeSaved } from 
 const log = createLogger('observer-crisis', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_CRISIS_STAGES_';
 const CRISIS_EVENT = 'zom-crisis-changed';
+/** Each stage's colour, and a darker, richer one for its notch on the timelines (visible over the Wars tab's colours). */
 const CRISIS_STAGES = [
-  { label: 'LOC_UI_POLICIES_CRISIS_BEGINS', color: '#e8a33c' },
-  { label: 'LOC_UI_POLICIES_CRISIS_INTENSIFIES', color: '#e2702e' },
-  { label: 'LOC_UI_POLICIES_CRISIS_CULMINATES', color: '#d8402e' }
+  { label: 'LOC_UI_POLICIES_CRISIS_BEGINS', color: '#e8a33c', notch: '#9a5a08' },
+  { label: 'LOC_UI_POLICIES_CRISIS_INTENSIFIES', color: '#e2702e', notch: '#8f3a0c' },
+  { label: 'LOC_UI_POLICIES_CRISIS_CULMINATES', color: '#d8402e', notch: '#6e1010' }
 ];
+
+/** A crisis stage's marker: a shallow triangle (half width `size`) with a glow and a black outline. */
+const CRISIS_MARK = { tip: 1.6, glow: 6, outline: 'rgba(0, 0, 0, 0.9)' };
+
+/** Draws a crisis stage's marker from `base` (y) pointing `direction` (1 down, -1 up) at `x`. */
+function drawCrisisMark(ctx, x, base, direction, color, size) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x - size, base);
+  ctx.lineTo(x + size, base);
+  ctx.lineTo(x, base + direction * size * CRISIS_MARK.tip);
+  ctx.closePath();
+  ctx.shadowColor = color;
+  ctx.shadowBlur = CRISIS_MARK.glow;
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = CRISIS_MARK.outline;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
 
 let crises = null;   // Map<age chronology, [{ stage, progress, turn | null }]>
 
@@ -96,4 +119,4 @@ onObserverReady(() => {
   scheduleRecord();
 });
 
-export { ageCrises, CRISIS_EVENT, CRISIS_STAGES };
+export { ageCrises, CRISIS_EVENT, CRISIS_STAGES, drawCrisisMark };

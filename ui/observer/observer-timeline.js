@@ -30,15 +30,18 @@
  * several), the count below, and a tooltip listing each type.
  *
  * Props: subject ({ categories: [{ color, glow }], pinIcon(source),
- * pinColor(source) (else the category's), icon(source), name(source),
- * detail(source) }: what is logged), pins ([{ position, category,
+ * pinColor(source) and dotColor(source) (else the category's), pinIconOutline (a dark outline around white pin icons), icon(source), iconTint(source) (optional), name(source),
+ * detail(source), sections ([{ title, categories, compact, by(source), head(sources) }]: the tooltip's
+ * titled sections, a compact one a row per group of its things, named under it; optional) }: what is logged), pins ([{ position, category,
  * lead (the source it shows), count, turns: [first, last], sources: [{ type, category, count, ... }]
- * }]), notches ([{ position, highlight, color, divider }]: a colour replaces
- * the notch colours, a divider spans the bar's height at its position, between
- * Ages), labels ([{ position, text, color, start, bottom }]: centred on their
+ * }]), notches ([{ position, highlight, crisis, divider }]: a crisis stage's
+ * marker (as the line graphs draw it, in its dark colour) at each end of the notch, inside it; a
+ * divider spans the bar's height at its position, between Ages), labels ([{ position, text, color, start, bottom }]: centred on their
  * notch or from it, over or under the bar), showTopLabels / showBottomLabels
  * (the first and last bars), title (the tooltip heading), links ([[from, to]]
- * pin positions joined by the Culture tab's dashed arc).
+ * pin positions joined by the Culture tab's dashed arc), bands ([{ from, to,
+ * color }] spans whose notches take the colour, below the current progress
+ * and crisis stages). A subject with pinCount false shows no count under its pins.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createEffect, For, onCleanup, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -46,15 +49,20 @@ import { CardFrame } from 'fs://game/core/ui-next/components/card-frame.js';
 import { Divider } from 'fs://game/core/ui-next/components/divider.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
 import { drawDashedQuadraticBezier } from 'fs://game/core/ui-next/utilities/canvas-utilities.js';
+import { drawCrisisMark } from './observer-crisis.js';
 
 // The Culture tab's notch colours.
 const NOTCH = { color: 'rgba(97, 98, 102, 0.6)', highlight: 'rgba(120, 139, 179, 0.9)', divider: 'rgba(225, 214, 180, 0.6)' };
+const BAND_SHADE = 0.6;   // a band's notches darker than its colour, apart from the pins in it
 const DIVIDER_PX = 2;
 const AGE_LABEL_GAP = '0.75rem';   // between an Age's divider and its name
 const BOTTOM_LABEL_GAP = '0.15rem';   // between the notches and a label under them
 const NOTCH_BOTTOM = 90;              // where the notches end, in % of the bar's height (drawNotches)
 const NOTCH_WIDTH = 0.8;   // a notch's width in % of the bar (drawNotches)
 // The Culture tab's arc between pins: colour, width, dash and gap, end inset, and height by distance.
+const CRISIS_MARK_SIZE = 0.6;    // a crisis marker's half width, in notch widths
+const PIN_BRIGHTNESS = 1.3;   // pin art is darker than its tint
+const PIN_ICON_OUTLINE = 'drop-shadow(0 0 0.1rem #000) drop-shadow(0 0 0.1rem #000)';
 const ARC = { color: '#616266', width: 2, dash: 6, gap: 4, inset: 6, min: 1, max: 64, linear: 0.38, root: 0.06 };
 const DOT_CLASS = 'zom-pin-dot';
 
@@ -67,12 +75,66 @@ const T = {
   count: template(`<div></div>`),
   heading: template(`<div class="text-title uppercase text-secondary mb-1"></div>`),
   turns: template(`<div class="mb-3"></div>`),
+  sectionTitle: template(`<div class="font-title text-xs uppercase text-secondary ml-3 mt-1"></div>`),
   source: template(`<div class="flex flex-row items-center victories-culture-tooltip-body p-1 my-1 w-96 relative"><div class="size-9 bg-contain bg-no-repeat bg-center ml-2"></div><div class="flex flex-col justify-center min-h-11 w-64"><div class="uppercase text-title"></div><div class="text-xs"></div></div><div class="absolute right-2"></div></div>`)
 };
 
+/** "Turn 12", or "Turns 12–15" for a span. */
 const turnText = ([first, last]) => (first === last
   ? Locale.compose('LOC_VICTORIES_ITEM_TOOLTIP_TURN', first)
   : Locale.compose('LOC_ZOM_GRAPH_TURNS', first, last));
+
+/**
+ * The pin's sources in sections ({ title, sources, compact }): the subject's
+ * (each holding its categories, in order, those without sources left out),
+ * else one untitled section of them all; each shown in its own panel.
+ */
+function pinSections(pin, subject) {
+  if (!subject.sections) return [{ sources: pin.sources }];
+  return subject.sections.map((section) => ({ ...section, sources: pin.sources.filter((s) => section.categories.includes(s.category)) }))
+    .filter((section) => section.sources.length);
+}
+
+/** A source's row: icon, name, detail and count. */
+function sourceRow(subject, source) {
+  const row = T.source();
+  const icon = row.firstChild;
+  const text = icon.nextSibling;
+  icon.style.backgroundImage = subject.icon(source);
+  tint(icon, subject.iconTint?.(source));
+  text.firstChild.textContent = subject.name(source);
+  text.lastChild.textContent = subject.detail(source);
+  text.nextSibling.textContent = `${source.count}`;
+  insert(row, createComponent(Divider.Vertical, { margin: 2, length: '13' }), text);
+  return row;
+}
+
+/** The things' names, each once with its count past one: "Farm ×2, Mine". */
+function namesOf(subject, sources) {
+  const counts = new Map();
+  for (const s of sources) counts.set(subject.name(s), (counts.get(subject.name(s)) ?? 0) + s.count);
+  return [...counts].map(([name, count]) => (count > 1 ? `${name} ×${count}` : name)).join(', ');
+}
+
+/**
+ * A compact section's rows: one per group (section.by(source); one in all
+ * without it), headed by section.head(sources) ({ icon, tint, name }; else the
+ * first thing's), its things' names under it and their total.
+ */
+function compactRows(subject, section) {
+  const groups = new Map();
+  for (const s of section.sources) {
+    const key = section.by?.(s) ?? '';
+    groups.set(key, [...(groups.get(key) ?? []), s]);
+  }
+  return [...groups.values()].map((sources) => {
+    const head = section.head?.(sources) ?? { icon: subject.icon(sources[0]), tint: subject.iconTint?.(sources[0]), name: subject.name(sources[0]) };
+    const shown = { ...subject, icon: () => head.icon, iconTint: () => head.tint, name: () => head.name, detail: () => namesOf(subject, sources) };
+    return sourceRow(shown, { ...sources[0], count: sources.reduce((sum, s) => sum + s.count, 0) });
+  });
+}
+
+const rowDivider = () => createComponent(Divider.Horizontal, { 'class': 'my-1 ml-2', length: '84' });
 
 const PinTooltip = (props) => createComponent(Tooltip.Frame, {
   'class': 'relative flex flex-col p-2 items-center justify-center',
@@ -81,32 +143,21 @@ const PinTooltip = (props) => createComponent(Tooltip.Frame, {
     heading.textContent = props.title;
     const turns = T.turns();
     turns.textContent = turnText(props.pin.turns);
-    return [heading, turns, createComponent(CardFrame, {
-      'class': 'mb-3',
-      get children() {
-        return createComponent(For, {
-          get each() { return props.pin.sources; },
-          children: (source, index) => {
-            const row = T.source();
-            const icon = row.firstChild;
-            const text = icon.nextSibling;
-            icon.style.backgroundImage = props.subject.icon(source);
-            text.firstChild.textContent = props.subject.name(source);
-            text.lastChild.textContent = props.subject.detail(source);
-            text.nextSibling.textContent = `${source.count}`;
-            insert(row, createComponent(Divider.Vertical, { margin: 2, length: '13' }), text);
-            return [row, createComponent(Show, {
-              get when() { return index() < props.pin.sources.length - 1; },
-              get children() { return createComponent(Divider.Horizontal, { 'class': 'my-1 ml-2', length: '84' }); }
-            })];
-          }
-        });
-      }
-    })];
+    const sections = pinSections(props.pin, props.subject);
+    const panels = sections.map((section, i) => {
+      const rows = section.compact ? compactRows(props.subject, section) : section.sources.map((source) => sourceRow(props.subject, source));
+      const title = section.title ? [Object.assign(T.sectionTitle(), { textContent: Locale.compose(section.title) })] : [];
+      const children = [...title, ...rows.flatMap((row, n) => (n ? [rowDivider(), row] : [row]))];
+      return createComponent(CardFrame, { 'class': i < sections.length - 1 ? 'mb-2' : 'mb-3', children });
+    });
+    return [heading, turns, ...panels];
   }
 });
 
 const PIN_ART = 'url(blp:culture_pin_minor)';
+
+/** Tints an image element's art (the game's own image tint), when given a colour. */
+const tint = (element, color) => { if (color) element.style.setProperty('fxs-background-image-tint', color); };
 const GLOW = { scale: 1.3, origin: '50% 45%', blur: '0.3rem', opacity: '0.9' };   // a larger, blurred copy of the pin behind it
 
 /** The pin itself: tinted pin art, the thing's icon, the "+" when grouped and a glow if the category has one. */
@@ -124,7 +175,10 @@ function pinFace(pin, subject) {
     glow.style.opacity = GLOW.opacity;
   }
   art.style.setProperty('fxs-background-image-tint', subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff');
+  art.style.filter = `brightness(${PIN_BRIGHTNESS})`;
   icon.style.backgroundImage = subject.pinIcon(pin.lead);
+  tint(icon, subject.iconTint?.(pin.lead));
+  if (subject.pinIconOutline) icon.style.filter = PIN_ICON_OUTLINE;
   if (pin.sources.length > 1) {
     const plus = T.plus();
     plus.style.backgroundImage = 'url(blp:victories_culturePlus)';
@@ -139,7 +193,7 @@ const Pin = (props) => {
   const dot = root.firstChild;
   dot.classList.add(DOT_CLASS);
   root.style.left = `${props.pin.position}%`;
-  dot.style.backgroundColor = props.subject.categories[props.pin.category]?.color ?? '#ffffff';
+  dot.style.backgroundColor = props.subject.dotColor?.(props.pin.lead) ?? props.subject.categories[props.pin.category]?.color ?? '#ffffff';
   dot.style.border = '2px solid black';
   dot.style.borderRadius = '50%';
   insert(root, createComponent(Tooltip, {
@@ -152,9 +206,11 @@ const Pin = (props) => {
       ];
     }
   }), dot);
-  const count = T.count();
-  count.textContent = `${props.pin.count}`;
-  root.appendChild(count);
+  if (props.subject.pinCount !== false) {
+    const count = T.count();
+    count.textContent = `${props.pin.count}`;
+    root.appendChild(count);
+  }
   return root;
 };
 
@@ -173,8 +229,51 @@ function notchLabel({ position, text, color, start, bottom }) {
   return label;
 }
 
-/** The Culture tab's notches: thin bars over 80% of the height, highlighted ones brighter; dividers full height. */
-function drawNotches(canvas, notches) {
+/**
+ * The colours of the bands the notch's slot (its share of the bar, `spacing`
+ * wide) overlaps - the first of each layer (bands without one share a layer),
+ * by layer - each with its share of the notch: [{ layer, color, share, smooth }].
+ */
+/** A '#rrggbb' colour darkened by `factor` (0-1). */
+function shade(color, factor) {
+  const n = parseInt(color.slice(1), 16);
+  return `rgb(${[16, 8, 0].map((bit) => Math.round(((n >> bit) & 255) * factor)).join(', ')})`;
+}
+
+const SHARES = { 2: [3, 1], 3: [2, 1, 1] };   // quarters of a notch for each of its colours, the first (by layer) taking most
+function notchMix(bands, position, spacing) {
+  const centre = position + NOTCH_WIDTH / 2;
+  const layers = new Map();
+  for (const b of bands) {
+    const layer = b.layer ?? 0;
+    if (centre - spacing / 2 <= b.to && centre + spacing / 2 > b.from && !layers.has(layer)) layers.set(layer, { layer, color: shade(b.color, BAND_SHADE), smooth: !!b.smooth });   // a span ending on a slot's start (whole progress) fills it
+  }
+  const mix = [...layers.values()].sort((x, y) => x.layer - y.layer);
+  const shares = SHARES[mix.length] ?? mix.map(() => 1);
+  const total = shares.reduce((x, y) => x + y, 0);
+  return mix.map((m, i) => ({ ...m, share: shares[i] / total }));
+}
+
+/** Each notch's mix eased toward its neighbours' (smooth bands only, not into a bare notch): conflicts fade from one to the next. */
+function smoothMixes(mixes) {
+  const smooth = (mix) => mix.length && mix.every((m) => m.smooth);
+  return mixes.map((mix, i) => {
+    const near = [mixes[i - 1], mixes[i + 1]].filter((m) => m && smooth(m));
+    if (!smooth(mix) || !near.length) return mix;
+    const byLayer = new Map();
+    const add = (m, weight) => m.forEach((part) => {
+      const sum = byLayer.get(part.layer) ?? { ...part, share: 0 };
+      sum.share += part.share * weight;
+      byLayer.set(part.layer, sum);
+    });
+    add(mix, 2);
+    near.forEach((m) => add(m, 1));
+    return [...byLayer.values()].map((part) => ({ ...part, share: part.share / (2 + near.length) })).sort((x, y) => x.layer - y.layer);
+  });
+}
+
+/** The Culture tab's notches: thin bars over 80% of the height, highlighted ones brighter, band ones in their colours, darker (sharing the notch), crisis ones marked; dividers full height. */
+function drawNotches(canvas, notches, bands) {
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width;
   canvas.height = rect.height;
@@ -184,6 +283,9 @@ function drawNotches(canvas, notches) {
   const top = canvas.height * (1 - NOTCH_BOTTOM / 100);
   const height = canvas.height * (2 * NOTCH_BOTTOM / 100 - 1);
   const width = Math.max(canvas.width * NOTCH_WIDTH / 100, 1);
+  const slots = notches.filter((n) => !n.divider);
+  const spacing = slots.length > 1 ? slots[1].position - slots[0].position : NOTCH_WIDTH;
+  const mixes = new Map(smoothMixes(slots.map((n) => notchMix(bands, n.position, spacing))).map((mix, i) => [slots[i], mix]));
   for (const notch of notches) {
     const x = (notch.position / 100) * canvas.width;
     if (notch.divider) {   // on the boundary between two Ages
@@ -191,20 +293,27 @@ function drawNotches(canvas, notches) {
       ctx.fillRect(Math.round(x - DIVIDER_PX / 2), 0, DIVIDER_PX, canvas.height);
       continue;
     }
-    ctx.fillStyle = notch.color ?? (notch.highlight ? NOTCH.highlight : NOTCH.color);
-    ctx.fillRect(x, top, width, height);
+    const mix = notch.highlight ? [{ color: NOTCH.highlight, share: 1 }] : mixes.get(notch);
+    let y = top;
+    for (const { color, share } of mix.length ? mix : [{ color: NOTCH.color, share: 1 }]) {   // top to bottom, each its share
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, width, height * share);
+      y += height * share;
+    }
+    if (notch.crisis) for (const [base, direction] of [[top, 1], [top + height, -1]]) drawCrisisMark(ctx, x + width / 2, base, direction, notch.crisis, width * CRISIS_MARK_SIZE);
   }
 }
 
-/** The Culture tab's dashed arcs between linked pins, from dot to dot. */
-function drawLinks(canvas, bar, links) {
+/** Over the notches: the Culture tab's dashed arcs between linked pins, from dot to dot. */
+function drawOverlay(canvas, bar, links) {
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width;
   canvas.height = rect.height;
   const ctx = canvas.getContext('2d');
-  const dot = bar.querySelector('.' + DOT_CLASS);
-  if (!ctx || !rect.width || !dot) return;
+  if (!ctx || !rect.width) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const dot = bar.querySelector('.' + DOT_CLASS);
+  if (!dot || !links.length) return;
   const dotRect = dot.getBoundingClientRect();
   const y = dotRect.top + dotRect.height / 2 - rect.top;
   ctx.strokeStyle = ARC.color;
@@ -221,7 +330,7 @@ function drawLinks(canvas, bar, links) {
 const Timeline = (props) => {
   const bar = T.bar();
   const canvas = bar.firstChild.firstChild;
-  const linkCanvas = bar.children[1].firstChild;
+  const overlay = bar.children[1].firstChild;
   bar.style.left = '1.5%';
   bar.style.right = '2%';
   for (const bottom of [false, true]) {
@@ -236,19 +345,19 @@ const Timeline = (props) => {
   }), null);
   let frame = 0;
   createEffect(() => {
-    const { notches, links } = props;
+    const { notches, links, bands } = props;
     void props.pins;   // the arcs follow the pins' layout
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(() => requestAnimationFrame(() => {
-      drawNotches(canvas, notches);
-      drawLinks(linkCanvas, bar, links ?? []);
+      drawNotches(canvas, notches, bands ?? []);
+      drawOverlay(overlay, bar, links ?? []);
     }));
   });
   onCleanup(() => {
     cancelAnimationFrame(frame);
-    for (const c of [canvas, linkCanvas]) { c.width = 0; c.height = 0; }
+    for (const c of [canvas, overlay]) { c.width = 0; c.height = 0; }
   });
   return bar;
 };
 
-export { NOTCH_WIDTH, Timeline };
+export { NOTCH_WIDTH, Timeline, turnText };

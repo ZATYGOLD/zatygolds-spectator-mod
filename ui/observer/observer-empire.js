@@ -53,11 +53,11 @@ const DETAILS_PREFIX = 'ZOM_EMPIRE_DETAILS_';
 const SETTLEMENTS_KEY = 'ZOM_EMPIRE_SETTLEMENTS';
 const EMPIRE_EVENT = 'zom-empire-changed';
 
-/** Kinds of citizens, as the city details show them: pin and dot colour, icon. */
+/** Kinds of citizens, as the city details show them: dot (and specialist pin) colour, glow, icon. */
 const POPULATION_KINDS = [
-  { id: 'urban', code: 'u', label: 'LOC_ATTR_URBAN_POPULATION', color: '#d9a24a', icon: 'url(blp:fi_city_urban_64)', of: (city) => city.urbanPopulation },
-  { id: 'rural', code: 'r', label: 'LOC_ATTR_RURAL_POPULATION', color: '#7fbf5a', icon: 'url(blp:fi_city_rural_64)', of: (city) => city.ruralPopulation },
-  { id: 'specialist', code: 's', label: 'LOC_PLOT_TOOLTIP_SPECIALISTS', color: '#6fa8dc', icon: 'url(blp:fi_specialist_64)', of: (city) => city.Workers?.getNumWorkers?.(false) }
+  { id: 'urban', code: 'u', label: 'LOC_ATTR_URBAN_POPULATION', color: '#f0c040', icon: 'url(blp:fi_city_urban_64)', of: (city) => city.urbanPopulation },
+  { id: 'rural', code: 'r', label: 'LOC_ATTR_RURAL_POPULATION', color: '#c9ccd6', icon: 'url(blp:fi_city_rural_64)', of: (city) => city.ruralPopulation },
+  { id: 'specialist', code: 's', label: 'LOC_PLOT_TOOLTIP_SPECIALISTS', color: '#e3b341', glow: 'rgba(255, 200, 50, 0.85)', icon: 'url(blp:fi_specialist_64)', of: (city) => city.Workers?.getNumWorkers?.(false) }
 ];
 const KIND_OF_CODE = new Map(POPULATION_KINDS.map((k, i) => [k.code, i]));
 const [URBAN, RURAL] = [0, 1];
@@ -171,6 +171,17 @@ function buildingsAt(tile) {
     .filter(isBuilding).map((def) => def.ConstructibleType).join('+');
 }
 
+/** The leader's settlements with specialists now: [{ name, tiles: [{ buildings ("<type>+<type>"), count }] }], most first. */
+function specialistTiles(playerId) {
+  const settlements = [];
+  for (const city of Players.get(playerId)?.Cities?.getCities?.() ?? []) {
+    const tiles = [...placements(city)].filter(([, count]) => count > 0).map(([tile, count]) => ({ buildings: buildingsAt(tile), count }));
+    if (tiles.length) settlements.push({ name: Locale.compose(city.name), tiles: tiles.sort((a, b) => b.count - a.count) });
+  }
+  const total = (s) => s.tiles.reduce((sum, t) => sum + t.count, 0);
+  return settlements.sort((a, b) => total(b) - total(a));
+}
+
 /** Each specialist placed in a settlement since the last record: [{ type }] (the tile's buildings). */
 function newSpecialists(plot, city) {
   const now = placements(city);
@@ -270,4 +281,4 @@ onObserverReady(() => {
   scheduleRecord(true);
 });
 
-export { EMPIRE_EVENT, EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, populationLog };
+export { EMPIRE_EVENT, EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, populationLog, specialistTiles };

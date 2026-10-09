@@ -42,7 +42,7 @@
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { canSave, onObserverReady, readSaved, writeSaved } from './observer-core.js';
-import { createEventLog } from './observer-event-log.js';
+import { createEventLog, payloadLogger } from './observer-event-log.js';
 
 const log = createLogger('observer-unit-log', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_UNIT_EVENTS_';
@@ -187,13 +187,7 @@ function defeated(victim, winner, type = typeOfUnit(victim)) {
   record(victim.owner, 'lost', type, { other: winner });
 }
 
-/** The first payload of each event, to confirm its fields in UI.log. */
-const shown = new Set();
-function showPayload(name, data) {
-  if (shown.has(name)) return;
-  shown.add(name);
-  try { log(`${name} payload: ${JSON.stringify(data)}`); } catch (e) { /* ignore */ }
-}
+const showPayload = payloadLogger(log);
 
 function onKilled(data) {
   showPayload('UnitKilledInCombat', data);
@@ -294,4 +288,4 @@ onObserverReady(() => {
   engine.on('CityMadePurchase', (data) => onCityUnit('CityMadePurchase', data?.purchaseType, data?.unitType, 'purchased', data));
 });
 
-export { TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };
+export { enemyOn, TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };

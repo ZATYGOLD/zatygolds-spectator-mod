@@ -187,11 +187,8 @@
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ja_JP">
 			<Text>産出</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="ja_JP">
-			<Text>ユニット</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="ja_JP">
-			<Text>撃破</Text>
+			<Text>撃破したユニット</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="ja_JP">
 			<Text>各指導者がいつ、どのユニットを破壊または捕獲したか。</Text>
@@ -220,6 +217,153 @@
 		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="ja_JP">
 			<Text>都市に昇格</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="ja_JP">
+			<Text>軍事</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="ja_JP">
+			<Text>戦争</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="ja_JP">
+			<Text>各指導者がいつ、誰と戦争状態にあり、各戦争がどう始まり終わったか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="ja_JP">
+			<Text>紛争</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="ja_JP">
+			<Text>各指導者の会戦、小競り合い、包囲戦とその相手、そして破壊した居住地と略奪されたタイル。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="ja_JP">
+			<Text>戦力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ja_JP">
+			<Text>各指導者の軍事力（全ユニットの戦闘力）。ゲームの毎ターン記録。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="ja_JP">
+			<Text>昇進</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="ja_JP">
+			<Text>各指導者の指揮官がいつ、どの昇進と勲章を得たか。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="ja_JP">
+			<Text>勲章</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="ja_JP">
+			<Text>昇進はまだありません</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="ja_JP">
+			<Text>会戦</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="ja_JP">
+			<Text>小競り合い</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="ja_JP">
+			<Text>包囲戦</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="ja_JP">
+			<Text>まだありません</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="ja_JP">
+			<Text>侵略</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_ON" Language="ja_JP">
+			<Text>防衛</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR" Language="ja_JP">
+			<Text>戦争中</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE" Language="ja_JP">
+			<Text>和平締結</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER" Language="ja_JP">
+			<Text>{1_Leader}に宣戦</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER" Language="ja_JP">
+			<Text>{1_Leader}から攻撃</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR_WITH" Language="ja_JP">
+			<Text>{1_Leader}と戦争中</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="ja_JP">
+			<Text>{1_Leader}と和平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="ja_JP">
+			<Text>会戦</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="ja_JP">
+			<Text>小競り合い</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="ja_JP">
+			<Text>包囲戦</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="ja_JP">
+			<Text>{1_Player}に包囲された</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="ja_JP">
+			<Text>{1_Player}に破壊された</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="ja_JP">
+			<Text>{1_Player}に奪われた</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="ja_JP">
+			<Text>結果</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="ja_JP">
+			<Text>宿敵</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="ja_JP">
+			<Text>対戦相手</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="ja_JP">
+			<Text>{1_Commander}・{2_Number}回目の昇進</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="ja_JP">
+			<Text>指導者が得た、失った、または昇格させた[B]居住地[/B]。[NN][BLIST][LI][B]ピン[/B]：都市は金、町は青[LI][B]点[/B]：建設（または編入）、獲得、喪失、破壊、都市に昇格[LI][B]破線の弧[/B]：町とその昇格、獲得または喪失と破壊を結ぶ[/LIST][NN][B]合計[/B]：現在の居住地数（または時代の終わりの数）。[N][B]カード[/B]：都市と町。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="ja_JP">
+			<Text>指導者の居住地が得た市民。[NN][BLIST][LI][B]ピン[/B]：それを加えた建造物または施設、主な産出量の色[LI][B]点[/B]：市街は金、農村は銀[LI][B]専門家[/B]：光る金色のピンと、そのタイルの建造物[/LIST][NN]占領した居住地は占領時の規模から数えます。[NN][B]合計[/B]：人口（カーソルを合わせると市街・農村・専門家別）。[N][B]カード[/B]：専門家（カーソルを合わせると居住地・地区別）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="ja_JP">
+			<Text>指導者が[B]生産[/B]、[B]購入[/B]、または[B]付与[/B]されたユニット。[NN][BLIST][LI][B]ピン[/B]：陸上、海上、民間、指揮官[LI][B]指揮官[/B]：一度だけ数え、撃破後の復帰では数えない[/LIST][NN][B]合計[/B]：訓練したユニット（カーソルを合わせるとカテゴリー別）。[N][B]カード[/B]：訓練した指揮官の種類、いなければ最も多く訓練したユニット。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="ja_JP">
+			<Text>指導者が他のプレイヤーに失ったユニット（撃破または捕獲）。[NN][BLIST][LI][B]ピン[/B]：陸上、海上、民間、指揮官と、奪った相手[LI][B]順位[/B]：損失の少ない順[/LIST][NN][B]合計[/B]：失ったユニット（カーソルを合わせるとカテゴリー別）。[N][B]カード[/B]：失った指揮官の種類、いなければ最も多く失ったユニット。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="ja_JP">
+			<Text>指導者が撃破または捕獲した他のプレイヤーのユニット。[NN][BLIST][LI][B]ピン[/B]：陸上、海上、民間、指揮官と、その持ち主[/LIST][NN][B]合計[/B]：撃破したユニット（カーソルを合わせるとカテゴリー別）。[N][B]カード[/B]：撃破した指揮官の種類、いなければ最も多く撃破したユニット。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="ja_JP">
+			<Text>指導者の指揮官が得た[B]昇進[/B]と[B]勲章[/B]。[NN][BLIST][LI][B]昇進[/B]：ツリーのアイコン、ピンはツリーの色[LI][B]勲章[/B]：勲章のアイコン、ピンは光る金色[LI][B]詳細[/B]：指揮官と、その何回目の昇進か[/LIST][NN]破線の弧は各指揮官の昇進を結び、点の色で指揮官を見分けます。[NN][B]合計[/B]：昇進と勲章。[N][B]カード[/B]：最も多い勲章、次に最も昇進したツリー（カーソルを合わせると勲章・ツリー別）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="ja_JP">
+			<Text>指導者同士の戦争。独立勢力は常に敵対的なため数えません。目盛りは各ターンを示します：[NN][BLIST][LI][B]赤[/B]：侵略、指導者が宣戦[LI][B]黄[/B]：防衛、指導者が宣戦された[LI][B]灰[/B]：平和[/LIST][NN]敵のピンは各戦争の開始を、[B]緑[/B]のピンは和平締結を示し、どちらが攻撃したかを表示します。[NN][B]ターン[/B]：戦争中のターン数。[N][B]カード[/B]：最も長く戦争した敵（同数なら全員）。カーソルを合わせると各戦争を表示。戦争は和平まで新しい時代にも続きます。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="ja_JP">
+			<Text>戦争中のターン</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="ja_JP">
+			<Text>外交</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ja_JP">
+			<Text>ターン</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="ja_JP">
+			<Text>指導者の紛争（優先順）：[NN][BLIST][LI][B]破壊[/B]：地図から消えた破壊された居住地[LI][B]獲得[/B]：奪った居住地[LI][B]喪失[/B]：奪われた居住地[LI][B]包囲戦[/B]：包囲された居住地（同じ敵に5ターン以内に再び包囲された場合は同じ包囲戦）[LI][B]会戦[/B]：攻撃3回以上または略奪4以上の交戦（最初のターン、または3ターン続いた後）、または5ターンの戦闘、または両者間の包囲戦を伴うもの[LI][B]小競り合い[/B]：それ未満の交戦[LI][B]略奪[/B]：略奪したタイル[/LIST][NN]点は相手を示します：指導者は金、都市国家は青、独立勢力は銀。ピンは指導者、都市国家、独立勢力の順に表示します。目盛りは包囲戦（橙）、会戦（赤）、小競り合い（青）が続く間を示し、重なる所は目盛りを分け合い、先のものが大部分を占めます。[NN][B]交戦[/B]とは、同じ2勢力間で3タイル以内、5ターン以内の間隔で続く全攻撃と略奪です。双方が戦闘可能なユニット（開拓者や斥候を除く）で互いに攻撃して初めて数え、各攻撃は双方に数えます。略奪は建造物で2、農村タイルで1です。破線の弧は各出来事をその発端と結びます：小競り合いとそれが発展した会戦、戦闘と包囲戦、包囲戦と獲得または喪失、そしてそれと破壊。[B]略奪された[/B]（自分のタイル）も[B]略奪[/B]として数えます。敵ユニットによる略奪のみを数え、洪水、噴火、嵐は数えません。[NN][B]合計[/B]：包囲戦、会戦、小競り合い、略奪。破壊、獲得、喪失はその結果で、カーソルを合わせると別に表示。[N][B]カード[/B]：宿敵、最も多く戦った相手（指導者、都市国家、独立勢力の順）。カーソルを合わせると他の対戦相手を表示。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="ja_JP">
+			<Text>攻撃 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="ja_JP">
+			<Text>略奪 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="ja_JP">
+			<Text>略奪</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="ja_JP">
+			<Text>略奪された</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="ja_JP">
+			<Text>破壊</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="ja_JP">
 			<Text>獲得</Text>
 		</Replace>
@@ -227,10 +371,10 @@
 			<Text>編入</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="ja_JP">
-			<Text>訓練</Text>
+			<Text>訓練したユニット</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="ja_JP">
-			<Text>喪失</Text>
+			<Text>失ったユニット</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="ja_JP">
 			<Text>各指導者がいつ、誰にユニットを破壊または捕獲されたか。</Text>

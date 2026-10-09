@@ -25,10 +25,11 @@
  * stylesheet, with two filters: the view and the Age (Overall or one Age).
  *  - Yields: line graphs of each leader's yields per turn
  *    (observer-graph-lines.js, observer-graph-yields.js).
- *  - Empire and Units: timelines of the settlements each leader founded,
- *    captured and lost and how they grew, and of the units each trained, lost
- *    and defeated (observer-graph-timelines.js, observer-graph-empire.js,
- *    observer-graph-units.js).
+ *  - Empire: timelines of the settlements each leader founded, captured, lost
+ *    and upgraded and how they grew (observer-graph-empire.js).
+ *  - Military: timelines of each leader's wars, battles, units trained, lost
+ *    and defeated, and commanders' promotions, and a line graph of its
+ *    military strength (observer-graph-military.js).
  * Every view marks each crisis stage (observer-crisis.js) and, in Overall,
  * where each Age starts; rows and graphs are fitted to the panel's height.
  * The screen opens from a button in the HUD's sub-system dock.
@@ -47,9 +48,9 @@ import { isObserverSeat, onScreenDock, SCREEN_PROPS } from './observer-core.js';
 import { ageCrises, CRISIS_EVENT } from './observer-crisis.js';
 import { EMPIRE_VIEW } from './observer-graph-empire.js';
 import { LinePanel } from './observer-graph-lines.js';
+import { MILITARY_VIEW } from './observer-graph-military.js';
 import { inAge, loggedLeaders, OVERALL } from './observer-graph-parts.js';
 import { TimelinePanel } from './observer-graph-timelines.js';
-import { UNITS_VIEW } from './observer-graph-units.js';
 import { YIELDS_VIEW } from './observer-graph-yields.js';
 import { HISTORY_EVENT } from './observer-history.js';
 
@@ -58,7 +59,7 @@ const GRAPHS_TAG = 'zom-observer-graphs';
 const DOCK_BUTTON_CLASS = 'zom-graphs-dock-button';
 const TOP_ICON_CLASS = 'zom-graphs-top-icon';
 const TOP_ICON_ZOOM = 1.5;   // the glyph fills the frame's top medallion
-const VIEWS = [YIELDS_VIEW, EMPIRE_VIEW, UNITS_VIEW];
+const VIEWS = [YIELDS_VIEW, EMPIRE_VIEW, MILITARY_VIEW];
 
 const T = {
   container: template(`<div class="mt-8 flex flex-col flex-auto bg-accent-6 items-center mb-5 pl-8 pr-8 pt-8 relative victories-panel-container"><div class="absolute inset-0 bottom-0 filigree-inner-frame-top"></div><div class="absolute inset-0 bottom-0 filigree-inner-frame-bottom"></div></div>`)
@@ -99,15 +100,31 @@ function liveSignal(read, names) {
   return value;
 }
 
-/** A view's tabs: a line graph per recorded number, or a timeline per logged kind (with its leaders). */
-function viewTabs(view, filters) {
-  const all = liveSignal(view.read, view.changeEvents);
+/** A source's signals ({ kind, read, changeEvents }): all it holds, those in the chosen Age, and (timelines) its leaders. */
+function sourceSignals(source, filters) {
+  const all = liveSignal(source.read, source.changeEvents);
   const entries = createMemo(() => inAge(all(), filters.age()));
-  const leaders = view.kind === 'timeline' ? createMemo(() => loggedLeaders(all())) : null;
-  const panel = (tab) => (view.kind === 'line'
-    ? createComponent(LinePanel, { tab, samples: entries, ...filters })
-    : createComponent(TimelinePanel, { subject: tab.subject ?? view, tab, events: entries, leaders, ...filters }));
-  return view.tabs.map((tab) => ({ name: tab.id, title: () => tab.label, body: () => panel(tab) }));
+  const leaders = source.kind === 'timeline' ? createMemo(() => loggedLeaders(all())) : null;
+  return { entries, leaders };
+}
+
+/**
+ * A view's tabs: a line graph per recorded number, or a timeline per logged
+ * kind, each from its tab's source (else the view's) and subject (else the view).
+ */
+function viewTabs(view, filters) {
+  const tabs = view.tabs;
+  const sourceOf = (tab) => tab.source ?? view;
+  // Made with the screen (not a tab's body, disposed when another tab opens), so they keep listening.
+  const sources = new Map([...new Set(tabs.map(sourceOf))].map((source) => [source, sourceSignals(source, filters)]));
+  const panel = (tab) => {
+    const source = sourceOf(tab);
+    const { entries, leaders } = sources.get(source);
+    return source.kind === 'line'
+      ? createComponent(LinePanel, { tab, samples: entries, ...filters })
+      : createComponent(TimelinePanel, { subject: tab.subject ?? view, tab, events: entries, leaders, ...filters });
+  };
+  return tabs.map((tab) => ({ name: tab.id, title: () => tab.label, body: () => panel(tab) }));
 }
 
 const GraphsScreenComponent = () => {

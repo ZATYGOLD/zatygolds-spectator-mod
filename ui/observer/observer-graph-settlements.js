@@ -23,14 +23,16 @@
  *
  * The Empire view's Settlements tab (observer-graph-empire.js) of the
  * settlement log (observer-settlement-log.js): each leader's settlements
- * founded, captured, lost and upgraded on one bar - a pin coloured and
- * showing a city or a town, its dot by what happened, each with the other
+ * founded, captured, lost, razed and upgraded on one bar - a pin coloured
+ * and showing a city or a town, its dot by what happened, each with the other
  * player involved, and an arc from a town's founding or capture to its
- * upgrade into a city - the leader's
+ * upgrade into a city, and each capture, loss and razing from what came
+ * before it (a town lost keeps showing as the town it was) - the leader's
  * settlements as the Total and a card of its cities and towns at the end of
  * the view (now, for the current Age).
  */
 import { EMPIRE_KEYS, leaderDetails } from './observer-empire.js';
+import { leaderName } from './observer-graph-parts.js';
 import { SETTLEMENT_CATEGORIES, SETTLEMENT_KINDS } from './observer-settlement-log.js';
 
 const COUNTS = { city: EMPIRE_KEYS.cities, town: EMPIRE_KEYS.towns };
@@ -40,11 +42,17 @@ const UPGRADED = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'upgraded');
 const LOST = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'lost');
 const order = (a, b) => a.age - b.age || a.turn - b.turn;
 
-/** Each upgrade, linked to how the leader came to have that town (its latest founding or capture before). */
-const upgradeLinks = (events) => events.filter((e) => e.category === UPGRADED).flatMap((upgrade) => {
-  const start = events.filter((e) => e.plot === upgrade.plot && e.category !== UPGRADED && e.category !== LOST && order(e, upgrade) <= 0)
+const RAZED = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'razed');
+const CAPTURED = SETTLEMENT_CATEGORIES.findIndex((c) => c.id === 'captured');
+/** What each later event of a settlement links back to: an upgrade to its founding or capture, else its latest event before. */
+const notRazed = (e) => e.category !== RAZED;
+const LINKED_FROM = { [UPGRADED]: (e) => e.category !== UPGRADED && e.category !== LOST && e.category !== RAZED, [CAPTURED]: notRazed, [LOST]: notRazed, [RAZED]: notRazed };
+
+/** Each upgrade, capture, loss and razing, linked to the latest event of the same settlement before it that it follows from. */
+const settlementLinks = (events) => events.filter((e) => LINKED_FROM[e.category]).flatMap((later) => {
+  const start = events.filter((e) => e.plot === later.plot && e !== later && LINKED_FROM[later.category](e) && order(e, later) <= 0)
     .sort(order).pop();
-  return start ? [[start, upgrade]] : [];
+  return start ? [[start, later]] : [];
 });
 
 /** The leader's cities and towns at the end of the view: { city, town }. */
@@ -56,22 +64,21 @@ function settlementCounts(playerId, lastAge) {
 /** What happened, with the other player involved or how: "Captured · <player>". */
 function settlementDetail(source) {
   const category = Locale.compose(SETTLEMENT_CATEGORIES[source.category]?.label ?? '');
-  const other = source.other >= 0 ? Players.get(source.other)?.name : null;
-  const detail = source.how ?? other;
-  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, Locale.compose(detail)) : category;
+  const detail = source.how ? Locale.compose(source.how) : (source.other >= 0 ? leaderName(source.other) : '');
+  return detail ? Locale.compose('LOC_ZOM_GRAPH_UNIT_SOURCE', category, detail) : category;
 }
 
 const SETTLEMENTS_SUBJECT = {
   looks: { settlements: { color: '#d8c38a', background: 'bg_victory_economic3' } },
   categories: SETTLEMENT_CATEGORIES,
-  featured: UPGRADED,
+  priority: [UPGRADED],
   pinIcon: iconOf,
   pinColor: (source) => SETTLEMENT_KINDS[source.settlement]?.color,
   icon: iconOf,
   name: (source) => Locale.compose(source.type),
   detail: settlementDetail,
   sourceOf: (event) => ({ settlement: event.settlement, other: event.other, how: event.how }),
-  links: upgradeLinks,
+  links: settlementLinks,
   value: (playerId, { lastAge }) => { const counts = settlementCounts(playerId, lastAge); return counts.city + counts.town; },
   card: (playerId, { lastAge }) => {
     const counts = settlementCounts(playerId, lastAge);

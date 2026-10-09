@@ -115,4 +115,14 @@ function createEventLog({ keyPrefix, fieldCount, changeEvent, log }) {
   return { record, read };
 }
 
-export { ageProgress, createEventLog };
+/** Logs the first payload of each engine event by name, to confirm its fields in UI.log. */
+function payloadLogger(log) {
+  const shown = new Set();
+  return (name, data) => {
+    if (shown.has(name)) return;
+    shown.add(name);
+    try { log(`${name} payload: ${JSON.stringify(data)}`); } catch (e) { /* not serializable */ }
+  };
+}
+
+export { ageProgress, createEventLog, payloadLogger };

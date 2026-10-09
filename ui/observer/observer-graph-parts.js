@@ -32,7 +32,6 @@ import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js
 import { createComponent, createMemo, createRenderEffect, createSignal, For, onCleanup, onMount } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { Activatable } from 'fs://game/core/ui-next/components/activatable.js';
 import { CardFrame } from 'fs://game/core/ui-next/components/card-frame.js';
-import { Divider } from 'fs://game/core/ui-next/components/divider.js';
 import { Dropdown, DropdownItem } from 'fs://game/core/ui-next/components/dropdown.js';
 import { L10n } from 'fs://game/core/ui-next/components/l10n.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
@@ -40,6 +39,7 @@ import { LeaderWithRibbon } from 'fs://game/base-standard/ui-next/components/lea
 import { createLogger, currentAgeChronology, findAncestor, isObserverPlayer, leaderTypeOf } from '../shared/zom-util.js';
 import { watchedPlayers } from './observer-core.js';
 import { CRISIS_STAGES } from './observer-crisis.js';
+import { cityStateType } from './observer-settlement-info.js';
 
 const log = createLogger('observer-graphs');
 // Age dropdown values are non-empty strings: the dropdown treats a falsy value (Antiquity's 0) as nothing selected.
@@ -55,7 +55,8 @@ const DEFAULT_BANNER = 'bn_deluxe';
 const T = {
   panel: template(`<div class="relative w-full h-full"><div class="absolute inset-0 bg-cover bg-no-repeat opacity-30 pointer-events-none"></div><div class="relative h-full flex flex-col items-center w-full"></div></div>`),
   description: template(`<div class="absolute -top-14 victories-header"><div class="font-body text-body text-xs self-center text-center"></div></div>`),
-  title: template(`<div class="flex flex-row absolute -mt-6 ml-2 w-full victories-point-goal-line"><div class="victories-military-cols-1-and-2 font-title uppercase font-bold text-lg"><div role="heading"></div></div></div>`),
+  title: template(`<div class="flex flex-row absolute -mt-6 ml-2 w-full victories-point-goal-line"><div class="victories-military-cols-1-and-2 font-title uppercase font-bold text-lg"><div role="heading"></div></div><div class="flex-1"></div><div class="flex flex-row"><div class="self-center"></div></div></div>`),
+  infoTitle: template(`<div class="items-center"><div class="font-title text-xs uppercase self-center"></div><div class="font-title text-xs text-secondary uppercase self-center mb-2"></div></div>`),
   spacer: template(`<div class="w-full h-4"></div>`),
   header: template(`<div class="flex flex-row victories-military-bottom-line h-14 w-full"><div class="victories-military-col-1 font-title text-sm fxs-header uppercase self-center text-center"></div><div class="victories-military-col-2 font-title text-sm fxs-header uppercase self-center pl-4"></div><div class="victories-military-col-4 flex flex-row victories-military-left-line-header"><div class="w-full font-title text-sm fxs-header uppercase flex flex-row"><div class="self-center w-full text-center font-fit-shrink"></div></div></div><div class="victories-military-col-3 font-title text-sm"><div class="w-full h-full relative flex flex-row justify-end victories-military-left-line-header"><div class="relative ml-2 mt-2 mr-2 uppercase fxs-header self-center flex flex-row items-center"></div></div></div></div>`),
   row: template(`<div class="flex flex-row pointer-events-auto min-h-28 duration-150 ease-out"><div class="flex flex-row victories-econ-col-4"><div class="h-full w-2"></div><div class="self-center flex-1"><div class="font-title bold text-xl text-center text-white"></div></div></div></div>`),
@@ -64,7 +65,9 @@ const T = {
   selected: template(`<div class="pl-3"></div>`),
   empty: template(`<div class="absolute inset-0 flex items-center justify-center font-body text-sm text-accent-3"></div>`),
   ticketRow: template(`<div class="flex flex-row items-center w-full px-1 py-1"><div class="ml-2 flex-none size-7 flex items-center justify-center bg-contain bg-center bg-no-repeat"><div></div></div><div class="flex flex-col justify-center flex-auto py-1 ml-3"><div class="uppercase text-title"></div></div><div class="flex-none ml-6 mr-2"></div></div>`),
-  breakdownGroup: template(`<div class="flex flex-col"></div>`)
+  breakdownGroup: template(`<div class="flex flex-col"></div>`),
+  breakdownTitle: template(`<div class="font-title text-xs uppercase text-secondary ml-2 mt-1"></div>`),
+  breakdownDetail: template(`<div class="text-xs"></div>`)
 };
 
 // ============================ Data ============================
@@ -89,8 +92,8 @@ const viewAges = (option) => (option === OVERALL
 /** Entries ({ age }) of the chosen Age, or all of them in Overall. */
 const inAge = (entries, option) => (option === OVERALL ? entries : entries.filter((e) => e.age === optionChronology(option)));
 
-/** Each crisis stage of the Age with its colour. */
-const crisisStages = (crises, age) => (crises.get(age) ?? []).map((s) => ({ ...s, color: CRISIS_STAGES[s.stage].color }));
+/** Each crisis stage of the Age with its colour (and its timeline notch's). */
+const crisisStages = (crises, age) => (crises.get(age) ?? []).map((s) => ({ ...s, color: CRISIS_STAGES[s.stage].color, notch: CRISIS_STAGES[s.stage].notch }));
 
 /** Leaders with a row in a logged view: every living major and any major already logged, Spectators excluded. */
 function loggedLeaders(events) {
@@ -102,6 +105,75 @@ function loggedLeaders(events) {
 function leaderColor(playerId) {
   try { return UI.Player.getPrimaryColorValueAsString(playerId); } catch (e) { return '#ffffff'; }
 }
+
+/**
+ * A leader's portrait in a circle, a city-state's type icon or the
+ * independent power icon, the last two tinted in the player's own colour
+ * (leaderTint: a city-state's type colour, an independent power's own) to tell them apart.
+ */
+function leaderIcon(playerId) {
+  const player = Players.get(playerId);
+  if (player?.isMajor) return UI.getIconCSS(GameInfo.Leaders.lookup(player.leaderType)?.LeaderType ?? 'UNKNOWN_LEADER', 'CIRCLE_MASK');
+  const type = player?.isMinor ? cityStateType(player) : null;
+  return type ? `url("${type.icon}")` : UI.getIconCSS('INDEPENDENT_POWER');
+}
+function leaderTint(playerId) {
+  const player = Players.get(playerId);
+  if (player?.isMajor) return null;
+  return (player?.isMinor ? cityStateType(player)?.color : null) ?? leaderColor(playerId);
+}
+/**
+ * A player's name as the map's banners show it: a leader's name, a
+ * City-State's settlement, an Independent Power's full name ("Retenu").
+ */
+function leaderName(playerId) {
+  const player = Players.get(playerId);
+  if (!player) return '';
+  if (player.isMajor) return Locale.compose(player.name);
+  const settlement = player.isMinor ? player.Cities?.getCities?.()?.[0]?.name : null;
+  return Locale.compose(settlement ?? player.civilizationFullName ?? player.name ?? '');
+}
+/**
+ * A unit type's name, also for one of an earlier Age (no longer in the
+ * database): its usual text key, else '' when that is not loaded either.
+ */
+function unitTypeName(type) {
+  const row = GameInfo.Units.lookup(type);
+  if (row) return Locale.compose(row.Name);
+  const key = `LOC_${type}_NAME`;
+  const text = Locale.compose(key);
+  return text && text !== key ? text : '';
+}
+
+/** A player's breakdown row: its icon (tinted), name and value. */
+const leaderRow = (playerId, value) => ({ icon: leaderIcon(playerId), tint: leaderTint(playerId), label: leaderName(playerId), value });
+
+/** Leaders first, then city-states, then independent powers. */
+function playerKind(playerId) {
+  const player = Players.get(playerId);
+  if (player?.isMajor) return 0;
+  return player?.isMinor ? 1 : 2;
+}
+
+/**
+ * What a non-leader is, as the diplomacy screen names it: "City-State" (its
+ * type shown by its icon), "Independent Power · Cultural" (the type it would
+ * become); '' for a leader.
+ */
+function playerKindLabel(playerId) {
+  const player = Players.get(playerId);
+  if (!player || player.isMajor) return '';
+  if (player.isMinor) return Locale.compose('LOC_CIVILIZATION_CITY_STATE_NAME');
+  const type = cityStateType(player);
+  const independent = Locale.compose('LOC_PLOT_TOOLTIP_INDEPENDENT_CONQUEROR');
+  return type ? `${independent} · ${Locale.compose(type.name)}` : independent;
+}
+
+/** A dot colour per kind of player (playerKind): leader, city-state, independent power. */
+const PLAYER_KIND_COLORS = ['#e3b341', '#4d9be0', '#b5b5b6'];
+const playerKindColor = (playerId) => PLAYER_KIND_COLORS[playerKind(playerId)];
+/** [playerId, count] entries by kind (playerKind), then most counted first. */
+const byKindThenCount = (a, b) => playerKind(a[0]) - playerKind(b[0]) || b[1] - a[1];
 
 let banners = null;
 /** The leader's banner art from the legend paths, as the Victories screen shows it. */
@@ -135,33 +207,47 @@ const HoverTooltip = (props) => createComponent(Tooltip, {
   }
 });
 
-/** A row of a breakdown card: a colour dot or an icon, the label and the count. */
-function breakdownRow({ color, icon, label, value }) {
+/** A row of a breakdown card: a colour dot or an icon (tinted, if given), the label (a detail under it, if given) and the count. */
+function breakdownRow({ color, icon, tint, label, detail, value }) {
   const row = T.ticketRow();
   const swatch = row.firstChild;
   if (icon) swatch.style.backgroundImage = icon;
+  if (tint) swatch.style.setProperty('fxs-background-image-tint', tint);
   else {
     swatch.firstChild.classList.add('size-3', 'rounded-full');
     swatch.firstChild.style.backgroundColor = color;
   }
   swatch.nextSibling.firstChild.textContent = label;
+  if (detail) {
+    const line = T.breakdownDetail();
+    line.textContent = detail;
+    swatch.nextSibling.appendChild(line);
+  }
   swatch.nextSibling.nextSibling.textContent = `${value}`;
   return row;
 }
 
-const BREAKDOWN_REM = 21;   // the Culture tab's w-84
+const BREAKDOWN_MIN_REM = 14;   // a card's least width; wider only as its rows need
 
-/** The Culture tab's tooltip card: groups of rows ({ color | icon, label, value }), a divider between groups. */
+/**
+ * The Culture tab's tooltip card: groups of rows ({ color | icon, label, detail, value }),
+ * each a list or { title, rows }, each in its own panel (as the pin tooltip's sections).
+ */
 const BreakdownCard = (props) => createComponent(Tooltip.Frame, {
   'class': 'relative flex flex-col p-2 items-center justify-center',
   get children() {
-    const children = props.groups.filter((rows) => rows.length).flatMap((rows, i) => {
+    const groups = props.groups.map((g) => (Array.isArray(g) ? { rows: g } : g)).filter((g) => g.rows.length);
+    return groups.map(({ title, rows }, i) => {
       const group = T.breakdownGroup();
-      group.style.width = `${BREAKDOWN_REM}rem`;
+      group.style.minWidth = `${BREAKDOWN_MIN_REM}rem`;
+      if (title) {
+        const heading = T.breakdownTitle();
+        heading.textContent = title;
+        group.appendChild(heading);
+      }
       for (const row of rows.map(breakdownRow)) group.appendChild(row);
-      return [...(i ? [createComponent(Divider.Horizontal, { 'class': 'my-1 ml-2', length: '76' })] : []), group];
+      return createComponent(CardFrame, { 'class': i < groups.length - 1 ? 'mb-2' : 'mb-3', children: group });
     });
-    return createComponent(CardFrame, { 'class': 'mb-3', children });
   }
 });
 
@@ -290,6 +376,36 @@ const FilterDropdown = (props) => createComponent(Dropdown, {
  * coloured title, the Rank / Leader / value header with the view and Age
  * filters (props.views: [{ id, label }]), then the tab's body.
  */
+/** The Victories screen's info icon at the end of a tab's title line: the tab and its view as the heading, what it shows and how, on hover. */
+const InfoTooltip = (props) => createComponent(Tooltip, {
+  initialHPosition: TooltipHorizontalPosition.LEFT,
+  initialVPosition: TooltipVerticalPosition.TOP,
+  get children() {
+    return [
+      createComponent(Tooltip.Trigger, {
+        get children() { return createComponent(Activatable, { 'class': 'size-8 bg-no-repeat bg-cover', style: { 'background-image': 'url(blp:icon_info)' } }); }
+      }),
+      createComponent(Tooltip.Content, {
+        get children() {
+          return createComponent(Tooltip.Frame, {
+            get children() {
+              const box = T.infoTitle();
+              box.firstChild.textContent = props.title;
+              box.firstChild.style.color = props.color;
+              box.children[1].textContent = props.subtitle;
+              insert(box, createComponent(CardFrame, {
+                'class': 'mb-4 max-w-192',
+                get children() { return createComponent(L10n.Stylize, { 'class': 'mx-4 my-4', text: props.text }); }
+              }), null);
+              return box;
+            }
+          });
+        }
+      })
+    ];
+  }
+});
+
 const GraphPanel = (props) => {
   const panel = T.panel();
   const background = panel.firstChild;
@@ -302,7 +418,6 @@ const GraphPanel = (props) => {
   const heading = title.firstChild;
   heading.style.color = props.look.color;
   heading.firstChild.textContent = props.title;
-
   const header = T.header();
   const [rankHead, leaderHead, valueHead, filterHead] = Array.from(header.children);
   rankHead.textContent = Locale.compose('LOC_GENERIC_RANK');
@@ -310,6 +425,7 @@ const GraphPanel = (props) => {
   valueHead.firstChild.firstChild.textContent = props.valueLabel;
   const filters = filterHead.firstChild.firstChild;
   const viewLabel = (id) => Locale.compose(props.views.find((v) => v.id === id)?.label ?? '');
+  if (props.info) insert(title.lastChild.firstChild, createComponent(InfoTooltip, { title: props.title, subtitle: viewLabel(props.view()), color: props.look.color, text: props.info }));
   insert(filters, createComponent(FilterDropdown, { 'class': FILTER_WIDTH, value: props.view, options: () => props.views.map((v) => v.id), label: viewLabel, onSelect: props.setView }));
   insert(filters, createComponent(FilterDropdown, { 'class': `${FILTER_WIDTH} ml-3`, value: props.age, options: ageOptions, label: ageLabel, onSelect: props.setAge, hotkey: 'shell-action-2' }));
 
@@ -320,6 +436,6 @@ const GraphPanel = (props) => {
 const emptyText = (text) => { const empty = T.empty(); empty.textContent = text; return empty; };
 
 export {
-  ageName, BreakdownCard, crisisStages, emptyText, fillPanel, GraphPanel, HoverTooltip, inAge, leaderColor, LeaderRow,
-  LeaderRows, loggedLeaders, OVERALL, rowHeight, viewAges
+  ageName, BreakdownCard, byKindThenCount, crisisStages, emptyText, fillPanel, GraphPanel, HoverTooltip, inAge, leaderColor, leaderIcon, leaderName, leaderRow, leaderTint,
+  LeaderRow, playerKind, playerKindColor, playerKindLabel, unitTypeName, LeaderRows, loggedLeaders, OVERALL, rowHeight, viewAges
 };

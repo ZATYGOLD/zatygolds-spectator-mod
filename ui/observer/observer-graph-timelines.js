@@ -26,17 +26,21 @@
  * total, a notched timeline of Age progress (observer-timeline.js) with a pin
  * where things were logged, and a card after it (where the Culture tab counts
  * Great Works). A view reads what it logs (read(), changeEvents) for its tabs
- * ([{ id, label, description, lowFirst, subject }]); a tab's subject (its
+ * ([{ id, label, description, info, valueLabel (else Total), lowFirst, subject }]); a tab's subject (its
  * own, else the view) describes what is logged there:
  *
  *   { looks: { [tab]: { color, background } }, categories: [{ color, glow, label }],
- *     featured (a category a pin shows first),
- *     pinIcon(source), pinColor(source) (optional), icon(source), name(source), detail(source), sourceOf(event) (extra source fields),
- *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, count }], rows },
- *     cardHover (false: the card has no hover),
- *     value(id, { lastAge }) (the Total, else the things logged; optional), tieBreak(entry),
+ *     priority (categories a pin shows first, in order; an array ranks its categories alike),
+ *     sumFields (event fields summed into a pin's sources, e.g. attacks), sourceOrder(a, b) (sources, before the priority and their count),
+ *     sliceEvents(events) (a pin's events as it shows them, e.g. merged; optional),
+ *     sections (the pin tooltip's, see observer-timeline.js),
+ *     pinIcon(source), pinColor(source), dotColor(source) (optional), icon(source), iconTint(source) (optional), name(source), detail(source), sourceOf(event) (extra source fields),
+ *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, tint, count }], groups (its hover, as BreakdownCard's; optional) },
+ *     cardHover (false: the card has no hover), pinCount (false: pins show no count),
+ *     value(id, { lastAge, now, events }) (the Total, else the things logged; optional), tieBreak(entry),
  *     links(events) ([[from, to]] events joined by a line, optional),
- *     totalRows(entry) (the Total's hover, optional) }
+ *     bands(events, { position, now }) ([{ from, to, color, layer, smooth }] spans whose notches take the colour, a layer's each sharing the notch, smooth ones fading between notches; optional),
+ *     totalGroups(entry) (the Total's hover: groups of rows, optional) }
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createMemo, createRenderEffect } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -92,13 +96,14 @@ function timelineScale(spanned, crises) {
       ...Array.from({ length: count }, (_, i) => ({
         position: notchLeft(a, i),
         highlight: a === age && current != null && i === notchOf(current),
-        color: stages.find((s) => notchOf(s.progress) === i)?.color
+        crisis: stages.find((s) => notchOf(s.progress) === i)?.notch
       }))
     ];
   });
   const labels = overall ? spanned.map((a) => ({ position: start(a), text: ageName(a), start: true, bottom: true })) : [];
   if (current != null) labels.push({ position: notchLeft(age, notchOf(current)), text: `${current}%` });
-  return { position, notches, labels, current: current != null, lastAge: spanned[spanned.length - 1] };
+  const now = current != null ? position(age, current) : null;
+  return { position, notches, labels, now, current: current != null, lastAge: spanned[spanned.length - 1] };
 }
 
 const sumBy = (events, keyOf) => {
@@ -107,41 +112,51 @@ const sumBy = (events, keyOf) => {
   return sums;
 };
 
+const byCount = (a, b) => b[1] - a[1];
+
+/** Card cells of the first keys (Map<key, count>) in order (most counted first): [{ icon, tint, count }]. */
+const rankedCells = (counts, iconOf, { max = CARD_LOOK.length, tint = () => null, order = byCount } = {}) => [...counts].sort(order).slice(0, max)
+  .map(([key, count]) => ({ icon: iconOf(key), tint: tint(key), count }));
+
 /**
  * One leader's pins: the bar split into MAX_PINS slices, one pin per slice
- * with logged things, shown as its most frequent category (the view's
- * featured category whenever the pin holds one, listed first).
+ * with logged things, shown as its first thing (by the subject's priority,
+ * after sourceOrder, then the most frequent), its things listed the same way.
  */
 const sliceOf = (at) => Math.min(MAX_PINS - 1, Math.floor((at / 100) * MAX_PINS));
 
 function leaderPins(events, position, view) {
-  const slices = new Map();
+  const buckets = new Map();   // slice -> its events
   for (const event of events) {
-    const at = position(event.age, event.progress);
-    const index = sliceOf(at);
-    const slice = slices.get(index) ?? { weighted: 0, count: 0, turns: [event.turn, event.turn], sources: new Map() };
-    slice.weighted += at * event.count;
-    slice.count += event.count;
-    slice.turns = [Math.min(slice.turns[0], event.turn), Math.max(slice.turns[1], event.turn)];
-    const extra = view.sourceOf?.(event) ?? {};
-    const key = [event.category, event.type, ...Object.values(extra)].join(':');
-    const source = slice.sources.get(key) ?? { type: event.type, category: event.category, ...extra, count: 0 };
-    source.count += event.count;
-    slice.sources.set(key, source);
-    slices.set(index, slice);
+    const index = sliceOf(position(event.age, event.progress));
+    buckets.set(index, [...(buckets.get(index) ?? []), event]);
   }
-  const featured = view.featured;
+  const slices = new Map();
+  for (const [index, bucket] of buckets) {
+    const slice = { weighted: 0, count: 0, turns: [Infinity, -Infinity], sources: new Map() };
+    for (const event of view.sliceEvents?.(bucket) ?? bucket) {
+      slice.weighted += position(event.age, event.progress) * event.count;
+      slice.count += event.count;
+      slice.turns = [Math.min(slice.turns[0], event.turn), Math.max(slice.turns[1], event.turn)];
+      const extra = view.sourceOf?.(event) ?? {};
+      const key = [event.category, event.type, ...Object.values(extra)].join(':');
+      const source = slice.sources.get(key) ?? { type: event.type, category: event.category, ...extra, ...Object.fromEntries((view.sumFields ?? []).map((f) => [f, 0])), count: 0 };
+      source.count += event.count;
+      for (const f of view.sumFields ?? []) source[f] += event[f] ?? 0;
+      slice.sources.set(key, source);
+    }
+    if (slice.count) slices.set(index, slice);
+  }
+  const rankOf = (category) => { const i = view.priority?.findIndex((p) => (Array.isArray(p) ? p.includes(category) : p === category)) ?? -1; return i < 0 ? Infinity : i; };
   return [...slices].map(([index, slice]) => {
-    const sources = [...slice.sources.values()].sort((a, b) => (b.category === featured) - (a.category === featured) || b.count - a.count);
-    const byCategory = sumBy(sources, (s) => s.category);
-    const category = byCategory.has(featured) ? featured : [...byCategory].sort((a, b) => b[1] - a[1])[0][0];
+    const sources = [...slice.sources.values()].sort((a, b) => (view.sourceOrder?.(a, b) ?? 0) || rankOf(a.category) - rankOf(b.category) || b.count - a.count);
     return {
       position: slice.weighted / slice.count,
       count: slice.count,
       turns: slice.turns,
       sources,
-      lead: sources.find((s) => s.category === category),
-      category,
+      lead: sources[0],
+      category: sources[0].category,
       slice: index
     };
   }).sort((a, b) => a.position - b.position);
@@ -160,15 +175,16 @@ const rank = (view, lowFirst) => {
   return (a, b) => dir * (b.value - a.value) || dir * (view.tieBreak(b) - view.tieBreak(a));
 };
 
-/** Leaders by their Total in the tab: [{ id, value, totals, pins, links, card }]. */
-function timelineRows(view, tab, viewEvents, events, leaders, { position, current, lastAge }) {
+/** Leaders by their Total in the tab: [{ id, value, totals, pins, links, bands, card }]. */
+function timelineRows(view, tab, viewEvents, events, leaders, { position, now, current, lastAge }) {
   return leaders.map((id) => {
     const own = events.filter((e) => e.playerId === id);
     const byCategory = sumBy(own, (e) => e.category);
     const totals = view.categories.map((c, i) => byCategory.get(i) ?? 0);
-    const value = view.value ? view.value(id, { lastAge }) : totals.reduce((a, b) => a + b, 0);
+    const value = view.value ? view.value(id, { lastAge, now, events: own }) : totals.reduce((a, b) => a + b, 0);
     const pins = leaderPins(own, position, view);
-    const entry = { id, totals, value, pins, links: pinLinks(pins, own, position, view) };
+    const bands = view.bands?.(own, { position, now }) ?? [];
+    const entry = { id, totals, value, pins, links: pinLinks(pins, own, position, view), bands };
     entry.card = view.card(id, { viewEvents: viewEvents.filter((e) => e.playerId === id), events: own, totals, current, lastAge });
     return entry;
   }).sort(rank(view, tab.lowFirst));
@@ -176,7 +192,7 @@ function timelineRows(view, tab, viewEvents, events, leaders, { position, curren
 
 /**
  * The card after each bar: an icon and count per cell, laid out by CARD_LOOK
- * at a fixed card size, its rows on hover when it has them.
+ * at a fixed card size, its groups on hover when it has them.
  */
 const SummaryCard = (props) => {
   const content = T.cardContent();
@@ -185,7 +201,7 @@ const SummaryCard = (props) => {
     const look = CARD_LOOK[Math.min(Math.max(cells.length, 1), CARD_LOOK.length) - 1];
     while (content.firstChild) content.firstChild.remove();
     content.style.flexDirection = look.list ? 'column' : '';
-    for (const { icon, count } of cells) {
+    for (const { icon, tint, count } of cells) {
       const cell = T.cardCell();
       const image = cell.firstChild;
       cell.style.width = look.width;
@@ -195,6 +211,7 @@ const SummaryCard = (props) => {
       }
       image.classList.add(look.icon, look.gap);
       image.style.backgroundImage = icon;
+      if (tint) image.style.setProperty('fxs-background-image-tint', tint);
       image.nextSibling.classList.add(look.text);
       image.nextSibling.textContent = `${count}`;
       content.appendChild(cell);
@@ -207,7 +224,7 @@ const SummaryCard = (props) => {
   if (!props.hover) return card;
   return createComponent(HoverTooltip, {
     trigger: card,
-    content: () => createComponent(BreakdownCard, { groups: [props.entry()?.card.rows ?? []] })
+    content: () => createComponent(BreakdownCard, { groups: props.entry()?.card.groups ?? [] })
   });
 };
 
@@ -219,6 +236,7 @@ function timelineRow(id, entry, index, { view, scale, title, height, count }) {
     title,
     get pins() { return entry()?.pins ?? []; },
     get links() { return entry()?.links ?? []; },
+    get bands() { return entry()?.bands ?? []; },
     get notches() { return scale().notches; },
     get labels() { return scale().labels; },
     get showTopLabels() { return index() === 0; },
@@ -228,7 +246,7 @@ function timelineRow(id, entry, index, { view, scale, title, height, count }) {
     id,
     rank: () => index() + 1,
     value: () => entry()?.value,
-    valueTooltip: view.totalRows && (() => createComponent(BreakdownCard, { groups: [view.totalRows(entry())] })),
+    valueTooltip: view.totalGroups && (() => createComponent(BreakdownCard, { groups: view.totalGroups(entry()) })),
     height,
     extra: [timeline, createComponent(SummaryCard, { entry, hover: view.cardHover !== false })]
   });
@@ -246,7 +264,8 @@ const TimelinePanel = (props) => {
     look: view.looks[tab.id],
     title,
     description: Locale.compose(tab.description),
-    valueLabel: Locale.compose('LOC_ZOM_GRAPH_TOTAL_COLUMN'),
+    info: tab.info,
+    valueLabel: Locale.compose(tab.valueLabel ?? 'LOC_ZOM_GRAPH_TOTAL_COLUMN'),
     body: () => {
       const body = T.body();
       const height = rowHeight(fillPanel(body));
@@ -262,4 +281,4 @@ const TimelinePanel = (props) => {
   });
 };
 
-export { sumBy, TimelinePanel };
+export { byCount, rankedCells, sumBy, TimelinePanel };

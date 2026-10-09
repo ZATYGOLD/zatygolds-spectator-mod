@@ -187,11 +187,8 @@
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="it_IT">
 			<Text>Rese</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="it_IT">
-			<Text>Unità</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="it_IT">
-			<Text>Sconfitte</Text>
+			<Text>Unità sconfitte</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="it_IT">
 			<Text>Quando ogni leader ha distrutto o catturato unità, e quali.</Text>
@@ -220,6 +217,153 @@
 		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="it_IT">
 			<Text>Elevato a città</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="it_IT">
+			<Text>Militare</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="it_IT">
+			<Text>Guerre</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="it_IT">
+			<Text>Quando ogni leader è stato in guerra, contro chi, e come è iniziata e finita ogni guerra.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="it_IT">
+			<Text>Conflitti</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="it_IT">
+			<Text>Le battaglie, le scaramucce e gli assedi di ogni leader e contro chi, con gli insediamenti rasi al suolo e le caselle saccheggiate.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="it_IT">
+			<Text>Forza</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="it_IT">
+			<Text>La forza militare di ogni leader, la forza di combattimento di tutte le sue unità, registrata a ogni turno della partita.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="it_IT">
+			<Text>Promozioni</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="it_IT">
+			<Text>Quando i comandanti di ogni leader hanno ottenuto promozioni ed encomi, e quali.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="it_IT">
+			<Text>Encomi</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="it_IT">
+			<Text>Ancora nessuna promozione</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="it_IT">
+			<Text>Battaglie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="it_IT">
+			<Text>Scaramucce</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="it_IT">
+			<Text>Assedi</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="it_IT">
+			<Text>Ancora nessuna</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="it_IT">
+			<Text>Aggressione</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_ON" Language="it_IT">
+			<Text>Difesa</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR" Language="it_IT">
+			<Text>In guerra</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE" Language="it_IT">
+			<Text>Pace stipulata</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER" Language="it_IT">
+			<Text>Guerra dichiarata a {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER" Language="it_IT">
+			<Text>Attaccato da {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR_WITH" Language="it_IT">
+			<Text>In guerra con {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="it_IT">
+			<Text>Pace con {1_Leader}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="it_IT">
+			<Text>Battaglia</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="it_IT">
+			<Text>Scaramuccia</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="it_IT">
+			<Text>Assedio</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="it_IT">
+			<Text>Assediata da {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="it_IT">
+			<Text>Rasa al suolo da {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="it_IT">
+			<Text>Conquistato da {1_Player}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="it_IT">
+			<Text>Esiti</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="it_IT">
+			<Text>Nemesi</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="it_IT">
+			<Text>Avversari</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="it_IT">
+			<Text>{1_Commander}, promozione {2_Number}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="it_IT">
+			<Text>Ogni [B]insediamento[/B] che un leader guadagna, perde o eleva.[NN][BLIST][LI][B]Segnaposto[/B]: dorato per una città, blu per un centro abitato[LI][B]Punto[/B]: Fondato (o incorporato), Conquistato, Perso, Rasa al suolo o Elevato a città[LI][B]Arco tratteggiato[/B]: unisce un centro abitato alla sua elevazione, e una conquista o perdita alla distruzione[/LIST][NN][B]Totale[/B]: insediamenti attuali (o alla fine dell'era).[N][B]Scheda[/B]: città e centri abitati.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="it_IT">
+			<Text>Ogni cittadino guadagnato dagli insediamenti di un leader.[NN][BLIST][LI][B]Segnaposto[/B]: l'edificio o il miglioramento che l'ha aggiunto, del colore della sua resa principale[LI][B]Punto[/B]: oro per urbano, argento per rurale[LI][B]Specialista[/B]: un segnaposto dorato luminoso, con gli edifici della sua casella[/LIST][NN]Un insediamento conquistato conta dalla sua dimensione alla conquista.[NN][B]Totale[/B]: popolazione (urbani, rurali e specialisti al passaggio del cursore).[N][B]Scheda[/B]: specialisti, per insediamento e quartiere al passaggio del cursore.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="it_IT">
+			<Text>Ogni unità che un leader ha [B]prodotto[/B], [B]acquistato[/B] o [B]ricevuto[/B].[NN][BLIST][LI][B]Segnaposto[/B]: terrestre, navale, civile o comandante[LI][B]Comandanti[/B]: contati una volta, non di nuovo al ritorno dopo una sconfitta[/LIST][NN][B]Totale[/B]: unità addestrate, per categoria al passaggio del cursore.[N][B]Scheda[/B]: ogni tipo di comandante addestrato, altrimenti l'unità più addestrata.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="it_IT">
+			<Text>Ogni unità che un leader ha perso contro un altro giocatore, uccisa o catturata.[NN][BLIST][LI][B]Segnaposto[/B]: terrestre, navale, civile o comandante, con chi l'ha presa[LI][B]Classifica[/B]: prima chi ne ha perse meno[/LIST][NN][B]Totale[/B]: unità perse, per categoria al passaggio del cursore.[N][B]Scheda[/B]: ogni tipo di comandante perso, altrimenti l'unità più persa.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="it_IT">
+			<Text>Ogni unità di un altro giocatore che un leader ha ucciso o catturato.[NN][BLIST][LI][B]Segnaposto[/B]: terrestre, navale, civile o comandante, con a chi apparteneva[/LIST][NN][B]Totale[/B]: unità sconfitte, per categoria al passaggio del cursore.[N][B]Scheda[/B]: ogni tipo di comandante sconfitto, altrimenti l'unità più sconfitta.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="it_IT">
+			<Text>Ogni [B]promozione[/B] ed [B]encomio[/B] ottenuti dai comandanti di un leader.[NN][BLIST][LI][B]Promozione[/B]: l'icona del suo albero, su un segnaposto del colore dell'albero[LI][B]Encomio[/B]: la sua icona, su un segnaposto dorato luminoso[LI][B]Dettaglio[/B]: il comandante e quale delle sue promozioni era[/LIST][NN]Un arco tratteggiato unisce le promozioni di ogni comandante; il colore del punto distingue i comandanti.[NN][B]Totale[/B]: promozioni ed encomi.[N][B]Scheda[/B]: l'encomio più ottenuto, poi l'albero più promosso; ogni encomio e albero al passaggio del cursore.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="it_IT">
+			<Text>Guerre tra leader; i poteri indipendenti sono sempre ostili e non contano. Le tacche mostrano ogni turno:[NN][BLIST][LI][B]Rosso[/B]: aggressione, il leader ha dichiarato guerra[LI][B]Giallo[/B]: difesa, è stata dichiarata guerra al leader[LI][B]Grigio[/B]: in pace[/LIST][NN]Un segnaposto del nemico indica l'inizio di ogni guerra, e uno [B]verde[/B] la stipula della pace; ognuno indica chi ha attaccato chi.[NN][B]Turni[/B]: turni in guerra.[N][B]Scheda[/B]: il nemico combattuto più a lungo (tutti in caso di parità), ogni guerra al passaggio del cursore. Una guerra prosegue in una nuova era fino alla pace.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="it_IT">
+			<Text>Turni in guerra</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="it_IT">
+			<Text>Diplomazia</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="it_IT">
+			<Text>Turni</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="it_IT">
+			<Text>I conflitti di un leader, in ordine di priorità:[NN][BLIST][LI][B]Rasa al suolo[/B]: un insediamento distrutto, una volta scomparso dalla mappa[LI][B]Conquistato[/B]: un insediamento preso[LI][B]Perso[/B]: un insediamento sottratto al leader[LI][B]Assedio[/B]: un insediamento assediato; se lo stesso nemico la assedia di nuovo entro 5 turni, è lo stesso assedio[LI][B]Battaglia[/B]: uno scontro con 3 o più attacchi o 4 o più di saccheggio, al primo turno o dopo che è durato 3 turni, o combattimenti per 5 turni, o un assedio tra le due parti[LI][B]Scaramuccia[/B]: uno scontro con meno[LI][B]Saccheggio[/B]: una casella saccheggiata[/LIST][NN]Un punto indica contro chi: oro per un leader, blu per una città-stato, argento per un potere indipendente. Un segnaposto mostra prima un leader, poi una città-stato, poi un potere indipendente. Le tacche mostrano ogni assedio (arancione), battaglia (rosso) e scaramuccia (blu) finché dura; dove coincidono si dividono la tacca, e il primo ne occupa la maggior parte.[NN]Uno [B]scontro[/B] riunisce tutti gli attacchi e i saccheggi tra le stesse due parti entro 3 caselle, a non più di 5 turni di distanza. Conta solo quando entrambe le parti si sono attaccate con unità in grado di combattere (non coloni né esploratori), e ogni attacco conta per entrambe; il saccheggio vale 2 per un edificio, 1 per una casella rurale. Un arco tratteggiato unisce ogni evento a quello da cui è derivato: una scaramuccia alla battaglia che è diventata, i combattimenti a un assedio, un assedio a una conquista o perdita, e questa alla distruzione. [B]Saccheggiato[/B] (le proprie caselle) conta anch'esso, sotto [B]Saccheggio[/B]. Conta solo il saccheggio di unità nemiche, non inondazioni, eruzioni o tempeste.[NN][B]Totale[/B]: assedi, battaglie, scaramucce e saccheggi; distruzioni, conquiste e perdite ne sono gli esiti, mostrati a parte al passaggio del cursore.[N][B]Scheda[/B]: la nemesi, il giocatore più affrontato (i leader prima delle città-stato e dei poteri indipendenti); gli altri avversari al passaggio del cursore.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="it_IT">
+			<Text>Attacchi {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="it_IT">
+			<Text>Saccheggio {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="it_IT">
+			<Text>Saccheggio</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="it_IT">
+			<Text>Saccheggiato</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="it_IT">
+			<Text>Rasa al suolo</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="it_IT">
 			<Text>Conquistato</Text>
 		</Replace>
@@ -227,10 +371,10 @@
 			<Text>Incorporato</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="it_IT">
-			<Text>Addestrate</Text>
+			<Text>Unità addestrate</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="it_IT">
-			<Text>Perse</Text>
+			<Text>Unità perse</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="it_IT">
 			<Text>Quando ogni leader ha perso unità, distrutte o catturate, e per mano di chi.</Text>

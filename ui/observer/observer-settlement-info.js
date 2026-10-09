@@ -20,8 +20,8 @@
 /**
  * Zatygold's Spectator - settlement facts (in-game scope).
  *
- * A town's focus, an independent's or city-state's type and suzerain bonus, and
- * which settlement each on-screen banner shows (banner elements carry no id, so
+ * A town's focus, an independent's or city-state's type and suzerain bonus, the
+ * settlement at a plot, and which settlement each on-screen banner shows (banner elements carry no id, so
  * they are matched by the name they compose).
  */
 import { ancestorWithClass } from '../shared/zom-util.js';
@@ -78,6 +78,13 @@ function townFocus(city) {
   return project ? { name: project.Name, description: project.Description, icon: UI.getIconURL(project.ProjectType) } : null;
 }
 
+/** The settlement whose centre is a plot, else null (one gone from the map, razed). */
+function cityAt(plot) {
+  const at = GameplayMap.getLocationFromIndex(plot);
+  const id = at && MapCities.getCity(at.x, at.y);
+  return (id && Cities.get(id)) ?? null;
+}
+
 // ============================ Banners ============================
 
 let cachedIndex = null;
@@ -127,4 +134,4 @@ engine.whenReady.then(() => {
   for (const event of INDEX_EVENTS) engine.on(event, () => { cachedIndex = null; });
 });
 
-export { bannerOf, bannerSubject, cityStateBonus, cityStateType, forEachBanner, suzerainOf, townFocus };
+export { bannerOf, bannerSubject, cityAt, cityStateBonus, cityStateType, forEachBanner, suzerainOf, townFocus };

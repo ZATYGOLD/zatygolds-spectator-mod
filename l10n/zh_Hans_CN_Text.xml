@@ -187,11 +187,8 @@
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hans_CN">
 			<Text>产出</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_UNITS" Language="zh_Hans_CN">
-			<Text>单位</Text>
-		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="zh_Hans_CN">
-			<Text>击败</Text>
+			<Text>击败单位</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="zh_Hans_CN">
 			<Text>每位领袖何时摧毁或俘获了哪些单位。</Text>
@@ -220,6 +217,153 @@
 		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="zh_Hans_CN">
 			<Text>升级为城市</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="zh_Hans_CN">
+			<Text>军事</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="zh_Hans_CN">
+			<Text>战争</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时与谁交战，以及每场战争如何开始与结束。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="zh_Hans_CN">
+			<Text>冲突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="zh_Hans_CN">
+			<Text>各领袖的会战、小规模冲突与围城及其对手，以及夷平的定居点与遭劫掠的单元格。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="zh_Hans_CN">
+			<Text>战力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hans_CN">
+			<Text>各领袖的军事实力（所有单位的战斗力），记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="zh_Hans_CN">
+			<Text>晋升</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="zh_Hans_CN">
+			<Text>各领袖的指挥官何时获得了哪些晋升与嘉奖。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="zh_Hans_CN">
+			<Text>嘉奖</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="zh_Hans_CN">
+			<Text>尚无晋升</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="zh_Hans_CN">
+			<Text>会战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="zh_Hans_CN">
+			<Text>小规模冲突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="zh_Hans_CN">
+			<Text>围城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="zh_Hans_CN">
+			<Text>尚无</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="zh_Hans_CN">
+			<Text>侵略</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_ON" Language="zh_Hans_CN">
+			<Text>防御</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR" Language="zh_Hans_CN">
+			<Text>交战中</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE" Language="zh_Hans_CN">
+			<Text>达成和平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER" Language="zh_Hans_CN">
+			<Text>向{1_Leader}宣战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER" Language="zh_Hans_CN">
+			<Text>遭{1_Leader}进攻</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR_WITH" Language="zh_Hans_CN">
+			<Text>与{1_Leader}交战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="zh_Hans_CN">
+			<Text>与{1_Leader}和平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="zh_Hans_CN">
+			<Text>会战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="zh_Hans_CN">
+			<Text>小规模冲突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="zh_Hans_CN">
+			<Text>围城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="zh_Hans_CN">
+			<Text>遭{1_Player}围城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="zh_Hans_CN">
+			<Text>遭{1_Player}夷平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="zh_Hans_CN">
+			<Text>遭{1_Player}占领</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="zh_Hans_CN">
+			<Text>结果</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="zh_Hans_CN">
+			<Text>宿敌</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="zh_Hans_CN">
+			<Text>对手</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="zh_Hans_CN">
+			<Text>{1_Commander}，第{2_Number}次晋升</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="zh_Hans_CN">
+			<Text>领袖获得、失去或升级的每个[B]定居点[/B]。[NN][BLIST][LI][B]图钉[/B]：城市为金色，城镇为蓝色[LI][B]圆点[/B]：建立（或并入）、占领、损失、夷平或升级为城市[LI][B]虚线弧[/B]：将城镇与其升级、占领或损失与其夷平相连[/LIST][NN][B]合计[/B]：当前的定居点（或时代结束时）。[N][B]卡片[/B]：城市与城镇。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="zh_Hans_CN">
+			<Text>领袖定居点获得的每位市民。[NN][BLIST][LI][B]图钉[/B]：带来它的建筑或改良设施，显示为其主要产出的颜色[LI][B]圆点[/B]：城区为金色，乡村为银色[LI][B]专家[/B]：发光的金色图钉，附其单元格上的建筑[/LIST][NN]占领的定居点从占领时的规模开始计算。[NN][B]合计[/B]：人口（悬停可查看城区、乡村与专家）。[N][B]卡片[/B]：专家（悬停可按定居点与街区查看）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="zh_Hans_CN">
+			<Text>领袖[B]生产[/B]、[B]购买[/B]或[B]获得[/B]的每个单位。[NN][BLIST][LI][B]图钉[/B]：陆地、海军、平民或指挥官[LI][B]指挥官[/B]：只计一次，被击败后返回时不再计入[/LIST][NN][B]合计[/B]：训练的单位，悬停可按类别查看。[N][B]卡片[/B]：训练的每种指挥官，若无则为训练最多的单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="zh_Hans_CN">
+			<Text>领袖被其他玩家消灭或俘获的每个单位。[NN][BLIST][LI][B]图钉[/B]：陆地、海军、平民或指挥官，以及夺取者[LI][B]排名[/B]：损失最少者优先[/LIST][NN][B]合计[/B]：损失的单位，悬停可按类别查看。[N][B]卡片[/B]：损失的每种指挥官，若无则为损失最多的单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="zh_Hans_CN">
+			<Text>领袖消灭或俘获的其他玩家的每个单位。[NN][BLIST][LI][B]图钉[/B]：陆地、海军、平民或指挥官，以及其所属者[/LIST][NN][B]合计[/B]：击败的单位，悬停可按类别查看。[N][B]卡片[/B]：击败的每种指挥官，若无则为击败最多的单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="zh_Hans_CN">
+			<Text>领袖的指挥官获得的每次[B]晋升[/B]与[B]嘉奖[/B]。[NN][BLIST][LI][B]晋升[/B]：其分支的图标，图钉为分支颜色[LI][B]嘉奖[/B]：嘉奖图标，图钉为发光的金色[LI][B]详情[/B]：指挥官及这是其第几次晋升[/LIST][NN]虚线弧连接每位指挥官的晋升；圆点颜色区分不同指挥官。[NN][B]合计[/B]：晋升与嘉奖。[N][B]卡片[/B]：获得最多的嘉奖，其次为晋升最多的分支（悬停可按嘉奖与分支查看）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="zh_Hans_CN">
+			<Text>领袖之间的战争；独立势力始终敌对，不计入。刻度显示每个回合：[NN][BLIST][LI][B]红色[/B]：侵略，由领袖宣战[LI][B]黄色[/B]：防御，领袖遭宣战[LI][B]灰色[/B]：和平[/LIST][NN]敌方图钉标记每场战争的开始，[B]绿色[/B]图钉标记达成和平；每个图钉都注明谁进攻了谁。[NN][B]回合[/B]：交战回合数。[N][B]卡片[/B]：交战最久的敌人（并列则全部），悬停显示每场战争。战争会延续到新时代，直至和平。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="zh_Hans_CN">
+			<Text>交战回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="zh_Hans_CN">
+			<Text>外交</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="zh_Hans_CN">
+			<Text>回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="zh_Hans_CN">
+			<Text>领袖的冲突，按优先顺序：[NN][BLIST][LI][B]夷平[/B]：从地图上消失的被夷平定居点[LI][B]占领[/B]：夺取的定居点[LI][B]损失[/B]：被夺走的定居点[LI][B]围城[/B]：遭围困的定居点（同一敌人在5回合内再次围困，视为同一次围城）[LI][B]会战[/B]：3次及以上攻击或4及以上劫掠的交战（首回合，或持续3回合后），或持续5回合作战，或双方之间发生围城[LI][B]小规模冲突[/B]：未达上述的交战[LI][B]劫掠[/B]：劫掠的单元格[/LIST][NN]圆点表示对手：领袖为金色，城邦为蓝色，独立势力为银色。图钉依次优先显示领袖、城邦、独立势力。刻度显示每场围城（橙）、会战（红）和小规模冲突（蓝）持续的回合，重叠处共享刻度，靠前者占大部分。[NN][B]交战[/B]指同样两方在3格范围内、间隔不超过5回合的所有攻击与劫掠。只有双方都以可作战的单位（非开拓者或侦察兵）相互攻击后才计入，每次攻击对双方都计入；劫掠建筑计2，乡村单元格计1。虚线弧将每个事件与其起因相连：小规模冲突与其发展成的会战、战斗与围城、围城与占领或损失，以及其与夷平。[B]遭劫掠[/B]（自己的单元格）也计入[B]劫掠[/B]。只计入敌方单位的劫掠，洪水、火山喷发和风暴不计入。[NN][B]合计[/B]：围城、会战、小规模冲突与劫掠；夷平、占领与损失是其结果，悬停时单独显示。[N][B]卡片[/B]：宿敌，交战最多的对手（依次为领袖、城邦与独立势力）；悬停显示其他对手。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="zh_Hans_CN">
+			<Text>攻击 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="zh_Hans_CN">
+			<Text>劫掠 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="zh_Hans_CN">
+			<Text>劫掠</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="zh_Hans_CN">
+			<Text>遭劫掠</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="zh_Hans_CN">
+			<Text>夷平</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="zh_Hans_CN">
 			<Text>占领</Text>
 		</Replace>
@@ -227,10 +371,10 @@
 			<Text>并入</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="zh_Hans_CN">
-			<Text>训练</Text>
+			<Text>训练单位</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="zh_Hans_CN">
-			<Text>损失</Text>
+			<Text>损失单位</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="zh_Hans_CN">
 			<Text>各领袖何时因摧毁或俘获而损失单位，以及败于谁手。</Text>
