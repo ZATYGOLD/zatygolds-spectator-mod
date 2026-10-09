@@ -48,7 +48,7 @@ const NOTCH_BOTTOM = 90;              // where the notches end, in % of the bar'
 const NOTCH_WIDTH = 0.8;              // a notch's width in % of the bar (drawNotches)
 const CRISIS_MARK_SIZE = 0.6;         // a crisis marker's half width, in notch widths
 const PIN_BRIGHTNESS = 1.3;           // pin art is darker than its tint
-const PIN_ICON_OUTLINE = 'drop-shadow(0 0 0.1rem #000) drop-shadow(0 0 0.1rem #000)';
+const PIN_ICON_OUTLINE = 'drop-shadow(0 0 0.1rem #000) drop-shadow(0 0 0.1rem #000)';   // a dark edge around a pin's icon
 // The Culture tab's arc between pins: colour, width, dash and gap, end inset, and height by distance.
 const ARC = { color: '#616266', width: 2, dash: 6, gap: 4, inset: 6, min: 1, max: 64, linear: 0.38, root: 0.06 };
 const DOT_CLASS = 'zom-pin-dot';
@@ -148,7 +148,7 @@ const PIN_ART = 'url(blp:culture_pin_minor)';
 const tint = (element, color) => { if (color) element.style.setProperty('fxs-background-image-tint', color); };
 const GLOW = { scale: 1.3, origin: '50% 45%', blur: '0.3rem', opacity: '0.9' };   // a larger, blurred copy of the pin behind it
 
-/** The pin itself: tinted pin art, the thing's icon, the "+" when grouped and a glow if the category has one. */
+/** The pin itself: tinted pin art, the thing's icon (outlined, never tinted), the "+" when grouped and a glow if the category has one. */
 function pinFace(pin, subject) {
   const category = subject.categories[pin.category] ?? {};
   const face = T.pinFace();
@@ -165,8 +165,7 @@ function pinFace(pin, subject) {
   art.style.setProperty('fxs-background-image-tint', subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff');
   art.style.filter = `brightness(${PIN_BRIGHTNESS})`;
   icon.style.backgroundImage = subject.pinIcon(pin.lead);
-  tint(icon, subject.iconTint?.(pin.lead));
-  if (subject.pinIconOutline) icon.style.filter = PIN_ICON_OUTLINE;
+  icon.style.filter = PIN_ICON_OUTLINE;   // untinted, outlined: readable on any pin colour
   if (pin.sources.length > 1) {
     const plus = T.plus();
     plus.style.backgroundImage = 'url(blp:victories_culturePlus)';

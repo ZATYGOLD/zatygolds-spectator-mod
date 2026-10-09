@@ -71,10 +71,11 @@ leader's relationship and befriending progress.
   show their breakdown on hover.
 - All mark each crisis stage and, in Overall, where each Age starts.
 
-**Screens** — Resources & Trade, Legacies, Government, Great Works, Religion
-and the tech / civic trees can show any leader's view. Click any unit to
-inspect it; hover another with a combat unit selected for an estimated combat
-preview.
+**Screens** — Resources & Trade, Legacies, Government, Great Works, Religion,
+Attributes and the tech / civic trees (with the Syncretism preview) can show
+any leader's view; a leader's panel opens its Attributes. Click any unit to
+inspect it (a commander's promotions and commendations too); hover another
+with a combat unit selected for an estimated combat preview.
 
 **Quiet** — Advisors, narrative events, diplomacy prompts and Age countdowns
 are handled for you. The Spectator never appears in victories, rankings or
@@ -129,6 +130,9 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   growth; Military its share of world strength, units, promotions, wars
   (aggression and defense) and conflicts (sieges, battles, skirmishes, pillage and their
   outcomes), each tab with an info panel.
+- **Screens** — any leader's Attributes (also from its leader panel), a
+  commander's promotions, and the Syncretism preview on the civic tree, with
+  or without a Perspective.
 - **Translations** — terms aligned with the game's own in every language.
 - **Performance** — the Chronicle refreshes in batches and its timelines are
   built faster in long games.

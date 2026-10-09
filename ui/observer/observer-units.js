@@ -22,8 +22,9 @@
  * Zatygold's Spectator - Observer units (in-game scope).
  *
  * Lets the Observer select other players' units with the game's own selection
- * (so the unit panel shows them), and guards every step that assumes ownership:
- * no move / attack decorations (they stall the renderer) and no orders sent.
+ * (so the unit panel shows them, a commander's with its promotions to view),
+ * and guards every step that assumes ownership: no move / attack decorations
+ * (they stall the renderer), no orders sent and no promotions bought.
  */
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import UnitSelection from 'fs://game/base-standard/ui/unit-selection/unit-selection.js';
@@ -31,10 +32,13 @@ import { UnitMapDecorationSupport } from 'fs://game/base-standard/ui/interface-m
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
 import { InputHandlerState } from 'fs://game/core/ui/input/input-support.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
-import { createLogger, findAncestor, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, findAncestor, isObserverPlayer, setStyle, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { isObserverSeat, onObserverReady } from './observer-core.js';
 
 const log = createLogger('observer-units');
+const PROMOTE = 'UNITCOMMAND_PROMOTE';
+const READ_ONLY_CLASS = 'zom-observer-read-only';
+const STYLE_ID = 'zom-observer-units-style';
 
 /** True when the Observer seat is looking at a unit it does not own. */
 function isForeign(unitId) {
@@ -100,8 +104,53 @@ function patchGuards() {
   }
 }
 
+// ============================ Promotions ============================
+
+const openPromotions = () => { if (!InterfaceMode.switchTo('INTERFACEMODE_UNIT_PROMOTION')) log('promotion screen refused'); };
+
+/** The unit panel's Promote action, as the game builds it for the owner. */
+function promoteAction(panel) {
+  const command = GameInfo.UnitCommands.lookup(PROMOTE);
+  return command && {
+    name: `[STYLE:unit-action__tooltip-title]${Locale.compose(command.Name)}[/STYLE][n]${Locale.compose(command.Description ?? '')}`,
+    icon: command.Icon,
+    type: PROMOTE,
+    annotation: '',
+    active: true,
+    requireConfirm: false,
+    UICategory: panel.getUnitActionCategory(command.CategoryInUI),
+    priority: command.PriorityInUI ?? 0,
+    hotkeyId: command.HotkeyId,
+    callback: openPromotions
+  };
+}
+
+/** Another player's commander can show its promotions and commendations, read-only (no purchase buttons). */
+function patchPromotions() {
+  whenDefined('unit-actions', (definition) => wrapMethod(definition.createInstance.prototype, 'getUnitActions', function (base, unit, ...rest) {
+    const result = base(unit, ...rest);
+    try {
+      if (unit?.isCommanderUnit && isForeign(unit.id)) {
+        const listed = this.actions.find((a) => a.type === PROMOTE);   // listed disabled for another player's unit
+        if (listed) Object.assign(listed, { active: true, requireConfirm: false, callback: openPromotions });
+        else {
+          const action = promoteAction(this);
+          if (action) this.actions.push(action);
+        }
+      }
+    } catch (e) { log(`promote action not added: ${e}`); }
+    return result;
+  }), { log });
+  whenDefined('panel-unit-promotion', (definition) => wrapMethod(definition.createInstance.prototype, 'onAttach', function (base, ...args) {
+    this.Root.classList.toggle(READ_ONLY_CLASS, isForeign(UI.Player.getHeadSelectedUnit()));
+    return base(...args);
+  }), { log });
+  setStyle(STYLE_ID, `.${READ_ONLY_CLASS} #promotion-button-container { display: none !important; }`);
+}
+
 patchSelection();
 patchGuards();
+patchPromotions();
 onObserverReady(() => window.addEventListener('engine-input', onEngineInput, true));
 
 export { inspectableUnits, isForeign };

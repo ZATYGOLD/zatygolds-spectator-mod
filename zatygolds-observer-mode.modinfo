@@ -234,6 +234,8 @@
                     <Item>ui/great-works/model-great-works.js</Item>
                     <Item>ui/tech-tree/model-tech-tree.js</Item>
                     <Item>ui/culture-tree/model-culture-tree.js</Item>
+                    <Item>ui/attribute-trees/model-attribute-trees.js</Item>
+                    <Item>ui/syncretism/syncretism-screen-model.js</Item>
                     <Item>ui/tree-grid/tree-grid.js</Item>
                 </ImportFiles>
             </Actions>

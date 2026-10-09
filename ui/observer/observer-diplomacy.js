@@ -22,17 +22,20 @@
  * Zatygold's Spectator - Observer diplomacy (in-game scope).
  *
  * The Observer has met everyone; the leader panel lists all of a leader's wars
- * and offers no actions; the independent / city-state panel shows its type,
- * suzerain and bonus, then every leader's standing and befriending progress.
+ * and offers only the leader's Attributes; the independent / city-state panel
+ * shows its type, suzerain and bonus, then every leader's standing and
+ * befriending progress.
  */
+import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import LeaderModelManager from 'fs://game/base-standard/ui/diplomacy/leader-model-manager.js';
 import { DiplomacyActionPanel } from 'fs://game/base-standard/ui/diplomacy-actions/panel-diplomacy-actions.js';
 import 'fs://game/base-standard/ui/diplomacy-actions/panel-other-diplomacy.js';   // defines PANEL_TAG
 import { installAssetAliases } from '../shared/zom-assets.js';
-import { clamp, clearChildren, createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
+import { clamp, clearChildren, createLogger, isObserverPlayer, onActivate, wrapMethod } from '../shared/zom-util.js';
 import { PANEL_COLORS, RELATIONSHIP_COLORS } from './observer-config.js';
-import { isObserverSeat, leaderPortrait, watchedPlayers } from './observer-core.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { showLeader } from './observer-leader-view.js';
 import { cityStateBonus, cityStateType, suzerainOf } from './observer-settlement-info.js';
 
 const log = createLogger('observer-diplomacy');
@@ -46,6 +49,7 @@ const RELATIONSHIP_TEXT = {
   HOSTILE: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_HOSTILE', color: RELATIONSHIP_COLORS.hostile }
 };
 const AT_WAR_COLOR = RELATIONSHIP_TEXT.HOSTILE.color;
+const ATTRIBUTES_TAG = 'screen-attribute-trees';
 
 let metInstalled = false;
 
@@ -234,6 +238,32 @@ function relationshipSection(power) {
 
 // ============================ Leader panel ============================
 
+/** The leader's Attributes button, as its own leader panel shows it (unspent points on a badge): opens the leader's attribute trees. */
+function attributesButton(leaderId) {
+  const button = document.createElement('fxs-hero-button');
+  button.setAttribute('caption', Locale.stylize('LOC_DIPLOMACY_ATTRIBUTES_BUTTON_NAME'));
+  button.setAttribute('data-audio-group-ref', 'audio-diplo-project-reaction');
+  button.classList.add('panel-diplomacy-actions__attribute-button', 'mt-2');
+  const identity = Players.get(leaderId)?.Identity;
+  const points = [...GameInfo.Attributes].reduce((sum, a) => sum + (identity?.getAvailableAttributePoints(a.AttributeType) ?? 0), 0);
+  if (points > 0) {
+    waitForLayout(() => {
+      const badge = document.createElement('div');
+      badge.classList.value = 'panel-diplomacy-actions__attribute-button-icon -top-4 -right-3 bottom-3 h-10 absolute flex items-center justify-center';
+      const count = document.createElement('div');
+      count.classList.value = 'font-body text-sm mt-2 px-4';
+      count.textContent = `${points}`;
+      badge.appendChild(count);
+      button.appendChild(badge);
+    });
+  }
+  onActivate(button, () => {
+    showLeader(leaderId);
+    ContextManager.push(ATTRIBUTES_TAG, SCREEN_PROPS);
+  });
+  return button;
+}
+
 /** Drop Observer portraits (and rows left empty) and the leader's relationship with the Observer. */
 function removeObserverRelationships(root) {
   root.querySelector(OWN_RELATIONSHIP)?.style.setProperty('display', 'none');
@@ -260,6 +290,8 @@ function patchPanel(proto) {
   wrapMethod(proto, 'populateAvailableActions', function (base, ...args) {
     if (!isObserverSeat()) return base(...args);
     clearChildren(this.majorActionsSlot);
+    const selected = Players.get(DiplomacyManager.selectedPlayerID);
+    if (selected?.isMajor && !isObserverPlayer(selected.id)) this.majorActionsSlot?.appendChild(attributesButton(selected.id));
   });
 
   wrapMethod(proto, 'populateActionsPanel', function (base, ...args) {

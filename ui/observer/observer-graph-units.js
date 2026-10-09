@@ -73,7 +73,6 @@ const UNITS_SUBJECT = {
   categories: UNIT_CATEGORIES,
   priority: [COMMANDER],
   pinIcon: (source) => unitFlagIcon(source.type),
-  pinIconOutline: true,   // the unit flags are white
   icon: (source) => UI.getIconCSS(source.type),
   name: (source) => unitName(source.type),
   detail: unitDetail,

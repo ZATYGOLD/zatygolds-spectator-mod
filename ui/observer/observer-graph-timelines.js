@@ -32,7 +32,7 @@
  *     priority (categories a pin shows first, in order; an array ranks its categories alike),
  *     sourceOrder(a, b) (before the priority), sumFields (event fields summed into a pin's sources),
  *     sliceEvents(events) (a pin's events as it shows them), sections (the pin tooltip's, see observer-timeline.js),
- *     pinIcon, pinColor, dotColor, icon, iconTint, name, detail (each of a source), sourceOf(event) (extra source fields),
+ *     pinIcon, pinColor, dotColor, icon, iconTint (tooltip rows only), name, detail (each of a source), sourceOf(event) (extra source fields),
  *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, tint, count }], groups (BreakdownCard's) },
  *     cardHover (false: none), pinCount (false: none), value(id, { lastAge, now, events }) (else the count), tieBreak(entry),
  *     links(events) ([[from, to]] joined by a dashed arc), totalGroups(entry) (the Total's hover),
