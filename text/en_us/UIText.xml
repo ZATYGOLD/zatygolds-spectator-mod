@@ -158,7 +158,7 @@
 			<Text>When each leader founded, captured, lost, razed or upgraded settlements.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO">
-			<Text>Every [B]Settlement[/B] a leader gains, loses or upgrades.[NN][BLIST][LI][B]Pin[/B]: gold for a City, blue for a Town; green when captured, red when lost[LI][B]Dot[/B]: Founded (or Incorporated), Captured, Lost, Razed or Upgraded to City[LI][B]Dashed Arc[/B]: joins a Town to its upgrade, and a capture or loss to its razing[/LIST][NN][B]Total[/B]: Settlements held now (or at the end of the Age); Cities and Towns on hover.[N][B]Card[/B]: urbanization, the share of developed tiles that are urban (buildings, wonders and fortifications, against improvements); the most urbanized and the most rural Settlement on hover (current Age).</Text>
+			<Text>Every [B]Settlement[/B] a leader gains, loses or upgrades.[NN][BLIST][LI][B]Pin[/B]: gold for a City, blue for a Town; green when captured, red when lost, purple when razed[LI][B]Dot[/B]: Founded (or Incorporated), Captured, Lost, Razed or Upgraded to City[LI][B]Dashed Arc[/B]: joins a Town to its upgrade, and a capture or loss to its razing[/LIST][NN][B]Total[/B]: Settlements held now (or at the end of the Age); Cities and Towns on hover.[N][B]Card[/B]: urbanization, the share of developed tiles that are urban (buildings, wonders and fortifications, against improvements); the most urbanized and the most rural Settlement on hover (current Age).</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_FOUNDED">
 			<Text>Founded</Text>

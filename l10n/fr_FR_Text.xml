@@ -215,7 +215,7 @@
 			<Text>Quand chaque dirigeant a fondé, capturé, perdu, rasé ou transformé en ville des colonies.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="fr_FR">
-			<Text>Chaque [B]colonie[/B] qu'un dirigeant gagne, perd ou fait évoluer.[NN][BLIST][LI][B]Épingle[/B] : dorée pour une ville, bleue pour une commune ; verte si capturée, rouge si perdue[LI][B]Point[/B] : Fondée (ou Absorbée), Capturée, Perdue, Rasée ou Devenue ville[LI][B]Arc pointillé[/B] : relie une commune à son évolution en ville, et une prise ou une perte à sa destruction[/LIST][NN][B]Total[/B] : colonies détenues actuellement (ou à la fin de l'ère) ; villes et communes au survol.[N][B]Carte[/B] : urbanisation, la part des cases aménagées qui sont urbaines (bâtiments, merveilles et fortifications, face aux aménagements) ; la colonie la plus urbaine et la plus rurale au survol (ère actuelle).</Text>
+			<Text>Chaque [B]colonie[/B] qu'un dirigeant gagne, perd ou fait évoluer.[NN][BLIST][LI][B]Épingle[/B] : dorée pour une ville, bleue pour une commune ; verte si capturée, rouge si perdue, violette si rasée[LI][B]Point[/B] : Fondée (ou Absorbée), Capturée, Perdue, Rasée ou Devenue ville[LI][B]Arc pointillé[/B] : relie une commune à son évolution en ville, et une prise ou une perte à sa destruction[/LIST][NN][B]Total[/B] : colonies détenues actuellement (ou à la fin de l'ère) ; villes et communes au survol.[N][B]Carte[/B] : urbanisation, la part des cases aménagées qui sont urbaines (bâtiments, merveilles et fortifications, face aux aménagements) ; la colonie la plus urbaine et la plus rurale au survol (ère actuelle).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="fr_FR">
 			<Text>Fondée</Text>

@@ -46,7 +46,7 @@ const SETTLEMENT_CATEGORIES = [
   { id: 'founded', label: 'LOC_ZOM_GRAPH_FOUNDED', color: '#5fae4c' },
   { id: 'captured', label: 'LOC_ZOM_GRAPH_CAPTURED', color: OUTCOME_COLORS.captured, pin: true },
   { id: 'lost', label: 'LOC_ZOM_GRAPH_SETTLEMENTS_LOST', color: OUTCOME_COLORS.lost, pin: true },
-  { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: OUTCOME_COLORS.razed },
+  { id: 'razed', label: 'LOC_ZOM_GRAPH_RAZED', color: OUTCOME_COLORS.razed, pin: true },
   { id: 'upgraded', label: 'LOC_ZOM_GRAPH_UPGRADED', color: '#e8d27a' }
 ];
 const CATEGORY = categoryIndex(SETTLEMENT_CATEGORIES);

@@ -106,9 +106,9 @@ function settlementDetail(source) {
 const SETTLEMENTS_SUBJECT = {
   looks: { settlements: { color: '#d8c38a', background: 'bg_victory_economic3' } },
   categories: SETTLEMENT_CATEGORIES,
-  priority: [CATEGORY.upgraded],
+  priority: [CATEGORY.razed, CATEGORY.lost, CATEGORY.captured, CATEGORY.upgraded],   // an outcome outranks a founding
   pinIcon: iconOf,
-  pinColor: (source) => (SETTLEMENT_CATEGORIES[source.category]?.pin ? SETTLEMENT_CATEGORIES[source.category].color : SETTLEMENT_KINDS[source.settlement]?.color),   // green captured, red lost, else city or town
+  pinColor: (source) => (SETTLEMENT_CATEGORIES[source.category]?.pin ? SETTLEMENT_CATEGORIES[source.category].color : SETTLEMENT_KINDS[source.settlement]?.color),   // an outcome's colour, else city or town
   icon: iconOf,
   name: (source) => Locale.compose(source.type),
   detail: settlementDetail,
