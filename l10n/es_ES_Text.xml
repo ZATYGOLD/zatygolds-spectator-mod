@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="es_ES">
 			<Text>Imperio</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="es_ES">
+			<Text>Territorio</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="es_ES">
+			<Text>La proporción del territorio del mundo de cada líder (las casillas de los asentamientos de todos los líderes), registrada en cada turno de la partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="es_ES">
+			<Text>Porcentaje del territorio del mundo</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="es_ES">
 			<Text>Asentamientos</Text>
 		</Replace>

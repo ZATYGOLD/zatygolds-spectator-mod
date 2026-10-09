@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="zh_Hans_CN">
 			<Text>帝国</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="zh_Hans_CN">
+			<Text>领土</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="zh_Hans_CN">
+			<Text>各领袖在世界领土（所有领袖定居点的单元格）中的占比，记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="zh_Hans_CN">
+			<Text>世界领土占比</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="zh_Hans_CN">
 			<Text>定居点</Text>
 		</Replace>

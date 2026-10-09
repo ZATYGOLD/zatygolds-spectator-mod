@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="pl_PL">
 			<Text>Imperium</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="pl_PL">
+			<Text>Terytorium</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="pl_PL">
+			<Text>Udział każdego przywódcy w światowym terytorium (polach osiedli wszystkich przywódców), zapisywany w każdej turze gry.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="pl_PL">
+			<Text>Udział % w światowym terytorium</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="pl_PL">
 			<Text>Osiedla</Text>
 		</Replace>

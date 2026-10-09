@@ -151,6 +151,15 @@
 		<Row Tag="LOC_ZOM_GRAPH_EMPIRE">
 			<Text>Empire</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TERRITORY">
+			<Text>Territory</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TERRITORY_DESC">
+			<Text>Each leader's share of the world's territory (the tiles of every leader's settlements), recorded every turn of the game.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE">
+			<Text>% Share of World Territory</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_SETTLEMENTS">
 			<Text>Settlements</Text>
 		</Row>

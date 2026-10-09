@@ -165,10 +165,11 @@ const buildingsAt = (tile) => constructiblesAt(tile).filter(isBuilding).map((def
 
 const URBAN_CLASSES = ['BUILDING', 'WONDER'];   // fortifications (walls) are buildings
 
-/** A settlement's developed tiles: urban (a building, wonder or fortification), else rural (an improvement). */
+/** A settlement's tiles and those developed: urban (a building, wonder or fortification), else rural (an improvement). */
 function developmentOf(city) {
-  const development = { urban: 0, rural: 0 };
+  const development = { tiles: 0, urban: 0, rural: 0 };
   for (const tile of city.getPurchasedPlots?.() ?? []) {
+    development.tiles++;
     const classes = constructiblesAt(tile).map((def) => def.ConstructibleClass);
     if (classes.some((c) => URBAN_CLASSES.includes(c))) development.urban++;
     else if (classes.includes('IMPROVEMENT')) development.rural++;
@@ -176,9 +177,13 @@ function developmentOf(city) {
   return development;
 }
 
-/** The leader's settlements now, each with its developed tiles: [{ name, town, urban, rural }]. */
+/** The leader's settlements now, each with its tiles: [{ name, town, tiles, urban, rural }]. */
 const settlementDevelopment = (playerId) => (Players.get(playerId)?.Cities?.getCities?.() ?? [])
   .map((city) => ({ name: city.name, town: city.isTown, ...developmentOf(city) }));
+
+/** A leader's territory now: its settlements' tiles, urban and rural ({ tiles, urban, rural }). */
+const territoryOf = (player) => (player?.Cities?.getCities?.() ?? []).map(developmentOf)
+  .reduce((sum, d) => ({ tiles: sum.tiles + d.tiles, urban: sum.urban + d.urban, rural: sum.rural + d.rural }), { tiles: 0, urban: 0, rural: 0 });
 
 /** The leader's settlements with specialists now: [{ name, tiles: [{ buildings ("<type>+<type>"), count }] }], most first. */
 function specialistTiles(playerId) {
@@ -296,4 +301,4 @@ onObserverReady(() => {
   scheduleRecord(true);
 });
 
-export { EMPIRE_EVENT, EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, populationLog, settlementDevelopment, specialistTiles };
+export { EMPIRE_EVENT, EMPIRE_KEYS, leaderDetails, POPULATION_KINDS, populationLog, settlementDevelopment, specialistTiles, territoryOf };

@@ -25,8 +25,8 @@
  * stylesheet, with two filters: the view and the Age (Overall or one Age).
  *  - Yields: line graphs of each leader's yields per turn
  *    (observer-graph-lines.js, observer-graph-yields.js).
- *  - Empire: timelines of each leader's settlements and citizens
- *    (observer-graph-empire.js).
+ *  - Empire: a line graph of each leader's territory and timelines of its
+ *    settlements and citizens (observer-graph-empire.js).
  *  - Military: a line graph of each leader's military strength and timelines
  *    of its units, promotions, wars and conflicts (observer-graph-military.js).
  * Every view marks each crisis stage (observer-crisis.js) and, in Overall,

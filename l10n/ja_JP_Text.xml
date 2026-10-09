@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ja_JP">
 			<Text>帝国</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="ja_JP">
+			<Text>領土</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="ja_JP">
+			<Text>世界の領土（全指導者の居住地のタイル）に占める各指導者の割合。ゲームの毎ターン記録。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="ja_JP">
+			<Text>領土の世界シェア</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ja_JP">
 			<Text>居住地</Text>
 		</Replace>

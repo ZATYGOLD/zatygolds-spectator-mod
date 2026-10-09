@@ -173,6 +173,7 @@
                     <Item>ui/observer/observer-battle-log.js</Item>
                     <Item>ui/observer/observer-promotion-log.js</Item>
                     <Item>ui/observer/observer-military-history.js</Item>
+                    <Item>ui/observer/observer-territory-history.js</Item>
                     <Item>ui/observer/observer-timeline.js</Item>
                     <Item>ui/observer/observer-graph-parts.js</Item>
                     <Item>ui/observer/observer-graph-lines.js</Item>

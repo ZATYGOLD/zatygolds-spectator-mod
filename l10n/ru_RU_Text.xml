@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ru_RU">
 			<Text>Империя</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="ru_RU">
+			<Text>Территория</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="ru_RU">
+			<Text>Доля каждого лидера в мировой территории (клетках поселений всех лидеров), по каждому ходу игры.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="ru_RU">
+			<Text>Доля в мировой территории в %</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ru_RU">
 			<Text>Поселения</Text>
 		</Replace>

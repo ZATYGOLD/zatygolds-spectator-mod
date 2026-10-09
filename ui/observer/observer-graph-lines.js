@@ -28,16 +28,17 @@
  * (observer-line-graph.js), each Age's turns counted from 1, with a divider at
  * each Age's start (Overall) and a flag where each crisis stage began. A tab:
  *
- *   { id, slot, label, look: { color, background }, description, valueLabel, axisLabel, share }
+ *   { id, slot, label, look: { color, background }, description, valueLabel, axisLabel, share, totalGroups }
  *
- * The value column shows each leader's latest value in the view; a `share`
+ * The value column shows each leader's latest value in the view, and on hover
+ * totalGroups({ id, value, values }) (BreakdownCard's, `values` the latest sample's); a `share`
  * tab graphs each leader's % of all leaders' value per turn (as the Economic
  * tab graphs the share of world GDP).
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createMemo, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { ScrollArea } from 'fs://game/core/ui-next/components/scroll-area.js';
-import { ageName, crisisStages, emptyText, fillPanel, GraphPanel, leaderColor, LeaderRow, LeaderRows, OVERALL, rowHeight } from './observer-graph-parts.js';
+import { ageName, BreakdownCard, crisisStages, emptyText, fillPanel, GraphPanel, leaderColor, LeaderRow, LeaderRows, OVERALL, rowHeight } from './observer-graph-parts.js';
 import { TurnLineGraph } from './observer-line-graph.js';
 
 const LINE_WIDTH = 6;   // the Economic tab's
@@ -50,17 +51,20 @@ const T = {
 
 const leaderIds = (samples) => [...new Set(samples.flatMap((s) => [...s.values.keys()]))];
 
-function latestValue(samples, id, slot) {
+/** A leader's latest values with one in `slot`, or null. */
+function latestValues(samples, id, slot) {
   for (let i = samples.length - 1; i >= 0; i--) {
-    const value = samples[i].values.get(id)?.[slot];
-    if (value != null) return value;
+    const values = samples[i].values.get(id);
+    if (values?.[slot] != null) return values;
   }
   return null;
 }
 
-/** Leaders by their latest value, highest first: [{ id, value }]. */
-const ranking = (samples, slot) => leaderIds(samples).map((id) => ({ id, value: latestValue(samples, id, slot) }))
-  .sort((a, b) => (b.value ?? -Infinity) - (a.value ?? -Infinity));
+/** Leaders by their latest value, highest first: [{ id, value, values }]. */
+const ranking = (samples, slot) => leaderIds(samples).map((id) => {
+  const values = latestValues(samples, id, slot);
+  return { id, value: values?.[slot] ?? null, values };
+}).sort((a, b) => (b.value ?? -Infinity) - (a.value ?? -Infinity));
 
 /**
  * The graph's x axis. x is a sample's place in the view (1..n), shown as its
@@ -130,6 +134,7 @@ const LineBody = (props) => {
           id,
           rank: () => index() + 1,
           value: () => entry()?.value,
+          valueTooltip: props.tab.totalGroups && (() => createComponent(BreakdownCard, { groups: props.tab.totalGroups(entry()) })),
           hideText: 'LOC_ZOM_GRAPH_HIDE_LINE',
           showText: 'LOC_ZOM_GRAPH_SHOW_LINE',
           hidden: () => props.hidden().has(id),

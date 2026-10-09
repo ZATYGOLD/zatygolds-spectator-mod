@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="de_DE">
 			<Text>Reich</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="de_DE">
+			<Text>Territorium</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="de_DE">
+			<Text>Der Anteil jedes Anführers am Territorium der Welt (den Feldern der Siedlungen aller Anführer), in jeder Runde des Spiels erfasst.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="de_DE">
+			<Text>% Anteil am globalen Territorium</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="de_DE">
 			<Text>Siedlungen</Text>
 		</Replace>

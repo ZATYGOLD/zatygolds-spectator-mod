@@ -335,7 +335,7 @@ const LeaderRow = (props) => {
     createRenderEffect(() => {
       const hidden = props.hidden();
       row.style.opacity = hidden ? '0.4' : '1';
-      row.setAttribute('data-tooltip-content', Locale.compose(hidden ? props.showText : props.hideText));
+      leader.setAttribute('data-tooltip-content', Locale.compose(hidden ? props.showText : props.hideText));   // the leader columns toggle; the value column has its own hover
     });
   }
   if (props.valueTooltip) {

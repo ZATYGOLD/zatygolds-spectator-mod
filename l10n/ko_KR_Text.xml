@@ -208,6 +208,15 @@
 		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="ko_KR">
 			<Text>제국</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="ko_KR">
+			<Text>영토</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="ko_KR">
+			<Text>세계 영토(모든 지도자 정착지의 타일) 중 각 지도자의 비율, 게임의 매 턴 기록.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="ko_KR">
+			<Text>세계 영토 지분 %</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="ko_KR">
 			<Text>정착지</Text>
 		</Replace>

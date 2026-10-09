@@ -48,7 +48,9 @@ leader's relationship and befriending progress.
 **Chronicle** — Saved with the game, for the whole game or one Age:
 - **Yields** — per-turn graphs of every leader's yields (happiness included),
   each Age's turns counted from 1.
-- **Empire** — on a timeline of Age progress:
+- **Empire** — a per-turn graph of each leader's share of the world's
+  territory (its own tiles as the total; urban, rural and unimproved on
+  hover), and on a timeline of Age progress:
   - **Settlements** founded (or incorporated), captured, lost, razed and
     upgraded, a city or town pin for each, arcs from a town to its upgrade
     and from a capture or loss to its razing, cities and towns on the
@@ -126,8 +128,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Multiplayer** — computer players can no longer be set to the Spectator.
 - **Chronicle** — renamed from Yield Graphs, with a Yields / Empire /
   Military filter: happiness joins the yields; Empire shows each leader's
-  settlements (founded, captured, lost, razed, upgraded) and population
-  growth; Military its share of world strength, units, promotions, wars
+  share of world territory, settlements (founded, captured, lost, razed,
+  upgraded) and population growth; Military its share of world strength, units, promotions, wars
   (aggression and defense) and conflicts (sieges, battles, skirmishes, pillage and their
   outcomes), each tab with an info panel.
 - **Screens** — any leader's Attributes (also from its leader panel), a
