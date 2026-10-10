@@ -53,15 +53,6 @@ const enumName = (values, value) => Object.keys(values).find((k) => values[k] ==
 const isPaused = () => !!Configuration.getGame().isPaused;
 const turnActive = () => !!Players.get(GameContext.localPlayerID)?.isTurnActive;
 const blocked = () => Game.Notifications.getEndTurnBlockingType(GameContext.localPlayerID) !== EndTurnBlockingTypes.NONE;
-/** The Age has ended (after its last turn) and the next one has not begun. */
-function ageOver() {
-  if (isAgeTransitionInProgress()) return true;
-  try {
-    const ages = Game.AgeProgressManager;
-    return !!ages?.isAgeOver && !ages.isFinalAge && !ages.isExtendedGame;
-  } catch (e) { return false; }
-}
-
 /** The notification blocking the turn: logged (first time), dismissed when the game allows it. */
 function clearBlocker(report) {
   const me = GameContext.localPlayerID;
@@ -99,7 +90,8 @@ function armWatchdog() {
   watchdog = setTimeout(checkStuckTurn, WATCHDOG_MS);
 }
 
-const endsAutomatically = () => (autoEnd && !isAgeEnding()) || ageOver();
+/** On and the Age still running, or the transition the Observer started is under way. */
+const endsAutomatically = () => (autoEnd && !isAgeEnding()) || isAgeTransitionInProgress();
 
 function sendTurnComplete() {
   UI.Player.deselectAllUnits();
@@ -146,7 +138,7 @@ function updateEndTurnButton() {
 
 /** Turn start / Age end: refresh the button, then end the turn if it ends automatically. */
 function onTurnState() {
-  if (autoEnd && isObserverSeat() && isAgeEnding() && !ageOver()) {
+  if (autoEnd && isObserverSeat() && isAgeEnding() && !isAgeTransitionInProgress()) {
     autoEnd = false;   // the last turn of the Age: the Observer starts the transition from the HUD
     log('age complete: auto end turn switched off');
   }
