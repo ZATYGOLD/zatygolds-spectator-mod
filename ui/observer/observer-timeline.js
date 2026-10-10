@@ -30,7 +30,7 @@
  * showTopLabels / showBottomLabels, links ([[from, to]] pin positions) and bands.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
-import { createComponent, createEffect, For, onCleanup, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
+import { createComponent, createEffect, createMemo, For, onCleanup, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { CardFrame } from 'fs://game/core/ui-next/components/card-frame.js';
 import { Divider } from 'fs://game/core/ui-next/components/divider.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
@@ -47,8 +47,9 @@ const BOTTOM_LABEL_GAP = '0.15rem';   // between the notches and a label under t
 const NOTCH_BOTTOM = 90;              // where the notches end, in % of the bar's height (drawNotches)
 const NOTCH_WIDTH = 0.8;              // a notch's width in % of the bar (drawNotches)
 const CRISIS_MARK_SIZE = 0.6;         // a crisis marker's half width, in notch widths
-const PIN_BRIGHTNESS = 1.3;           // pin art is darker than its tint
-const PIN_ICON_OUTLINE = 'drop-shadow(0 0 0.1rem #000) drop-shadow(0 0 0.1rem #000)';   // a dark edge around a pin's icon
+const PIN_BRIGHTNESS = 1.3;           // pin art is darker than its tint: the tint is brightened instead
+const PIN_ICON_BACKING = 'rgba(0, 0, 0, 0.45)';   // a dark disc behind a pin's icon, readable on any pin colour
+// Pins use no CSS filters: each filtered element is a render layer of its own, and a long view has hundreds of pins.
 // The Culture tab's arc between pins: colour, width, dash and gap, end inset, and height by distance.
 const ARC = { color: '#616266', width: 2, dash: 6, gap: 4, inset: 6, min: 1, max: 64, linear: 0.38, root: 0.06 };
 const DOT_CLASS = 'zom-pin-dot';
@@ -57,7 +58,7 @@ const T = {
   bar: template(`<div class="absolute top-0 bottom-0"><div class="absolute inset-0 pointer-events-none"><canvas class="size-full"></canvas></div><div class="absolute inset-0 pointer-events-none"><canvas class="size-full"></canvas></div></div>`),
   label: template(`<div class="absolute text-xs whitespace-nowrap pointer-events-none"></div>`),
   pin: template(`<div class="flex flex-col absolute items-center justify-center h-full pointer-events-auto -translate-x-1\\/2"><div class="size-3 mb-1"></div></div>`),
-  pinFace: template(`<div class="relative size-14 mb-1 mt-1"><div class="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"></div><div class="absolute inset-0 bg-contain bg-center bg-no-repeat"></div><div class="absolute size-7 top-1\\.5 left-3\\.5 bg-no-repeat bg-center bg-contain"></div></div>`),
+  pinFace: template(`<div class="relative size-14 mb-1 mt-1"><div class="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"></div><div class="absolute inset-0 bg-contain bg-center bg-no-repeat"></div><div class="absolute size-7 top-1\\.5 left-3\\.5 rounded-full pointer-events-none"></div><div class="absolute size-7 top-1\\.5 left-3\\.5 bg-no-repeat bg-center bg-contain"></div></div>`),
   plus: template(`<div class="absolute size-5 bottom-4 right-3 bg-contain bg-center bg-no-repeat pointer-events-none"></div>`),
   count: template(`<div></div>`),
   heading: template(`<div class="text-title uppercase text-secondary mb-1"></div>`),
@@ -146,26 +147,32 @@ const PIN_ART = 'url(blp:culture_pin_minor)';
 
 /** Tints an image element's art (the game's own image tint), when given a colour. */
 const tint = (element, color) => { if (color) element.style.setProperty('fxs-background-image-tint', color); };
-const GLOW = { scale: 1.3, origin: '50% 45%', blur: '0.3rem', opacity: '0.9' };   // a larger, blurred copy of the pin behind it
+const GLOW = { scale: 1.3, origin: '50% 45%', opacity: '0.7' };   // a larger copy of the pin behind it, in the glow colour
 
-/** The pin itself: tinted pin art, the thing's icon (outlined, never tinted), the "+" when grouped and a glow if the category has one. */
+/** A CSS colour ('#rrggbb' or 'rgb(a)(...)') with its channels scaled by `factor` (capped), else as it is. */
+function brighten(color, factor) {
+  const hex = /^#([0-9a-f]{6})$/i.exec(color);
+  const channels = hex ? [0, 2, 4].map((i) => parseInt(hex[1].slice(i, i + 2), 16)) : /^rgba?\(([^)]+)\)$/.exec(color)?.[1].split(',').slice(0, 3).map(Number);
+  if (!channels || channels.some(Number.isNaN)) return color;
+  return `rgb(${channels.map((c) => Math.min(255, Math.round(c * factor))).join(', ')})`;
+}
+
+/** The pin itself: tinted pin art, the thing's icon (on a dark disc, never tinted), the "+" when grouped and a glow if the category has one. */
 function pinFace(pin, subject) {
   const category = subject.categories[pin.category] ?? {};
   const face = T.pinFace();
-  const [glow, art, icon] = Array.from(face.children);
+  const [glow, art, backing, icon] = Array.from(face.children);
   art.style.backgroundImage = PIN_ART;
   if (category.glow) {
     glow.style.backgroundImage = PIN_ART;
     glow.style.setProperty('fxs-background-image-tint', category.glow);
     glow.style.transform = `scale(${GLOW.scale})`;
     glow.style.transformOrigin = GLOW.origin;
-    glow.style.filter = `blur(${GLOW.blur})`;
     glow.style.opacity = GLOW.opacity;
   }
-  art.style.setProperty('fxs-background-image-tint', subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff');
-  art.style.filter = `brightness(${PIN_BRIGHTNESS})`;
+  art.style.setProperty('fxs-background-image-tint', brighten(subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff', PIN_BRIGHTNESS));
+  backing.style.backgroundColor = PIN_ICON_BACKING;
   icon.style.backgroundImage = subject.pinIcon(pin.lead);
-  icon.style.filter = PIN_ICON_OUTLINE;   // untinted, outlined: readable on any pin colour
   if (pin.sources.length > 1) {
     const plus = T.plus();
     plus.style.backgroundImage = 'url(blp:victories_culturePlus)';
@@ -266,13 +273,21 @@ function smoothMixes(mixes) {
   });
 }
 
+/** Sizes the canvas to its box (only when that changed, so its texture is kept), or null while it has no size. */
+function fitCanvas(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const [width, height] = [Math.round(rect.width), Math.round(rect.height)];
+  if (!width || !height) return null;
+  if (canvas.width !== width) canvas.width = width;
+  if (canvas.height !== height) canvas.height = height;
+  return rect;
+}
+
 /** The Culture tab's notches: thin bars over 80% of the height, highlighted ones brighter, band ones in their (darkened) colours, crisis ones marked; dividers full height. */
 function drawNotches(canvas, notches, bands) {
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = rect.height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx || !rect.width) return;
+  const rect = fitCanvas(canvas);
+  const ctx = rect && canvas.getContext('2d');
+  if (!ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const top = canvas.height * (1 - NOTCH_BOTTOM / 100);
   const height = canvas.height * (2 * NOTCH_BOTTOM / 100 - 1);
@@ -300,11 +315,9 @@ function drawNotches(canvas, notches, bands) {
 
 /** Over the notches: the Culture tab's dashed arcs between linked pins, from dot to dot. */
 function drawOverlay(canvas, bar, links) {
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width;
-  canvas.height = rect.height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx || !rect.width) return;
+  const rect = fitCanvas(canvas);
+  const ctx = rect && canvas.getContext('2d');
+  if (!ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const dot = bar.querySelector('.' + DOT_CLASS);
   if (!dot || !links.length) return;
@@ -321,6 +334,12 @@ function drawOverlay(canvas, bar, links) {
   }
 }
 
+/** What a pin shows: an updated pin with the same keeps its element (and an open tooltip) instead of being rebuilt. */
+const pinKey = (pin, subject) => [
+  pin.position, pin.category, pin.count, pin.turns.join('-'), subject.pinIcon(pin.lead), subject.pinColor?.(pin.lead),
+  pin.sources.map((s) => `${s.category}:${s.count}:${subject.name(s)}`).join(',')
+].join('|');
+
 const Timeline = (props) => {
   const bar = T.bar();
   const canvas = bar.firstChild.firstChild;
@@ -333,14 +352,26 @@ const Timeline = (props) => {
       get children() { return createComponent(For, { get each() { return props.labels.filter((l) => !!l.bottom === bottom); }, children: notchLabel }); }
     }), null);
   }
+  let kept = new Map();
+  const pins = createMemo(() => {
+    const next = new Map();
+    const list = props.pins.map((pin) => {
+      const key = pinKey(pin, props.subject);
+      const same = kept.get(key) ?? pin;
+      next.set(key, same);
+      return same;
+    });
+    kept = next;
+    return list;
+  }, [], { equals: (a, b) => a.length === b.length && a.every((pin, i) => pin === b[i]) });
   insert(bar, createComponent(For, {
-    get each() { return props.pins; },
+    get each() { return pins(); },
     children: (pin) => createComponent(Pin, { pin, subject: props.subject, get title() { return props.title; } })
   }), null);
   let frame = 0;
   createEffect(() => {
     const { notches, links, bands } = props;
-    void props.pins;   // the arcs follow the pins' layout
+    void pins();   // the arcs follow the pins' layout
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(() => requestAnimationFrame(() => {
       drawNotches(canvas, notches, bands ?? []);
@@ -349,7 +380,7 @@ const Timeline = (props) => {
   });
   onCleanup(() => {
     cancelAnimationFrame(frame);
-    for (const c of [canvas, overlay]) { c.width = 0; c.height = 0; }
+    for (const c of [canvas, overlay]) { c.width = 1; c.height = 1; }   // frees the texture (a zero-size one is an error)
   });
   return bar;
 };

@@ -35,7 +35,7 @@
  * The screen opens from a button in the HUD's sub-system dock.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
-import { createComponent, createMemo, createSignal, onCleanup, onMount, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
+import { createComponent, createEffect, createMemo, createSignal, onCleanup, onMount, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { defineLegacyComponent } from 'fs://game/core/ui-next/components/fxs-solid-component.js';
 import { Tab } from 'fs://game/core/ui-next/components/tab.js';
@@ -60,6 +60,7 @@ const GRAPHS_TAG = 'zom-observer-graphs';
 const DOCK_BUTTON_CLASS = 'zom-graphs-dock-button';
 const TOP_ICON_CLASS = 'zom-graphs-top-icon';
 const TOP_ICON_ZOOM = 1.5;   // the glyph fills the frame's top medallion
+const REFRESH_MS = 1000;     // the open screen follows the logs at most this often
 const VIEWS = [YIELDS_VIEW, EMPIRE_VIEW, MILITARY_VIEW];
 
 const T = {
@@ -92,18 +93,29 @@ const TabGroup = (props) => createComponent(Tab, {
   }
 });
 
-/** A signal of `read()` refreshed on each window event of `names`. */
-function liveSignal(read, names) {
+/**
+ * A signal of `read()` refreshed on the window events of `names`: at most
+ * once per REFRESH_MS (turns being played send many), and only while
+ * `visible()` - a hidden view catches up when it is shown.
+ */
+function liveSignal(read, names, visible = () => true) {
   const [value, setValue] = createSignal(read(), { equals: false });
-  const listener = () => setValue(read());
+  let stale = false;
+  let timer = 0;
+  const refresh = () => { timer = 0; stale = false; setValue(read()); };
+  const listener = () => {
+    stale = true;
+    if (visible() && !timer) timer = setTimeout(refresh, REFRESH_MS);
+  };
+  createEffect(() => { if (visible() && stale && !timer) refresh(); });
   onMount(() => names.forEach((name) => window.addEventListener(name, listener)));
-  onCleanup(() => names.forEach((name) => window.removeEventListener(name, listener)));
+  onCleanup(() => { clearTimeout(timer); names.forEach((name) => window.removeEventListener(name, listener)); });
   return value;
 }
 
 /** A source's signals ({ kind, read, changeEvents }): all it holds, those in the chosen Age, and (timelines) its leaders. */
-function sourceSignals(source, filters) {
-  const all = liveSignal(source.read, source.changeEvents);
+function sourceSignals(source, filters, visible) {
+  const all = liveSignal(source.read, source.changeEvents, visible);
   const entries = createMemo(() => inAge(all(), filters.age()));
   const leaders = source.kind === 'timeline' ? createMemo(() => loggedLeaders(all())) : null;
   return { entries, leaders };
@@ -118,7 +130,8 @@ function viewTabs(view, filters) {
   const tabs = view.tabs;
   const sourceOf = (tab) => tab.source ?? view;
   // Made with the screen (not a tab's body, disposed when another tab opens), so they keep listening.
-  const sources = new Map([...new Set(tabs.filter((t) => !t.columns).map(sourceOf))].map((source) => [source, sourceSignals(source, filters)]));
+  const visible = () => filters.view() === view.id;
+  const sources = new Map([...new Set(tabs.filter((t) => !t.columns).map(sourceOf))].map((source) => [source, sourceSignals(source, filters, visible)]));
   const column = (spec) => {
     const tab = tabs.find((t) => t.id === spec.tab);
     const source = sourceOf(tab);
