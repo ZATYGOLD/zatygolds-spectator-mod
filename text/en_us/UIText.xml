@@ -97,6 +97,9 @@
 		<Row Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN">
 			<Text>Total</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_AVERAGE">
+			<Text>Average</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_TURNS_COLUMN">
 			<Text>Turns</Text>
 		</Row>
@@ -117,6 +120,12 @@
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_SHOW_LINE">
 			<Text>Click to show this leader's line.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SUMMARY">
+			<Text>Summary</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_SUMMARY_DESC">
+			<Text>Each leader's standing on every tab of this view; select a card to open its tab.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_YIELDS">
 			<Text>Yields</Text>
@@ -156,6 +165,9 @@
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_TERRITORY_DESC">
 			<Text>Each leader's share of the world's territory (the tiles of every leader's settlements), recorded every turn of the game.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TERRITORY_INFO">
+			<Text>Every tile a leader's Settlements hold, recorded every turn of the game.[NN][BLIST][LI][B]Line[/B]: the leader's share of all the tiles leaders hold[LI][B]Development[/B]: a tile with a building, wonder or fortification is urban, one with an improvement rural, any other unimproved[/LIST][NN][B]Total[/B]: tiles held now (or at the end of the Age); urban, rural and unimproved on hover.</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE">
 			<Text>% Share of World Territory</Text>
@@ -199,6 +211,9 @@
 		<Row Tag="LOC_ZOM_GRAPH_URBANIZATION">
 			<Text>Urbanization</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC">
+			<Text>The share of each leader's developed tiles that are urban: buildings, wonders and fortifications, against improvements.</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_MOST_URBAN">
 			<Text>Most Urbanized</Text>
 		</Row>
@@ -219,6 +234,9 @@
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_STRENGTH_DESC">
 			<Text>Each leader's share of the world's military strength (the combat strength of every leader's units), recorded every turn of the game.</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_STRENGTH_INFO">
+			<Text>The combat strength of a leader's combat units, each counting its best of melee, ranged and bombard, recorded every turn of the game.[NN][BLIST][LI][B]Line[/B]: the leader's share of all leaders' strength[/LIST][NN][B]Total[/B]: strength now (or at the end of the Age).</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE">
 			<Text>% Share of World Strength</Text>

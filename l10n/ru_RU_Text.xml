@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ru_RU">
 			<Text>Всего</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="ru_RU">
+			<Text>Среднее</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ru_RU">
 			<Text>Ходы</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ru_RU">
 			<Text>Нажмите, чтобы показать линию этого лидера.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="ru_RU">
+			<Text>Сводка</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="ru_RU">
+			<Text>Положение каждого лидера на каждой вкладке этого раздела; выберите карточку, чтобы открыть её вкладку.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ru_RU">
 			<Text>Доходы</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="ru_RU">
 			<Text>Доля каждого лидера в мировой территории (клетках поселений всех лидеров), по каждому ходу игры.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="ru_RU">
+			<Text>Все клетки, которыми владеют поселения лидера, по каждому ходу игры.[NN][BLIST][LI][B]Линия[/B]: доля лидера во всех клетках, которыми владеют лидеры[LI][B]Освоение[/B]: клетка со зданием, чудом или укреплением — городская, с улучшением — сельская, любая другая — неулучшенная[/LIST][NN][B]Всего[/B]: клетки сейчас (или на конец эпохи); городские, сельские и неулучшенные при наведении.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="ru_RU">
 			<Text>Доля в мировой территории в %</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="ru_RU">
 			<Text>Урбанизация</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="ru_RU">
+			<Text>Доля освоенных клеток каждого лидера, которые городские: здания, чудеса и укрепления против улучшений.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="ru_RU">
 			<Text>Самое городское</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ru_RU">
 			<Text>Доля каждого лидера в мировой военной силе (боевой силе отрядов всех лидеров), по каждому ходу игры.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="ru_RU">
+			<Text>Боевая сила боевых отрядов лидера, каждый со своим лучшим значением ближнего боя, дальнего боя и бомбардировки, по каждому ходу игры.[NN][BLIST][LI][B]Линия[/B]: доля лидера в силе всех лидеров[/LIST][NN][B]Всего[/B]: сила сейчас (или на конец эпохи).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="ru_RU">
 			<Text>Доля в мировой силе в %</Text>

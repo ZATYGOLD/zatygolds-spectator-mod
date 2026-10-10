@@ -25,10 +25,11 @@
  * stylesheet, with two filters: the view and the Age (Overall or one Age).
  *  - Yields: line graphs of each leader's yields per turn
  *    (observer-graph-lines.js, observer-graph-yields.js).
- *  - Empire: a line graph of each leader's territory and timelines of its
- *    settlements and citizens (observer-graph-empire.js).
- *  - Military: a line graph of each leader's military strength and timelines
- *    of its units, promotions, wars and conflicts (observer-graph-military.js).
+ *  - Empire: a summary, a line graph of each leader's territory and
+ *    timelines of its settlements and citizens (observer-graph-empire.js).
+ *  - Military: a summary, a line graph of each leader's military strength
+ *    and timelines of its units, promotions, wars and conflicts
+ *    (observer-graph-military.js).
  * Every view marks each crisis stage (observer-crisis.js) and, in Overall,
  * where each Age starts; rows and graphs are fitted to the panel's height.
  * The screen opens from a button in the HUD's sub-system dock.
@@ -49,6 +50,7 @@ import { EMPIRE_VIEW } from './observer-graph-empire.js';
 import { LinePanel } from './observer-graph-lines.js';
 import { MILITARY_VIEW } from './observer-graph-military.js';
 import { inAge, loggedLeaders, OVERALL } from './observer-graph-parts.js';
+import { SummaryPanel } from './observer-graph-summary.js';
 import { TimelinePanel } from './observer-graph-timelines.js';
 import { YIELDS_VIEW } from './observer-graph-yields.js';
 import { HISTORY_EVENT } from './observer-history.js';
@@ -108,15 +110,22 @@ function sourceSignals(source, filters) {
 }
 
 /**
- * A view's tabs: a line graph per recorded number, or a timeline per logged
- * kind, each from its tab's source (else the view's) and subject (else the view).
+ * A view's tabs: a line graph per recorded number, a timeline per logged
+ * kind, each from its tab's source (else the view's) and subject (else the
+ * view), or a summary of other tabs (`columns`).
  */
 function viewTabs(view, filters) {
   const tabs = view.tabs;
   const sourceOf = (tab) => tab.source ?? view;
   // Made with the screen (not a tab's body, disposed when another tab opens), so they keep listening.
-  const sources = new Map([...new Set(tabs.map(sourceOf))].map((source) => [source, sourceSignals(source, filters)]));
+  const sources = new Map([...new Set(tabs.filter((t) => !t.columns).map(sourceOf))].map((source) => [source, sourceSignals(source, filters)]));
+  const column = (spec) => {
+    const tab = tabs.find((t) => t.id === spec.tab);
+    const source = sourceOf(tab);
+    return { ...spec, tab, subject: tab.subject ?? view, kind: source.kind, ...sources.get(source) };
+  };
   const panel = (tab) => {
+    if (tab.columns) return createComponent(SummaryPanel, { tab, columns: tab.columns.map(column), ...filters });
     const source = sourceOf(tab);
     const { entries, leaders } = sources.get(source);
     return source.kind === 'line'

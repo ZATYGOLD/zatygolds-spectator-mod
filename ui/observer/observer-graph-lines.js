@@ -28,7 +28,7 @@
  * (observer-line-graph.js), each Age's turns counted from 1, with a divider at
  * each Age's start (Overall) and a flag where each crisis stage began. A tab:
  *
- *   { id, slot, label, look: { color, background }, description, valueLabel, axisLabel, share, totalGroups }
+ *   { id, slot, label, look: { color, background }, description, info, valueLabel, axisLabel, share, totalGroups }
  *
  * The value column shows each leader's latest value in the view, and on hover
  * totalGroups({ id, value, values }) (BreakdownCard's, `values` the latest sample's); a `share`
@@ -103,6 +103,12 @@ const shareSamples = (samples, slot) => samples.map((s) => {
   const share = (value) => (value == null ? value : total > 0 ? Math.round((value / total) * 1000) / 10 : 0);
   return { ...s, values: new Map([...s.values].map(([id, v]) => [id, Object.assign([...v], { [slot]: share(v[slot]) })])) };
 });
+
+/** Each leader's latest value in a tab and, for a `share` tab, its % of all leaders': [{ id, value, values, share }], highest first. */
+function lineTotals(tab, samples) {
+  const shares = tab.share ? new Map(ranking(shareSamples(samples, tab.slot), tab.slot).map((r) => [r.id, r.value])) : null;
+  return ranking(samples, tab.slot).map((r) => ({ ...r, share: shares?.get(r.id) ?? null }));
+}
 
 const yieldValues = (samples, slot) => samples.flatMap((s) => [...s.values.values()].map((v) => v[slot] ?? 0));
 
@@ -179,9 +185,10 @@ const LinePanel = (props) => {
     look: tab.look,
     title: Locale.compose(tab.label),
     description: tab.description,
+    info: tab.info,
     valueLabel: tab.valueLabel,
     body: () => createComponent(LineBody, { ...props, slot: tab.slot, rows })
   });
 };
 
-export { LinePanel };
+export { LinePanel, lineTotals };

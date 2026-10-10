@@ -122,7 +122,7 @@ const SETTLEMENTS_SUBJECT = {
     const groups = lastAge === currentAgeChronology()
       ? urbanizationGroups(playerId, percent)
       : [[{ icon: URBAN_ICON, label: Locale.compose('LOC_ZOM_GRAPH_URBANIZATION'), value: percent }]];   // settlements are not kept per Age
-    return { state, cells: [{ icon: URBAN_ICON, count: percent }], groups };
+    return { state, cells: [{ icon: URBAN_ICON, count: percent, core: state.urbanization }], groups };
   },
   tieBreak: (entry) => entry.card.state.city
 };

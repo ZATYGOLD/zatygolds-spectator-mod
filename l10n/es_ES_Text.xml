@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="es_ES">
 			<Text>Total</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="es_ES">
+			<Text>Promedio</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="es_ES">
 			<Text>Turnos</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="es_ES">
 			<Text>Haz clic para mostrar la línea de este líder.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="es_ES">
+			<Text>Resumen</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="es_ES">
+			<Text>La posición de cada líder en cada pestaña de esta vista; selecciona una tarjeta para abrir su pestaña.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="es_ES">
 			<Text>Rendimientos</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="es_ES">
 			<Text>La proporción del territorio del mundo de cada líder (las casillas de los asentamientos de todos los líderes), registrada en cada turno de la partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="es_ES">
+			<Text>Cada casilla que tienen los asentamientos de un líder, registrada en cada turno de la partida.[NN][BLIST][LI][B]Línea[/B]: la proporción del líder de todas las casillas que tienen los líderes[LI][B]Desarrollo[/B]: una casilla con un edificio, una maravilla o una fortificación es urbana, una con una mejora es rural y cualquier otra está sin mejorar[/LIST][NN][B]Total[/B]: casillas que tiene ahora (o al final de la era); urbanas, rurales y sin mejorar al pasar el cursor.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="es_ES">
 			<Text>Porcentaje del territorio del mundo</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="es_ES">
 			<Text>Urbanización</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="es_ES">
+			<Text>La proporción de casillas desarrolladas de cada líder que son urbanas: edificios, maravillas y fortificaciones, frente a mejoras.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="es_ES">
 			<Text>Más urbano</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="es_ES">
 			<Text>La proporción de la fuerza militar del mundo de cada líder (la fuerza de combate de las unidades de todos los líderes), registrada en cada turno de la partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="es_ES">
+			<Text>La fuerza de combate de las unidades de combate de un líder, cada una con su mejor valor de cuerpo a cuerpo, a distancia y bombardeo, registrada en cada turno de la partida.[NN][BLIST][LI][B]Línea[/B]: la proporción del líder de la fuerza de todos los líderes[/LIST][NN][B]Total[/B]: fuerza actual (o al final de la era).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="es_ES">
 			<Text>Porcentaje de la fuerza del mundo</Text>

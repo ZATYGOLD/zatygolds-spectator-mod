@@ -48,6 +48,10 @@ leader's relationship and befriending progress.
 **Chronicle** — Saved with the game, for the whole game or one Age:
 - **Yields** — per-turn graphs of every leader's yields (happiness included),
   each Age's turns counted from 1.
+- **Summary** — Empire and Military open on cards like the Victories
+  summary: one per tab (Territory, Settlements, Population, Urbanization;
+  and every Military tab), each ranking the leaders; a card opens
+  its tab.
 - **Empire** — a per-turn graph of each leader's share of the world's
   territory (its own tiles as the total; urban, rural and unimproved on
   hover), and on a timeline of Age progress:
@@ -131,7 +135,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   share of world territory, settlements (founded, captured, lost, razed,
   upgraded) and population growth; Military its share of world strength, units, promotions, wars
   (aggression and defense) and conflicts (sieges, battles, skirmishes, pillage and their
-  outcomes), each tab with an info panel.
+  outcomes), each tab with an info panel; Empire and Military open on a
+  Summary of their tabs.
 - **Screens** — any leader's Attributes (also from its leader panel), a
   commander's promotions, and the Syncretism preview on the civic tree, with
   or without a Perspective.

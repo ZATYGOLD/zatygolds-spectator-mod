@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="fr_FR">
 			<Text>Total</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="fr_FR">
+			<Text>Moyenne</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="fr_FR">
 			<Text>Tours</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="fr_FR">
 			<Text>Cliquez pour afficher la courbe de ce dirigeant.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="fr_FR">
+			<Text>Résumé</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="fr_FR">
+			<Text>Le classement de chaque dirigeant sur chaque onglet de cette vue ; sélectionnez une carte pour ouvrir son onglet.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="fr_FR">
 			<Text>Rendements</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="fr_FR">
 			<Text>La part de chaque dirigeant dans le territoire mondial (les cases des colonies de tous les dirigeants), relevée à chaque tour de la partie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="fr_FR">
+			<Text>Chaque case que détiennent les colonies d'un dirigeant, relevée à chaque tour de la partie.[NN][BLIST][LI][B]Ligne[/B] : la part du dirigeant dans toutes les cases que détiennent les dirigeants[LI][B]Aménagement[/B] : une case avec un bâtiment, une merveille ou une fortification est urbaine, une avec un aménagement rurale, toute autre non aménagée[/LIST][NN][B]Total[/B] : cases détenues actuellement (ou à la fin de l'ère) ; urbaines, rurales et non aménagées au survol.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="fr_FR">
 			<Text>Part du territoire mondial (%)</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="fr_FR">
 			<Text>Urbanisation</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="fr_FR">
+			<Text>La part des cases aménagées de chaque dirigeant qui sont urbaines : bâtiments, merveilles et fortifications, face aux aménagements.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="fr_FR">
 			<Text>La plus urbaine</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="fr_FR">
 			<Text>La part de chaque dirigeant dans la puissance militaire mondiale (la puissance de combat des unités de tous les dirigeants), relevée à chaque tour de la partie.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="fr_FR">
+			<Text>La puissance de combat des unités de combat d'un dirigeant, chacune comptant sa meilleure valeur entre corps à corps, distance et bombardement, relevée à chaque tour de la partie.[NN][BLIST][LI][B]Ligne[/B] : la part du dirigeant dans la puissance de tous les dirigeants[/LIST][NN][B]Total[/B] : puissance actuelle (ou à la fin de l'ère).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="fr_FR">
 			<Text>Part de la puissance mondiale (%)</Text>

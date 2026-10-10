@@ -21,14 +21,16 @@
 /**
  * Zatygold's Spectator - Empire graphs (in-game scope).
  *
- * The Empire view: a Territory line graph of each leader's share of the
- * world's tiles (observer-territory-history.js), then the Settlements and
- * Population timelines (observer-graph-settlements.js, observer-graph-population.js),
+ * The Empire view: a Summary of its tabs (observer-graph-summary.js), a
+ * Territory line graph of each leader's share of the world's tiles
+ * (observer-territory-history.js), then the Settlements and Population
+ * timelines (observer-graph-settlements.js, observer-graph-population.js),
  * each with its own subject.
  */
 import { EMPIRE_EVENT, POPULATION_KINDS, populationLog } from './observer-empire.js';
 import { POPULATION_SUBJECT } from './observer-graph-population.js';
 import { SETTLEMENTS_SUBJECT } from './observer-graph-settlements.js';
+import { civArt, summaryTab } from './observer-graph-summary.js';
 import { SETTLEMENT_LOG_EVENT, settlementLog } from './observer-settlement-log.js';
 import { TERRITORY_EVENT, TERRITORY_SLOTS, territoryHistory } from './observer-territory-history.js';
 
@@ -51,12 +53,22 @@ const EMPIRE_VIEW = {
   label: 'LOC_ZOM_GRAPH_EMPIRE',
   get tabs() {
     return [
+      summaryTab([
+        { tab: 'territory', art: civArt('majapahit'), icon: 'fi_homeland_64' },
+        { tab: 'settlements', art: civArt('mississippian'), icon: 'fi_Yield_Cities_64' },
+        { tab: 'population', art: civArt('rome'), icon: 'fi_Yield_Population_64' },
+        {
+          tab: 'settlements', card: true, average: true, percent: true, art: civArt('russia'), icon: 'fi_city_urban_64', color: '#7fb8e8',
+          label: 'LOC_ZOM_GRAPH_URBANIZATION', description: 'LOC_ZOM_GRAPH_URBANIZATION_DESC'
+        }
+      ]),
       {
         id: 'territory',
         slot: TERRITORY_SLOTS.tiles,
         label: 'LOC_ZOM_GRAPH_TERRITORY',
         look: { color: '#9cc27a', background: 'bg_victory_economic3' },
         description: Locale.compose('LOC_ZOM_GRAPH_TERRITORY_DESC'),
+        info: 'LOC_ZOM_GRAPH_TERRITORY_INFO',
         valueLabel: Locale.compose('LOC_ZOM_GRAPH_TOTAL_COLUMN'),
         axisLabel: Locale.compose('LOC_ZOM_GRAPH_TERRITORY_SHARE'),
         share: true,

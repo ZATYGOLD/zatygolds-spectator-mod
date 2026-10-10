@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="pt_BR">
 			<Text>Total</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="pt_BR">
+			<Text>Média</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="pt_BR">
 			<Text>Turnos</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="pt_BR">
 			<Text>Clique para mostrar a linha deste líder.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="pt_BR">
+			<Text>Resumo</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="pt_BR">
+			<Text>A posição de cada líder em cada aba desta visão; selecione um cartão para abrir sua aba.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="pt_BR">
 			<Text>Rendimentos</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="pt_BR">
 			<Text>A participação de cada líder no território mundial (os blocos dos assentamentos de todos os líderes), registrada a cada turno da partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="pt_BR">
+			<Text>Cada bloco que os assentamentos de um líder possuem, registrado a cada turno da partida.[NN][BLIST][LI][B]Linha[/B]: a participação do líder em todos os blocos que os líderes possuem[LI][B]Desenvolvimento[/B]: um bloco com uma construção, maravilha ou fortificação é urbano, um com uma melhoria é rural e qualquer outro é não melhorado[/LIST][NN][B]Total[/B]: blocos que possui agora (ou no fim da era); urbanos, rurais e não melhorados ao passar o cursor.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="pt_BR">
 			<Text>% de participação no território global</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="pt_BR">
 			<Text>Urbanização</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="pt_BR">
+			<Text>A parcela de blocos desenvolvidos de cada líder que são urbanos: construções, maravilhas e fortificações, frente a melhorias.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="pt_BR">
 			<Text>Mais urbano</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="pt_BR">
 			<Text>A participação de cada líder na força militar mundial (a força de combate das unidades de todos os líderes), registrada a cada turno da partida.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="pt_BR">
+			<Text>A força de combate das unidades de combate de um líder, cada uma contando seu melhor valor entre corpo a corpo, à distância e bombardeio, registrada a cada turno da partida.[NN][BLIST][LI][B]Linha[/B]: a participação do líder na força de todos os líderes[/LIST][NN][B]Total[/B]: força atual (ou no fim da era).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="pt_BR">
 			<Text>% de participação na força global</Text>

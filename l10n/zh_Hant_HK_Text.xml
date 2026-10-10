@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="zh_Hant_HK">
 			<Text>總計</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="zh_Hant_HK">
+			<Text>平均</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="zh_Hant_HK">
 			<Text>回合</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="zh_Hant_HK">
 			<Text>點擊以顯示此領袖的曲線。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="zh_Hant_HK">
+			<Text>概覽</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="zh_Hant_HK">
+			<Text>各領袖在此檢視每個分頁上的排名；選擇卡片即可開啟其分頁。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hant_HK">
 			<Text>收益</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="zh_Hant_HK">
 			<Text>各領袖在世界領土（所有領袖聚落的格子）中的佔比，記錄於遊戲的每個回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="zh_Hant_HK">
+			<Text>領袖的聚落擁有的每個格子，記錄於遊戲的每個回合。[NN][BLIST][LI][B]折線[/B]：領袖在所有領袖擁有的格子中的佔比[LI][B]開發[/B]：有建築、奇觀或防禦工事的格子為都會，有改良設施的為鄉村，其餘為未改良[/LIST][NN][B]總計[/B]：目前（或時代結束時）擁有的格子；懸停顯示都會、鄉村與未改良。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="zh_Hant_HK">
 			<Text>世界領土佔比</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="zh_Hant_HK">
 			<Text>城市化率</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="zh_Hant_HK">
+			<Text>各領袖已開發格子中都會格子（建築、奇觀與防禦工事，相對於改良設施）所佔比例。</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="zh_Hant_HK">
 			<Text>城市化最高</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hant_HK">
 			<Text>各領袖在世界軍事實力（所有領袖單位的戰鬥力）中的佔比，記錄於遊戲的每個回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="zh_Hant_HK">
+			<Text>領袖戰鬥單位的戰鬥力，每個單位取近戰、遠程與轟炸中的最高值，記錄於遊戲的每個回合。[NN][BLIST][LI][B]折線[/B]：領袖在所有領袖戰力中的佔比[/LIST][NN][B]總計[/B]：目前（或時代結束時）的戰力。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="zh_Hant_HK">
 			<Text>世界軍事實力佔比</Text>

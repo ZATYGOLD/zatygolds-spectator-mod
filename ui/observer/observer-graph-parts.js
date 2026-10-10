@@ -380,14 +380,14 @@ const FilterDropdown = (props) => createComponent(Dropdown, {
   }
 });
 
-/** The Victories screen's info icon at the end of a tab's title line: the tab and its view as the heading, what it shows and how, on hover. */
+/** The Victories screen's info icon (size, else 8; class): the tab and its view as the heading, what it shows and how, on hover. */
 const InfoTooltip = (props) => createComponent(Tooltip, {
   initialHPosition: TooltipHorizontalPosition.LEFT,
   initialVPosition: TooltipVerticalPosition.TOP,
   get children() {
     return [
       createComponent(Tooltip.Trigger, {
-        get children() { return createComponent(Activatable, { 'class': 'size-8 bg-no-repeat bg-cover', style: { 'background-image': 'url(blp:icon_info)' } }); }
+        get children() { return createComponent(Activatable, { 'class': `size-${props.size ?? 8} bg-no-repeat bg-cover ${props.class ?? ''}`, style: { 'background-image': 'url(blp:icon_info)' } }); }
       }),
       createComponent(Tooltip.Content, {
         get children() {
@@ -421,8 +421,6 @@ const GraphPanel = (props) => {
   const content = background.nextSibling;
   background.style.backgroundImage = `url(${props.look.background})`;
 
-  const description = T.description();
-  description.firstChild.textContent = props.description;
   const title = T.title();
   const heading = title.firstChild;
   heading.style.color = props.look.color;
@@ -432,20 +430,29 @@ const GraphPanel = (props) => {
   rankHead.textContent = Locale.compose('LOC_GENERIC_RANK');
   leaderHead.textContent = Locale.compose('LOC_GENERIC_LEADER');
   valueHead.firstChild.firstChild.textContent = props.valueLabel;
-  const filters = filterHead.firstChild.firstChild;
-  const viewLabel = (id) => Locale.compose(props.views.find((v) => v.id === id)?.label ?? '');
-  if (props.info) insert(title.lastChild.firstChild, createComponent(InfoTooltip, { title: props.title, subtitle: viewLabel(props.view()), color: props.look.color, text: props.info }));
-  insert(filters, createComponent(FilterDropdown, { 'class': FILTER_WIDTH, value: props.view, options: () => props.views.map((v) => v.id), label: viewLabel, onSelect: props.setView }));
-  insert(filters, createComponent(FilterDropdown, { 'class': `${FILTER_WIDTH} ml-3`, value: props.age, options: ageOptions, label: ageLabel, onSelect: props.setAge, hotkey: 'shell-action-2' }));
+  if (props.info) insert(title.lastChild.firstChild, createComponent(InfoTooltip, { title: props.title, subtitle: viewLabel(props.views, props.view()), color: props.look.color, text: props.info }));
+  insertFilters(filterHead.firstChild.firstChild, props);
 
-  content.append(description, title, T.spacer(), header, props.body());
+  content.append(panelDescription(props.description), title, T.spacer(), header, props.body());
   return panel;
 };
+
+const viewLabel = (views, id) => Locale.compose(views.find((v) => v.id === id)?.label ?? '');
+
+/** The view and Age filters ({ views, view, setView, age, setAge }) at the end of `parent`. */
+function insertFilters(parent, props) {
+  const label = (id) => viewLabel(props.views, id);
+  insert(parent, createComponent(FilterDropdown, { 'class': FILTER_WIDTH, value: props.view, options: () => props.views.map((v) => v.id), label, onSelect: props.setView }), null);
+  insert(parent, createComponent(FilterDropdown, { 'class': `${FILTER_WIDTH} ml-3`, value: props.age, options: ageOptions, label: ageLabel, onSelect: props.setAge, hotkey: 'shell-action-2' }), null);
+}
+
+/** The Victories screen's description above a panel. */
+const panelDescription = (text) => { const description = T.description(); description.firstChild.textContent = text; return description; };
 
 const emptyText = (text) => { const empty = T.empty(); empty.textContent = text; return empty; };
 
 export {
-  ageName, BreakdownCard, byKindThenCount, crisisStages, detailText, emptyText, fillPanel, GraphPanel, HoverTooltip, inAge, leaderColor, leaderIcon, leaderName,
-  LeaderRow, leaderRow, LeaderRows, leaderTint, loggedLeaders, opponentName, OVERALL, playerKind, playerKindColor, playerKindLabel, rowHeight, unitFlagIcon,
-  unitTypeName, viewAges
+  ageName, BreakdownCard, byKindThenCount, crisisStages, detailText, emptyText, fillPanel, formatValue, GraphPanel, HoverTooltip, inAge, InfoTooltip, insertFilters,
+  leaderColor, leaderIcon, leaderName, LeaderRow, leaderRow, LeaderRows, leaderTint, loggedLeaders, opponentName, OVERALL, panelDescription, playerKind,
+  playerKindColor, playerKindLabel, rowHeight, unitFlagIcon, unitTypeName, viewAges, viewLabel
 };

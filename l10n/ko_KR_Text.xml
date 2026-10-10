@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ko_KR">
 			<Text>합계</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="ko_KR">
+			<Text>평균</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ko_KR">
 			<Text>턴</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ko_KR">
 			<Text>클릭하면 이 지도자의 선을 표시합니다.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="ko_KR">
+			<Text>요약</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="ko_KR">
+			<Text>이 보기의 각 탭에서 각 지도자의 순위. 카드를 선택하면 해당 탭이 열립니다.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ko_KR">
 			<Text>산출량</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="ko_KR">
 			<Text>세계 영토(모든 지도자 정착지의 타일) 중 각 지도자의 비율, 게임의 매 턴 기록.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="ko_KR">
+			<Text>지도자의 정착지가 보유한 모든 타일, 게임의 매 턴 기록.[NN][BLIST][LI][B]선[/B]: 지도자들이 보유한 모든 타일 중 지도자의 비율[LI][B]개발[/B]: 건물, 불가사의, 방어 시설이 있는 타일은 시가지, 시설이 있는 타일은 교외, 그 외는 미개발[/LIST][NN][B]합계[/B]: 현재(또는 시대 종료 시) 보유한 타일. 마우스를 올리면 시가지, 교외, 미개발.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="ko_KR">
 			<Text>세계 영토 지분 %</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="ko_KR">
 			<Text>도시화율</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="ko_KR">
+			<Text>각 지도자의 개발된 타일 중 시가지 타일(건물, 불가사의, 방어 시설; 시설 대비)의 비율.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="ko_KR">
 			<Text>가장 도시적</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ko_KR">
 			<Text>세계 군사력(모든 지도자 유닛의 전투력) 중 각 지도자의 비율, 게임의 매 턴 기록.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="ko_KR">
+			<Text>지도자의 전투 유닛 전투력(각 유닛의 근접, 원거리, 포격 중 최고 값), 게임의 매 턴 기록.[NN][BLIST][LI][B]선[/B]: 모든 지도자의 전투력 중 지도자의 비율[/LIST][NN][B]합계[/B]: 현재(또는 시대 종료 시) 전투력.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="ko_KR">
 			<Text>세계 군사력 지분 %</Text>

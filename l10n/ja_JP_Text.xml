@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="ja_JP">
 			<Text>合計</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="ja_JP">
+			<Text>平均</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="ja_JP">
 			<Text>ターン</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="ja_JP">
 			<Text>クリックするとこの指導者の線を表示します。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="ja_JP">
+			<Text>概要</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="ja_JP">
+			<Text>このビューの各タブにおける各指導者の順位。カードを選ぶとそのタブを開きます。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="ja_JP">
 			<Text>産出</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="ja_JP">
 			<Text>世界の領土（全指導者の居住地のタイル）に占める各指導者の割合。ゲームの毎ターン記録。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="ja_JP">
+			<Text>指導者の居住地が保有する全タイル。ゲームの毎ターン記録。[NN][BLIST][LI][B]線[/B]：全指導者が保有するタイルに占める指導者の割合[LI][B]開発[/B]：建造物、遺産、防衛施設のあるタイルは市街、施設のあるタイルは郊外、それ以外は未改良[/LIST][NN][B]合計[/B]：現在保有するタイル（または時代の終わりの時点）。カーソルを合わせると市街、郊外、未改良。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="ja_JP">
 			<Text>領土の世界シェア</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="ja_JP">
 			<Text>都市化率</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="ja_JP">
+			<Text>各指導者の開発済みタイルのうち市街タイル（建造物、遺産、防衛施設。施設に対して）の割合。</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="ja_JP">
 			<Text>最も都市的</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="ja_JP">
 			<Text>世界の軍事力（全指導者のユニットの戦闘力）に占める各指導者の割合。ゲームの毎ターン記録。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="ja_JP">
+			<Text>指導者の戦闘ユニットの戦闘力（各ユニットの近接、遠隔、砲撃のうち最大の値）。ゲームの毎ターン記録。[NN][BLIST][LI][B]線[/B]：全指導者の戦力に占める指導者の割合[/LIST][NN][B]合計[/B]：現在の戦力（または時代の終わりの時点）。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="ja_JP">
 			<Text>軍事力の世界シェア</Text>

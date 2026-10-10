@@ -33,7 +33,8 @@
  *     sourceOrder(a, b) (before the priority), sumFields (event fields summed into a pin's sources),
  *     sliceEvents(events) (a pin's events as it shows them), sections (the pin tooltip's, see observer-timeline.js),
  *     pinIcon, pinColor, dotColor, icon, iconTint (tooltip rows only), name, detail (each of a source), sourceOf(event) (extra source fields),
- *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, tint, count }], groups (BreakdownCard's) },
+ *     card(id, { viewEvents, events, totals, current, lastAge }) -> { cells: [{ icon, tint, count, core }], groups (BreakdownCard's) },
+ *       (`core`: the number in a formatted count, centred under the icon with the rest hanging beside it)
  *     cardHover (false: none), pinCount (false: none), value(id, { lastAge, now, events }) (else the count), tieBreak(entry),
  *     links(events) ([[from, to]] joined by a dashed arc), totalGroups(entry) (the Total's hover),
  *     bands(events, { position, now }) ([{ from, to, color, layer, smooth, parts, solo }]: spans whose notches take
@@ -182,19 +183,47 @@ const rank = (view, lowFirst) => {
   return (a, b) => dir * (b.value - a.value) || dir * (view.tieBreak(b) - view.tieBreak(a));
 };
 
-/** Leaders by their Total in the tab: [{ id, value, totals, pins, links, bands, card }]. */
-function timelineRows(view, tab, viewEvents, events, leaders, { position, now, current, lastAge }) {
+/** Leaders by their Total in the tab: [{ id, value, totals, card, pins, links, bands }] (`bare`: no pins, links or bands). */
+function timelineRows(view, tab, viewEvents, events, leaders, { position, now, current, lastAge }, bare = false) {
   return leaders.map((id) => {
     const own = events.filter((e) => e.playerId === id);
     const byCategory = sumBy(own, (e) => e.category);
     const totals = view.categories.map((c, i) => byCategory.get(i) ?? 0);
     const value = view.value ? view.value(id, { lastAge, now, events: own }) : totals.reduce((a, b) => a + b, 0);
-    const pins = leaderPins(own, position, view);
-    const bands = view.bands?.(own, { position, now }) ?? [];
-    const entry = { id, totals, value, pins, links: pinLinks(pins, own, position, view), bands };
+    const entry = { id, totals, value };
+    if (!bare) {
+      entry.pins = leaderPins(own, position, view);
+      entry.links = pinLinks(entry.pins, own, position, view);
+      entry.bands = view.bands?.(own, { position, now }) ?? [];
+    }
     entry.card = view.card(id, { viewEvents: viewEvents.filter((e) => e.playerId === id), events: own, totals, current, lastAge });
     return entry;
   }).sort(rank(view, tab.lowFirst));
+}
+
+/** A tab's events: those of its kind among the view's (each logged thing's kind is its tab). */
+const tabEvents = (tab, viewEvents) => viewEvents.filter((e) => e.kind === tab.id);
+
+/** Each leader's Total and card in a tab ({ subject, tab }) for the chosen Age: timelineRows without the bars. */
+const timelineTotals = (subject, tab, viewEvents, leaders, age, crises) =>
+  timelineRows(subject, tab, viewEvents, tabEvents(tab, viewEvents), leaders, timelineScale(viewAges(age), crises), true);
+
+/** The count's text, with `core` centred and what surrounds it (a unit, a sign) hanging outside the centring. */
+function setCount(text, count, core) {
+  const full = `${count}`;
+  const at = core == null ? -1 : full.indexOf(`${core}`);
+  if (at < 0) { text.textContent = full; return; }
+  text.textContent = `${core}`;
+  text.style.position = 'relative';
+  const hang = (part, side) => {
+    if (!part) return;
+    const span = document.createElement('span');
+    span.textContent = part.replace(/ /g, '\u00a0');
+    span.style.cssText = `position: absolute; top: 0; ${side}: 100%; white-space: nowrap;`;
+    text.appendChild(span);
+  };
+  hang(full.slice(0, at), 'right');
+  hang(full.slice(at + `${core}`.length), 'left');
 }
 
 /**
@@ -208,7 +237,7 @@ const SummaryCard = (props) => {
     const look = CARD_LOOK[Math.min(Math.max(cells.length, 1), CARD_LOOK.length) - 1];
     while (content.firstChild) content.firstChild.remove();
     content.style.flexDirection = look.list ? 'column' : '';
-    for (const { icon, tint, count } of cells) {
+    for (const { icon, tint, count, core } of cells) {
       const cell = T.cardCell();
       const image = cell.firstChild;
       cell.style.width = look.width;
@@ -220,7 +249,7 @@ const SummaryCard = (props) => {
       image.style.backgroundImage = icon;
       if (tint) image.style.setProperty('fxs-background-image-tint', tint);
       image.nextSibling.classList.add(look.text);
-      image.nextSibling.textContent = `${count}`;
+      setCount(image.nextSibling, count, look.list ? null : core);
       content.appendChild(cell);
     }
   });
@@ -262,7 +291,7 @@ function timelineRow(id, entry, index, { view, scale, title, height, count }) {
 /** One tab of a timeline view: { subject (the tab's), tab, events (the view's, in the chosen Age), leaders, ...filters }. */
 const TimelinePanel = (props) => {
   const { subject: view, tab } = props;
-  const events = createMemo(() => props.events().filter((e) => e.kind === tab.id));
+  const events = createMemo(() => tabEvents(tab, props.events()));
   const scale = createMemo(() => { props.turn(); return timelineScale(viewAges(props.age()), props.crises()); });
   const rows = createMemo(() => timelineRows(view, tab, props.events(), events(), props.leaders(), scale()));
   const title = Locale.compose(tab.label);
@@ -288,4 +317,4 @@ const TimelinePanel = (props) => {
   });
 };
 
-export { byCount, categoryRows, emptyCard, rankedCells, sumBy, TimelinePanel };
+export { byCount, categoryRows, emptyCard, rankedCells, sumBy, TimelinePanel, timelineTotals };

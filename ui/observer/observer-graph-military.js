@@ -21,15 +21,17 @@
 /**
  * Zatygold's Spectator - Military graphs (in-game scope).
  *
- * The Military view, the tabs busy from the start first: a Strength line graph
- * of each leader's share of the world's (observer-military-history.js), the
- * unit timelines (observer-graph-units.js), then Promotions, Wars and Conflicts
+ * The Military view: a Summary of its tabs (observer-graph-summary.js), then
+ * the tabs busy from the start first: a Strength line graph of each leader's
+ * share of the world's (observer-military-history.js), the unit timelines
+ * (observer-graph-units.js), then Promotions, Wars and Conflicts
  * (observer-graph-promotions.js, observer-graph-wars.js, observer-graph-battles.js).
  * Each tab names its source ({ kind, read, changeEvents }) and, for a timeline, its subject.
  */
 import { BATTLE_LOG_EVENT, battleLog } from './observer-battle-log.js';
 import { BATTLES_SUBJECT } from './observer-graph-battles.js';
 import { PROMOTIONS_SUBJECT } from './observer-graph-promotions.js';
+import { civArt, summaryTab } from './observer-graph-summary.js';
 import { UNITS_SOURCE, UNITS_SUBJECT } from './observer-graph-units.js';
 import { WARS_SUBJECT } from './observer-graph-wars.js';
 import { MILITARY_EVENT, militaryHistory } from './observer-military-history.js';
@@ -48,12 +50,22 @@ const MILITARY_VIEW = {
   label: 'LOC_ZOM_GRAPH_MILITARY',
   get tabs() {
     return [
+      summaryTab([
+        { tab: 'strength', art: civArt('ming'), icon: 'fi_military_64' },
+        { tab: 'trained', art: civArt('han'), icon: 'fi_Yield_Production_64', color: '#9cc27a' },
+        { tab: 'lost', art: civArt('french_empire'), icon: 'ntf_unit_lost' },
+        { tab: 'defeated', art: civArt('america'), icon: 'chat_skull' },
+        { tab: 'promotions', art: civArt('chola'), icon: 'cPromo_commendation' },
+        { tab: 'wars', art: civArt('mongolia'), icon: 'fi_ntf_declare_war_64' },
+        { tab: 'battles', art: civArt('norman'), icon: 'fi_war_64', color: '#b48ee0' }
+      ]),
       {
         id: 'strength',
         slot: 0,
         label: 'LOC_ZOM_GRAPH_STRENGTH',
         look: { color: '#d99a5b', background: 'bg_victory_military' },
         description: Locale.compose('LOC_ZOM_GRAPH_STRENGTH_DESC'),
+        info: 'LOC_ZOM_GRAPH_STRENGTH_INFO',
         valueLabel: Locale.compose('LOC_ZOM_GRAPH_TOTAL_COLUMN'),
         axisLabel: Locale.compose('LOC_ZOM_GRAPH_STRENGTH_SHARE'),
         share: true,

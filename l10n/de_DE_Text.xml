@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="de_DE">
 			<Text>Gesamt</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="de_DE">
+			<Text>Durchschnitt</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="de_DE">
 			<Text>Runden</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="de_DE">
 			<Text>Klicken, um die Linie dieses Anführers einzublenden.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="de_DE">
+			<Text>Übersicht</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="de_DE">
+			<Text>Der Stand jedes Anführers auf jedem Tab dieser Ansicht; wähle eine Karte, um ihren Tab zu öffnen.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="de_DE">
 			<Text>Erträge</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="de_DE">
 			<Text>Der Anteil jedes Anführers am Territorium der Welt (den Feldern der Siedlungen aller Anführer), in jeder Runde des Spiels erfasst.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="de_DE">
+			<Text>Jedes Feld, das die Siedlungen eines Anführers halten, in jeder Runde des Spiels erfasst.[NN][BLIST][LI][B]Linie[/B]: der Anteil des Anführers an allen Feldern, die Anführer halten[LI][B]Erschließung[/B]: ein Feld mit Gebäude, Weltwunder oder Befestigung ist städtisch, eines mit Modernisierung ländlich, jedes andere unmodernisiert[/LIST][NN][B]Gesamt[/B]: Felder im Besitz, derzeit (oder am Ende des Zeitalters); städtisch, ländlich und unmodernisiert beim Überfahren.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="de_DE">
 			<Text>% Anteil am globalen Territorium</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="de_DE">
 			<Text>Urbanisierung</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="de_DE">
+			<Text>Der Anteil der erschlossenen Felder jedes Anführers, die städtisch sind: Gebäude, Weltwunder und Befestigungen, gegenüber Modernisierungen.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="de_DE">
 			<Text>Am städtischsten</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="de_DE">
 			<Text>Der Anteil jedes Anführers an der militärischen Stärke der Welt (der Kampfstärke der Einheiten aller Anführer), in jeder Runde des Spiels erfasst.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="de_DE">
+			<Text>Die Kampfstärke der Kampfeinheiten eines Anführers, jede mit dem besten Wert aus Nahkampf, Fernkampf und Bombardierung, in jeder Runde des Spiels erfasst.[NN][BLIST][LI][B]Linie[/B]: der Anteil des Anführers an der Stärke aller Anführer[/LIST][NN][B]Gesamt[/B]: Stärke derzeit (oder am Ende des Zeitalters).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="de_DE">
 			<Text>% Anteil an der globalen Stärke</Text>

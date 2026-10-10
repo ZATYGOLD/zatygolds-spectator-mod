@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="zh_Hans_CN">
 			<Text>总计</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="zh_Hans_CN">
+			<Text>平均</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="zh_Hans_CN">
 			<Text>回合</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="zh_Hans_CN">
 			<Text>点击显示该领袖的曲线。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="zh_Hans_CN">
+			<Text>概览</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="zh_Hans_CN">
+			<Text>各领袖在此视图每个选项卡上的排名；选择卡片即可打开其选项卡。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hans_CN">
 			<Text>产出</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="zh_Hans_CN">
 			<Text>各领袖在世界领土（所有领袖定居点的单元格）中的占比，记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="zh_Hans_CN">
+			<Text>领袖的定居点拥有的每个单元格，记录于游戏的每个回合。[NN][BLIST][LI][B]折线[/B]：领袖在所有领袖拥有的单元格中的占比[LI][B]开发[/B]：有建筑、奇观或防御工事的单元格为市区，有改良设施的为乡村，其余为未改良[/LIST][NN][B]总计[/B]：当前（或时代结束时）拥有的单元格；悬停显示市区、乡村与未改良。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="zh_Hans_CN">
 			<Text>世界领土占比</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="zh_Hans_CN">
 			<Text>城市化率</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="zh_Hans_CN">
+			<Text>各领袖已开发单元格中市区单元格（建筑、奇观与防御工事，相对于改良设施）所占比例。</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="zh_Hans_CN">
 			<Text>城市化最高</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hans_CN">
 			<Text>各领袖在世界军事实力（所有领袖单位的战斗力）中的占比，记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="zh_Hans_CN">
+			<Text>领袖战斗单位的战斗力，每个单位取近战、远程与轰炸中的最高值，记录于游戏的每个回合。[NN][BLIST][LI][B]折线[/B]：领袖在所有领袖战力中的占比[/LIST][NN][B]总计[/B]：当前（或时代结束时）的战力。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="zh_Hans_CN">
 			<Text>世界军事实力占比</Text>

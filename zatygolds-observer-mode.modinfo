@@ -179,6 +179,7 @@
                     <Item>ui/observer/observer-graph-lines.js</Item>
                     <Item>ui/observer/observer-graph-yields.js</Item>
                     <Item>ui/observer/observer-graph-timelines.js</Item>
+                    <Item>ui/observer/observer-graph-summary.js</Item>
                     <Item>ui/observer/observer-graph-units.js</Item>
                     <Item>ui/observer/observer-graph-wars.js</Item>
                     <Item>ui/observer/observer-graph-battles.js</Item>

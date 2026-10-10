@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="pl_PL">
 			<Text>Razem</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="pl_PL">
+			<Text>Średnia</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="pl_PL">
 			<Text>Tury</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="pl_PL">
 			<Text>Kliknij, aby pokazać linię tego przywódcy.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="pl_PL">
+			<Text>Podsumowanie</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="pl_PL">
+			<Text>Pozycja każdego przywódcy na każdej karcie tego widoku; wybierz kartę, aby ją otworzyć.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="pl_PL">
 			<Text>Dochody</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="pl_PL">
 			<Text>Udział każdego przywódcy w światowym terytorium (polach osiedli wszystkich przywódców), zapisywany w każdej turze gry.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="pl_PL">
+			<Text>Każde pole, które utrzymują osiedla przywódcy, zapisywane w każdej turze gry.[NN][BLIST][LI][B]Linia[/B]: udział przywódcy we wszystkich polach utrzymywanych przez przywódców[LI][B]Zagospodarowanie[/B]: pole z budynkiem, cudem lub fortyfikacją jest miejskie, z ulepszeniem wiejskie, każde inne nieulepszone[/LIST][NN][B]Razem[/B]: pola posiadane obecnie (lub na koniec epoki); miejskie, wiejskie i nieulepszone po najechaniu kursorem.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="pl_PL">
 			<Text>Udział % w światowym terytorium</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="pl_PL">
 			<Text>Urbanizacja</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="pl_PL">
+			<Text>Udział zagospodarowanych pól każdego przywódcy, które są miejskie: budynki, cuda i fortyfikacje, wobec ulepszeń.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="pl_PL">
 			<Text>Najbardziej miejskie</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="pl_PL">
 			<Text>Udział każdego przywódcy w światowej sile militarnej (sile bojowej jednostek wszystkich przywódców), zapisywany w każdej turze gry.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="pl_PL">
+			<Text>Siła bojowa jednostek bojowych przywódcy, każda liczona jako najlepsza z walki wręcz, dystansowej i ostrzału, zapisywana w każdej turze gry.[NN][BLIST][LI][B]Linia[/B]: udział przywódcy w sile wszystkich przywódców[/LIST][NN][B]Razem[/B]: siła obecnie (lub na koniec epoki).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="pl_PL">
 			<Text>Udział % w światowej sile</Text>

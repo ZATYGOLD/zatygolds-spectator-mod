@@ -154,6 +154,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="it_IT">
 			<Text>Totale</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="it_IT">
+			<Text>Media</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="it_IT">
 			<Text>Turni</Text>
 		</Replace>
@@ -174,6 +177,12 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="it_IT">
 			<Text>Clicca per mostrare la linea di questo leader.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="it_IT">
+			<Text>Riepilogo</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="it_IT">
+			<Text>La posizione di ogni leader in ogni scheda di questa vista; selezionane una per aprirla.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="it_IT">
 			<Text>Rese</Text>
@@ -213,6 +222,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="it_IT">
 			<Text>La quota di ogni leader del territorio mondiale (le caselle degli insediamenti di tutti i leader), registrata a ogni turno della partita.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="it_IT">
+			<Text>Ogni casella che detengono gli insediamenti di un leader, registrata a ogni turno della partita.[NN][BLIST][LI][B]Linea[/B]: la quota del leader di tutte le caselle detenute dai leader[LI][B]Sviluppo[/B]: una casella con un edificio, una meraviglia o una fortificazione è urbana, una con un miglioramento rurale, ogni altra non migliorata[/LIST][NN][B]Totale[/B]: caselle detenute ora (o alla fine dell'era); urbane, rurali e non migliorate al passaggio del cursore.</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="it_IT">
 			<Text>% del territorio mondiale</Text>
@@ -256,6 +268,9 @@
 		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="it_IT">
 			<Text>Urbanizzazione</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="it_IT">
+			<Text>La quota di caselle sviluppate di ogni leader che sono urbane: edifici, meraviglie e fortificazioni, rispetto ai miglioramenti.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="it_IT">
 			<Text>Più urbano</Text>
 		</Replace>
@@ -276,6 +291,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="it_IT">
 			<Text>La quota di ogni leader della forza militare mondiale (la forza di combattimento delle unità di tutti i leader), registrata a ogni turno della partita.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="it_IT">
+			<Text>La forza di combattimento delle unità da combattimento di un leader, ognuna con il valore migliore tra mischia, distanza e bombardamento, registrata a ogni turno della partita.[NN][BLIST][LI][B]Linea[/B]: la quota del leader della forza di tutti i leader[/LIST][NN][B]Totale[/B]: forza attuale (o alla fine dell'era).</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="it_IT">
 			<Text>% della forza mondiale</Text>
