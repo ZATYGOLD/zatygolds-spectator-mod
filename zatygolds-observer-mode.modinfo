@@ -75,7 +75,7 @@
                     <Item>art/icons/zom_observer_circle_64.png</Item>
                     <Item>art/icons/zom_observer_portrait_140.png</Item>
                     <Item>art/leaders/lsl_zom_observer.png</Item>
-                    <Item>art/backgrounds/cg_zom_observer_vert.png</Item>
+                    <Item>art/backgrounds/cg_zom_observer_vert.jpg</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/icons/icons.xml</Item>
@@ -138,9 +138,8 @@
                     <Item>art/icons/zom_observer_circle_128.png</Item>
                     <Item>art/icons/zom_observer_circle_64.png</Item>
                     <Item>art/icons/zom_observer_portrait_140.png</Item>
-                    <Item>art/backgrounds/cg_zom_observer_vert.png</Item>
-                    <Item>art/backgrounds/lsbg_zom_observer_1080.png</Item>
-                    <Item>art/backgrounds/lsbg_zom_observer_720.png</Item>
+                    <Item>art/backgrounds/cg_zom_observer_vert.jpg</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer.jpg</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/icons/icons.xml</Item>

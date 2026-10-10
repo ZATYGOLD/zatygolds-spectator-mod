@@ -23,9 +23,9 @@
     <Row><ID>CIVILIZATION_ZOM_OBSERVER_ANTIQUITY</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
     <Row><ID>CIVILIZATION_ZOM_OBSERVER_EXPLORATION</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
     <Row><ID>CIVILIZATION_ZOM_OBSERVER_MODERN</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
-    <Row><ID>CIVILIZATION_ZOM_OBSERVER_ANTIQUITY</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.png</Path><Context>BACKGROUND_VERT</Context></Row>
-    <Row><ID>CIVILIZATION_ZOM_OBSERVER_EXPLORATION</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.png</Path><Context>BACKGROUND_VERT</Context></Row>
-    <Row><ID>CIVILIZATION_ZOM_OBSERVER_MODERN</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.png</Path><Context>BACKGROUND_VERT</Context></Row>
+    <Row><ID>CIVILIZATION_ZOM_OBSERVER_ANTIQUITY</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.jpg</Path><Context>BACKGROUND_VERT</Context></Row>
+    <Row><ID>CIVILIZATION_ZOM_OBSERVER_EXPLORATION</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.jpg</Path><Context>BACKGROUND_VERT</Context></Row>
+    <Row><ID>CIVILIZATION_ZOM_OBSERVER_MODERN</ID><Path>fs://game/art/backgrounds/cg_zom_observer_vert.jpg</Path><Context>BACKGROUND_VERT</Context></Row>
 
     <Row><ID>UNIT_ZOM_OBSERVER_EYE</ID><Path>fs://game/art/icons/zom_observer_civ.png</Path></Row>
   </IconDefinitions>
