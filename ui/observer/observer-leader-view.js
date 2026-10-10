@@ -24,19 +24,20 @@
  * ZOMLeaderView: the leader the empire screens show (base-file overrides marked
  * "ZOM:" read it), picked from a row of portraits shared by every such screen;
  * a pick reopens the screen in place on the same tab. During a Perspective the
- * viewed leader is shown with no picker. Screens stay read-only.
+ * viewed leader is shown with no picker, unless a screen was opened for a
+ * leader (showLeader). Screens stay read-only.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { createLogger, onActivate, setStyle } from '../shared/zom-util.js';
-import { CONFIG } from './observer-config.js';
-import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { CONFIG, PANEL_COLORS } from './observer-config.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { perspectivePlayer } from './observer-perspective.js';
 
 const log = createLogger('observer-leader-view', CONFIG.debug);
-const SELECTED_STYLE = 'border: 0.1666666667rem solid #e5d2ac; opacity: 1;';
+const SELECTED_STYLE = `border: 0.1666666667rem solid ${PANEL_COLORS.parchment}; opacity: 1;`;
 const OTHER_STYLE = 'border: 0.1666666667rem solid transparent; opacity: 0.65;';
 // A dark plate so the row reads over any background (Great Works sits over the map).
-const BAR_STYLE = 'background-color: rgba(10, 12, 18, 0.88); border: 0.0555555556rem solid rgba(229, 210, 172, 0.55); border-radius: 0.5rem; padding: 0.3rem 0.6rem;';
+const BAR_STYLE = `background-color: ${PANEL_COLORS.bar}; border: 0.0555555556rem solid ${PANEL_COLORS.parchmentFaint}; border-radius: 0.5rem; padding: 0.3rem 0.6rem;`;
 
 const BAR_CLASS = 'zom-leader-bar';
 const SWITCHING_CLASS = 'zom-leader-switching';
@@ -44,6 +45,7 @@ const STYLE_ID = 'zom-leader-view-style';
 const SETTLE_MS = 100;   // after two frames: the reopened screen has rendered
 
 let viewedId = null;
+let shownId = null;              // a leader a screen was opened for (showLeader), over the Perspective's, until it closes
 const screenTags = new Set();   // screens that show the picker
 const openTabs = new Map();      // screen tag -> tab last shown to the Observer
 const restoreTabs = new Map();   // screen tag -> tab to show once the screen reopens
@@ -52,9 +54,10 @@ const refreshers = new Map();    // screen tag -> rebuilds the open screen for t
 /** A screen rebuilt in place on a leader switch instead of being reopened. */
 function setRefresh(screenTag, refresh) { refreshers.set(screenTag, refresh); }
 
-/** The leader shown to the Observer (the Perspective's, else the picked one, first watched by default); undefined for everyone else. */
+/** The leader shown to the Observer (one a screen was opened for, the Perspective's, else the picked one, first watched by default); undefined for everyone else. */
 function playerID() {
   if (!isObserverSeat()) return undefined;
+  if (shownId != null && Players.get(shownId)?.isAlive) return shownId;
   const perspective = perspectivePlayer();
   if (perspective != null) return perspective;
   if (viewedId == null || !Players.get(viewedId)?.isAlive) viewedId = watchedPlayers()[0]?.id ?? null;
@@ -89,9 +92,18 @@ function writeSwitchStyle() {
 
 const afterFrames = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
 
+/** Shows a leader in the next screen opened (the leader panel's Attributes), whatever the Perspective, until releaseLeader. */
+function showLeader(id) { shownId = id; }
+
+/** Ends showLeader once its screen closes (not while a pick reopens it). */
+function releaseLeader() {
+  if (!document.body.classList.contains(SWITCHING_CLASS)) shownId = null;
+}
+
 function reopen(screenTag, id) {
-  if (id === viewedId) return;
+  if (id === playerID()) return;
   viewedId = id;
+  if (shownId != null) shownId = id;
   if (refreshers.get(screenTag)?.()) return;   // rebuilt in place
   if (openTabs.has(screenTag)) restoreTabs.set(screenTag, openTabs.get(screenTag));
   writeSwitchStyle();
@@ -113,10 +125,10 @@ function portraitButton(screenTag, player, selected) {
   return btn;
 }
 
-/** One portrait per watched leader, the viewed one highlighted; null for everyone else and while a Perspective is shown. */
+/** One portrait per watched leader, the viewed one highlighted; null for everyone else and while a Perspective is shown (unless showLeader). */
 function playerBar(screenTag) {
   const viewed = playerID();
-  if (viewed === undefined || perspectivePlayer() != null) return null;
+  if (viewed === undefined || (perspectivePlayer() != null && shownId == null)) return null;
   screenTags.add(screenTag);
   const bar = document.createElement('div');
   bar.classList.value = `${BAR_CLASS} flex flex-row flex-wrap justify-center items-center self-center mb-2 pointer-events-auto`;
@@ -135,4 +147,4 @@ engine.whenReady.then(() => {
   log.debug(`observer-in-game option: ${flag}`);
 });
 
-export { BAR_CLASS, playerBar, setRefresh, playerID as viewedPlayerID };
+export { BAR_CLASS, playerBar, releaseLeader, setRefresh, showLeader, playerID as viewedPlayerID };

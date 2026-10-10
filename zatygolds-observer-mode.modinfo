@@ -7,7 +7,7 @@
         <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
-        <Version>1.0.0</Version>
+        <Version>1.1.0</Version>
         <LastUpdated>2026-10-04</LastUpdated>
         <ShowInBrowser>1</ShowInBrowser>
     </Properties>
@@ -75,7 +75,7 @@
                     <Item>art/icons/zom_observer_circle_64.png</Item>
                     <Item>art/icons/zom_observer_portrait_140.png</Item>
                     <Item>art/leaders/lsl_zom_observer.png</Item>
-                    <Item>art/backgrounds/cg_zom_observer_vert.png</Item>
+                    <Item>art/backgrounds/cg_zom_observer_vert.jpg</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/icons/icons.xml</Item>
@@ -138,9 +138,8 @@
                     <Item>art/icons/zom_observer_circle_128.png</Item>
                     <Item>art/icons/zom_observer_circle_64.png</Item>
                     <Item>art/icons/zom_observer_portrait_140.png</Item>
-                    <Item>art/backgrounds/cg_zom_observer_vert.png</Item>
-                    <Item>art/backgrounds/lsbg_zom_observer_1080.png</Item>
-                    <Item>art/backgrounds/lsbg_zom_observer_720.png</Item>
+                    <Item>art/backgrounds/cg_zom_observer_vert.jpg</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer.jpg</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/icons/icons.xml</Item>
@@ -162,6 +161,32 @@
                     <Item>ui/observer/observer-ribbon-data.js</Item>
                     <Item>ui/observer/observer-ribbon-style.js</Item>
                     <Item>ui/observer/observer-history.js</Item>
+                    <Item>ui/observer/observer-crisis.js</Item>
+                    <Item>ui/observer/observer-line-graph.js</Item>
+                    <Item>ui/observer/observer-event-log.js</Item>
+                    <Item>ui/observer/observer-settlement-watch.js</Item>
+                    <Item>ui/observer/observer-unit-log.js</Item>
+                    <Item>ui/observer/observer-settlement-log.js</Item>
+                    <Item>ui/observer/observer-empire.js</Item>
+                    <Item>ui/observer/observer-war-log.js</Item>
+                    <Item>ui/observer/observer-battle-log.js</Item>
+                    <Item>ui/observer/observer-promotion-log.js</Item>
+                    <Item>ui/observer/observer-military-history.js</Item>
+                    <Item>ui/observer/observer-territory-history.js</Item>
+                    <Item>ui/observer/observer-timeline.js</Item>
+                    <Item>ui/observer/observer-graph-parts.js</Item>
+                    <Item>ui/observer/observer-graph-lines.js</Item>
+                    <Item>ui/observer/observer-graph-yields.js</Item>
+                    <Item>ui/observer/observer-graph-timelines.js</Item>
+                    <Item>ui/observer/observer-graph-summary.js</Item>
+                    <Item>ui/observer/observer-graph-units.js</Item>
+                    <Item>ui/observer/observer-graph-wars.js</Item>
+                    <Item>ui/observer/observer-graph-battles.js</Item>
+                    <Item>ui/observer/observer-graph-promotions.js</Item>
+                    <Item>ui/observer/observer-graph-military.js</Item>
+                    <Item>ui/observer/observer-graph-settlements.js</Item>
+                    <Item>ui/observer/observer-graph-population.js</Item>
+                    <Item>ui/observer/observer-graph-empire.js</Item>
                     <Item>ui/observer/observer-graphs.js</Item>
                     <Item>ui/observer/observer-turn.js</Item>
                     <Item>ui/observer/observer-settlement-info.js</Item>
@@ -193,7 +218,7 @@
             <Properties><LoadOrder>1100</LoadOrder></Properties>
             <Actions>
                 <ImportFiles>
-                    <Item>maps/assign-starting-plots.js</Item>
+                    <Item>maps/map-globals.js</Item>
                     <Item>scripts/age-transition-post-load.js</Item>
                     <Item>ui-next/screens/victories/victories-screen-model.js</Item>
                     <Item>ui-next/screens/commerce/commerce-screen.js</Item>
@@ -210,6 +235,8 @@
                     <Item>ui/great-works/model-great-works.js</Item>
                     <Item>ui/tech-tree/model-tech-tree.js</Item>
                     <Item>ui/culture-tree/model-culture-tree.js</Item>
+                    <Item>ui/attribute-trees/model-attribute-trees.js</Item>
+                    <Item>ui/syncretism/syncretism-screen-model.js</Item>
                     <Item>ui/tree-grid/tree-grid.js</Item>
                 </ImportFiles>
             </Actions>

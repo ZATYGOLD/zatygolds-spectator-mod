@@ -53,11 +53,11 @@ function lockDropdown(dropdown, index) {
   dropdown.isDisabled = true;
 }
 
-/** Civ list: one Observer entry (start Age only), eye icon; locked while observing. */
+/** Civ list: one Observer entry (start Age only, never for computer players), eye icon; locked while observing. */
 function shapeCivDropdown(dropdown, playerID) {
-  const wanted = observerCivForStartAge();
+  const wanted = isComputerSlot(playerID) ? null : observerCivForStartAge();
   let items = (dropdown.itemList ?? []).filter((it) => !isObserverCiv(it.paramID) || it.paramID === wanted);
-  if (!items.some((it) => it.paramID === wanted)) {   // unknown Age: keep one Observer entry rather than none
+  if (wanted && !items.some((it) => it.paramID === wanted)) {   // unknown Age: keep one Observer entry rather than none
     const first = (dropdown.itemList ?? []).find((it) => isObserverCiv(it.paramID));
     if (first) items.push(first);
   }
@@ -69,9 +69,10 @@ function shapeCivDropdown(dropdown, playerID) {
   if (isObserverRow(playerID)) lockDropdown(dropdown, items.findIndex((it) => isObserverCiv(it.paramID)));
 }
 
-/** Leader list: Observer last with the eye icon; stays enabled to switch back. */
+/** Leader list: Observer last with the eye icon (never for computer players); stays enabled to switch back. */
 function shapeLeaderDropdown(dropdown, playerID) {
-  const items = moveObserverLast(dropdown.itemList ?? [], (it) => it.paramID === OBSERVER_LEADER);
+  const offered = (dropdown.itemList ?? []).filter((it) => it.paramID !== OBSERVER_LEADER || !isComputerSlot(playerID));
+  const items = moveObserverLast(offered, (it) => it.paramID === OBSERVER_LEADER);
   for (const it of items) if (it.paramID === OBSERVER_LEADER) it.iconURL = ART.observerIcon;
   dropdown.itemList = items;
   const current = configLeader(playerID);

@@ -28,7 +28,9 @@
  */
 import { DiploRibbonData } from 'fs://game/base-standard/ui/diplo-ribbon/model-diplo-ribbon.js';
 import { PanelDiploRibbon } from 'fs://game/base-standard/ui/diplo-ribbon/panel-diplo-ribbon.js';
-import { componentOf, createLogger, wrapMethod } from '../shared/zom-util.js';
+import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
+import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
+import { clamp, componentOf, createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
 import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from './observer-core.js';
 import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
@@ -59,7 +61,7 @@ let refreshing = false;      // refreshRibbon rebuilds itself after the model up
 
 // ============================ Moods ============================
 
-function isAtWar(player) {
+function isAtWarWithAnyLeader(player) {
   try { return !!player.Diplomacy?.isAtWarWithAnyMajorCiv?.(); } catch (e) { return false; }
 }
 
@@ -68,7 +70,7 @@ function isCelebrating(player) {
 }
 
 function moodContext(player) {
-  if (isAtWar(player)) return 'LEADER_ANGRY';
+  if (isAtWarWithAnyLeader(player)) return 'LEADER_ANGRY';
   return isCelebrating(player) ? 'LEADER_HAPPY' : '';
 }
 
@@ -196,7 +198,7 @@ function patchModel() {
 
   // Every living major (in a Perspective: those the viewed leader met), the Observer's own card last.
   wrapMethod(DiploRibbonData, 'updateAll', function (base) {
-    if (!isObserverSeat()) return base();
+    if (!isObserverSeat()) return withoutObservers(base);
     try {
       this.getRibbonDisplayTypesFromUserOptions?.();
       const cards = [];
@@ -221,16 +223,55 @@ function patchModel() {
   });
 }
 
+/** Run fn while Players.getAlive leaves out Spectators: the base ribbon lists every human, met or not. */
+function withoutObservers(fn) {
+  const getAlive = Players.getAlive;
+  try { Players.getAlive = (...args) => getAlive.apply(Players, args).filter((p) => !isObserverPlayer(p.id)); }
+  catch (e) { return fn(); }   // a read-only engine object: keep the base list
+  try { return fn(); } finally { Players.getAlive = getAlive; }
+}
+
+/**
+ * The Observer's own card (last) never scrolls away: the arrows page the other
+ * leaders through the remaining slots. The base limits stay valid, since paging
+ * n - 1 leaders through numLeadersToShow - 1 slots ends at the same index.
+ */
+function pinOwnCard(component) {
+  const cards = component.diploRibbons ?? [];
+  const own = cards.length - 1;
+  const slots = component.numLeadersToShow - 1;
+  if (own < slots || cards[own]?.getAttribute('data-player-id') !== String(GameContext.localPlayerID)) return;
+  if (InterfaceMode.isInInterfaceMode('INTERFACEMODE_DIPLOMACY_HUB')) {
+    const selected = cards.findIndex((card) => card?.getAttribute('data-player-id') === String(DiplomacyManager.selectedPlayerID));
+    if (selected >= component.firstLeaderIndex + slots && selected < own) {
+      component.firstLeaderIndex = clamp(selected - slots + 1, 0, own - slots);
+      component.refreshRibbonVis?.();   // repaints the arrows, then pins again
+      return;
+    }
+  }
+  cards.forEach((card, i) => card?.classList.toggle('hidden', i !== own && (i < component.firstLeaderIndex || i >= component.firstLeaderIndex + slots)));
+}
+
 function patchPanel() {
   const proto = PanelDiploRibbon.prototype;
   // Losing focus minimises the stats and requests a full update; the Observer's
   // stats are pinned and rebuilding moves focus, so that would loop.
   wrapMethod(proto, 'onFocusout', (base, ...args) => (isObserverSeat() ? undefined : base(...args)));
+  // Pinning runs even when the base method throws part-way (it may have hidden the cards already).
   wrapMethod(proto, 'populateFlags', function (base, ...args) {
-    const result = base(...args);
-    try { if (isObserverSeat()) decorateRibbon(this.Root); } catch (e) { log(`ribbon decoration failed: ${e}`); }
-    return result;
+    try { return base(...args); }
+    finally {
+      try { if (isObserverSeat()) { pinOwnCard(this); decorateRibbon(this.Root); } } catch (e) { log(`ribbon decoration failed: ${e}`); }
+    }
   });
+  for (const method of ['refreshRibbonVis', 'onModelUpdate']) {
+    wrapMethod(proto, method, function (base, ...args) {
+      try { return base(...args); }
+      finally {
+        try { if (isObserverSeat()) pinOwnCard(this); } catch (e) { log(`ribbon paging failed: ${e}`); }
+      }
+    });
+  }
 }
 
 /**

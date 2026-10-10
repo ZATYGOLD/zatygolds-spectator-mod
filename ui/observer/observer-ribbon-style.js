@@ -27,7 +27,7 @@
  * highlights on portraits, and the leader's faith badges.
  */
 import { ancestorWithClass, setStyle } from '../shared/zom-util.js';
-import { HIGHLIGHT, ROW_COLORS } from './observer-config.js';
+import { HIGHLIGHT, PANEL_COLORS, ROW_COLORS } from './observer-config.js';
 import { diplomacySnapshot } from './observer-core.js';
 
 const STYLE_ID = 'zom-observer-ribbon-style';
@@ -62,7 +62,6 @@ const card = (selector) => `.${SIZED_CLASS} ${selector}`;
 const glow = (color, size = HIGHLIGHT.glowSize) => `filter: drop-shadow(0 0 ${size} ${color});`;
 /** Tints the hex border like the base tints the hex (the frame ignores fxs-background-image-tint); it replaces the frame's glow. */
 const hexBorder = (selector, color) => `${card(selector)} .diplo-ribbon__portrait-hex-bg-frame { filter: fxs-color-tint(${color}); }`;
-
 
 /** Glow around the whole portrait hex, plus a tight glow on the hex border itself so the edge reads clearly. */
 const portraitGlow = (selector, color) => [
@@ -188,7 +187,7 @@ function warPips(cardEl, wars, playerId) {
     const enemy = Players.get(war.a === playerId ? war.b : war.a);
     const pip = document.createElement('div');
     pip.classList.add('pointer-events-auto');
-    pip.style.cssText = `width: 0.6rem; height: 0.6rem; margin: 0 0.1rem; border-radius: 0.3rem; background-color: ${HIGHLIGHT.wars[war.color]}; border: 0.0555555556rem solid #000000;`;
+    pip.style.cssText = `width: 0.6rem; height: 0.6rem; margin: 0 0.1rem; border-radius: 0.3rem; background-color: ${HIGHLIGHT.wars[war.color]}; border: 0.0555555556rem solid ${PANEL_COLORS.shadow};`;
     if (enemy) pip.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_AT_WAR_WITH', enemy.name));
     pips.appendChild(pip);
   }

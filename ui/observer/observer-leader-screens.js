@@ -21,22 +21,23 @@
 /**
  * Zatygold's Spectator - leader picker on the older screens (in-game scope).
  *
- * Runtime patches giving Religion, Great Works and the tech / civic trees the
- * picker of observer-leader-view.js. Religion shows the viewed leader's
- * religion and pantheons read-only (a note when there is none, or when the Age
- * has no beliefs); the trees rebuild in place for the picked leader, and a
- * chooser opens the full tree.
+ * Runtime patches giving Religion, Great Works, Attributes and the tech / civic
+ * trees the picker of observer-leader-view.js. Religion shows the viewed
+ * leader's religion and pantheons read-only (a note when there is none, or
+ * when the Age has no beliefs); the trees rebuild in place for the picked
+ * leader, and a chooser opens the full tree.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
-import { createLogger, isTag, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { componentOf, createLogger, isTag, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { SCREEN_PROPS } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
-import { BAR_CLASS, playerBar, setRefresh, viewedPlayerID } from './observer-leader-view.js';
+import { BAR_CLASS, playerBar, releaseLeader, setRefresh, viewedPlayerID } from './observer-leader-view.js';
 
 const log = createLogger('observer-leader-screens');
 const RELIGION_TAG = 'panel-belief-picker';
 const GREAT_WORKS_TAG = 'screen-great-works';
+const ATTRIBUTES_TAG = 'screen-attribute-trees';
 
 /** The node being researched in a player's tree, else undefined. */
 function activeNode(player, treeType) {
@@ -204,6 +205,54 @@ function patchGreatWorks(proto) {
   });
 }
 
+// ============================ Attributes ============================
+
+const placeAttributesBar = (root) => insertBar(root?.querySelector('.attribute-trees__header'), ATTRIBUTES_TAG, false);
+
+/** Once the screen has laid out again (the bar added, the trees rebuilt), its scroll areas, lines and tabs are re-measured, as on a window resize. */
+const RELAYOUT_FRAMES = 3;   // the model updates a frame after a refresh, then the cards lay out
+function relayout(frames = RELAYOUT_FRAMES) {
+  if (frames > 0) requestAnimationFrame(() => relayout(frames - 1));
+  else window.dispatchEvent(new Event('resize'));
+}
+
+function patchAttributes(proto) {
+  wrapMethod(proto, 'onAttach', function (base, ...args) {
+    const result = base(...args);
+    try {
+      placeAttributesBar(this.Root);
+      relayout();
+    } catch (e) { log(`attributes screen patch failed: ${e}`); }
+    return result;
+  });
+  // A leader switch updates the open screen in place (every leader has the same trees; the cards follow the model).
+  setRefresh(ATTRIBUTES_TAG, () => {
+    const screen = document.querySelector(ATTRIBUTES_TAG);
+    const panel = screen && componentOf(screen);
+    if (!panel?.refreshAll) return false;
+    panel.refreshAll();
+    screen.querySelector('.' + BAR_CLASS)?.remove();
+    placeAttributesBar(screen);
+    relayout();
+    return true;
+  });
+  // A tab's panel is built with its side detail column shown (the screen hides it only on a resize or a revisit), squeezing the tree off-centre.
+  wrapMethod(proto, 'createPanelContent', function (base, container, index, ...rest) {
+    const result = base(container, index, ...rest);
+    try {
+      const detail = viewedPlayer() ? this.panelContentElements.get(index)?.cardDetailContainer : null;
+      const iconOnly = this.useIconOnlyCards();
+      detail?.classList.toggle('flex', iconOnly);
+      detail?.classList.toggle('hidden', !iconOnly);
+    } catch (e) { log(`attributes panel layout failed: ${e}`); }
+    return result;
+  });
+  wrapMethod(proto, 'onDetach', function (base, ...args) {
+    releaseLeader();
+    return base(...args);
+  });
+}
+
 // ============================ Tech and civic trees ============================
 
 const placeTreeBar = (root, screenTag) => insertBar(root?.querySelector('fxs-header'), screenTag, false);
@@ -274,5 +323,6 @@ function openFullTree(chooserTag) {
 for (const tree of TREES) whenDefined(tree.tag, (definition) => patchTree(definition.createInstance.prototype, tree), { log });
 whenDefined(RELIGION_TAG, (definition) => patchReligion(definition.createInstance.prototype), { log });
 whenDefined(GREAT_WORKS_TAG, (definition) => patchGreatWorks(definition.createInstance.prototype), { log });
+whenDefined(ATTRIBUTES_TAG, (definition) => patchAttributes(definition.createInstance.prototype), { log });
 
 export { CHOOSER_TAGS, openFullTree };

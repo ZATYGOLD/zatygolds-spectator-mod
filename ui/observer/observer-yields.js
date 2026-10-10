@@ -22,17 +22,15 @@
  * Zatygold's Spectator - Observer top yield bar (in-game scope).
  *
  * For the Observer seat the HUD's yield bar (panel-yield-banner) also shows
- * food and production, and while a leader panel is open it shows that
- * leader's yields, treasuries and settlement limit instead of the Observer's;
- * so it does while a Perspective is shown (observer-perspective.js).
- * The bar's own handlers keep writing the Observer's values (they are bound
- * before this module loads), so every change is followed by a deferred
- * repaint for the shown leader.
+ * food and production, and in a leader panel or a Perspective that leader's
+ * yields, treasuries and settlement limit. Its own handlers (bound before this
+ * module loads) keep writing the Observer's values, so each change is followed
+ * by a deferred repaint for the shown leader.
  */
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import { PanelYieldBanner } from 'fs://game/base-standard/ui/diplo-ribbon/panel-yield-banner.js';
 import { componentOf, createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
-import { inLeaderPanel, isObserverSeat } from './observer-core.js';
+import { inLeaderPanel, isObserverSeat } from './observer-core.js';
 import { PERSPECTIVE_CHANGED_EVENT, perspectivePlayer } from './observer-perspective.js';
 
 const log = createLogger('observer-yields');

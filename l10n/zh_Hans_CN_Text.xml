@@ -140,28 +140,61 @@
 			<Text>{1_Value} 单位能力</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hans_CN">
-			<Text>产出图表</Text>
+			<Text>编年史</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hans_CN">
-			<Text>每位领袖每回合的{1_Yield}，在游戏的每个回合记录。</Text>
+		<Replace Tag="LOC_ZOM_GRAPHS_VIEW" Language="zh_Hans_CN">
+			<Text>查看编年史</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hans_CN">
+			<Text>总体</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_NO_DATA" Language="zh_Hans_CN">
 			<Text>尚未记录任何回合。产出会在每回合开始时记录。</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="zh_Hans_CN">
-			<Text>每回合{1_Yield}</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_NONE_YET" Language="zh_Hans_CN">
+			<Text>尚无</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TOTAL_COLUMN" Language="zh_Hans_CN">
+			<Text>总计</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AVERAGE" Language="zh_Hans_CN">
+			<Text>平均</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_COLUMN" Language="zh_Hans_CN">
+			<Text>回合</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN_COLUMN" Language="zh_Hans_CN">
 			<Text>每回合</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hans_CN">
-			<Text>总体</Text>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hans_CN">
+			<Text>第{1_First}–{2_Last}回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="zh_Hans_CN">
+			<Text>{1_Value}%</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DETAILS" Language="zh_Hans_CN">
+			<Text>{1_First} · {2_Second}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_HIDE_LINE" Language="zh_Hans_CN">
 			<Text>点击隐藏该领袖的曲线。</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SHOW_LINE" Language="zh_Hans_CN">
 			<Text>点击显示该领袖的曲线。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY" Language="zh_Hans_CN">
+			<Text>概览</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SUMMARY_DESC" Language="zh_Hans_CN">
+			<Text>各领袖在此视图每个选项卡上的排名；选择卡片即可打开其选项卡。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_YIELDS" Language="zh_Hans_CN">
+			<Text>产出</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DESCRIPTION" Language="zh_Hans_CN">
+			<Text>每位领袖每回合的{1_Yield}，在游戏的每个回合记录。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PER_TURN" Language="zh_Hans_CN">
+			<Text>每回合{1_Yield}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_SCIENCE" Language="zh_Hans_CN">
 			<Text>科技</Text>
@@ -175,11 +208,254 @@
 		<Replace Tag="LOC_ZOM_GRAPH_INFLUENCE" Language="zh_Hans_CN">
 			<Text>影响力</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_HAPPINESS" Language="zh_Hans_CN">
+			<Text>幸福值</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_FOOD" Language="zh_Hans_CN">
 			<Text>食物</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PRODUCTION" Language="zh_Hans_CN">
 			<Text>生产力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_EMPIRE" Language="zh_Hans_CN">
+			<Text>帝国</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY" Language="zh_Hans_CN">
+			<Text>领土</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_DESC" Language="zh_Hans_CN">
+			<Text>各领袖在世界领土（所有领袖定居点的单元格）中的占比，记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_INFO" Language="zh_Hans_CN">
+			<Text>领袖的定居点拥有的每个单元格，记录于游戏的每个回合。[NN][BLIST][LI][B]折线[/B]：领袖在所有领袖拥有的单元格中的占比[LI][B]开发[/B]：有建筑、奇观或防御工事的单元格为市区，有改良设施的为乡村，其余为未改良[/LIST][NN][B]总计[/B]：当前（或时代结束时）拥有的单元格；悬停显示市区、乡村与未改良。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TERRITORY_SHARE" Language="zh_Hans_CN">
+			<Text>世界领土占比</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS" Language="zh_Hans_CN">
+			<Text>定居点</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时建立、占领、失去、夷平或升级定居点。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_INFO" Language="zh_Hans_CN">
+			<Text>领袖获得、失去或升级的每个[B]定居点[/B]。[NN][BLIST][LI][B]图钉[/B]：金色为城市，蓝色为城镇；被占领为绿色，失去为红色，夷平为紫色[LI][B]圆点[/B]：建立（或纳入）、占领、损失、夷平或升级为城市[LI][B]虚线弧[/B]：将城镇与其升级相连，并将占领或损失与其后的夷平相连[/LIST][NN][B]总计[/B]：当前（或时代结束时）拥有的定居点；悬停显示城市与城镇。[N][B]卡片[/B]：城市化率，即已开发单元格中市区单元格（建筑、奇观与防御工事，相对于改良设施）所占比例；悬停显示城市化程度最高与最低的定居点（当前时代）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_FOUNDED" Language="zh_Hans_CN">
+			<Text>建立</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_INCORPORATED" Language="zh_Hans_CN">
+			<Text>纳入</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED" Language="zh_Hans_CN">
+			<Text>占领</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SETTLEMENTS_LOST" Language="zh_Hans_CN">
+			<Text>损失</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED" Language="zh_Hans_CN">
+			<Text>夷平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UPGRADED" Language="zh_Hans_CN">
+			<Text>升级为城市</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION" Language="zh_Hans_CN">
+			<Text>人口</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_DESC" Language="zh_Hans_CN">
+			<Text>各领袖的定居点何时增长（市区人口、乡村人口、专家）。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_POPULATION_INFO" Language="zh_Hans_CN">
+			<Text>领袖的定居点增加的每位市民。[NN][BLIST][LI][B]图钉[/B]：带来该市民的建筑或改良设施，颜色为其主要产出[LI][B]圆点[/B]：市区为金色，乡村为银色[LI][B]专家[/B]：发光的金色图钉，附其所在单元格上的建筑[/LIST][NN]占领的定居点从被夺取时的规模开始计算。[NN][B]总计[/B]：当前（或时代结束时）的市民；悬停可查看市区、乡村与专家人数。[N][B]卡片[/B]：专家；悬停可按定居点与城区查看。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION" Language="zh_Hans_CN">
+			<Text>城市化率</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBANIZATION_DESC" Language="zh_Hans_CN">
+			<Text>各领袖已开发单元格中市区单元格（建筑、奇观与防御工事，相对于改良设施）所占比例。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_URBAN" Language="zh_Hans_CN">
+			<Text>城市化最高</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MOST_RURAL" Language="zh_Hans_CN">
+			<Text>乡村化最高</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_URBAN_TILES" Language="zh_Hans_CN">
+			<Text>市区单元格 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RURAL_TILES" Language="zh_Hans_CN">
+			<Text>乡村单元格 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_MILITARY" Language="zh_Hans_CN">
+			<Text>军事</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH" Language="zh_Hans_CN">
+			<Text>战力</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_DESC" Language="zh_Hans_CN">
+			<Text>各领袖在世界军事实力（所有领袖单位的战斗力）中的占比，记录于游戏的每个回合。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_INFO" Language="zh_Hans_CN">
+			<Text>领袖战斗单位的战斗力，每个单位取近战、远程与轰炸中的最高值，记录于游戏的每个回合。[NN][BLIST][LI][B]折线[/B]：领袖在所有领袖战力中的占比[/LIST][NN][B]总计[/B]：当前（或时代结束时）的战力。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_STRENGTH_SHARE" Language="zh_Hans_CN">
+			<Text>世界军事实力占比</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDERS" Language="zh_Hans_CN">
+			<Text>指挥官</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PRODUCED" Language="zh_Hans_CN">
+			<Text>生产</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PURCHASED" Language="zh_Hans_CN">
+			<Text>购买</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_GRANTED" Language="zh_Hans_CN">
+			<Text>获赠</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED" Language="zh_Hans_CN">
+			<Text>训练单位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时生产、购买或获赠单位，以及是哪些单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_TRAINED_INFO" Language="zh_Hans_CN">
+			<Text>领袖[B]生产[/B]、[B]购买[/B]或[B]获赠[/B]的每个单位。[NN][BLIST][LI][B]图钉[/B]：陆地、海军、平民或指挥官[LI][B]指挥官[/B]：只计一次，战败后归来时不再计入[/LIST][NN][B]总计[/B]：训练的单位；悬停可查看各类别。[N][B]卡片[/B]：训练的每种指挥官，若无则为训练最多的单位；悬停可按类别查看所有单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST" Language="zh_Hans_CN">
+			<Text>损失单位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时因摧毁或俘获而损失单位，以及败于谁手。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_LOST_INFO" Language="zh_Hans_CN">
+			<Text>领袖被敌人摧毁或俘获而损失的每个单位。[NN][BLIST][LI][B]图钉[/B]：陆地、海军、平民或指挥官，以及夺取者[LI][B]排名[/B]：损失最少者在前[/LIST][NN][B]总计[/B]：损失的单位；悬停可查看各类别。[N][B]卡片[/B]：损失的每种指挥官，若无则为损失最多的单位；悬停可按类别查看所有单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED" Language="zh_Hans_CN">
+			<Text>击败单位</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_DESC" Language="zh_Hans_CN">
+			<Text>每位领袖何时摧毁或俘获了哪些单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_UNITS_DEFEATED_INFO" Language="zh_Hans_CN">
+			<Text>领袖摧毁或俘获的每个敌方单位。[NN][BLIST][LI][B]图钉[/B]：陆地、海军、平民或指挥官，以及其所属者[/LIST][NN][B]总计[/B]：击败的单位；悬停可查看各类别。[N][B]卡片[/B]：击败的每种指挥官，若无则为击败最多的单位；悬停可按类别查看所有单位。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS" Language="zh_Hans_CN">
+			<Text>晋升</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_DESC" Language="zh_Hans_CN">
+			<Text>各领袖的指挥官何时获得了哪些晋升与嘉奖。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PROMOTIONS_INFO" Language="zh_Hans_CN">
+			<Text>领袖的指挥官获得的每次[B]晋升[/B]与[B]嘉奖[/B]。[NN][BLIST][LI][B]晋升[/B]：所属分支的图标，图钉为该分支的颜色[LI][B]嘉奖[/B]：嘉奖图标，图钉为发光的金色[LI][B]详情[/B]：指挥官，以及这是其第几次晋升[LI][B]虚线弧[/B]：连接每位指挥官的晋升；圆点颜色用于区分指挥官[/LIST][NN][B]总计[/B]：晋升与嘉奖；悬停可查看每一项。[N][B]卡片[/B]：获得最多的嘉奖与晋升最多的分支；悬停可查看每种嘉奖与分支。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMENDATIONS" Language="zh_Hans_CN">
+			<Text>嘉奖</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NO_PROMOTIONS" Language="zh_Hans_CN">
+			<Text>尚无晋升</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_COMMANDER_PROMOTION" Language="zh_Hans_CN">
+			<Text>{1_Commander}，第{2_Number}次晋升</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS" Language="zh_Hans_CN">
+			<Text>战争</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时与谁交战，以及每场战争如何开始与结束。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_WARS_INFO" Language="zh_Hans_CN">
+			<Text>领袖之间的战争；独立势力始终敌对，不计入。战争会延续到新时代，直至达成和平。[NN]刻度显示每个回合：[NN][BLIST][LI][B]红色[/B]：侵略，由该领袖宣战[LI][B]黄色[/B]：防御，该领袖遭到宣战[LI][B]灰色[/B]：和平[/LIST][NN]同时进行的多场战争共享一个刻度；达成和平的刻度以绿色填满。显示敌人的图钉标记每场战争的开始处，[B]绿色[/B]图钉标记达成和平之处；每个图钉都注明谁攻击了谁。[NN][B]回合[/B]：处于战争状态的回合数；悬停可查看宣战、遭宣战与达成和平的次数。[N][B]卡片[/B]：交战时间最长的敌人（并列时全部显示）；悬停可查看每场战争。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AT_WAR" Language="zh_Hans_CN">
+			<Text>交战回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DIPLOMACY" Language="zh_Hans_CN">
+			<Text>外交</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_WAR" Language="zh_Hans_CN">
+			<Text>侵略</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_DECLARED_ON" Language="zh_Hans_CN">
+			<Text>防御</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR" Language="zh_Hans_CN">
+			<Text>交战中</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE" Language="zh_Hans_CN">
+			<Text>达成和平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKING_LEADER" Language="zh_Hans_CN">
+			<Text>向{1_Leader}宣战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKED_BY_LEADER" Language="zh_Hans_CN">
+			<Text>遭{1_Leader}进攻</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_AT_WAR_WITH" Language="zh_Hans_CN">
+			<Text>与{1_Leader}交战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PEACE_WITH" Language="zh_Hans_CN">
+			<Text>与{1_Leader}和平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES" Language="zh_Hans_CN">
+			<Text>冲突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_DESC" Language="zh_Hans_CN">
+			<Text>各领袖何时与谁进行攻城、会战与小规模冲突，以及占领、夷平或掠夺了什么。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLES_INFO" Language="zh_Hans_CN">
+			<Text>领袖的冲突。[B]战斗[/B]指同样两方之间在3格范围内、间隔不超过5回合的所有攻击与掠夺。只有当双方都以可作战的单位（非开拓者或侦察兵）相互攻击后才会计入；每次攻击对双方都计入，掠夺建筑计2，掠夺乡村单元格计1。[NN]按优先顺序：[NN][BLIST][LI][B]夷平[/B]：被夷平的定居点，从地图上消失后计入[LI][B]占领[/B]：夺取的定居点[LI][B]损失[/B]：被夺走的定居点[LI][B]攻城[/B]：被围攻的定居点；同一敌人在5回合内再次围攻，视为同一次攻城[LI][B]会战[/B]：在首回合或持续满3回合时有3次及以上攻击或4及以上掠夺的战斗、有5个回合发生作战的战斗，或双方之间发生过攻城的战斗[LI][B]小规模冲突[/B]：其他规模较小的战斗[LI][B]掠夺[/B]：被敌方单位掠夺的单元格，洪水、火山喷发或风暴造成的不计；[B]被掠夺[/B]（该领袖自己的单元格）也计入此项[/LIST][NN]圆点表示对手：领袖为金色，城邦为蓝色，独立势力为银色；图钉优先显示领袖，其次为城邦，再次为独立势力。刻度显示每场攻城（橙色）、会战（红色）和小规模冲突（蓝色）进行期间的回合；重叠时共享刻度，靠前者占据大部分。虚线弧将每个事件与其起因相连：小规模冲突连到其升级成的会战，作战连到攻城，攻城连到占领或损失，后者再连到夷平。[NN][B]总计[/B]：攻城、会战、小规模冲突与掠夺；悬停时另行显示其结果：夷平、占领与损失。[N][B]卡片[/B]：宿敌，即作战次数最多的玩家（领袖优先于城邦和独立势力）；悬停可查看其他所有对手。</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OUTCOMES" Language="zh_Hans_CN">
+			<Text>结果</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE" Language="zh_Hans_CN">
+			<Text>攻城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE" Language="zh_Hans_CN">
+			<Text>会战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH" Language="zh_Hans_CN">
+			<Text>小规模冲突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SIEGE_LIST" Language="zh_Hans_CN">
+			<Text>攻城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BATTLE_LIST" Language="zh_Hans_CN">
+			<Text>会战</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_SKIRMISH_LIST" Language="zh_Hans_CN">
+			<Text>小规模冲突</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGED" Language="zh_Hans_CN">
+			<Text>掠夺</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAIDED" Language="zh_Hans_CN">
+			<Text>被掠夺</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_BESIEGED_BY" Language="zh_Hans_CN">
+			<Text>遭{1_Player}攻城</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_CAPTURED_BY" Language="zh_Hans_CN">
+			<Text>遭{1_Player}占领</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_RAZED_BY" Language="zh_Hans_CN">
+			<Text>遭{1_Player}夷平</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_ATTACKS_COUNT" Language="zh_Hans_CN">
+			<Text>攻击 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_PILLAGE_COUNT" Language="zh_Hans_CN">
+			<Text>掠夺 {1_Num}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_NEMESIS" Language="zh_Hans_CN">
+			<Text>宿敌</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_OPPONENTS" Language="zh_Hans_CN">
+			<Text>对手</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GROUPED_DIGITS" Language="zh_Hans_CN">
+			<Text>{1_Amount: number #,###;-#,###}</Text>
 		</Replace>
 	</LocalizedText>
 </Database>

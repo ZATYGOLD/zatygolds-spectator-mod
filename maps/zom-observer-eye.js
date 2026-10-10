@@ -21,7 +21,7 @@
 /**
  * Zatygold's Spectator - Observer's Eye placement (gameplay scripts).
  *
- * Used by the start-plot and Age-transition overrides: creates each Observer's
+ * Used by the map-globals and Age-transition overrides: creates each Observer's
  * Eye on open water by the ocean ice nearest the bottom-center of the map, then
  * moves it onto the ice (the engine refuses to create units on ice but allows
  * the move).
@@ -112,4 +112,41 @@ function placeObserverEyes() {
   }
 }
 
-export { createObserverEye, isObserverPlayerId, observerPlots, placeObserverEyes };
+/**
+ * Route every Observer start through StartPositioner, whichever map script places it
+ * (base maps, the Earth maps and custom maps all import map-globals.js, which calls this).
+ * The Observer starts on the ice chosen here, with its Eye; other players are untouched.
+ */
+function observeStartPositions() {
+  if (typeof StartPositioner === 'undefined') return;   // not a map-generation context
+  try {
+    StartPositioner.zomObserverPlots = new Set();      // plots used this map generation (the latest load wins)
+    if (StartPositioner.zomObserverWrapped) return;   // a reloaded script must not wrap twice
+    StartPositioner.zomObserverWrapped = true;
+    const base = StartPositioner.setStartPosition.bind(StartPositioner);
+    StartPositioner.setStartPosition = (plotIndex, playerId) => {
+      if (!isObserverPlayerId(playerId)) return base(plotIndex, playerId);
+      let plots = null;
+      try { plots = observerPlots(StartPositioner.zomObserverPlots); }
+      catch (e) { log(`observer start failed for ${playerId}: ${e}`); }
+      // A refused or failing start must never abort the other players' starts: fall back to the script's plot.
+      let result = false;
+      if (plots) {
+        try { result = base(plots.start.index, playerId); }
+        catch (e) { log(`eye start refused for ${playerId}: ${e}`); }
+      }
+      if (result === false) {
+        try { result = base(plotIndex, playerId); }
+        catch (e) { log(`start failed for ${playerId}: ${e}`); }
+      }
+      try {
+        const w = GameplayMap.getGridWidth();
+        const script = { x: plotIndex % w, y: Math.floor(plotIndex / w) };
+        createObserverEye(playerId, plots ?? { start: script, water: script });
+      } catch (e) { log(`eye creation failed for ${playerId}: ${e}`); }
+      return result;
+    };
+  } catch (e) { log('could not wrap StartPositioner: ' + e); }
+}
+
+export { createObserverEye, isObserverPlayerId, observeStartPositions, observerPlots, placeObserverEyes };

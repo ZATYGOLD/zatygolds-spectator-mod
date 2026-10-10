@@ -22,16 +22,20 @@
  * Zatygold's Spectator - Observer diplomacy (in-game scope).
  *
  * The Observer has met everyone; the leader panel lists all of a leader's wars
- * and offers no actions; the independent / city-state panel shows its type,
- * suzerain and bonus, then every leader's standing and befriending progress.
+ * and offers only the leader's Attributes; the independent / city-state panel
+ * shows its type, suzerain and bonus, then every leader's standing and
+ * befriending progress.
  */
+import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import LeaderModelManager from 'fs://game/base-standard/ui/diplomacy/leader-model-manager.js';
 import { DiplomacyActionPanel } from 'fs://game/base-standard/ui/diplomacy-actions/panel-diplomacy-actions.js';
 import 'fs://game/base-standard/ui/diplomacy-actions/panel-other-diplomacy.js';   // defines PANEL_TAG
 import { installAssetAliases } from '../shared/zom-assets.js';
-import { clearChildren, createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat, leaderPortrait, watchedPlayers } from './observer-core.js';
+import { clamp, clearChildren, createLogger, isObserverPlayer, onActivate, wrapMethod } from '../shared/zom-util.js';
+import { PANEL_COLORS, RELATIONSHIP_COLORS } from './observer-config.js';
+import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { showLeader } from './observer-leader-view.js';
 import { cityStateBonus, cityStateType, suzerainOf } from './observer-settlement-info.js';
 
 const log = createLogger('observer-diplomacy');
@@ -40,20 +44,22 @@ const OMIT_CLASS = 'zom-observer-omit';
 const OWN_RELATIONSHIP = '#panel-diplomacy-actions__relationship-event-container';
 const OTHER_RELATIONSHIPS = '#panel-diplomacy-actions__other-relationships-container';
 const RELATIONSHIP_TEXT = {
-  FRIENDLY: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_FRIENDLY', color: '#7ccf6e' },
-  NEUTRAL: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_NEUTRAL', color: '#e5d2ac' },
-  HOSTILE: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_HOSTILE', color: '#e0604e' }
+  FRIENDLY: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_FRIENDLY', color: RELATIONSHIP_COLORS.friendly },
+  NEUTRAL: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_NEUTRAL', color: RELATIONSHIP_COLORS.neutral },
+  HOSTILE: { loc: 'LOC_INDEPENDENT_RELATIONSHIP_HOSTILE', color: RELATIONSHIP_COLORS.hostile }
 };
 const AT_WAR_COLOR = RELATIONSHIP_TEXT.HOSTILE.color;
+const ATTRIBUTES_TAG = 'screen-attribute-trees';
 
 let metInstalled = false;
 
 /** The Observer's own diplomacy object answers hasMet with true (requires the engine to reuse that object). */
 function installMetEveryone() {
   if (metInstalled || !isObserverSeat()) return;
-  metInstalled = true;
   const own = Players.get(GameContext.localPlayerID)?.Diplomacy;
-  if (!own || Players.get(GameContext.localPlayerID)?.Diplomacy !== own) { log('diplomacy object is not stable; met-everyone skipped'); return; }
+  if (!own) return;   // tried again next turn
+  metInstalled = true;
+  if (Players.get(GameContext.localPlayerID)?.Diplomacy !== own) { log('diplomacy object is not stable; met-everyone skipped'); return; }
   wrapMethod(Object.getPrototypeOf(own), 'hasMet', function (base, playerId, ...rest) {
     return (this === own && playerId !== GameContext.localPlayerID) || base(playerId, ...rest);
   });
@@ -127,15 +133,14 @@ function textLine(loc, classes, color) {
 
 /**
  * A plain bar in the game's colours (dark track, bronze border, deep bronze
- * fill). The game's fxs-progress-bar draws beyond its box and bled into the
- * rows below, so the bar is ordinary divs that cannot overlap anything.
+ * fill), of ordinary divs: the game's fxs-progress-bar draws beyond its box.
  */
 function progressBar(fraction) {
   const track = document.createElement('div');
   track.classList.value = 'self-stretch mt-1';
-  track.style.cssText = 'height: 0.4444444444rem; background-color: rgba(0, 0, 0, 0.6); border: 0.0555555556rem solid rgba(140, 126, 98, 0.6);';
+  track.style.cssText = `height: 0.4444444444rem; background-color: ${PANEL_COLORS.track}; border: 0.0555555556rem solid ${PANEL_COLORS.border};`;
   const fill = document.createElement('div');
-  fill.style.cssText = `height: 100%; background-color: #e0b96c; width: ${Math.round(Math.max(0, Math.min(1, fraction)) * 100)}%;`;
+  fill.style.cssText = `height: 100%; background-color: ${RELATIONSHIP_COLORS.befriend}; width: ${Math.round(clamp(fraction, 0, 1) * 100)}%;`;
   track.appendChild(fill);
   return track;
 }
@@ -233,6 +238,32 @@ function relationshipSection(power) {
 
 // ============================ Leader panel ============================
 
+/** The leader's Attributes button, as its own leader panel shows it (unspent points on a badge): opens the leader's attribute trees. */
+function attributesButton(leaderId) {
+  const button = document.createElement('fxs-hero-button');
+  button.setAttribute('caption', Locale.stylize('LOC_DIPLOMACY_ATTRIBUTES_BUTTON_NAME'));
+  button.setAttribute('data-audio-group-ref', 'audio-diplo-project-reaction');
+  button.classList.add('panel-diplomacy-actions__attribute-button', 'mt-2');
+  const identity = Players.get(leaderId)?.Identity;
+  const points = [...GameInfo.Attributes].reduce((sum, a) => sum + (identity?.getAvailableAttributePoints(a.AttributeType) ?? 0), 0);
+  if (points > 0) {
+    waitForLayout(() => {
+      const badge = document.createElement('div');
+      badge.classList.value = 'panel-diplomacy-actions__attribute-button-icon -top-4 -right-3 bottom-3 h-10 absolute flex items-center justify-center';
+      const count = document.createElement('div');
+      count.classList.value = 'font-body text-sm mt-2 px-4';
+      count.textContent = `${points}`;
+      badge.appendChild(count);
+      button.appendChild(badge);
+    });
+  }
+  onActivate(button, () => {
+    showLeader(leaderId);
+    ContextManager.push(ATTRIBUTES_TAG, SCREEN_PROPS);
+  });
+  return button;
+}
+
 /** Drop Observer portraits (and rows left empty) and the leader's relationship with the Observer. */
 function removeObserverRelationships(root) {
   root.querySelector(OWN_RELATIONSHIP)?.style.setProperty('display', 'none');
@@ -259,6 +290,8 @@ function patchPanel(proto) {
   wrapMethod(proto, 'populateAvailableActions', function (base, ...args) {
     if (!isObserverSeat()) return base(...args);
     clearChildren(this.majorActionsSlot);
+    const selected = Players.get(DiplomacyManager.selectedPlayerID);
+    if (selected?.isMajor && !isObserverPlayer(selected.id)) this.majorActionsSlot?.appendChild(attributesButton(selected.id));
   });
 
   wrapMethod(proto, 'populateActionsPanel', function (base, ...args) {

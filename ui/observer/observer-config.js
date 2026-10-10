@@ -68,9 +68,31 @@ const HIGHLIGHT = {
   celebration: '#ffc21a',
   pantheon: '#d9a441',                  // pantheon badge tint, apart from the white religion icons
   pantheonHover: '#f2c977',
+  pinGlow: 'rgba(255, 200, 50, 0.85)',  // Chronicle pins of commanders, commendations and specialists
   alliances: ['#4aa3ff', '#5cd65c', '#b36bff', '#ff8c1a', '#3de0d0', '#ff5fb0', '#f0f0f0'],
   wars: ['#e04848', '#4aa3ff', '#5cd65c', '#b36bff', '#ff8c1a', '#3de0d0', '#ff5fb0', '#f0f0f0']
 };
+
+/** Chrome of the Observer's own panels and overlays. */
+const PANEL_COLORS = {
+  parchment: '#e5d2ac',                         // selected borders, neutral text
+  parchmentFaint: 'rgba(229, 210, 172, 0.55)',
+  ribbonText: '#e7d9ac',
+  border: 'rgba(140, 126, 98, 0.6)',            // bronze row and track borders
+  borderStrong: 'rgba(140, 126, 98, 0.9)',
+  plate: 'rgba(10, 10, 12, 0.85)',              // dark plates behind floating text
+  bar: 'rgba(10, 12, 18, 0.88)',
+  track: 'rgba(0, 0, 0, 0.6)',
+  meterTrack: 'rgba(255, 255, 255, 0.22)',
+  oddRow: 'rgba(76, 71, 61, 0.6)',
+  shadow: '#000000'
+};
+
+/** A settlement's change of hands, as the Chronicle's Settlements and Conflicts tabs colour it. */
+const OUTCOME_COLORS = { captured: '#4f9d69', lost: '#a33b3b', razed: '#5b2a86' };
+
+/** An independent's standing with a leader, and befriending progress. */
+const RELATIONSHIP_COLORS = { friendly: '#7ccf6e', neutral: PANEL_COLORS.parchment, hostile: '#e0604e', befriend: '#e0b96c' };
 
 /** Value colour of each Yields row, bright against the slate background. */
 const ROW_COLORS = {
@@ -114,4 +136,4 @@ const ICONS = {
   perspective: ART.observerIcon
 };
 
-export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, ROW_COLORS };
+export { CONFIG, HIGHLIGHT, ICONS, METER_COLORS, OBSERVER_VIEW, OUTCOME_COLORS, PANEL_COLORS, RELATIONSHIP_COLORS, ROW_COLORS };

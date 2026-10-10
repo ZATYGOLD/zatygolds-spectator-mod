@@ -31,6 +31,7 @@ import Panel from 'fs://game/core/ui/panel-support.js';
 import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
 import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
 import { clearChildren } from '../shared/zom-util.js';
+import { PANEL_COLORS } from './observer-config.js';
 import { leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
 
@@ -109,7 +110,7 @@ class ObserverOverviewPanel extends Panel {
 function leaderHeader(player) {
   const row = document.createElement('div');
   row.classList.value = 'flex flex-row items-center self-stretch mt-6 pb-1';
-  row.style.borderBottom = '0.0555555556rem solid rgba(140, 126, 98, 0.6)';
+  row.style.borderBottom = `0.0555555556rem solid ${PANEL_COLORS.border}`;
   const portrait = leaderPortrait(player, 'size-12 mr-2');
   const name = document.createElement('p');
   name.classList.value = 'font-title-base text-accent-2';

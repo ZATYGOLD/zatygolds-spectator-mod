@@ -29,10 +29,10 @@
  */
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
 import { clamp, isAgeTransitionInProgress } from '../shared/zom-util.js';
-import { ICONS, METER_COLORS } from './observer-config.js';
+import { ICONS, METER_COLORS, PANEL_COLORS } from './observer-config.js';
 import { unitStrength } from './observer-core.js';
 
-const TEXT_COLOR = '#e7d9ac';
+const TEXT_COLOR = PANEL_COLORS.ribbonText;
 
 /** A stat row: everything is drawn by `img`, the rest feeds tooltips and sorting. */
 function displayItem(type, label, img, details, rawValue) {
@@ -48,7 +48,7 @@ function meterHTML(iconUrl, label, pct, barColor) {
     : '';
   return `<div style='display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.4rem 0.2rem;width:3.95rem;overflow:hidden;'>` +
     icon + name +
-    `<div style='width:2.4rem;height:0.22rem;border-radius:0.11rem;background-color:rgba(255,255,255,0.22);margin-top:0.25rem;'>` +
+    `<div style='width:2.4rem;height:0.22rem;border-radius:0.11rem;background-color:${PANEL_COLORS.meterTrack};margin-top:0.25rem;'>` +
     `<div style='height:100%;border-radius:0.11rem;background-color:${barColor};width:${p}%;'></div></div></div>`;
 }
 
@@ -125,13 +125,13 @@ function recordValues(playerId, items) {
   }
 }
 
+const OWN_ROW_TYPES = new Set(['trade', 'combat', ...EXTRA_ROWS.map((row) => row.type)]);   // rows we drop or build ourselves (also when another mod adds them)
+
 /**
  * The base Yields rows (from baseItems()) in compact form, without trade
  * routes (always 0/0 with the Observer), plus food, production, citizens,
  * military strength and techs / civics / wonders completed.
  */
-const OWN_ROW_TYPES = new Set(['trade', 'combat', ...EXTRA_ROWS.map((row) => row.type)]);   // rows we drop or build ourselves (also when another mod adds them)
-
 function yieldsItems(player, baseItems) {
   const base = baseItems().filter((item) => !OWN_ROW_TYPES.has(item.type)).map((item) =>
     (SIGNED_TYPES.has(item.type) ? { ...item, value: formatSigned(item.rawValue ?? 0) } : item));

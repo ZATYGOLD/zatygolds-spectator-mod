@@ -17,6 +17,7 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 /**
  * Zatygold's Spectator - Observer settlement details (in-game scope).
  *
@@ -31,7 +32,7 @@ import Panel from 'fs://game/core/ui/panel-support.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
 import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
 import { clearChildren, componentOf, createLogger, deferOnce, onActivate } from '../shared/zom-util.js';
-import { CONFIG, HIGHLIGHT } from './observer-config.js';
+import { CONFIG, HIGHLIGHT, PANEL_COLORS } from './observer-config.js';
 import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
 import { townFocus } from './observer-settlement-info.js';
 
@@ -41,7 +42,7 @@ const DETAILS_STYLES = 'fs://game/base-standard/ui/city-details/panel-city-detai
 // Striped pill rows, a small table per section.
 const ROW_HEIGHT = '1.5rem';
 const ROW_RADIUS = '0.75rem';
-const ODD_ROW_BG = 'rgba(76, 71, 61, 0.6)';
+const ODD_ROW_BG = PANEL_COLORS.oddRow;
 const HIGHLIGHT_BG = 'rgba(128, 179, 77, 0.4)';   // the current town focus (food green)
 const DAMAGED_COLOR = HIGHLIGHT.negative;
 const ICON_SIZE = '1.5rem';
@@ -275,7 +276,8 @@ function constructibleGroups(city, wantedClass) {
 class ObserverSettlementPanel extends Panel {
   engineInputListener = this.onEngineInput.bind(this);
   closeListener = () => this.close();
-  refreshListener = deferOnce(() => { if (shown) this.renderCity(); });
+  renderSoon = deferOnce(() => { if (shown) this.renderCity(); });
+  refreshListener = (data) => { if (shown && (!data?.cityID || ComponentID.isMatch(data.cityID, shown))) this.renderSoon(); };   // another settlement's change is not shown
 
   onAttach() {
     super.onAttach();

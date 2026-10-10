@@ -29,7 +29,7 @@ import { componentOf, createLogger, isObserverPlayer, leaderTypeOf, whenDefined,
 import { CONFIG } from './observer-config.js';
 
 const coreLog = createLogger('observer-core');
-const BUILD = '2026-10-06 19:20';
+const BUILD = '2026-10-10 15:00';
 // One line per game load, so UI.log always says which build ran and for whom.
 engine.whenReady.then(() => coreLog(`build ${BUILD}; observer seat: ${isObserverSeat()}`));
 
@@ -51,6 +51,12 @@ function watchedPlayers() {
   try { return Players.getAlive().filter((p) => p?.isMajor && !isObserverPlayer(p.id)); }
   catch (e) { return []; }
 }
+
+/** An Independent Power (always hostile to everyone). */
+const isIndependent = (id) => { const p = Players.get(id); return !!p && (p.isIndependent ?? (!p.isMajor && !p.isMinor)); };
+
+/** Whether two players are enemies: at war, or either an Independent Power. */
+const areEnemies = (a, b) => a != null && b != null && a !== b && (isIndependent(a) || isIndependent(b) || !!Players.get(a)?.Diplomacy?.isAtWarWith?.(b));
 
 // ============================ Screen dock ============================
 
@@ -159,4 +165,7 @@ function inLeaderPanel() {
   try { return /DIPLOMACY_HUB/.test(InterfaceMode.getCurrent() ?? ''); } catch (e) { return false; }
 }
 
-export { SCREEN_PROPS, canSave, diplomacySnapshot, onScreenDock, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, onObserverReady, meleeStrength, rangedStrength, readSaved, unitStrength, watchedPlayers, writeSaved };
+export {
+  areEnemies, canSave, diplomacySnapshot, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, onObserverReady, onScreenDock,
+  rangedStrength, readSaved, SCREEN_PROPS, unitStrength, watchedPlayers, writeSaved
+};

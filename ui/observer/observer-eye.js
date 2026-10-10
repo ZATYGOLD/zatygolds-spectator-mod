@@ -21,12 +21,10 @@
 /**
  * Zatygold's Spectator - Observer's Eye (in-game scope).
  *
- * The Observer's only unit is the Eye (data/units.xml),
- * created on marine ice by the map script. Its sight covers the whole map, so
- * every unit shows live (revealing the map alone never shows units). For the
- * Observer seat its flag is hidden, and it is kept asleep: it has 1 move, so
- * it would otherwise ask for orders every turn. It is never selected
- * (observer-units.js ignores the Observer's own units).
+ * The Observer's only unit is the Eye (data/units.xml), made on marine ice by
+ * the map script: its sight covers the whole map, so every unit shows live.
+ * For the Observer seat its flag is hidden and it is kept asleep (with 1 move
+ * it would ask for orders every turn); it is never selected (observer-units.js).
  */
 import { GenericUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags.js';
 import { createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
