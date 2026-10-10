@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.0**.
+multiplayer. Current version: **1.1.1**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -128,6 +128,13 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 (`debug: true` logs diagnostics to `UI.log`).
 
 ## Changelog
+
+### 1.1.1
+
+- **Chronicle** — no longer overloads the graphics card late in an Age:
+  timeline pins and Summary art are drawn without filters, pins are reused
+  between updates, and only the open tab follows the game, at most once a
+  second. Switching tabs quickly no longer crashes the game.
 
 ### 1.1.0
 

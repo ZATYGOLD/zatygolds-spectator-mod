@@ -33,31 +33,32 @@
  *     color (else the tab's), card (its card's first cell), average (the value line averages, percent: as a %),
  *     label, description (else the tab's) }] }
  *
- * Art is a base-game civilization's loading scene (no DLC needed), blurred
- * and washed in the card's colour, as the Victories cards' art is.
+ * Art is a base-game civilization's loading scene (no DLC needed; its 720
+ * size, softer and lighter on the graphics card), dimmed and washed in the
+ * card's colour as the Victories cards' art is. No CSS filters: each is a
+ * render layer of its own.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
-import { createComponent, createMemo, For } from 'fs://game/core/vendor/solid-js/dist/solid.js';
+import { createComponent, createMemo, createRenderEffect } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { Activatable } from 'fs://game/core/ui-next/components/activatable.js';
 import { PortraitIcon } from 'fs://game/core/ui-next/components/portrait-icon.js';
 import { ScrollArea } from 'fs://game/core/ui-next/components/scroll-area.js';
 import { useTabContext } from 'fs://game/core/ui-next/components/tab.js';
-import { fillPanel, formatValue, InfoTooltip, insertFilters, leaderName, panelDescription, viewLabel } from './observer-graph-parts.js';
+import { fillPanel, formatValue, InfoTooltip, insertFilters, leaderName, LeaderRows, panelDescription, viewLabel } from './observer-graph-parts.js';
 import { lineTotals } from './observer-graph-lines.js';
 import { timelineTotals } from './observer-graph-timelines.js';
 
 const TOP_PLACES = 3;   // set apart from the rest, as on the Victories summary
 
 /** A card's art: a civilization's loading scene (civ: 'rome'), cropped to the card. */
-const civArt = (civ) => ({ image: `lsbg_${civ}_1080`, size: 'cover', position: 'center' });
-const ART_BLUR = '0.3rem';
+const civArt = (civ) => ({ image: `lsbg_${civ}_720`, size: 'cover', position: 'center' });
 const WASH_DEPTH = 0.6;   // the wash is the card's colour darkened to this share
 
 /** The card's colour wash over its art: strongest at the top, fading to dark under the leaders. */
 function colorWash(hex) {
   const [r, g, b] = [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * WASH_DEPTH));
   const shade = (alpha) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  return `linear-gradient(to bottom, ${shade(0.36)} 0%, ${shade(0.18)} 45%, rgba(8, 8, 10, 0.78) 100%)`;
+  return `linear-gradient(to bottom, ${shade(0.45)} 0%, ${shade(0.3)} 45%, rgba(8, 8, 10, 0.85) 100%)`;
 }
 
 const T = {
@@ -109,16 +110,26 @@ function worldValue(column, ranking) {
   return column.percent ? Locale.compose('LOC_ZOM_GRAPH_PERCENT', mean) : formatValue(mean);
 }
 
-/** A leader's line: portrait, place and name, value; dimmed unless the best. */
-function leaderLine(cell, place, best) {
+/**
+ * A leader's line, kept while the leader has one (updated, not rebuilt):
+ * portrait, place and name, value, dimmed unless the best; the Victories
+ * ornament above the first place after the top ones.
+ */
+function leaderLine(id, cell, index, best) {
+  const decor = T.decor();
   const row = T.row();
   const [portrait, rest] = row.firstChild.firstChild.children;
   const [name, value] = rest.children;
-  insert(portrait, createComponent(PortraitIcon, { playerId: cell.id, size: 12 }));
-  name.textContent = `${place}. ${leaderName(cell.id)}`;
-  value.textContent = cell.text;
-  if (cell.key !== best) [name, value].forEach((el) => el.classList.add('opacity-60'));
-  return row;
+  insert(portrait, createComponent(PortraitIcon, { playerId: id, size: 12 }));
+  const leader = leaderName(id);
+  createRenderEffect(() => {
+    name.textContent = `${index() + 1}. ${leader}`;
+    value.textContent = cell()?.text ?? '-';
+    const dim = cell()?.key !== best();
+    for (const el of [name, value]) el.classList[dim ? 'add' : 'remove']('opacity-60');
+    decor.style.display = index() === TOP_PLACES ? '' : 'none';
+  });
+  return [decor, row];
 }
 
 /** One tab's card: art, title, emblem and description, then its value line and ranked leaders. */
@@ -136,7 +147,7 @@ const ColumnCard = (props) => {
   if (props.narrow) description.classList.replace('mx-6', 'mx-3');
   const art = T.art();
   Object.assign(art.style, {
-    backgroundImage: `url(blp:${column.art.image})`, backgroundSize: column.art.size, backgroundPosition: column.art.position, filter: `blur(${ART_BLUR})`
+    backgroundImage: `url(blp:${column.art.image})`, backgroundSize: column.art.size, backgroundPosition: column.art.position
   });
   const wash = T.wash();
   wash.style.backgroundImage = colorWash(color);
@@ -148,14 +159,8 @@ const ColumnCard = (props) => {
   line.firstChild.textContent = Locale.compose(column.average ? 'LOC_ZOM_GRAPH_AVERAGE' : column.tab.valueLabel ?? 'LOC_ZOM_GRAPH_TOTAL_COLUMN');
   insert(line.lastChild, () => worldValue(column, props.ranking()));
   list.appendChild(goal);
-  insert(list, createComponent(For, {
-    get each() { return props.ranking(); },
-    children: (cell, index) => {
-      const best = bestKey(props.ranking());
-      const lineEl = leaderLine(cell, index() + 1, best);
-      return index() === TOP_PLACES ? [T.decor(), lineEl] : lineEl;
-    }
-  }), null);
+  const best = createMemo(() => bestKey(props.ranking()));
+  insert(list, createComponent(LeaderRows, { rows: props.ranking, row: (id, cell, index) => leaderLine(id, cell, index, best) }), null);
 
   return createComponent(Activatable, {
     'class': `victories-summary-box pointer-events-auto duration-150 ease-out font-title text-center text-white relative flex flex-col ${props.last ? '' : 'victories-summary-divider'}`,
