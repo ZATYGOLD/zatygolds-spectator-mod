@@ -135,6 +135,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   timeline pins and Summary art are drawn without filters, pins are reused
   between updates, and only the open tab follows the game, at most once a
   second. Switching tabs quickly no longer crashes the game.
+- **Auto End Turn** — switches off again when an Age is complete, so you
+  choose when to begin the transition.
 
 ### 1.1.0
 
