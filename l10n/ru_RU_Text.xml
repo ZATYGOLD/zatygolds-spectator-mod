@@ -142,6 +142,9 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ru_RU">
 			<Text>Летопись</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_VIEW" Language="ru_RU">
+			<Text>Посмотреть летопись</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ru_RU">
 			<Text>Общее</Text>
 		</Replace>

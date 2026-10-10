@@ -142,6 +142,9 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="de_DE">
 			<Text>Chronik</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_VIEW" Language="de_DE">
+			<Text>Chronik ansehen</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="de_DE">
 			<Text>Gesamt</Text>
 		</Replace>

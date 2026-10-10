@@ -85,6 +85,9 @@
 		<Row Tag="LOC_ZOM_GRAPHS_TITLE">
 			<Text>Chronicle</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_GRAPHS_VIEW">
+			<Text>View Chronicle</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_OVERALL">
 			<Text>Overall</Text>
 		</Row>

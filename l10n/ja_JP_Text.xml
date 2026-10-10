@@ -142,6 +142,9 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ja_JP">
 			<Text>年代記</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_VIEW" Language="ja_JP">
+			<Text>年代記を表示</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ja_JP">
 			<Text>総合</Text>
 		</Replace>

@@ -142,6 +142,9 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="zh_Hant_HK">
 			<Text>編年史</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_VIEW" Language="zh_Hant_HK">
+			<Text>檢視編年史</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="zh_Hant_HK">
 			<Text>總體</Text>
 		</Replace>

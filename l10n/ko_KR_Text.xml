@@ -142,6 +142,9 @@
 		<Replace Tag="LOC_ZOM_GRAPHS_TITLE" Language="ko_KR">
 			<Text>연대기</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPHS_VIEW" Language="ko_KR">
+			<Text>연대기 보기</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_OVERALL" Language="ko_KR">
 			<Text>종합</Text>
 		</Replace>

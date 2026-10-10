@@ -175,7 +175,7 @@ function placeTopIcon(attempts = 10) {
     if (attempts > 0) requestAnimationFrame(() => placeTopIcon(attempts - 1));
     return;
   }
-  if (!medallion.firstChild) medallion.appendChild(chronicleGlyph(TOP_ICON_ZOOM));
+  if (!medallion.firstChild) medallion.appendChild(chronicleGlyph(GLYPH_LOOKS.medallion, TOP_ICON_ZOOM));
 }
 
 const GraphsScreen = ComponentRegistry.register({
@@ -194,14 +194,19 @@ const openGraphs = () => ContextManager.push(GRAPHS_TAG, SCREEN_PROPS);
 // ============================ Dock button ============================
 
 /**
- * The button's icon in the dock icons' look - a light, engraved glyph with a
- * dark edge - drawn on a 128 x 128 canvas centred on the button, and larger
- * in the screen's top medallion (the game has no such icon): an open book,
- * the chronicle, with lines of writing on each page.
+ * The Chronicle's icon (the game has no such icon): an open book, the
+ * chronicle, with lines of writing on each page, drawn on a 128 x 128 canvas
+ * in one of the game's two looks, measured on its own textures: the dock
+ * buttons' brushed grey (sub_legacy), and the gold of the screen medallions
+ * (sub_legacy_color, the Legacies screen's), larger there.
  */
+const GLYPH_LOOKS = {
+  dock: { light: [[0, '#c6c5be'], [1, '#919396']], edge: 'rgba(12, 12, 12, 0.55)' },
+  medallion: { light: [[0, '#d9b26e'], [0.5, '#b0803f'], [1, '#7c5329']], edge: 'rgba(36, 24, 10, 0.7)' }
+};
+
 const CHRONICLE_GLYPH = {
-  light: ['#f1ebdc', '#b9b2a2'],   // top and bottom of the glyph's gradient
-  edge: 'rgba(20, 16, 10, 0.75)',
+  shadow: { color: 'rgba(0, 0, 0, 0.3)', offset: 3, spread: 8 },
   centre: [64, 66],
   strokes: [   // [points, width]
     [[[64, 50], [38, 42], [38, 82], [64, 90], [90, 82], [90, 42], [64, 50]], 5],
@@ -210,7 +215,7 @@ const CHRONICLE_GLYPH = {
   ]
 };
 
-function chronicleGlyph(zoom = 1) {
+function chronicleGlyph(look, zoom = 1) {
   const canvas = document.createElement('canvas');
   canvas.width = 128;
   canvas.height = 128;
@@ -218,8 +223,7 @@ function chronicleGlyph(zoom = 1) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const light = ctx.createLinearGradient(0, 42, 0, 90);
-  light.addColorStop(0, CHRONICLE_GLYPH.light[0]);
-  light.addColorStop(1, CHRONICLE_GLYPH.light[1]);
+  for (const [at, color] of look.light) light.addColorStop(at, color);
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.translate(64, 64);
@@ -232,7 +236,11 @@ function chronicleGlyph(zoom = 1) {
     points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
     ctx.stroke();
   };
-  for (const [points, width] of CHRONICLE_GLYPH.strokes) stroke(points, CHRONICLE_GLYPH.edge, width + 4);
+  const { shadow } = CHRONICLE_GLYPH;
+  ctx.translate(0, shadow.offset);
+  for (const [points, width] of CHRONICLE_GLYPH.strokes) stroke(points, shadow.color, width + shadow.spread);
+  ctx.translate(0, -shadow.offset);
+  for (const [points, width] of CHRONICLE_GLYPH.strokes) stroke(points, look.edge, width + 4);
   for (const [points, width] of CHRONICLE_GLYPH.strokes) stroke(points, light, width);
   return canvas;
 }
@@ -242,7 +250,7 @@ function placeDockButton(dock) {
   const root = dock?.Root;
   if (!isObserverSeat() || !root || root.querySelector('.' + DOCK_BUTTON_CLASS)) return;
   const button = dock.createButton({
-    tooltip: 'LOC_ZOM_GRAPHS_TITLE',
+    tooltip: 'LOC_ZOM_GRAPHS_VIEW',   // as the dock's own buttons: "View Legacies"
     modifierClass: 'zom-graphs',
     callback: openGraphs,
     class: DOCK_BUTTON_CLASS,
@@ -250,7 +258,7 @@ function placeDockButton(dock) {
     focusedAudio: 'data-audio-focus-small'
   });
   button.classList.add('ssb__element');
-  button.querySelector('.ssb__button-icon')?.appendChild(chronicleGlyph());
+  button.querySelector('.ssb__button-icon')?.appendChild(chronicleGlyph(GLYPH_LOOKS.dock));
   const slot = root.querySelector('#panel-sub-system-dock-mod-slot');
   if (slot) slot.parentElement.insertBefore(button, slot);
   else root.appendChild(button);

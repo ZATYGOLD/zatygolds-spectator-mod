@@ -77,11 +77,17 @@ leader's relationship and befriending progress.
   show their breakdown on hover.
 - All mark each crisis stage and, in Overall, where each Age starts.
 
-**Screens** — Resources & Trade, Legacies, Government, Great Works, Religion,
-Attributes and the tech / civic trees (with the Syncretism preview) can show
-any leader's view; a leader's panel opens its Attributes. Click any unit to
-inspect it (a commander's promotions and commendations too); hover another
-with a combat unit selected for an estimated combat preview.
+**Screens** — Resources & Trade, Legacies, Government, Great Works, Religion
+and the tech / civic trees can show any leader's view, with or without a
+Perspective:
+- **Attribute Trees** — any leader's attributes and unspent points; open them
+  from the leader's panel (**Attributes**) or switch leaders on the screen.
+- **Commander Promotions** — select another player's commander and press
+  **Promote** to see its promotion trees and commendations (read-only).
+- **Syncretism** — the civic tree's Syncretism preview lists the options
+  available to the leader you are viewing.
+- **Units** — click any unit to inspect it; hover another with a combat unit
+  selected for an estimated combat preview.
 
 **Quiet** — Advisors, narrative events, diplomacy prompts and Age countdowns
 are handled for you. The Spectator never appears in victories, rankings or
@@ -133,16 +139,24 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Chronicle** — renamed from Yield Graphs, with a Yields / Empire /
   Military filter: happiness joins the yields; Empire shows each leader's
   share of world territory, settlements (founded, captured, lost, razed,
-  upgraded) and population growth; Military its share of world strength, units, promotions, wars
-  (aggression and defense) and conflicts (sieges, battles, skirmishes, pillage and their
-  outcomes), each tab with an info panel; Empire and Military open on a
-  Summary of their tabs.
-- **Screens** — any leader's Attributes (also from its leader panel), a
-  commander's promotions, and the Syncretism preview on the civic tree, with
-  or without a Perspective.
+  upgraded) and population growth; Military its share of world strength,
+  units, promotions, wars (aggression and defense) and conflicts (sieges,
+  battles, skirmishes, pillage and their outcomes), each tab with an info
+  panel; Empire and Military open on a Summary of their tabs. Its dock
+  button and medallion icon match the game's own.
+- **Leader screens**, with or without a Perspective:
+  - **Attribute Trees** — any leader's, opened from their leader panel
+    (**Attributes**, with their unspent points) or by switching leaders on
+    the screen.
+  - **Commander Promotions** — another player's commander's **Promote**
+    button opens its promotion trees and commendations, read-only.
+  - **Syncretism** — the civic tree's preview shows the options of the
+    leader you are viewing.
 - **Translations** — terms aligned with the game's own in every language.
 - **Performance** — the Chronicle refreshes in batches and its timelines are
   built faster in long games.
+- **Size** — the download is under half its size (about 3 MB): the
+  backgrounds are compressed and the loading screen has one size.
 
 ### 1.0.0
 
