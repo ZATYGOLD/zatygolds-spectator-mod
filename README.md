@@ -123,7 +123,8 @@ zatygolds-observer-mode.modinfo   # manifest
 ├─ data/                          # gameplay database (leader, civs, the Eye)
 ├─ text/en_us/, l10n/             # English text, translations
 ├─ maps/, scripts/, ui-next/, ui/<base folders>/   # base-game overrides
-└─ ui/shared/, ui/setup/, ui/observer/             # the mod's UI modules
+├─ ui/shared/, ui/setup/, ui/observer/             # the mod's UI modules
+└─ ui/compat/                                      # fixes for other mods
 ```
 
 Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
@@ -136,6 +137,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 - **Every map** — map and placement mods (such as the Multiplayer Map Mod's
   East vs West) no longer count the Spectator as a player: it no longer takes
   a team region or breaks the other players' starts, and gets a single Eye.
+- **Multiplayer Map Mod** — its turn-1 start-placement warning no longer
+  reports the Spectator's start.
 
 ### 1.1.1
 

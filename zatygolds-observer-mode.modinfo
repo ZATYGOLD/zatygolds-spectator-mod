@@ -205,6 +205,7 @@
                     <Item>ui/observer/observer-combat.js</Item>
                     <Item>ui/observer/observer-eye.js</Item>
                     <Item>ui/observer/observer-prompts.js</Item>
+                    <Item>ui/compat/compat-evw-start-warning.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>
