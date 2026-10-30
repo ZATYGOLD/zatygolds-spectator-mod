@@ -7,8 +7,8 @@
         <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
-        <Version>1.1.1</Version>
-        <LastUpdated>2026-10-04</LastUpdated>
+        <Version>1.1.2</Version>
+        <LastUpdated>2026-10-31</LastUpdated>
         <ShowInBrowser>1</ShowInBrowser>
     </Properties>
 
@@ -129,6 +129,7 @@
                 </UpdateDatabase>
                 <ImportFiles>
                     <Item>maps/zom-observer-eye.js</Item>
+                    <Item>maps/zom-observer-start.js</Item>
                     <Item>art/icons/zom_observer.png</Item>
                     <Item>art/icons/zom_observer_civ.png</Item>
                     <Item>art/icons/zom_observer_leader_256.png</Item>
@@ -205,6 +206,19 @@
                     <Item>ui/observer/observer-eye.js</Item>
                     <Item>ui/observer/observer-prompts.js</Item>
                 </UIScripts>
+            </Actions>
+        </ActionGroup>
+
+<!--*************************** GAME: MAP GENERATION ***************************************************-->
+
+        <!-- Runs in every map's generation, base or modded: hides the Spectator from
+             player counts and placement, then sets its own start on the ice. -->
+        <ActionGroup id="zom-game-mapgen" scope="game" criteria="zom-observer-in-game">
+            <Properties><LoadOrder>1100</LoadOrder></Properties>
+            <Actions>
+                <MapGenScripts>
+                    <Item>{zatygolds-observer-mode}maps/zom-observer-start.js</Item>
+                </MapGenScripts>
             </Actions>
         </ActionGroup>
 

@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.1**.
+multiplayer. Current version: **1.1.2**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -99,8 +99,10 @@ Age choices.
 
 - A Spectator leader and one Observers civilization per Age, defined like the
   game's own, with no abilities; defeat and Triumphs exclude the Spectator.
-- The Eye is created when a map places the Spectator's start (hooked in
-  `map-globals.js`, which every map imports, Earth and custom maps included).
+- During map generation the Spectator is hidden from player lists, so any map
+  or placement mod counts and places only the real players; the Spectator's
+  start and Eye are then set on the ice (`maps/zom-observer-start.js`, loaded
+  as a MapGenScript and through `map-globals.js`).
 - Base-game overrides are verbatim copies with changes marked `ZOM:`, loaded
   only in games with a Spectator. Everything else patches the UI at runtime.
 
@@ -128,6 +130,12 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 (`debug: true` logs diagnostics to `UI.log`).
 
 ## Changelog
+
+### 1.1.2
+
+- **Every map** — map and placement mods (such as the Multiplayer Map Mod's
+  East vs West) no longer count the Spectator as a player: it no longer takes
+  a team region or breaks the other players' starts, and gets a single Eye.
 
 ### 1.1.1
 

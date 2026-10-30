@@ -1,15 +1,14 @@
-import { observeStartPositions } from './zom-observer-eye.js';   // ZOM: the Observer's start and Eye
+import './zom-observer-start.js';   // ZOM: the Observer's start and Eye
 
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/maps/map-globals.js
- * (build dated 2026-09-15). The only changes are marked "ZOM:": an import and
- * a call after the constants.
+ * (build dated 2026-09-15). The only change is marked "ZOM:": an import.
  * Re-apply after game updates; see maps/zom-observer-eye.js.
  *
- * ZOM: every map script imports this file (base maps, the Earth maps and custom
- * maps alike), so the Observer's start is handled here rather than in one map's
- * start-plot code.
+ * ZOM: a fallback for maps/zom-observer-start.js, which also loads as a
+ * MapGenScript; every map script imports this file (base maps, the Earth maps
+ * and custom maps alike).
  */
 
 if (typeof GameInfo === "undefined") {
@@ -86,6 +85,5 @@ const g_DesiredBufferBetweenMajorStarts = 12;
 const g_RequiredDistanceFromMajorForDiscoveries = 3;
 const g_MinLandmassSizeForIslandBias = 4;
 
-observeStartPositions();   // ZOM: the Observer's start and Eye
 export { g_AvoidSeamOffset, g_CenterExponent, g_CenterWeight, g_CoastTerrain, g_Cutoff, g_DesertBiome, g_DesertLatitude, g_DesiredBufferBetweenMajorStarts, g_FlatTerrain, g_FractalWeight, g_GrasslandBiome, g_GrasslandLatitude, g_HillFractal, g_HillTerrain, g_IgnoreStartSectorPctFromCtr, g_IslandWidth, g_LandmassFractal, g_MarineBiome, g_MinLandmassSizeForIslandBias, g_MountainFractal, g_MountainTerrain, g_MountainTopIncrease, g_NavigableRiverTerrain, g_OceanTerrain, g_OceanWaterColumns, g_PlainsBiome, g_PlainsLatitude, g_PolarWaterRows, g_RainShadowDrop, g_RainShadowIncreasePerHex, g_RequiredBufferBetweenMajorStarts, g_RequiredDistanceFromMajorForDiscoveries, g_StandardRainfall, g_StartSectorWeight, g_TropicalBiome, g_TropicalLatitude, g_TundraBiome, g_VolcanoFeature, g_WaterPercent };
 //# sourceMappingURL=map-globals.js.map
