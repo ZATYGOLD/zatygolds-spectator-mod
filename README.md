@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.2**.
+multiplayer. Current version: **1.1.3**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -21,7 +21,9 @@ Observers**, follows. Multiplayer lobby: pick the leader or the civilization
 at each Age transition, and computer players never become the Spectator.
 
 **Playing** — Press **End Turn**, or turn on **Auto End Turn** from your ribbon
-card. Your Founder is replaced by the hidden **Spectator's Eye**, which sees
+card; at the end of an Age, one click on **Transition to Next Age** carries
+you into the next. **Follow the Action**, beside it, moves the camera to
+captures, battles and new settlements. Your Founder is replaced by the hidden **Spectator's Eye**, which sees
 the whole map and every unit.
 
 **Ribbon** — Every living leader, with your card pinned at the right edge
@@ -131,6 +133,23 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 (`debug: true` logs diagnostics to `UI.log`).
 
 ## Changelog
+
+### 1.1.3
+
+- **Auto End Turn** — no longer stops at advisor warnings (such as Trailing
+  in Technology or Civics): they are marked as seen. A turn that stays
+  blocked shows the End Turn button again instead of waiting unseen. The
+  toggle is saved with the game, kept across Age transitions, and switched
+  off when you open the pause menu.
+- **Age transition** — one click on Transition to Next Age: the Observers'
+  civilization is chosen and the transition goes on by itself, through the
+  loading screen's Continue (single player).
+- **Follow the Action** — a new ribbon toggle that moves the camera to
+  settlements captured or razed, battles and settlements founded, pausing
+  while you move the camera or have a screen open. In a Perspective it only
+  follows what that leader can see.
+- **Perspective** — map yields no longer show on tiles the viewed leader has
+  never explored.
 
 ### 1.1.2
 

@@ -22,6 +22,12 @@
 		<Row Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF">
 			<Text>Auto End Turn: Off</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON">
+			<Text>Follow the Action: On</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF">
+			<Text>Follow the Action: Off</Text>
+		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_YIELDS">
 			<Text>Yields</Text>
 		</Row>

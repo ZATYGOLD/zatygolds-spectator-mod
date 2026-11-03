@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="fr_FR">
 			<Text>Fin de tour auto : désactivée</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="fr_FR">
+			<Text>Suivre l'action : activé</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="fr_FR">
+			<Text>Suivre l'action : désactivé</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="fr_FR">
 			<Text>Rendements</Text>
 		</Replace>

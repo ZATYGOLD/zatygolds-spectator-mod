@@ -7,8 +7,8 @@
         <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
-        <Version>1.1.2</Version>
-        <LastUpdated>2026-10-31</LastUpdated>
+        <Version>1.1.3</Version>
+        <LastUpdated>2026-11-02</LastUpdated>
         <ShowInBrowser>1</ShowInBrowser>
     </Properties>
 
@@ -190,6 +190,7 @@
                     <Item>ui/observer/observer-graph-empire.js</Item>
                     <Item>ui/observer/observer-graphs.js</Item>
                     <Item>ui/observer/observer-turn.js</Item>
+                    <Item>ui/observer/observer-follow.js</Item>
                     <Item>ui/observer/observer-settlement-info.js</Item>
                     <Item>ui/observer/observer-perspective.js</Item>
                     <Item>ui/observer/observer-banners.js</Item>

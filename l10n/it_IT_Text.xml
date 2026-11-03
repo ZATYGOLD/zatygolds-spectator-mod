@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="it_IT">
 			<Text>Fine turno automatica: disattivata</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="it_IT">
+			<Text>Segui l'azione: attivo</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="it_IT">
+			<Text>Segui l'azione: disattivato</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="it_IT">
 			<Text>Rese</Text>
 		</Replace>

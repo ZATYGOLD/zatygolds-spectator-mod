@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="de_DE">
 			<Text>Automatisches Rundenende: Aus</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="de_DE">
+			<Text>Dem Geschehen folgen: An</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="de_DE">
+			<Text>Dem Geschehen folgen: Aus</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="de_DE">
 			<Text>Erträge</Text>
 		</Replace>

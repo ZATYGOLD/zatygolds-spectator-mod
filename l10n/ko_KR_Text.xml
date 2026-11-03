@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ko_KR">
 			<Text>자동 턴 종료: 꺼짐</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="ko_KR">
+			<Text>액션 따라가기: 켜짐</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="ko_KR">
+			<Text>액션 따라가기: 꺼짐</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ko_KR">
 			<Text>산출량</Text>
 		</Replace>

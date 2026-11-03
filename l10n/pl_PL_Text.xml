@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="pl_PL">
 			<Text>Automatyczny koniec tury: wył.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="pl_PL">
+			<Text>Śledzenie akcji: wł.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="pl_PL">
+			<Text>Śledzenie akcji: wył.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="pl_PL">
 			<Text>Dochody</Text>
 		</Replace>

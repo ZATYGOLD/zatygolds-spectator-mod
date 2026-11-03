@@ -245,6 +245,8 @@ const record = (playerId, code, type, other = -1, count = 1) => { if (Players.ge
 const engagements = new Map();   // "sideA:sideB" -> [{ plot, tiles, lastTurn }]: where each engagement began, every tile fought at, and its last turn
 
 const locationOf = (id) => Units.get(id)?.location ?? Districts.get(id)?.location;
+/** Where a Combat event happened: the defender's plot, else the attacker's. */
+const combatLocation = (data) => locationOf(data?.defender ?? data?.target) ?? locationOf(data?.attacker);
 
 /**
  * The engagement of two sides at a location: one going on between them
@@ -294,7 +296,7 @@ function onCombat(data) {
   const attacker = data?.attacker;
   const defender = data?.defender ?? data?.target;
   if (attacker?.owner == null || defender?.owner == null || attacker.owner < 0 || defender.owner < 0 || attacker.owner === defender.owner) return;
-  const location = locationOf(defender) ?? locationOf(attacker);
+  const location = combatLocation(data);
   if (location) struck.set(GameplayMap.getIndexFromLocation(location), { owner: attacker.owner, turn: Game.turn });
   if (canFight(attacker) && canFight(defender)) engage(attacker.owner, defender.owner, location);
 }
@@ -427,4 +429,4 @@ onObserverReady(() => {
   engine.on('TurnBegin', () => checkSieges());
 });
 
-export { BATTLE_CATEGORIES, BATTLE_LOG_EVENT, battleLog };
+export { BATTLE_CATEGORIES, BATTLE_LOG_EVENT, battleLog, combatLocation };

@@ -39,6 +39,9 @@ const CONFIG = {
   autoEndTurn: false,                   // initial state of the auto end turn toggle
   autoEndTurnDelayMs: 1000,             // wait after the turn starts (prompts are answered first)
   autoEndTurnRetryMs: 1000,             // retry while something still blocks the turn
+  followAction: false,                  // initial state of the Follow the Action toggle
+  followDwellMs: 3000,                  // Follow the Action: least time between camera moves
+  followIdleMs: 5000,                   // Follow the Action: paused this long after the player's own input
   historyRecordDelayMs: 500,            // wait after a turn starts before recording yields (graphs)
   ribbonSeedAttempts: 30,               // tries to populate the ribbon once the HUD exists
   ribbonSeedIntervalMs: 500,

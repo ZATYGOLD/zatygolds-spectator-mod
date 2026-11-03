@@ -29,7 +29,7 @@ import { componentOf, createLogger, isObserverPlayer, leaderTypeOf, whenDefined,
 import { CONFIG } from './observer-config.js';
 
 const coreLog = createLogger('observer-core');
-const BUILD = '2026-10-11 00:15';
+const BUILD = '2026-11-02 18:30';
 // One line per game load, so UI.log always says which build ran and for whom.
 engine.whenReady.then(() => coreLog(`build ${BUILD}; observer seat: ${isObserverSeat()}`));
 
@@ -92,6 +92,9 @@ const savedStore = () => Players.get(GameContext.localPlayerID)?.Tutorial;
 const canSave = () => !!savedStore();
 const readSaved = (key) => savedStore()?.getProperty(Database.makeHash(key));
 const writeSaved = (key, value) => savedStore()?.setProperty(Database.makeHash(key), value);
+/** A saved on/off setting, else fallback. */
+const readSavedFlag = (key, fallback) => { const value = readSaved(key); return value == null ? fallback : !!value; };
+const writeSavedFlag = (key, on) => writeSaved(key, on ? 1 : 0);
 
 // ============================ Diplomacy snapshot ============================
 
@@ -167,5 +170,5 @@ function inLeaderPanel() {
 
 export {
   areEnemies, canSave, diplomacySnapshot, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, onObserverReady, onScreenDock,
-  rangedStrength, readSaved, SCREEN_PROPS, unitStrength, watchedPlayers, writeSaved
+  rangedStrength, readSaved, readSavedFlag, SCREEN_PROPS, unitStrength, watchedPlayers, writeSaved, writeSavedFlag
 };

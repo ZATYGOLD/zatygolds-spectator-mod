@@ -23,12 +23,13 @@
  *
  * Shows the map as one leader sees it (toggled from the ribbon portraits):
  * unexplored tiles black, seen ones grey, the minimap masked, resources as the
- * fog of war shows them, and flags, district bars, banners and world texts
+ * fog of war shows them, no map yields on unexplored tiles, and flags, district bars, banners and world texts
  * hidden where the leader cannot see; the UI's revealed-state lookups answer
  * for the viewed leader. Drawing only; never game state.
  */
 import LensManager from 'fs://game/core/ui/lenses/lens-manager.js';
 import { ResourceLensLayer } from 'fs://game/base-standard/ui/lenses/layer/resource-layer.js';
+import 'fs://game/base-standard/ui/lenses/layer/yields-layer.js';   // registers the yields layer patched below
 import DistrictHealthManager from 'fs://game/base-standard/ui/district/district-health-manager.js';
 import { DistrictHealthBar } from 'fs://game/base-standard/ui/district/district-health.js';
 import WorldAnchorTextManager from 'fs://game/base-standard/ui/world-anchor-text/world-anchor-text-manager.js';
@@ -60,6 +61,7 @@ const MINIMAP_TILE_OVERLAP = 1.1;   // opaque hexes drawn as slightly larger rec
 const MINIMAP_BORDER_ROWS = 2;      // fallback projection: sea rows above and below the map (panel-mini-map.js)
 const PLOT_ORIGIN = { x: 0, y: 0, z: 0 };
 const RESOURCE_LAYER = 'fxs-resource-layer';
+const YIELDS_LAYER = 'fxs-yields-layer';
 // As resource-layer.js draws its icons.
 const RESOURCE_POSITION = { x: 0, y: 25, z: 5 };
 const RESOURCE_SIZE = 42;
@@ -80,6 +82,7 @@ let unexploredOverlay = null;
 let seenOverlay = null;
 let seenResources = null;       // fog-of-war resource icons on tiles seen before
 let seenResourceTypes = null;
+let yieldlessPlots = new Set();  // plots whose map yields are hidden (the viewed leader never explored them)
 
 const isActive = () => viewed != null && isObserverSeat();
 /** The leader whose view is shown, else null. */
@@ -115,6 +118,39 @@ function unitState(unitId) {
   catch (e) {
     const loc = Units.get(unitId)?.location;
     return loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) === RevealedStates.VISIBLE ? RevealedStates.VISIBLE : RevealedStates.HIDDEN;
+  }
+}
+
+// ============================ Yields ============================
+
+const yieldsLayer = () => LensManager.layers?.get(YIELDS_LAYER);
+
+/** Clear a plot's yield icons, marked hidden so the layer redraws them once shown again. */
+function hideYields(layer, plot) {
+  layer.yieldSpriteGrid?.clearPlot(plot);
+  const state = layer.plotStates?.[plot];
+  if (!state) return;
+  state.revealedState = RevealedStates.HIDDEN;
+  state.yields.clear();
+}
+
+/** Map yields hidden on these plots, redrawn on the ones hidden before. */
+function syncYields(plots) {
+  const layer = yieldsLayer();
+  if (!layer) return;
+  const previous = yieldlessPlots;
+  yieldlessPlots = plots;
+  for (const plot of plots) if (!previous.has(plot)) hideYields(layer, plot);
+  for (const plot of previous) {
+    if (!plots.has(plot)) layer.updatePlotState(plot, layer.revealedStates[plot], layer.calculateConstructibleState(plot));
+  }
+}
+
+/** The yields layer leaves hidden plots alone (its own updates would draw them again). */
+function patchYields() {
+  const layer = yieldsLayer();
+  if (!wrapMethod(layer, 'updatePlotState', (base, plot, ...rest) => (yieldlessPlots.has(plot) ? hideYields(layer, plot) : base(plot, ...rest)))) {
+    log('yields layer not patched');
   }
 }
 
@@ -157,6 +193,7 @@ function clearMap() {
   unexploredPlots = [];
   syncFilter();
   overlayGroup?.clearAll();
+  syncYields(new Set());
   seenResources?.clear();
   seenResourceTypes?.clear();
   if (suppressedResources) {
@@ -186,6 +223,7 @@ function drawMap() {
   seenOverlay.addPlots(seen, { fillColor: CONFIG.perspectiveSeenFill });
   ResourceLensLayer.instance.suppressPlots([...unexplored, ...seen]);
   suppressedResources = true;
+  syncYields(new Set(unexplored));
   drawSeenResources(seen);
   shownKey = key;
   log.debug(`perspective of player ${viewed} drawn`);
@@ -425,6 +463,7 @@ function install() {
   setStyle(FOG_STYLE_ID, `.${FOG_CLASS} { display: none !important; }`);
   patchVisibilityLookups();
   patchFlagsAndBanners();
+  patchYields();
   for (const event of REFRESH_EVENTS) engine.on(event, () => { if (isActive()) queueRedraw(); });
   window.addEventListener('interface-mode-changed', onInterfaceMode);
   // Fog-of-war resource icons follow the game's resource layer (diplomacy scenes turn it off).

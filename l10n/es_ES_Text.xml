@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="es_ES">
 			<Text>Terminar turno automáticamente: No</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="es_ES">
+			<Text>Seguir la acción: Sí</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="es_ES">
+			<Text>Seguir la acción: No</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="es_ES">
 			<Text>Rendimientos</Text>
 		</Replace>
