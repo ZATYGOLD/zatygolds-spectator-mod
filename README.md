@@ -152,7 +152,7 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   follows what that leader can see.
 - **Perspective** — map yields no longer show on tiles the viewed leader has
   never explored.
-- **Spectator slot** — in a Multiplayer Toolkit team match (1v1 to 3v3) the
+- **Spectator slot** — in a Better Balanced Multiplayer team match (1v1 to 3v3) the
   last lobby slot is kept for the Spectator; whoever takes it becomes the
   Observer.
 
@@ -204,7 +204,7 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 
 ### 1.0.0
 
-- First standalone release (split from Multiplayer Toolkit; both can run
+- First standalone release (split from Multiplayer Toolkit, now Better Balanced Multiplayer; both can run
   together): Perspective, settlement details, independents and city-states,
   faith badges, Yield Graphs, game setup in single player and multiplayer,
   new art and full translations.

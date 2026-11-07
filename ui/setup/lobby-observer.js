@@ -177,7 +177,7 @@ function installRandomLeaders(proto) {
 // ============================ Spectator slot ============================
 
 /**
- * Multiplayer Toolkit keeps the last slot of a team match for the Spectator
+ * Better Balanced Multiplayer keeps the last slot of a team match for the Spectator
  * (game setting MPTSpectatorSlot, -1 for none): the local player who takes it
  * becomes the Observer once, and may still pick a leader afterwards.
  */
