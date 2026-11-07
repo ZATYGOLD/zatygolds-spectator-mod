@@ -150,6 +150,28 @@ function installMementos(proto) {
 
 // ============================ Installation ============================
 
+// ============================ Spectator slot ============================
+
+/**
+ * Multiplayer Toolkit keeps the last slot of a team match for the Spectator
+ * (game setting MPTSpectatorSlot, -1 for none): the local player who takes it
+ * becomes the Observer once, and may still pick a leader afterwards.
+ */
+const SPECTATOR_SLOT_SETTING = 'MPTSpectatorSlot';
+let claimedSlot = -1;
+function claimSpectatorSlot() {
+  let slot = -1;
+  try { slot = Number(Configuration.getGame().getValue(SPECTATOR_SLOT_SETTING) ?? -1); } catch (e) { return; }
+  const local = GameContext.localPlayerID;
+  if (slot < 0 || slot !== local) { claimedSlot = -1; return; }
+  if (claimedSlot === slot || !MPLobbyDataModel.isNewGame) return;
+  claimedSlot = slot;
+  if (isLocalObserver()) return;
+  setParam(local, PARAM_LEADER, OBSERVER_LEADER);
+  syncSelection(local, PARAM_LEADER, OBSERVER_LEADER);
+  log.debug(`player ${local} took the Spectator slot -> observer`);
+}
+
 function install() {
   const proto = MPLobbyDataModel.prototype;
 
@@ -213,6 +235,11 @@ function install() {
       }
       this.Root.setAttribute('show-label-on-selected-item', observing ? 'false' : 'true');
     } catch (e) { /* keep base visuals */ }
+  });
+
+  wrapMethod(proto, 'update', function (base, ...args) {
+    try { claimSpectatorSlot(); } catch (e) { log(`spectator slot failed: ${e}`); }
+    return base(...args);
   });
 
   installMementos(proto);

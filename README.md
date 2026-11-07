@@ -150,14 +150,17 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   follows what that leader can see.
 - **Perspective** — map yields no longer show on tiles the viewed leader has
   never explored.
+- **Spectator slot** — in a Multiplayer Toolkit team match (1v1 to 3v3) the
+  last lobby slot is kept for the Spectator; whoever takes it becomes the
+  Observer.
 
 ### 1.1.2
 
-- **Every map** — map and placement mods (such as the Multiplayer Map Mod's
-  East vs West) no longer count the Spectator as a player: it no longer takes
-  a team region or breaks the other players' starts, and gets a single Eye.
-- **Multiplayer Map Mod** — its turn-1 start-placement warning no longer
-  reports the Spectator's start.
+- **Every map** — map and placement mods (such as East vs West placement)
+  no longer count the Spectator as a player: it no longer takes a team region
+  or breaks the other players' starts, and gets a single Eye.
+- **Start-placement warnings** — turn-1 start-placement warnings no longer
+  report the Spectator's start.
 
 ### 1.1.1
 

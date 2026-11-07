@@ -23,9 +23,10 @@
  *
  * Each leader's pantheon, religion and ideology in every Age, for the ribbon,
  * the pantheon overview and the Religion screen. After Antiquity pantheons are
- * read from the Multiplayer Balance Mod's carried narrative tags, when present.
+ * read from the carried narrative tags of Multiplayer Toolkit's Multiplayer
+ * Balance (or the older Multiplayer Balance Mod), when present.
  */
-const CARRIED_PANTHEON_TAG = /^MBM_NARRATIVE_TAG_PANTHEON_(\d+)$/;
+const CARRIED_PANTHEON_TAG = /^(?:MPT_BALANCE|MBM)_NARRATIVE_TAG_PANTHEON_(\d+)$/;
 let carriedTags = null;   // [{ tag, belief }] for every carried-pantheon narrative tag (read once)
 
 function carriedPantheonTags() {
