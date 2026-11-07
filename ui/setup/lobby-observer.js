@@ -24,7 +24,7 @@
  * Makes the Observer leader + civilization one role: a single Observer civ
  * entry (the start Age's), picking either sets the other and clears the team,
  * locked civ / team dropdowns with the eye badge while observing, no Observer
- * team for computers, and no mementos.
+ * team for computers, no mementos, and no Random leader resolving to the Observer.
  */
 import MPLobbyModel, { LobbyUpdateEventName, MPLobbyDataModel } from 'fs://game/core/ui/shell/mp-staging/model-mp-staging-new.js';
 import 'fs://game/core/ui/shell/mp-staging/mp-staging-leader-dropdown.js';
@@ -32,11 +32,12 @@ import 'fs://game/core/ui/shell/mp-staging/mp-staging-new.js';
 import { MPStagingTeamDropdown } from 'fs://game/core/ui/shell/mp-staging/mp-staging-team-dropdown.js';
 import { configCiv, configLeader, createLogger, isObserverCiv, OBSERVER_LEADER, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
-import { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
+import { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, resolveRandomLeaders, setParam, setTeam, syncSelection } from './setup-observer.js';
 import { ART } from '../shared/zom-assets.js';
 
 const DROPDOWN_PARAM = 'DROPDOWN_TYPE_PLAYER_PARAM';
 const DROPDOWN_TEAM = 'DROPDOWN_TYPE_TEAM';
+const STARTING_GAME = 'STARTING_GAME';
 const HIDDEN = 'hidden';
 
 const log = createLogger('lobby-observer', CONFIG.debug);
@@ -148,7 +149,30 @@ function installMementos(proto) {
   });
 }
 
-// ============================ Installation ============================
+// ============================ Random leaders ============================
+
+/**
+ * The game resolves Random from every leader, the Observer included. When the
+ * all-ready countdown starts, each player settles their own Random leader and
+ * the host settles the computers', so the choices reach every client before
+ * the launch.
+ */
+let countdownResolved = false;
+function installRandomLeaders(proto) {
+  if (!CONFIG.resolveRandomLeaders) return;
+  wrapMethod(proto, 'updateReadyButtonData', function (base, ...args) {
+    const result = base(...args);
+    try {
+      const starting = this.readyStatus === STARTING_GAME;
+      if (starting && !countdownResolved) {
+        const host = MPLobbyDataModel.isLocalHostPlayer();
+        resolveRandomLeaders((id) => id === GameContext.localPlayerID || (host && isComputerSlot(id)));
+      }
+      countdownResolved = starting;
+    } catch (e) { log(`random leaders failed: ${e}`); }
+    return result;
+  });
+}
 
 // ============================ Spectator slot ============================
 
@@ -243,6 +267,7 @@ function install() {
   });
 
   installMementos(proto);
+  installRandomLeaders(proto);
 
   log.debug('lobby role installed');
 }

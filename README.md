@@ -110,7 +110,9 @@ Age choices.
 
 ## Known limits
 
-- In multiplayer, a player on Random could still become the Spectator.
+- In multiplayer, a player on Random gets a concrete leader when the all-ready
+  countdown starts (so Random never becomes the Spectator); it shows in the
+  lobby for those last seconds.
 - The Eye shows as a generic ship, visible only to the Spectator.
 - Combat previews between other players' units are estimates (the game only
   simulates your own attacks); promotions, abilities, policies, fortifying

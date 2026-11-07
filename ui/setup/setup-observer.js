@@ -199,12 +199,12 @@ function shapeParameter(playerID, paramName, param) {
 
 // ============================ Random leaders ============================
 
-/** Single player, at game start: every player on Random (computer or not) gets a concrete leader, never the Observer. */
-function resolveRandomLeaders() {
+/** The included players on Random (computer or not) get a concrete leader, never the Observer. */
+function resolveRandomLeaders(include = () => true) {
   const ids = [...(Configuration.getGame().participatingPlayerIDs ?? [])];
   const taken = new Set(ids.map(configLeader).filter((leader) => leader && leader !== RANDOM));
   for (const id of ids) {
-    if (configLeader(id) !== RANDOM) continue;
+    if (configLeader(id) !== RANDOM || !include(id)) continue;
     const pool = (GameSetup.findPlayerParameter(id, PARAM_LEADER)?.domain?.possibleValues ?? [])
       .filter((v) => v.invalidReason === GameSetupDomainValueInvalidReason.Valid)
       .map(paramValue)
@@ -267,4 +267,4 @@ if (CONFIG.observerRole !== false) {
   try { install(); } catch (e) { log(`install failed: ${e}`); }
 }
 
-export { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, setParam, setTeam, syncSelection };
+export { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, resolveRandomLeaders, setParam, setTeam, syncSelection };

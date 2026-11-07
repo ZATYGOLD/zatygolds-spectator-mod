@@ -25,7 +25,7 @@
 /** Tunable settings. */
 const CONFIG = {
   observerRole: true,               // Observer leader/civ act as one locked role in the lobby
-  resolveRandomLeaders: true,       // single player: a Random leader never becomes the Observer
+  resolveRandomLeaders: true,       // a Random leader never becomes the Observer (single player at start, lobby at the all-ready countdown)
   debug: false                      // extra UI.log diagnostics
 };
 
