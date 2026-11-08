@@ -28,10 +28,17 @@ import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes
 import { componentOf, createLogger, isObserverPlayer, leaderTypeOf, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 
-const coreLog = createLogger('observer-core');
-const BUILD = '2026-10-11 00:15';
-// One line per game load, so UI.log always says which build ran and for whom.
-engine.whenReady.then(() => coreLog(`build ${BUILD}; observer seat: ${isObserverSeat()}`));
+const coreLog = createLogger('observer-core', CONFIG.debug);
+const MOD_ID = 'zatygolds-observer-mode';
+const SAVED_TOGGLE_EVENT = 'zom-saved-toggle-changed';
+const STRENGTH_EVENTS = ['UnitAddedToMap', 'UnitRemovedFromMap', 'UnitDamageChanged', 'UnitPromoted', 'Combat'];
+
+/** The mod's version from its .modinfo ('?' when unknown). */
+function modVersion() {
+  try { return Modding.getInstalledMods().find((mod) => mod.id === MOD_ID)?.version ?? '?'; } catch (e) { return '?'; }
+}
+// One line per game load, so UI.log always says which version ran and for whom.
+engine.whenReady.then(() => coreLog(`version ${modVersion()}; observer seat: ${isObserverSeat()}`));
 
 /** ContextManager.push options for the Observer's full screens. */
 const SCREEN_PROPS = { singleton: true, createMouseGuard: true };
@@ -46,9 +53,12 @@ function onObserverReady(run) {
   engine.whenReady.then(() => { if (isObserverSeat()) run(); });
 }
 
+/** A major player who is not an Observer (one of the leaders being watched). */
+const isWatchedLeader = (playerId) => !!Players.get(playerId)?.isMajor && !isObserverPlayer(playerId);
+
 /** Living major players, Observers excluded. */
 function watchedPlayers() {
-  try { return Players.getAlive().filter((p) => p?.isMajor && !isObserverPlayer(p.id)); }
+  try { return Players.getAlive().filter((p) => p && isWatchedLeader(p.id)); }
   catch (e) { return []; }
 }
 
@@ -92,6 +102,31 @@ const savedStore = () => Players.get(GameContext.localPlayerID)?.Tutorial;
 const canSave = () => !!savedStore();
 const readSaved = (key) => savedStore()?.getProperty(Database.makeHash(key));
 const writeSaved = (key, value) => savedStore()?.setProperty(Database.makeHash(key), value);
+/** A saved on/off setting, else fallback. */
+const readSavedFlag = (key, fallback) => { const value = readSaved(key); return value == null ? fallback : !!value; };
+const writeSavedFlag = (key, on) => writeSaved(key, on ? 1 : 0);
+
+/**
+ * An on/off setting saved with the game: { get(), set(on) }, restored once the
+ * Observer's game is ready. Every change, restore included, dispatches
+ * SAVED_TOGGLE_EVENT on window with { key } as detail.
+ */
+function savedToggle(key, fallback) {
+  let on = fallback;
+  const changed = () => window.dispatchEvent(new CustomEvent(SAVED_TOGGLE_EVENT, { detail: { key } }));
+  onObserverReady(() => {
+    try { on = readSavedFlag(key, fallback); } catch (e) { coreLog(`${key} not restored: ${e}`); }
+    changed();
+  });
+  return {
+    get: () => on,
+    set(value) {
+      on = !!value;
+      try { writeSavedFlag(key, on); } catch (e) { coreLog(`${key} not saved: ${e}`); }
+      changed();
+    }
+  };
+}
 
 // ============================ Diplomacy snapshot ============================
 
@@ -139,12 +174,33 @@ function diplomacySnapshot() {
   return snapshot;
 }
 
-for (const event of ['DiplomacyDeclareWar', 'DiplomacyMakePeace', 'DiplomacyRelationshipStatusChanged']) engine.on(event, () => { snapshot = null; });
+onObserverReady(() => {
+  for (const event of ['DiplomacyDeclareWar', 'DiplomacyMakePeace', 'DiplomacyRelationshipStatusChanged']) engine.on(event, () => { snapshot = null; });
+});
+
+// ============================ Military strength ============================
 
 /** A unit's current base strengths (0 when it has none). */
 const meleeStrength = (unit) => unit?.Combat?.getMeleeStrength?.(false) ?? 0;
 const rangedStrength = (unit) => Math.max(unit?.Combat?.rangedStrength ?? 0, unit?.Combat?.bombardStrength ?? 0);
 const unitStrength = (unit) => Math.max(meleeStrength(unit), rangedStrength(unit));
+
+const strengthCache = new Map();   // player id -> military strength, dropped when one of its units changes
+
+/** Sum of a player's combat units' strengths (each unit's best of melee, ranged and bombard), cached until a unit changes. */
+function militaryStrength(player) {
+  if (strengthCache.has(player.id)) return strengthCache.get(player.id);
+  let total = 0;
+  try {
+    for (const unit of player.Units?.getUnits?.() ?? []) if (unit.Combat?.isCombat) total += Number(unitStrength(unit)) || 0;
+  } catch (e) { /* keep the partial sum */ }
+  strengthCache.set(player.id, total);
+  return total;
+}
+
+onObserverReady(() => {
+  for (const event of [...STRENGTH_EVENTS, 'TurnBegin']) engine.on(event, () => strengthCache.clear());
+});
 
 /** A circular leader portrait (fxs-icon) for a player. */
 function leaderPortrait(player, sizeClass) {
@@ -166,6 +222,7 @@ function inLeaderPanel() {
 }
 
 export {
-  areEnemies, canSave, diplomacySnapshot, inDiplomacyMode, inLeaderPanel, isObserverSeat, leaderPortrait, meleeStrength, onObserverReady, onScreenDock,
-  rangedStrength, readSaved, SCREEN_PROPS, unitStrength, watchedPlayers, writeSaved
+  areEnemies, canSave, diplomacySnapshot, inDiplomacyMode, inLeaderPanel, isObserverSeat, isWatchedLeader, leaderPortrait, meleeStrength, militaryStrength,
+  onObserverReady, onScreenDock, rangedStrength, readSaved, readSavedFlag, SAVED_TOGGLE_EVENT, SCREEN_PROPS, savedToggle, unitStrength, watchedPlayers,
+  writeSaved, writeSavedFlag
 };

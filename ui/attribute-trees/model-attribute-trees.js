@@ -9,13 +9,13 @@ import { TreeGridDirection } from '../tree-grid/tree-support.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/attribute-trees/model-attribute-trees.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; a viewed leader's screen is
+ * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomReadOnly = () => globalThis.ZOMLeaderView?.isViewingOther() ?? false;   // ZOM: a viewed leader's screen sends no requests
 
 class AttributeTreesModel {
   onUpdate;
@@ -41,7 +41,7 @@ class AttributeTreesModel {
     this.onUpdate = callback;
   }
   get playerId() {
-    return zomLocalPlayerID();
+    return zomLocalPlayerID();   // ZOM: viewed leader
   }
   get attributes() {
     return this._attributes;
@@ -60,7 +60,7 @@ class AttributeTreesModel {
   }
   update() {
     this._attributes = [];
-    const localPlayerID = zomLocalPlayerID();
+    const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
     const localPlayer = Players.get(localPlayerID);
     if (!localPlayer) {
       return;
@@ -134,6 +134,7 @@ class AttributeTreesModel {
     return newData;
   }
   canBuyAttributeTreeNode(nodeId) {
+    if (zomReadOnly()) return false;   // ZOM: read-only for a viewed leader
     const nodeIndex = +nodeId;
     const args = { ProgressionTreeNodeType: nodeIndex };
     const result = Game.PlayerOperations.canStart(
@@ -145,6 +146,7 @@ class AttributeTreesModel {
     return result.Success;
   }
   buyAttributeTreeNode(nodeId) {
+    if (zomReadOnly()) return;   // ZOM: read-only for a viewed leader
     const nodeIndex = +nodeId;
     const args = { ProgressionTreeNodeType: nodeIndex };
     const result = Game.PlayerOperations.canStart(

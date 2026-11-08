@@ -30,7 +30,7 @@ import { ContextManager } from 'fs://game/core/ui/context-manager/context-manage
 import ViewManager from 'fs://game/core/ui/views/view-manager.js';
 import { clamp, createLogger, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat, onObserverReady } from './observer-core.js';
+import { inDiplomacyMode, isObserverSeat, onObserverReady } from './observer-core.js';
 import { isPerspectiveActive, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 
 const log = createLogger('observer-hud', CONFIG.debug);
@@ -76,12 +76,17 @@ function applyFov() {
   }
 }
 
-/** Keep a widened / narrowed view applied while the camera moves; stop inside the normal range. */
+/**
+ * Keep a widened / narrowed view applied while the camera moves; stop inside the normal range,
+ * or when the camera does not report its field of view (it cannot be checked). Diplomacy and
+ * other scenes that take the camera keep their own view meanwhile.
+ */
 function holdFov() {
   clearInterval(holdTimer);
-  holdTimer = viewScale(zoom) === 1 ? null : setInterval(() => {
+  holdTimer = viewScale(zoom) === 1 || readFov() === null ? null : setInterval(() => {
+    if (inDiplomacyMode() || !ViewManager.isWorldInputAllowed) return;
     const current = readFov();
-    if (current === null || Math.abs(current - fovFor(zoom)) > 0.05) applyFov();
+    if (current !== null && Math.abs(current - fovFor(zoom)) > 0.05) applyFov();
   }, FOV_HOLD_MS);
 }
 

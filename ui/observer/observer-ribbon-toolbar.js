@@ -24,11 +24,14 @@
  * The Observer's own card has no stats: its stat area holds a column of round
  * buttons (the game's mini-map lens button with yield glyphs) that switch every
  * other card between Yields | Production, Research and Victories, and its
- * banner the Auto End Turn toggle (observer-turn.js) above a smaller civ
- * symbol. Its portrait's tooltip names the right-click (observer-navigation.js).
+ * banner a row of toggles - Auto End Turn (observer-turn.js) and Follow the
+ * Action (observer-follow.js) - above a smaller civ symbol. Its portrait's
+ * tooltip names the right-click (observer-navigation.js).
  */
 import { ancestorWithClass, onActivate } from '../shared/zom-util.js';
 import { ICONS, OBSERVER_VIEW } from './observer-config.js';
+import { SAVED_TOGGLE_EVENT } from './observer-core.js';
+import { isFollowing, setFollowing } from './observer-follow.js';
 import { isDetailsHidden, markOwnCard } from './observer-ribbon-style.js';
 import { isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
 
@@ -38,11 +41,12 @@ const BUTTON_SIZE = '1.6rem';
 const BUTTON_MARGIN = '0.2rem 0';
 const TOGGLE_SIZE_REM = 1.4;
 const TOGGLE_GLYPH_INSET = '0.12rem';
+const TOGGLE_GAP = '0.2rem';
 const SYMBOL_SIZE = '2rem';
 const SYMBOL_GAP_REM = 0.25;
 const COLUMN_TOP_REM = 2.8;   // clear of the portrait hex on the white banner
 const BANNER_TOP = `${COLUMN_TOP_REM}rem`;
-// The civ symbol sits right under the toggle, about where the base places it (mt-20, 5rem).
+// The civ symbol sits right under the toggle row, about where the base places it (mt-20, 5rem).
 const SYMBOL_TOP = `${COLUMN_TOP_REM + TOGGLE_SIZE_REM + SYMBOL_GAP_REM}rem`;
 const GLYPH_INSET = '0.2rem';   // same glyph area on every button (the lens button's own inset is larger)
 
@@ -72,12 +76,14 @@ const GLYPHS = {
   [OBSERVER_VIEW.SCORE]: (icon) => { icon.style.backgroundImage = `url("${ICONS.victories}")`; }
 };
 
-/** Toggles: pressed while on; text() is the tooltip for the current state. */
-const AUTO_END_TOGGLE = { cls: 'zom-observer-auto-end', icon: ICONS.endTurn, isOn: isAutoEndTurn, set: setAutoEndTurn,
-  text: () => Locale.compose(isAutoEndTurn() ? 'LOC_ZOM_OBSERVER_AUTO_END_TURN_ON' : 'LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF') };
+/** A toggle: pressed while on; its tooltip is the loc prefix + _ON or _OFF. */
+const bannerToggle = (cls, icon, isOn, set, loc) => ({ cls, icon, isOn, set, text: () => Locale.compose(`${loc}_${isOn() ? 'ON' : 'OFF'}`) });
 
-/** The banner toggles, top to bottom. */
-const BANNER_TOGGLES = [AUTO_END_TOGGLE];
+/** The banner toggles, left to right. */
+const BANNER_TOGGLES = [
+  bannerToggle('zom-observer-auto-end', ICONS.endTurn, isAutoEndTurn, setAutoEndTurn, 'LOC_ZOM_OBSERVER_AUTO_END_TURN'),
+  bannerToggle('zom-observer-follow', ICONS.military, isFollowing, setFollowing, 'LOC_ZOM_OBSERVER_FOLLOW_ACTION')
+];
 
 /** Stat-area view buttons, top to bottom. */
 const STAT_BUTTONS = [
@@ -110,7 +116,7 @@ function viewButton(item, currentView, onSelect) {
   return roundButton(Locale.compose(item.loc), item.view === currentView, GLYPHS[item.view], () => onSelect(item.view));
 }
 
-/** Pressed while on; a state can also change by itself (Auto End Turn switches off at the end of an Age). */
+/** Pressed while on; a state can also change by itself (restored from the save, Auto End Turn off from the pause menu). */
 function showToggleState(btn, toggle) {
   btn.classList.toggle('pressed', toggle.isOn());
   btn.setAttribute('data-tooltip-content', toggle.text());
@@ -150,7 +156,7 @@ function placeBannerToggles(card) {
   if (banner.querySelector('.' + BANNER_CLASS)) return;
   const box = document.createElement('div');
   box.classList.add(BANNER_CLASS, 'pointer-events-auto');
-  box.style.cssText = `position: absolute; left: 0; right: 0; top: ${BANNER_TOP}; display: flex; flex-direction: column; align-items: center; z-index: 10;`;
+  box.style.cssText = `position: absolute; left: 0; right: 0; top: ${BANNER_TOP}; display: flex; flex-direction: row; justify-content: center; gap: ${TOGGLE_GAP}; z-index: 10;`;
   for (const toggle of BANNER_TOGGLES) box.appendChild(bannerToggleButton(toggle));
   banner.appendChild(box);
   const symbol = banner.querySelector('.diplo-ribbon__symbol');
@@ -189,5 +195,7 @@ function placeViewButtons(panel, currentView, onSelect) {
   refreshToggles(card);
   markOwnCard(card);
 }
+
+window.addEventListener(SAVED_TOGGLE_EVENT, () => refreshToggles(document.querySelector('panel-diplo-ribbon')));
 
 export { placeViewButtons, setPortraitTooltips };

@@ -7,8 +7,8 @@
         <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
-        <Version>1.1.2</Version>
-        <LastUpdated>2026-10-31</LastUpdated>
+        <Version>1.1.3</Version>
+        <LastUpdated>2026-11-08</LastUpdated>
         <ShowInBrowser>1</ShowInBrowser>
     </Properties>
 
@@ -76,6 +76,7 @@
                     <Item>art/icons/zom_observer_portrait_140.png</Item>
                     <Item>art/leaders/lsl_zom_observer.png</Item>
                     <Item>art/backgrounds/cg_zom_observer_vert.jpg</Item>
+                    <Item>art/backgrounds/lsbg_zom_observer.jpg</Item>
                 </ImportFiles>
                 <UpdateIcons>
                     <Item>data/icons/icons.xml</Item>
@@ -154,6 +155,7 @@
                     <Item>ui/observer/observer-config.js</Item>
                     <Item>ui/observer/observer-core.js</Item>
                     <Item>ui/observer/observer-faith.js</Item>
+                    <Item>ui/observer/observer-overlay-panel.js</Item>
                     <Item>ui/observer/observer-overview.js</Item>
                     <Item>ui/observer/observer-screens.js</Item>
                     <Item>ui/observer/observer-leader-view.js</Item>
@@ -190,6 +192,8 @@
                     <Item>ui/observer/observer-graph-empire.js</Item>
                     <Item>ui/observer/observer-graphs.js</Item>
                     <Item>ui/observer/observer-turn.js</Item>
+                    <Item>ui/observer/observer-follow.js</Item>
+                    <Item>ui/observer/observer-settlement-banners.js</Item>
                     <Item>ui/observer/observer-settlement-info.js</Item>
                     <Item>ui/observer/observer-perspective.js</Item>
                     <Item>ui/observer/observer-banners.js</Item>
@@ -234,7 +238,6 @@
             <Actions>
                 <ImportFiles>
                     <Item>maps/map-globals.js</Item>
-                    <Item>scripts/age-transition-post-load.js</Item>
                     <Item>ui-next/screens/victories/victories-screen-model.js</Item>
                     <Item>ui-next/screens/commerce/commerce-screen.js</Item>
                     <Item>ui-next/screens/commerce/commerce-screen-model.js</Item>

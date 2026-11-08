@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="pt_BR">
 			<Text>Terminar turno automático: desativado</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="pt_BR">
+			<Text>Seguir a ação: ativado</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="pt_BR">
+			<Text>Seguir a ação: desativado</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="pt_BR">
 			<Text>Rendimentos</Text>
 		</Replace>
@@ -133,7 +139,7 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="pt_BR">
 			<Text>Não está em guerra.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="pt_BR">
+		<Replace Tag="LOC_ZOM_OBSERVER_ESTIMATE" Language="pt_BR">
 			<Text>Estimativa</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="pt_BR">
@@ -168,6 +174,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="pt_BR">
 			<Text>Turnos {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AGES" Language="pt_BR">
+			<Text>{1_FirstAge}, turno {2_First} – {3_LastAge}, turno {4_Last}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="pt_BR">
 			<Text>{1_Value}%</Text>

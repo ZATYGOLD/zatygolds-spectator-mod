@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.2**.
+multiplayer. Current version: **1.1.3**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -21,7 +21,9 @@ Observers**, follows. Multiplayer lobby: pick the leader or the civilization
 at each Age transition, and computer players never become the Spectator.
 
 **Playing** — Press **End Turn**, or turn on **Auto End Turn** from your ribbon
-card. Your Founder is replaced by the hidden **Spectator's Eye**, which sees
+card; at the end of an Age, one click on **Transition to Next Age** carries
+you into the next. **Follow the Action**, beside it, moves the camera to
+captures, battles and new settlements. Your Founder is replaced by the hidden **Spectator's Eye**, which sees
 the whole map and every unit.
 
 **Ribbon** — Every living leader, with your card pinned at the right edge
@@ -102,13 +104,16 @@ Age choices.
 - During map generation the Spectator is hidden from player lists, so any map
   or placement mod counts and places only the real players; the Spectator's
   start and Eye are then set on the ice (`maps/zom-observer-start.js`, loaded
-  as a MapGenScript and through `map-globals.js`).
+  as a MapGenScript and through `map-globals.js`). After an Age transition the
+  same script gives the Spectator a new Eye.
 - Base-game overrides are verbatim copies with changes marked `ZOM:`, loaded
   only in games with a Spectator. Everything else patches the UI at runtime.
 
 ## Known limits
 
-- In multiplayer, a player on Random could still become the Spectator.
+- In multiplayer, a player on Random gets a concrete leader when the all-ready
+  countdown starts (so Random never becomes the Spectator); it shows in the
+  lobby for those last seconds.
 - The Eye shows as a generic ship, visible only to the Spectator.
 - Combat previews between other players' units are estimates (the game only
   simulates your own attacks); promotions, abilities, policies, fortifying
@@ -122,7 +127,7 @@ zatygolds-observer-mode.modinfo   # manifest
 ├─ config/                        # setup database
 ├─ data/                          # gameplay database (leader, civs, the Eye)
 ├─ text/en_us/, l10n/             # English text, translations
-├─ maps/, scripts/, ui-next/, ui/<base folders>/   # base-game overrides
+├─ maps/, ui-next/, ui/<base folders>/            # base-game overrides
 ├─ ui/shared/, ui/setup/, ui/observer/             # the mod's UI modules
 └─ ui/compat/                                      # fixes for other mods
 ```
@@ -132,13 +137,46 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 
 ## Changelog
 
+### 1.1.3
+
+- **Auto End Turn** — no longer stops at advisor warnings (such as Trailing
+  in Technology or Civics): they are marked as seen. A turn that stays
+  blocked shows the End Turn button again instead of waiting unseen. The
+  toggle is saved with the game, kept across Age transitions, and switched
+  off when you open the pause menu (not when a Better Balanced Multiplayer
+  pause opens it for everyone).
+- **Age transition** — one click on Transition to Next Age: the Observers'
+  civilization is chosen and the transition goes on by itself, through the
+  loading screen's Continue (single player).
+- **Follow the Action** — a new ribbon toggle that moves the camera to
+  settlements captured or razed, battles and settlements founded, pausing
+  while you move the camera or have a screen open. In a Perspective it only
+  follows what that leader can see.
+- **Perspective** — map yields no longer show on tiles the viewed leader has
+  never explored.
+- **Spectator slot** — in a Better Balanced Multiplayer team match (1v1 to 3v3) the
+  last lobby slot is kept for the Spectator; whoever takes it becomes the
+  Observer, including the extra slot on Tiny and Small maps.
+- **Leader views** — every viewed leader's screen is read-only (trees, Great
+  Works, Syncretism, Commerce as well as Policies); Victories no longer gives
+  the Spectator a chart colour; Legacies shows race winners by name.
+- **Chronicle** — a war with an eliminated leader ends there; earlier Ages'
+  unique units stay in the Units tabs; turn numbers match across graphs,
+  timelines and wars; crisis marks keep their turns; only the open tab
+  updates; long games save and redraw faster.
+- **Performance** — the ribbon, settlement banners, the settlement panel and
+  Perspective redraw only what changed.
+- **Fixes** — Auto End Turn no longer starts an Age transition on its own when
+  the Age fills up during your turn, and keeps its stuck-turn recovery after a
+  pause; the Age-transition loading screen shows the Spectator's background.
+
 ### 1.1.2
 
-- **Every map** — map and placement mods (such as the Multiplayer Map Mod's
-  East vs West) no longer count the Spectator as a player: it no longer takes
-  a team region or breaks the other players' starts, and gets a single Eye.
-- **Multiplayer Map Mod** — its turn-1 start-placement warning no longer
-  reports the Spectator's start.
+- **Every map** — map and placement mods (such as East vs West placement)
+  no longer count the Spectator as a player: it no longer takes a team region
+  or breaks the other players' starts, and gets a single Eye.
+- **Start-placement warnings** — turn-1 start-placement warnings no longer
+  report the Spectator's start.
 
 ### 1.1.1
 
@@ -180,7 +218,7 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 
 ### 1.0.0
 
-- First standalone release (split from Multiplayer Toolkit; both can run
+- First standalone release (split from Multiplayer Toolkit, now Better Balanced Multiplayer; both can run
   together): Perspective, settlement details, independents and city-states,
   faith badges, Yield Graphs, game setup in single player and multiplayer,
   new art and full translations.

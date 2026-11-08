@@ -26,7 +26,8 @@
  * victories-alt-base.js, victory-tab-base.js): the panel shell with its
  * header and filters, Rank / Leader / value rows with each leader's banner,
  * portrait and colour, tooltips and breakdown cards, fitting the rows and
- * graphs to the panel's height, and the Age and crisis data they share.
+ * graphs to the panel's height, the Age and crisis data they share, and
+ * their canvas marks and colours.
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createMemo, createRenderEffect, createSignal, For, onCleanup, onMount } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -36,12 +37,13 @@ import { Dropdown, DropdownItem } from 'fs://game/core/ui-next/components/dropdo
 import { L10n } from 'fs://game/core/ui-next/components/l10n.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
 import { LeaderWithRibbon } from 'fs://game/base-standard/ui-next/components/leader-with-ribbon.js';
-import { ancestorWithClass, createLogger, currentAgeChronology, isObserverPlayer, leaderTypeOf } from '../shared/zom-util.js';
-import { watchedPlayers } from './observer-core.js';
+import { ancestorWithClass, createLogger, currentAgeChronology, leaderTypeOf } from '../shared/zom-util.js';
+import { isWatchedLeader, watchedPlayers } from './observer-core.js';
 import { CRISIS_STAGES } from './observer-crisis.js';
+import { ageTurn } from './observer-history.js';
 import { cityStateType } from './observer-settlement-info.js';
 
-const log = createLogger('observer-graphs');
+const log = createLogger('observer-graph-parts');
 // Age dropdown values are non-empty strings: the dropdown treats a falsy value (Antiquity's 0) as nothing selected.
 const OVERALL = 'overall';
 const ageOption = (chronology) => `age-${chronology}`;
@@ -75,6 +77,16 @@ const T = {
 const ages = () => [...GameInfo.Ages].sort((a, b) => a.ChronologyIndex - b.ChronologyIndex);
 const ageName = (chronology) => Locale.compose(ages().find((a) => a.ChronologyIndex === chronology)?.Name ?? '');
 
+/**
+ * A span's turns as the Chronicle counts them (ageTurn), from `from` to `to` ({ age, turn }, game
+ * turns): "Turn 12", "Turns 12–15", or each end with its Age when the span crosses Ages.
+ */
+function turnSpanText(from, to = from) {
+  const [first, last] = [ageTurn(from.age, from.turn), ageTurn(to.age, to.turn)];
+  if (from.age !== to.age) return Locale.compose('LOC_ZOM_GRAPH_TURNS_AGES', ageName(from.age), first, ageName(to.age), last);
+  return first === last ? Locale.compose('LOC_VICTORIES_ITEM_TOOLTIP_TURN', first) : Locale.compose('LOC_ZOM_GRAPH_TURNS', first, last);
+}
+
 function ageLabel(option) {
   if (option === OVERALL) return Locale.compose('LOC_ZOM_GRAPH_OVERALL');
   const age = ages().find((a) => a.ChronologyIndex === optionChronology(option));
@@ -98,7 +110,7 @@ const crisisStages = (crises, age) => (crises.get(age) ?? []).map((s) => ({ ...s
 /** Leaders with a row in a logged view: every living major and any major already logged, Spectators excluded. */
 function loggedLeaders(events) {
   const ids = new Set(watchedPlayers().map((p) => p.id));
-  for (const { playerId } of events) if (Players.get(playerId)?.isMajor && !isObserverPlayer(playerId)) ids.add(playerId);
+  for (const { playerId } of events) if (isWatchedLeader(playerId)) ids.add(playerId);
   return [...ids];
 }
 
@@ -201,6 +213,30 @@ function leaderBanner(playerId) {
 }
 
 const formatValue = (value) => (value == null ? '-' : Locale.toNumber(Math.round(value * 10) / 10));
+
+// ============================ Drawing ============================
+
+/** A crisis stage's marker: a shallow triangle (half width `size`) with a glow and a black outline. */
+const CRISIS_MARK = { tip: 1.6, glow: 6, outline: 'rgba(0, 0, 0, 0.9)' };
+
+/** Draws a crisis stage's marker from `base` (y) pointing `direction` (1 down, -1 up) at `x`. */
+function drawCrisisMark(ctx, x, base, direction, color, size) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x - size, base);
+  ctx.lineTo(x + size, base);
+  ctx.lineTo(x, base + direction * size * CRISIS_MARK.tip);
+  ctx.closePath();
+  ctx.shadowColor = color;
+  ctx.shadowBlur = CRISIS_MARK.glow;
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = CRISIS_MARK.outline;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
 
 // ============================ Tooltips ============================
 
@@ -452,7 +488,7 @@ const panelDescription = (text) => { const description = T.description(); descri
 const emptyText = (text) => { const empty = T.empty(); empty.textContent = text; return empty; };
 
 export {
-  ageName, BreakdownCard, byKindThenCount, crisisStages, detailText, emptyText, fillPanel, formatValue, GraphPanel, HoverTooltip, inAge, InfoTooltip, insertFilters,
-  leaderColor, leaderIcon, leaderName, LeaderRow, leaderRow, LeaderRows, leaderTint, loggedLeaders, opponentName, OVERALL, panelDescription, playerKind,
-  playerKindColor, playerKindLabel, rowHeight, unitFlagIcon, unitTypeName, viewAges, viewLabel
+  ageName, BreakdownCard, byKindThenCount, crisisStages, detailText, drawCrisisMark, emptyText, fillPanel, formatValue, GraphPanel, HoverTooltip, inAge,
+  InfoTooltip, insertFilters, leaderColor, leaderIcon, leaderName, LeaderRow, leaderRow, LeaderRows, leaderTint, loggedLeaders, opponentName, OVERALL, panelDescription,
+  playerKind, playerKindColor, rowHeight, turnSpanText, unitFlagIcon, unitTypeName, viewAges, viewLabel
 };

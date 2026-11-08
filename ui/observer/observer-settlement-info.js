@@ -21,15 +21,10 @@
 /**
  * Zatygold's Spectator - settlement facts (in-game scope).
  *
- * A town's focus, an independent's or city-state's type and suzerain bonus, the
- * settlement at a plot, and which settlement each on-screen banner shows (banner elements carry no id, so
- * they are matched by the name they compose).
+ * A town's focus, an independent's or city-state's type and suzerain bonus,
+ * and the settlement at a plot. Which settlement a banner shows is in
+ * observer-settlement-banners.js.
  */
-import { ancestorWithClass } from '../shared/zom-util.js';
-
-const BANNER_CLASS = 'city-banner';
-const VILLAGE_TYPES = ['IMPROVEMENT_VILLAGE', 'IMPROVEMENT_ENCAMPMENT'];
-const INDEX_EVENTS = ['CityInitialized', 'CityRemovedFromMap', 'CityNameChanged', 'CityTransfered', 'DistrictAddedToMap', 'DistrictRemovedFromMap'];
 
 /** City-state types as the base banner draws them (icon, tint, name). */
 const CITY_STATE_TYPES = {
@@ -86,53 +81,4 @@ function cityAt(plot) {
   return (id && Cities.get(id)) ?? null;
 }
 
-// ============================ Banners ============================
-
-let cachedIndex = null;
-
-/** Every settlement a banner can show, by composed name: { owner, city (null for a village), locations }. */
-function buildIndex() {
-  const index = new Map();
-  const add = (name, entry) => {
-    const key = Locale.compose(name);
-    if (!index.has(key)) index.set(key, entry);
-  };
-  for (const player of Players.getAlive()) {
-    for (const city of player.Cities?.getCities?.() ?? []) add(city.name, { owner: player.id, city, locations: [city.location] });
-    if (!player.isIndependent) continue;
-    const locations = (player.Constructibles?.getConstructibles() ?? [])
-      .filter((c) => VILLAGE_TYPES.includes(GameInfo.Constructibles.lookup(c.type)?.ConstructibleType))
-      .map((c) => c.location);
-    if (locations.length) add(player.civilizationFullName, { owner: player.id, city: null, locations });
-  }
-  return index;
-}
-
-/** The settlement index, rebuilt when settlements change (or fresh). */
-function settlementIndex(fresh = false) {
-  if (fresh || !cachedIndex) cachedIndex = buildIndex();
-  return cachedIndex;
-}
-
-/** The settlement a banner element shows, else null (a miss rebuilds the index once). */
-function bannerSubject(banner) {
-  const name = banner?.querySelector('.city-banner__name')?.textContent?.trim();
-  if (!name) return null;
-  return settlementIndex().get(name) ?? settlementIndex(true).get(name) ?? null;
-}
-
-/** The banner element containing el, else null. */
-const bannerOf = (el) => ancestorWithClass(el, BANNER_CLASS);
-
-/** run(banner, subject) for every banner on screen (subject null when unmatched); returns the banner count. */
-function forEachBanner(run) {
-  const banners = document.querySelectorAll('.' + BANNER_CLASS);
-  for (const banner of banners) run(banner, bannerSubject(banner));
-  return banners.length;
-}
-
-engine.whenReady.then(() => {
-  for (const event of INDEX_EVENTS) engine.on(event, () => { cachedIndex = null; });
-});
-
-export { bannerOf, bannerSubject, cityAt, cityStateBonus, cityStateType, forEachBanner, suzerainOf, townFocus };
+export { cityAt, cityStateBonus, cityStateType, suzerainOf, townFocus };

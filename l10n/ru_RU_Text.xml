@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ru_RU">
 			<Text>Автоматическое завершение хода: выкл.</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="ru_RU">
+			<Text>Следить за событиями: вкл.</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="ru_RU">
+			<Text>Следить за событиями: выкл.</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ru_RU">
 			<Text>Доходы</Text>
 		</Replace>
@@ -133,7 +139,7 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="ru_RU">
 			<Text>Не воюет.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ru_RU">
+		<Replace Tag="LOC_ZOM_OBSERVER_ESTIMATE" Language="ru_RU">
 			<Text>Оценка</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="ru_RU">
@@ -168,6 +174,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ru_RU">
 			<Text>Ходы {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AGES" Language="ru_RU">
+			<Text>{1_FirstAge}, ход {2_First} – {3_LastAge}, ход {4_Last}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="ru_RU">
 			<Text>{1_Value}%</Text>

@@ -19,20 +19,21 @@
  */
 
 /**
- * Zatygold's Spectator - Observer civilizations kept out of civilization lists
- * (in-game scope, every player).
+ * Zatygold's Spectator - Observer civilization lists (in-game scope, every player).
  *
- * At the Age transition a real leader is never offered an Observer
- * civilization, and the Observer only those. The Legacies "Civ Unlocks" tab
- * never lists them; for the Observer it shows the viewed leader's unlocks and
- * civilizations (observer-leader-view.js), wrapping the base model.
+ * Observer civilizations kept out of civilization lists: at the Age
+ * transition a real leader is never offered one, and the Observer only those.
+ * The Legacies "Civ Unlocks" tab never lists them; for the Observer it shows
+ * the viewed leader's unlocks and civilizations (observer-leader-view.js),
+ * wrapping the base model.
  */
 import { CivUnlocksModel, createCivUnlocksModel } from 'fs://game/core/ui-next/screens/unlocks/civ-unlocks-model.js';
 import { ModelRegistry, ModelLifecycle } from 'fs://game/core/ui-next/services/model-registry.js';
 import { configLeader, createLogger, filterParamValues, isObserverCiv, leaderTypeOf, OBSERVER_LEADER, wrapMethod } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
 import { viewedPlayerID } from './observer-leader-view.js';
 
-const log = createLogger('observer-civ-lists');
+const log = createLogger('observer-civ-lists', CONFIG.debug);
 const CIV_PARAMS = new Set(['PlayerCivilization', 'AgeTransitionPlayerCivilization']);
 const MODEL_OVERRIDE_PRIORITY = 1;
 
@@ -86,16 +87,27 @@ function retarget(model, player) {
   if (leader) model.leaderIcon = UI.getIconCSS(leader);
 }
 
+/**
+ * The shared model without Observer civilizations; for the Observer it is
+ * re-targeted whenever it is read after the viewed leader changed (the
+ * registry creates it once).
+ */
 function createCivUnlocksModelForView() {
   const model = createCivUnlocksModel();
   if (!Array.isArray(model?.civInfo)) return model;
-  try {
-    model.civInfo = model.civInfo.filter((civ) => !isObserverCiv(civ.civID));
+  try { model.civInfo = model.civInfo.filter((civ) => !isObserverCiv(civ.civID)); } catch (e) { log(`civ unlocks filter failed: ${e}`); }
+  let targetId;
+  const sync = () => {
     const viewed = viewedPlayerID();
-    const player = viewed === undefined ? null : Players.get(viewed);
-    if (player) retarget(model, player);
-  } catch (e) { log(`civ unlocks shaping failed: ${e}`); }
-  return model;
+    if (viewed === targetId) return;
+    targetId = viewed;
+    try {
+      const player = viewed === undefined ? null : Players.get(viewed);
+      if (player) retarget(model, player);
+    } catch (e) { log(`civ unlocks shaping failed: ${e}`); }
+  };
+  sync();
+  return targetId === undefined ? model : new Proxy(model, { get: (target, key, receiver) => { sync(); return Reflect.get(target, key, receiver); } });
 }
 
 try {

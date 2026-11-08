@@ -33,12 +33,12 @@ import { DiplomacyActionPanel } from 'fs://game/base-standard/ui/diplomacy-actio
 import 'fs://game/base-standard/ui/diplomacy-actions/panel-other-diplomacy.js';   // defines PANEL_TAG
 import { installAssetAliases } from '../shared/zom-assets.js';
 import { clamp, clearChildren, createLogger, isObserverPlayer, onActivate, wrapMethod } from '../shared/zom-util.js';
-import { PANEL_COLORS, RELATIONSHIP_COLORS } from './observer-config.js';
-import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
+import { CONFIG, PANEL_COLORS, RELATIONSHIP_COLORS } from './observer-config.js';
+import { isObserverSeat, isWatchedLeader, leaderPortrait, onObserverReady, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { showLeader } from './observer-leader-view.js';
 import { cityStateBonus, cityStateType, suzerainOf } from './observer-settlement-info.js';
 
-const log = createLogger('observer-diplomacy');
+const log = createLogger('observer-diplomacy', CONFIG.debug);
 const PANEL_TAG = 'panel-other-player-diplomacy-actions';
 const OMIT_CLASS = 'zom-observer-omit';
 const OWN_RELATIONSHIP = '#panel-diplomacy-actions__relationship-event-container';
@@ -291,7 +291,7 @@ function patchPanel(proto) {
     if (!isObserverSeat()) return base(...args);
     clearChildren(this.majorActionsSlot);
     const selected = Players.get(DiplomacyManager.selectedPlayerID);
-    if (selected?.isMajor && !isObserverPlayer(selected.id)) this.majorActionsSlot?.appendChild(attributesButton(selected.id));
+    if (selected && isWatchedLeader(selected.id)) this.majorActionsSlot?.appendChild(attributesButton(selected.id));
   });
 
   wrapMethod(proto, 'populateActionsPanel', function (base, ...args) {
@@ -324,7 +324,9 @@ else log('leader panel not found');
 // Both leader panels (the local player's too) open the base befriending box, which is built around the local player.
 wrapMethod(DiplomacyActionPanel.prototype, 'showBefriendIndependentDetails', (base, ...args) => (isObserverSeat() ? undefined : base(...args)));
 
-engine.whenReady.then(() => {
+onObserverReady(() => {
   installMetEveryone();
-  engine.on('LocalPlayerTurnBegin', installMetEveryone);
+  if (metInstalled) return;
+  const retry = () => { installMetEveryone(); if (metInstalled) engine.off('LocalPlayerTurnBegin', retry); };   // the diplomacy object may not exist yet
+  engine.on('LocalPlayerTurnBegin', retry);
 });

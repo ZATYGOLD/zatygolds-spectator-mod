@@ -44,6 +44,7 @@ import { Activatable } from 'fs://game/core/ui-next/components/activatable.js';
 import { PortraitIcon } from 'fs://game/core/ui-next/components/portrait-icon.js';
 import { ScrollArea } from 'fs://game/core/ui-next/components/scroll-area.js';
 import { useTabContext } from 'fs://game/core/ui-next/components/tab.js';
+import { colorChannels } from '../shared/zom-util.js';
 import { fillPanel, formatValue, InfoTooltip, insertFilters, leaderName, LeaderRows, panelDescription, viewLabel } from './observer-graph-parts.js';
 import { lineTotals } from './observer-graph-lines.js';
 import { timelineTotals } from './observer-graph-timelines.js';
@@ -55,8 +56,8 @@ const civArt = (civ) => ({ image: `lsbg_${civ}_720`, size: 'cover', position: 'c
 const WASH_DEPTH = 0.6;   // the wash is the card's colour darkened to this share
 
 /** The card's colour wash over its art: strongest at the top, fading to dark under the leaders. */
-function colorWash(hex) {
-  const [r, g, b] = [1, 3, 5].map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * WASH_DEPTH));
+function colorWash(color) {
+  const [r, g, b] = (colorChannels(color) ?? [0, 0, 0]).map((c) => Math.round(c * WASH_DEPTH));
   const shade = (alpha) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
   return `linear-gradient(to bottom, ${shade(0.45)} 0%, ${shade(0.3)} 45%, rgba(8, 8, 10, 0.85) 100%)`;
 }

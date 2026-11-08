@@ -24,14 +24,20 @@
  * A counted log of what each leader did, per Age, turn and Age progress, kept
  * in the Observer's own player properties like the yield history
  * (observer-history.js): saved with the game and carried across Ages.
- * Property text, one per Age: "<playerId>,<turn>,<progress %>,<field>,...,<count>;...".
+ * Entry text: "<playerId>,<turn>,<progress %>,<field>,...,<count>", joined by ';'
+ * into one property per Age and turn ("<prefix><age>_<n>", counted by
+ * "<prefix><age>_COUNT"); older saves' single property per Age ("<prefix><age>")
+ * is still read and kept.
  */
 import { clamp, currentAgeChronology, deferOnce } from '../shared/zom-util.js';
-import { canSave, readSaved, writeSaved } from './observer-core.js';
+import { isWatchedLeader, onObserverReady, readSaved, writeSaved } from './observer-core.js';
+import { savedOnce } from './observer-history.js';
 
 const SAVE_DELAY_MS = 2000;
 const ANNOUNCE_MS = 250;   // changes announced together (an AI turn's fighting logs in bursts)
 const BASE_PARTS = 3;      // playerId, turn, progress
+const AGE_TEXT = 'age';    // an Age's single property of older saves
+const logs = [];           // every event log, flushed together on teardown
 
 /** The current Age's progress, 0-99 (the Culture tab's notches); 99 once the Age has no limit. */
 function ageProgress() {
@@ -50,78 +56,125 @@ const categoryIndex = (categories) => Object.fromEntries(categories.map((c, i) =
 const field = (value) => String(value ?? '').replace(/[,;|]/g, ' ');
 
 /**
- * A log saved under `keyPrefix` + Age, with `fieldCount` fields of its own per
- * entry, announcing changes with the window event `changeEvent`.
- * record(playerId, fields, count) counts `count` more (one by default); read() lists
- * [{ age, playerId, turn, progress, fields, count }].
+ * A log saved under `keyPrefix`, with `fieldCount` fields of its own per entry
+ * (an older entry may have `minFieldCount`, the rest read as ''), recording
+ * only for players that pass `isPlayer` and announcing changes with the window
+ * event `changeEvent`. record(playerId, fields, count) counts `count` more (one
+ * by default); flush() saves what waits; read() gives derive(entries), kept
+ * until the next change: each entry ({ age, playerId, turn, progress, fields,
+ * count }, oldest first) as decode(entry) gives it, left out when null.
  */
-function createEventLog({ keyPrefix, fieldCount, changeEvent, log }) {
-  const partCount = BASE_PARTS + fieldCount;
-  let entries = null;   // Map<age chronology, Map<entry key, count>>
-  const dirtyAges = new Set();
-  let saveTimer = 0;
+function createEventLog({ keyPrefix, fieldCount, minFieldCount = fieldCount, changeEvent, log, isPlayer = isWatchedLeader, decode = (entry) => entry, derive = (entries) => entries }) {
   const announce = deferOnce(() => window.dispatchEvent(new CustomEvent(changeEvent)), ANNOUNCE_MS);
+  const countKey = (age) => `${keyPrefix}${age}_COUNT`;
+  const dirty = new Set();   // chunks to save
+  let saveTimer = 0;
+  let version = 0;
+  let readVersion = -1;
+  let derived = [];
 
-  function decode(text) {
-    const counts = new Map();
-    for (const entry of (text ?? '').split(';')) {
-      const parts = entry.split(',');
-      if (parts.length === partCount + 1) counts.set(parts.slice(0, partCount).join(','), Number(parts[partCount]) || 0);
+  /** The saved entries: { entries (oldest first), chunks: Map<"age:turn", chunk>, byKey: Map<"age|key", chunk>, counts: Map<age, chunks saved> }. */
+  const stored = savedOnce(keyPrefix, () => {
+    const store = { entries: [], chunks: new Map(), byKey: new Map(), counts: new Map() };
+    for (const { ChronologyIndex: age } of GameInfo.Ages) {
+      try {
+        const text = readSaved(keyPrefix + age);
+        if (typeof text === 'string' && text) parse(store, newChunk(store, age, AGE_TEXT, keyPrefix + age), text);
+        const count = Number(readSaved(countKey(age))) || 0;
+        store.counts.set(age, count);
+        for (let i = 0; i < count; i++) {
+          const chunkText = readSaved(`${keyPrefix}${age}_${i}`);
+          if (typeof chunkText === 'string' && chunkText) parse(store, newChunk(store, age, Number(chunkText.split(',', 2)[1]), `${keyPrefix}${age}_${i}`), chunkText);
+        }
+      } catch (e) { log(`${keyPrefix} read failed: ${e}`); }
     }
-    return counts;
+    store.entries.sort(byTime);
+    return store;
+  }, () => null);
+
+  /** A property's entries ("age:turn" its id; turn AGE_TEXT for an older save's whole Age): { age, key, rows: Map<entry key, entry> }. */
+  function newChunk(store, age, turn, key) {
+    const chunk = { age, key, rows: new Map() };
+    store.chunks.set(`${age}:${turn}`, chunk);
+    return chunk;
   }
 
-  const encode = (counts) => [...counts].map(([key, count]) => `${key},${count}`).join(';');
+  function addEntry(store, chunk, key, entry) {
+    chunk.rows.set(key, entry);
+    store.byKey.set(`${chunk.age}|${key}`, chunk);
+    store.entries.push(entry);
+  }
 
-  /** Every Age's entries (read from the save once per session). */
-  function allEntries() {
-    if (entries) return entries;
-    if (!canSave()) return new Map();   // not cached: the save is read once it is available
-    entries = new Map();
-    try {
-      for (const age of GameInfo.Ages) {
-        const text = readSaved(keyPrefix + age.ChronologyIndex);
-        if (typeof text === 'string' && text) entries.set(age.ChronologyIndex, decode(text));
-      }
-    } catch (e) { log(`${keyPrefix} read failed: ${e}`); }
-    return entries;
+  function parse(store, chunk, text) {
+    for (const item of text.split(';')) {
+      const parts = item.split(',');
+      const own = parts.length - BASE_PARTS - 1;
+      const count = Number(parts[parts.length - 1]);
+      if (own < minFieldCount || own > fieldCount || !(count > 0)) continue;
+      const [playerId, turn, progress] = parts;
+      const fields = [...parts.slice(BASE_PARTS, -1), ...Array(fieldCount - own).fill('')];
+      addEntry(store, chunk, parts.slice(0, -1).join(','), { age: chunk.age, playerId: Number(playerId), turn: Number(turn), progress: Number(progress), fields, count });
+    }
   }
 
   function save() {
+    clearTimeout(saveTimer);
     saveTimer = 0;
-    for (const age of dirtyAges) {
-      try { writeSaved(keyPrefix + age, encode(allEntries().get(age) ?? new Map())); } catch (e) { log(`${keyPrefix} write failed: ${e}`); }
+    const store = stored();
+    if (!store) return;
+    const ages = new Set();
+    for (const chunk of dirty) {
+      try { writeSaved(chunk.key, [...chunk.rows].map(([key, entry]) => `${key},${entry.count}`).join(';')); } catch (e) { log(`${keyPrefix} write failed: ${e}`); }
+      ages.add(chunk.age);
     }
-    dirtyAges.clear();
+    dirty.clear();
+    for (const age of ages) {
+      try { writeSaved(countKey(age), store.counts.get(age) ?? 0); } catch (e) { log(`${keyPrefix} write failed: ${e}`); }
+    }
   }
 
   function record(playerId, fields, count = 1) {
-    if (playerId == null || playerId < 0 || !(count > 0) || !canSave()) return;
-    const age = currentAgeChronology();
-    const all = allEntries();
-    const counts = all.get(age) ?? new Map();
-    all.set(age, counts);
-    const key = [playerId, Game.turn, ageProgress(), ...fields.map(field)].join(',');
-    counts.set(key, (counts.get(key) ?? 0) + count);
-    dirtyAges.add(age);
+    if (playerId == null || playerId < 0 || !(count > 0) || !isPlayer(playerId)) return;
+    const store = stored();
+    if (!store) return;
+    const [age, turn, progress] = [currentAgeChronology(), Game.turn, ageProgress()];
+    const own = fields.map(field);
+    const key = [playerId, turn, progress, ...own].join(',');
+    let chunk = store.byKey.get(`${age}|${key}`);
+    if (chunk) chunk.rows.get(key).count += count;
+    else {
+      chunk = store.chunks.get(`${age}:${turn}`);
+      if (!chunk) {
+        const index = store.counts.get(age) ?? 0;
+        store.counts.set(age, index + 1);
+        chunk = newChunk(store, age, turn, `${keyPrefix}${age}_${index}`);
+      }
+      addEntry(store, chunk, key, { age, playerId, turn, progress, fields: own, count });
+    }
+    dirty.add(chunk);
+    version++;
     if (!saveTimer) saveTimer = setTimeout(save, SAVE_DELAY_MS);
     announce();
   }
 
   function read() {
-    const out = [];
-    for (const [age, counts] of allEntries()) {
-      for (const [key, count] of counts) {
-        if (!count) continue;
-        const [playerId, turn, progress, ...fields] = key.split(',');
-        out.push({ age, playerId: Number(playerId), turn: Number(turn), progress: Number(progress), fields, count });
-      }
+    const store = stored();
+    if (!store) return [];
+    if (readVersion !== version) {
+      derived = derive(store.entries.flatMap((entry) => { const decoded = decode(entry); return decoded ? [decoded] : []; }));
+      readVersion = version;
     }
-    return out;
+    return derived;
   }
 
-  return { record, read };
+  const flush = () => { if (saveTimer) save(); };
+  logs.push(flush);
+  return { record, read, flush };
 }
+
+onObserverReady(() => {
+  for (const name of ['GameAgeEnded', 'BeforeUnload']) engine.on(name, () => logs.forEach((flush) => flush()));
+});
 
 /** Logs the first payload of each engine event by name, to confirm its fields in UI.log. */
 function payloadLogger(log) {

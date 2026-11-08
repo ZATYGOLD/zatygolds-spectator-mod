@@ -7,13 +7,12 @@ import { getLegacyCardStyling } from './legacies-support.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/legacies/legacies-model.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; the Observer has met everyone.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomHasMet = (diplomacy, playerId) => globalThis.ZOMLeaderView?.hasMet(diplomacy, playerId) ?? diplomacy?.hasMet(playerId);   // ZOM: the Observer has met everyone
 
 var TriumphFilterOptions = /* @__PURE__ */ ((TriumphFilterOptions2) => {
   TriumphFilterOptions2["DEFAULT"] = "DEFAULT";
@@ -44,7 +43,7 @@ var CivFilterOptions = /* @__PURE__ */ ((CivFilterOptions2) => {
   return CivFilterOptions2;
 })(CivFilterOptions || {});
 function createTriumphData(triumphDef) {
-  const playerLegacies = Players.get(zomLocalPlayerID())?.Legacies;
+  const playerLegacies = Players.get(zomLocalPlayerID())?.Legacies;   // ZOM: viewed leader
   const questTracker = getQuestTracker();
   if (!playerLegacies) {
     console.error("legacies-model: Unable to get legacies object for local player while creating the legacy car");
@@ -70,7 +69,7 @@ function createTriumphData(triumphDef) {
   }
   let lockedReason;
   for (const id of Players.getWasEverAliveMajorIds()) {
-    if (id == zomLocalPlayerID()) {
+    if (id == zomLocalPlayerID()) {   // ZOM: viewed leader
       break;
     }
     const player = Players.get(Players.getWasEverAliveMajorIds()[id]);
@@ -96,7 +95,7 @@ function createTriumphData(triumphDef) {
   if (isTriggered) {
     filterOptions.push("COMPLETE" /* COMPLETE */);
   } else {
-    if (!(triumphProgress?.raceWinner != zomLocalPlayerID() && triumphProgress?.raceWinner != -1)) {
+    if (!(triumphProgress?.raceWinner != zomLocalPlayerID() && triumphProgress?.raceWinner != -1)) {   // ZOM: viewed leader
       filterOptions.push("INCOMPLETE" /* INCOMPLETE */);
     }
   }
@@ -115,7 +114,7 @@ function createTriumphData(triumphDef) {
     progressGoal: progressGoal ?? 0,
     triumphRequirements: triumphDef.TriggerDescription,
     triumphDescription: triumphDef.Description,
-    isFirstOnly: triumphDef.FirstPlayerOnly && triumphProgress?.raceWinner != zomLocalPlayerID() && triumphProgress?.raceWinner != -1,
+    isFirstOnly: triumphDef.FirstPlayerOnly && triumphProgress?.raceWinner != zomLocalPlayerID() && triumphProgress?.raceWinner != -1,   // ZOM: viewed leader
     traitIcon,
     bgColor,
     descriptionBG,
@@ -133,8 +132,8 @@ function createTriumphData(triumphDef) {
     legacyData.progressPips = progressPips;
   }
   if (triumphProgress && triumphProgress?.raceWinner != -1) {
-    const localPlayerDiplomacy = Players.get(zomLocalPlayerID())?.Diplomacy;
-    const playerName = localPlayerDiplomacy?.hasMet(triumphProgress?.raceWinner) ? Players.get(triumphProgress?.raceWinner)?.name : Locale.compose("LOC_UI_UNMET_PLAYER_NAME");
+    const localPlayerDiplomacy = Players.get(zomLocalPlayerID())?.Diplomacy;   // ZOM: viewed leader
+    const playerName = zomHasMet(localPlayerDiplomacy, triumphProgress?.raceWinner) ? Players.get(triumphProgress?.raceWinner)?.name : Locale.compose("LOC_UI_UNMET_PLAYER_NAME");   // ZOM: the Observer has met everyone
     if (playerName) {
       legacyData.raceWinnerName = playerName;
     }
@@ -151,7 +150,7 @@ function populateTriumphData() {
     titleText: "LOC_LEGACIES_MINOR_TRIUMPHS",
     triumphs: []
   };
-  const playerLegacies = Players.get(zomLocalPlayerID())?.Legacies;
+  const playerLegacies = Players.get(zomLocalPlayerID())?.Legacies;   // ZOM: viewed leader
   if (!playerLegacies) {
     return allTriumphData;
   }
@@ -178,7 +177,7 @@ function createLegaciesScreenModel() {
   }
   let bgSrc = "";
   let playerColor = "";
-  const localPlayer = Players.get(zomLocalPlayerID());
+  const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
   if (localPlayer != null) {
     const civDefinition = GameInfo.Civilizations.lookup(localPlayer.civilizationType);
     if (civDefinition) {
@@ -187,7 +186,7 @@ function createLegaciesScreenModel() {
       const civImage = civImagePath ? `url(${civImagePath})` : "";
       bgSrc = civImage;
     }
-    const bgColor = UI.Color.getPlayerColors(zomLocalPlayerID());
+    const bgColor = UI.Color.getPlayerColors(zomLocalPlayerID());   // ZOM: viewed leader
     if (bgColor) {
       const variants = UI.Color.createPlayerColorVariants(bgColor);
       playerColor = variants.primaryColor.tintColor;

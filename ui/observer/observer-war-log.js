@@ -23,13 +23,13 @@
  *
  * Records, per leader, each war declared (by the leader or on it) and each
  * peace made, with the other leader; a war runs from its declaration to its
- * peace, across Ages. An event log (observer-event-log.js) with the fields
- * "<code>,<otherPlayerId>" (CODES).
+ * peace (or either leader's elimination), across Ages. An event log
+ * (observer-event-log.js) with the fields "<code>,<otherPlayerId>" (CODES).
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { onObserverReady } from './observer-core.js';
-import { byTime, createEventLog, payloadLogger } from './observer-event-log.js';
+import { isWatchedLeader, onObserverReady } from './observer-core.js';
+import { createEventLog, payloadLogger } from './observer-event-log.js';
 
 const log = createLogger('observer-war-log', CONFIG.debug);
 const showPayload = payloadLogger(log);
@@ -46,22 +46,32 @@ const WAR_CATEGORIES = [
   { id: 'peace', label: 'LOC_ZOM_GRAPH_PEACE', against: 'LOC_ZOM_GRAPH_PEACE_WITH', color: '#8fd18f' }
 ];
 const PEACE = WAR_CATEGORIES.findIndex((c) => c.id === 'peace');
+const ENDED = -1;   // a war's end by a leader's elimination: no category, no pin
 
-/** Each saved letter's category: d declared, a declared on, o going on when first seen, p peace; D and A declared in an earlier Age, going on in this one. */
-const CODES = { d: 0, a: 1, o: 2, p: PEACE, D: 0, A: 1 };
+/**
+ * Each saved letter's category: d declared, a declared on, o going on when first seen, p peace,
+ * x ended by an elimination; D and A declared in an earlier Age, going on in this one.
+ */
+const CODES = { d: 0, a: 1, o: 2, p: PEACE, x: ENDED, D: 0, A: 1 };
 const CARRIED = ['D', 'A', 'o'];   // by the war's first category
 
-const events = createEventLog({ keyPrefix: 'ZOM_WAR_LOG_', fieldCount: 2, changeEvent: WAR_LOG_EVENT, log });
+/** A watched leader, or one already in the log (an eliminated leader's war can still end). */
+const isLoggedLeader = (id) => isWatchedLeader(id) || warLog().some((e) => e.playerId === id);
 
-/** Every logged event: [{ age, turn, progress, playerId, kind, category, type, other, count }] (type the other leader). */
-function warLog() {
-  return events.read().flatMap(({ fields: [code, other], ...entry }) => (CODES[code] == null ? []
-    : [{ ...entry, kind: 'wars', category: CODES[code], type: other, other: Number(other) }]));
-}
+const events = createEventLog({
+  keyPrefix: 'ZOM_WAR_LOG_',
+  fieldCount: 2,
+  changeEvent: WAR_LOG_EVENT,
+  log,
+  isPlayer: isLoggedLeader,
+  decode: ({ fields: [code, other], ...entry }) => (CODES[code] == null ? null : { ...entry, kind: 'wars', category: CODES[code], type: other, other: Number(other) })
+});
 
-const isLeader = (id) => !!Players.get(id)?.isMajor;
+/** Every logged event, oldest first: [{ age, turn, progress, playerId, kind, category, type, other, count }] (type the other leader). */
+const warLog = events.read;
+
 /** A war event between two leaders. */
-const record = (playerId, code, other) => { if (isLeader(playerId) && isLeader(other)) events.record(playerId, [code, other]); };
+const record = (playerId, code, other) => { if (isLoggedLeader(other)) events.record(playerId, [code, other]); };
 
 function onDeclareWar(data) {
   showPayload('DiplomacyDeclareWar', data);
@@ -75,21 +85,33 @@ function onMakePeace(data) {
   record(data?.reactingPlayer, 'p', data?.actingPlayer);
 }
 
+/** The wars the log holds open: Map<"player:other", { player, other, start, lastAge }>. */
+function openWars() {
+  const open = new Map();
+  for (const e of warLog()) {
+    const key = `${e.playerId}:${e.other}`;
+    if (e.category === PEACE || e.category === ENDED) open.delete(key);
+    else open.set(key, { player: e.playerId, other: e.other, start: open.get(key)?.start ?? e, lastAge: e.age });
+  }
+  return open;
+}
+
+/** Ends each open war with a leader no longer alive. */
+function endWithEliminated(open = openWars()) {
+  const alive = (id) => !!Players.get(id)?.isAlive;
+  for (const { player, other } of open.values()) if (!alive(player) || !alive(other)) record(player, 'x', other);
+}
+
 /**
  * On load, the log brought up to date with the leaders' wars: a war it has not
  * seen begin is noted as ongoing, one logged in an earlier Age as going on in
- * this one (as it began), and one it holds open that is over as peace (a new
- * Age may end wars).
+ * this one (as it began), one it holds open that is over as peace (a new
+ * Age may end wars), and one with an eliminated leader as ended.
  */
 function noteOngoing() {
-  const open = new Map();   // "player:other" -> { start, lastAge }
-  for (const e of warLog().sort(byTime)) {
-    const key = `${e.playerId}:${e.other}`;
-    if (e.category === PEACE) open.delete(key);
-    else open.set(key, { start: open.get(key)?.start ?? e, lastAge: e.age });
-  }
+  const open = openWars();
   const age = currentAgeChronology();
-  const leaders = Players.getAlive().filter((p) => p.isMajor);
+  const leaders = Players.getAlive().filter((p) => isWatchedLeader(p.id));
   for (const player of leaders) {
     for (const other of leaders) {
       if (other.id === player.id) continue;
@@ -100,12 +122,14 @@ function noteOngoing() {
       else if (war.lastAge < age) record(player.id, CARRIED[war.start.category] ?? 'o', other.id);
     }
   }
+  endWithEliminated(open);
 }
 
 onObserverReady(() => {
   try { noteOngoing(); } catch (e) { log(`ongoing wars not noted: ${e}`); }
   engine.on('DiplomacyDeclareWar', onDeclareWar);
   engine.on('DiplomacyMakePeace', onMakePeace);
+  engine.on('TurnBegin', () => { try { endWithEliminated(); } catch (e) { log(`ended wars not noted: ${e}`); } });
 });
 
-export { PEACE, WAR_CATEGORIES, WAR_LOG_EVENT, warLog };
+export { ENDED, PEACE, WAR_CATEGORIES, WAR_LOG_EVENT, warLog };

@@ -36,7 +36,7 @@ import { CONFIG, PANEL_COLORS } from './observer-config.js';
 import { meleeStrength, rangedStrength } from './observer-core.js';
 import { inspectableUnits, isForeign } from './observer-units.js';
 
-const log = createLogger('observer-combat');
+const log = createLogger('observer-combat', CONFIG.debug);
 const PREVIEW_TAG = 'panel-unit-combat-preview';
 const ESTIMATE_CLASS = 'zom-combat-estimate';
 const DAMAGE_BASE = 30;      // the game's damage formula: 30 * e^(strength difference / 25)
@@ -150,7 +150,7 @@ function setEstimateNote(root, visible) {
     note.classList.add(ESTIMATE_CLASS, 'font-body', 'text-sm', 'text-accent-1');
     note.style.cssText = 'position: absolute; bottom: 100%; left: -2.5rem; right: -2.5rem; margin-bottom: 0.3rem; padding: 0.15rem 0.5rem; text-align: center; ' +
       `border-radius: 0.3rem; background-color: ${PANEL_COLORS.plate}; border: 0.0555555556rem solid ${PANEL_COLORS.borderStrong};`;
-    note.setAttribute('data-l10n-id', 'LOC_ZOM_OBSERVER_COMBAT_ESTIMATE');
+    note.setAttribute('data-l10n-id', 'LOC_ZOM_OBSERVER_ESTIMATE');
     outcome.appendChild(note);
   }
   note.style.display = visible ? 'block' : 'none';

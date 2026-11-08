@@ -23,9 +23,13 @@
  *
  * Each leader's pantheon, religion and ideology in every Age, for the ribbon,
  * the pantheon overview and the Religion screen. After Antiquity pantheons are
- * read from the Multiplayer Balance Mod's carried narrative tags, when present.
+ * read from the carried narrative tags of Better Balanced Multiplayer's Game
+ * Balance (BBM_BALANCE, or MPT_BALANCE under its earlier name) or the older
+ * Multiplayer Balance Mod (MBM), when present.
  */
-const CARRIED_PANTHEON_TAG = /^MBM_NARRATIVE_TAG_PANTHEON_(\d+)$/;
+import { onObserverReady } from './observer-core.js';
+
+const CARRIED_PANTHEON_TAG = /^(?:BBM_BALANCE|MPT_BALANCE|MBM)_NARRATIVE_TAG_PANTHEON_(\d+)$/;
 let carriedTags = null;   // [{ tag, belief }] for every carried-pantheon narrative tag (read once)
 
 function carriedPantheonTags() {
@@ -94,14 +98,28 @@ function ideologyBadge(player) {
 
 const badgeOf = (make, player) => { try { return make(player); } catch (e) { return null; } };
 
+const FAITH_EVENTS = ['PantheonFounded', 'ReligionFounded', 'BeliefAdded', 'CultureNodeCompleted', 'PlayerTurnDeactivated'];   // the last: after each player's choices
+const badgeCache = new Map();   // player id -> badges, for the current turn
+let badgeTurn = -1;
+
 /**
  * The leader's faith badges as { kind, tooltip, icon }: the religion, else the
  * pantheon (still listed on the Religion screen once a religion is founded),
  * plus the ideology, which the base card would show instead of the religion.
+ * Cached until the turn changes, a player ends its turn or a faith event.
  */
 function faithBadges(player) {
-  const religion = badgeOf(religionBadge, player);
-  return [religion ?? badgeOf(pantheonBadge, player), badgeOf(ideologyBadge, player)].filter(Boolean);
+  const turn = Game.turn;
+  if (turn !== badgeTurn) { badgeCache.clear(); badgeTurn = turn; }
+  if (!badgeCache.has(player.id)) {
+    const religion = badgeOf(religionBadge, player);
+    badgeCache.set(player.id, [religion ?? badgeOf(pantheonBadge, player), badgeOf(ideologyBadge, player)].filter(Boolean));
+  }
+  return badgeCache.get(player.id);
 }
+
+onObserverReady(() => {
+  for (const event of FAITH_EVENTS) engine.on(event, () => badgeCache.clear());
+});
 
 export { faithBadges, pantheons };

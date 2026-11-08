@@ -23,8 +23,8 @@
  *
  * Answers or skips what the game sends an empire, for the Observer seat:
  * narrative stories (first available choice), first meetings, diplomacy
- * dialogs, end-of-Age popups and screens, the Age transition choice and the
- * Age-start step, and empire notifications.
+ * dialogs, advisor warnings, end-of-Age popups and screens, the Age
+ * transition choice and the Age-start step, and empire notifications.
  */
 import { DisplayQueueManager } from 'fs://game/core/ui/context-manager/display-queue-manager.js';
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
@@ -32,6 +32,8 @@ import AgeProgressionPopupManager from 'fs://game/base-standard/ui/age-progressi
 import { NarrativePopupManager } from 'fs://game/base-standard/ui/narrative-event/narrative-popup-manager.js';
 import { DiplomacyDialogManagerImpl } from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import EndGameScreenManager from 'fs://game/base-standard/ui/endgame/screen-endgame.js';
+import { NotificationModel } from 'fs://game/base-standard/ui/notification-train/model-notification-train.js';
+import WatchOutManager from 'fs://game/base-standard/ui/watch-out/watch-out-manager.js';
 import { createLogger, deferOnce, observerCivForAge, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, onObserverReady } from './observer-core.js';
@@ -39,9 +41,11 @@ import { isObserverSeat, onObserverReady } from './observer-core.js';
 const log = createLogger('observer-prompts', CONFIG.debug);
 const SILENCED_NOTIFICATIONS = /^NOTIFICATION_(CRISIS|AGE_(EARLY|LATE|VERY_LATE)_PROGRESS|AGE_PROGRESSION_|AGE_EXTENDED|PLAYER_MET|DIPLOMATIC_ACTION_AGENDA)/;
 const STORY_NOTIFICATIONS = /STORY_DIRECTION$/;
+const ADVISOR_WARNING_NOTIFICATIONS = /^NOTIFICATION_ADVISOR_WARNING_/;
 const CHOOSE_CIV_NOTIFICATION = 'NOTIFICATION_CHOOSE_CIVILIZATION';
 const AGE_TRANSITION_MODE = 'INTERFACEMODE_AGE_TRANSITION';
 const STORY_RETRY_MS = 1500;
+const STORY_ANSWER_TTL_MS = 10000;   // a story still pending this long after its answer is answered again (the engine dropped it)
 const SWEEP_DELAY_MS = 500;
 
 /** Send a player operation for the Observer if the engine allows it. */
@@ -57,7 +61,7 @@ const skipDisplay = (request) => setTimeout(() => DisplayQueueManager.close(requ
 
 // ============================ Narrative stories ============================
 
-let lastAnsweredStory = null;   // key of the story last answered
+let lastAnswered = null;   // { key, at }: the story last answered, not answered again until STORY_ANSWER_TTL_MS has passed
 
 /** A story id's value key (the engine hands out a new id object per call). */
 const storyKey = (id) => `${id.owner}/${id.id}/${id.type}`;
@@ -78,11 +82,12 @@ function answerPendingStory() {
   try {
     const stories = Players.get(GameContext.localPlayerID)?.Stories;
     const storyId = stories?.getFirstPendingMetId?.() || stories?.getFirstPendingDiscoveryLastMetID?.();
-    if (!storyId || storyKey(storyId) === lastAnsweredStory) return;
+    const key = storyId && storyKey(storyId);
+    if (!key || (key === lastAnswered?.key && Date.now() - lastAnswered.at < STORY_ANSWER_TTL_MS)) return;
     const answered = storyChoices(stories, storyId).find((key) =>
       tryOperation(PlayerOperationTypes.CHOOSE_NARRATIVE_STORY_DIRECTION, { TargetType: key, Target: storyId, Action: PlayerOperationParameters.Activate }));
     if (!answered) { log(`story ${JSON.stringify(storyId)}: no available choice`); return; }
-    lastAnsweredStory = storyKey(storyId);
+    lastAnswered = { key, at: Date.now() };
     log.debug(`story ${JSON.stringify(storyId)} answered with ${answered}`);
     setTimeout(answerPendingStory, STORY_RETRY_MS);   // the next pending story, if any
   } catch (e) { log(`story answer failed: ${e}`); }
@@ -125,7 +130,7 @@ function nextObserverCiv() {
   return next ? observerCivForAge(next.AgeType) : null;
 }
 
-/** Pick the next Age's Observer civilization and confirm the transition choices (once per Age). */
+/** Pick the next Age's Observer civilization and confirm the transition choices (once per Age; retried until accepted). */
 function completeAgeTransitionChoice() {
   if (transitionChoiceSent) return;
   try {
@@ -143,19 +148,32 @@ function notificationType(id) {
   return GameInfo.Notifications.lookup(type)?.NotificationType ?? Game.Notifications.getTypeName(type) ?? '';
 }
 
+/**
+ * Answer or dismiss one notification for the Observer; false when it is none
+ * the Observer handles. An advisor warning goes through the game's handler,
+ * which marks it viewed (a plain dismiss leaves the turn blocked).
+ */
+function resolveNotification(id) {
+  try {
+    const type = notificationType(id);
+    if (STORY_NOTIFICATIONS.test(type)) answerPendingStory();
+    else if (type === CHOOSE_CIV_NOTIFICATION) completeAgeTransitionChoice();
+    else if (ADVISOR_WARNING_NOTIFICATIONS.test(type)) NotificationModel.manager.dismiss(id);
+    else if (SILENCED_NOTIFICATIONS.test(type) && Game.Notifications.canUserDismissNotification(id)) Game.Notifications.dismiss(id);
+    else return false;
+    return true;
+  } catch (e) {
+    log(`notification handling failed: ${e}`);
+    return false;
+  }
+}
+
 /** Answer what the game waits on and dismiss silenced notifications. */
 function sweep() {
   if (!isObserverSeat()) return;
   completeAgeStart();
   answerFirstMeets();
-  for (const id of Game.Notifications.getIdsForPlayer(GameContext.localPlayerID) ?? []) {
-    try {
-      const type = notificationType(id);
-      if (STORY_NOTIFICATIONS.test(type)) answerPendingStory();
-      else if (type === CHOOSE_CIV_NOTIFICATION) completeAgeTransitionChoice();
-      else if (SILENCED_NOTIFICATIONS.test(type) && Game.Notifications.canUserDismissNotification(id)) Game.Notifications.dismiss(id);
-    } catch (e) { log(`notification handling failed: ${e}`); }
-  }
+  for (const id of Game.Notifications.getIdsForPlayer(GameContext.localPlayerID) ?? []) resolveNotification(id);
 }
 
 const queueSweep = deferOnce(sweep, SWEEP_DELAY_MS);
@@ -167,6 +185,11 @@ function patchPopups() {
     if (!isObserverSeat()) return base(...args);
     answerPendingStory();
     return false;
+  });
+  // Advisor warnings (e.g. trailing in Technology) are marked viewed instead of shown.
+  wrapMethod(WatchOutManager, 'raiseNotificationPanel', (base, notificationId, ...rest) => {
+    if (!isObserverSeat()) return base(notificationId, ...rest);
+    resolveNotification(notificationId);
   });
   wrapMethod(AgeProgressionPopupManager, 'show', (base, request, ...rest) => {
     if (!isObserverSeat()) return base(request, ...rest);
@@ -200,3 +223,5 @@ onObserverReady(() => {
   answerPendingStory();
   queueSweep();
 });
+
+export { resolveNotification };

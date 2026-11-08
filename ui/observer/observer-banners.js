@@ -28,11 +28,12 @@
  */
 import { mergeProps } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { ancestorWithClass, createLogger, deferOnce, overrideComponent } from '../shared/zom-util.js';
-import { PANEL_COLORS } from './observer-config.js';
+import { CONFIG, PANEL_COLORS } from './observer-config.js';
 import { onObserverReady } from './observer-core.js';
-import { bannerOf, bannerSubject, cityStateBonus, cityStateType, forEachBanner, townFocus } from './observer-settlement-info.js';
+import { bannerOf, bannerSubject, forEachBanner } from './observer-settlement-banners.js';
+import { cityStateBonus, cityStateType, townFocus } from './observer-settlement-info.js';
 
-const log = createLogger('observer-banners');
+const log = createLogger('observer-banners', CONFIG.debug);
 const ICON_CLASS = 'zom-settlement-icon';
 const ICON_SHADOW = `drop-shadow(0.0277777778rem 0.0555555556rem 0.0555555556rem ${PANEL_COLORS.shadow})`;
 const TYPE_ICON_CLASS = 'city-banner__city-state-container';
@@ -42,15 +43,7 @@ const REFRESH_EVENTS = ['CityInitialized', 'CityGovernmentLevelChanged', 'CityGr
 const FIRST_PASS_RETRY_MS = 500;
 const FIRST_PASS_TRIES = 20;   // the banners mount shortly after the game is ready
 
-const seen = new Set();          // breadcrumbs already logged this game load
 let hoveredTypeIcon = null;      // the city-state type icon under the mouse
-
-/** Log a breadcrumb once per game load. */
-function once(key, message) {
-  if (seen.has(key)) return;
-  seen.add(key);
-  log(message);
-}
 
 // ============================ Town focus ============================
 
@@ -78,7 +71,7 @@ function refreshIcons() {
   try {
     let icons = 0;
     const banners = forEachBanner((banner, subject) => { if (refreshFocusIcon(banner, subject)) icons++; });
-    if (banners) once('pass', `banner pass: ${banners} banners, ${icons} town focus icons`);
+    if (banners) log.once('pass', `banner pass: ${banners} banners, ${icons} town focus icons`);
     return banners;
   } catch (e) {
     log(`banner refresh failed: ${e}`);
@@ -109,7 +102,7 @@ const withBonus = (base) => (props) => {
   try {
     const text = bonusText(props.text);
     if (text) {
-      once('bonus', 'suzerain bonus tooltip shown');
+      log.once('bonus', 'suzerain bonus tooltip shown');
       return base(mergeProps(props, { text, args: [] }));
     }
   } catch (e) { log(`bonus tooltip failed: ${e}`); }

@@ -29,7 +29,7 @@
  */
 import { createLogger } from '../shared/zom-util.js';
 import { CONFIG, OUTCOME_COLORS } from './observer-config.js';
-import { byTime, categoryIndex, createEventLog } from './observer-event-log.js';
+import { categoryIndex, createEventLog } from './observer-event-log.js';
 import { watchSettlements } from './observer-settlement-watch.js';
 
 const log = createLogger('observer-settlement-log', CONFIG.debug);
@@ -61,16 +61,11 @@ const CODES = {
   u: { category: CATEGORY.upgraded, how: null }
 };
 
-const events = createEventLog({ keyPrefix: 'ZOM_SETTLEMENT_LOG_', fieldCount: 5, changeEvent: SETTLEMENT_LOG_EVENT, log });
+const decode = ({ fields: [code, settlement, type, other, plot], ...entry }) => (!CODES[code] || !SETTLEMENT_KINDS[settlement] ? null
+  : { ...entry, kind: 'settlements', ...CODES[code], settlement, type, other: Number(other), plot: Number(plot) });
 
-/**
- * Every logged event: [{ age, turn, progress, playerId, kind, category, how, settlement, type, other, plot, count }]
- * (a razing shows the settlement as the leader last had it: a town lost stays a town).
- */
-function settlementLog() {
-  const all = events.read().flatMap(({ fields: [code, settlement, type, other, plot], ...entry }) => (!CODES[code] || !SETTLEMENT_KINDS[settlement] ? []
-    : [{ ...entry, kind: 'settlements', ...CODES[code], settlement, type, other: Number(other), plot: Number(plot) }]))
-    .sort(byTime);
+/** A razing shown as the leader last had the settlement: a town lost stays a town. */
+function derive(all) {
   const last = new Map();   // "player:plot" -> the settlement kind it last had
   for (const e of all) {
     const key = `${e.playerId}:${e.plot}`;
@@ -80,10 +75,13 @@ function settlementLog() {
   return all;
 }
 
+const events = createEventLog({ keyPrefix: 'ZOM_SETTLEMENT_LOG_', fieldCount: 5, changeEvent: SETTLEMENT_LOG_EVENT, log, decode, derive });
+
+/** Every logged event, oldest first: [{ age, turn, progress, playerId, kind, category, how, settlement, type, other, plot, count }]. */
+const settlementLog = events.read;
+
 /** A settlement's event for a leader (and the other player involved). */
-function record(playerId, code, settlement, other = -1) {
-  if (Players.get(playerId)?.isMajor) events.record(playerId, [code, settlement.town ? 'town' : 'city', settlement.name, other, settlement.plot]);
-}
+const record = (playerId, code, settlement, other = -1) => events.record(playerId, [code, settlement.town ? 'town' : 'city', settlement.name, other, settlement.plot]);
 
 watchSettlements({
   founded: (settlement) => record(settlement.owner, 'f', settlement),

@@ -21,14 +21,15 @@
 /**
  * Zatygold's Spectator - Observer leader view (in-game scope).
  *
- * ZOMLeaderView: the leader the empire screens show (base-file overrides marked
- * "ZOM:" read it), picked from a row of portraits shared by every such screen;
- * a pick reopens the screen in place on the same tab. During a Perspective the
- * viewed leader is shown with no picker, unless a screen was opened for a
- * leader (showLeader). Screens stay read-only.
+ * ZOMLeaderView: what the base-file overrides (changes marked "ZOM:") read.
+ * The leader the empire screens show, picked from a row of portraits shared by
+ * every such screen; a pick reopens the screen in place on the same tab. During
+ * a Perspective the viewed leader is shown with no picker, unless a screen was
+ * opened for a leader (showLeader). A viewed leader's screens are read-only.
+ * Also the Observer checks the Victories and Legacies screens share.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import { createLogger, onActivate, setStyle } from '../shared/zom-util.js';
+import { createLogger, isObserverPlayer, onActivate, setStyle } from '../shared/zom-util.js';
 import { CONFIG, PANEL_COLORS } from './observer-config.js';
 import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { perspectivePlayer } from './observer-perspective.js';
@@ -64,6 +65,17 @@ function playerID() {
   return viewedId ?? undefined;
 }
 
+/** True while the Observer is shown a leader other than itself: request paths are then skipped. */
+function isViewingOther() {
+  const id = playerID();
+  return id !== undefined && id !== GameContext.localPlayerID;
+}
+
+/** diplomacy.hasMet, except that an Observer has met everyone. */
+function hasMet(diplomacy, playerId) {
+  return isObserverPlayer(GameContext.localPlayerID) || !!diplomacy?.hasMet(playerId);
+}
+
 /** onTabChanged handler (it receives the active tab item) that remembers the Observer's open tab, then calls base. */
 function trackTab(screenTag, base) {
   return (tab) => {
@@ -78,7 +90,8 @@ function trackTab(screenTag, base) {
 
 /**
  * The tab to reopen on after a leader switch, else undefined. Kept until that
- * tab is reported open: the screen reads it several times while it builds.
+ * tab is reported open or the screen has settled: it is read several times
+ * while the screen builds.
  */
 function restoredTab(screenTag) {
   return restoreTabs.get(screenTag);
@@ -111,7 +124,10 @@ function reopen(screenTag, id) {
   setTimeout(() => {
     ContextManager.pop(screenTag);
     ContextManager.push(screenTag, SCREEN_PROPS);
-    afterFrames(() => setTimeout(() => document.body.classList.remove(SWITCHING_CLASS), SETTLE_MS));
+    afterFrames(() => setTimeout(() => {
+      document.body.classList.remove(SWITCHING_CLASS);
+      restoreTabs.delete(screenTag);   // built: a restore never reported open must not pin activeTab
+    }, SETTLE_MS));
   }, 0);
 }
 
@@ -137,7 +153,32 @@ function playerBar(screenTag) {
   return bar;
 }
 
-globalThis.ZOMLeaderView = { playerID, playerBar, restoredTab, trackTab };
+/**
+ * The props of a screen's Tab, wired for the picker: the open tab is remembered
+ * (then the screen's onTabChanged runs) and restored after a leader switch, as
+ * defaultTab and, when the screen has one, over its activeTab. Unchanged for
+ * everyone else. Getters are kept, so props stay reactive.
+ */
+function tabProps(screenTag, props) {
+  if (!isObserverSeat()) return props;
+  const base = Object.getOwnPropertyDescriptors(props);
+  const read = (key) => (base[key]?.get ? base[key].get.call(props) : base[key]?.value);
+  const prop = (get) => ({ get, enumerable: true, configurable: true });
+  Object.defineProperties(props, {
+    onTabChanged: prop(() => trackTab(screenTag, read('onTabChanged'))),
+    defaultTab: prop(() => restoredTab(screenTag) ?? read('defaultTab'))
+  });
+  if (base.activeTab) {
+    const active = () => {
+      const tab = read('activeTab')?.();   // read first: keeps the screen's tab signal tracked
+      return restoredTab(screenTag) ?? tab;
+    };
+    Object.defineProperty(props, 'activeTab', prop(() => active));
+  }
+  return props;
+}
+
+globalThis.ZOMLeaderView = { hasMet, isObserver: isObserverPlayer, isViewingOther, playerBar, playerID, tabProps };
 
 // The overrides load only in a game flagged as having an Observer (modinfo criteria); report the flag for diagnosis.
 engine.whenReady.then(() => {

@@ -30,10 +30,11 @@
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import { PanelYieldBanner } from 'fs://game/base-standard/ui/diplo-ribbon/panel-yield-banner.js';
 import { componentOf, createLogger, deferOnce, wrapMethod } from '../shared/zom-util.js';
-import { inLeaderPanel, isObserverSeat } from './observer-core.js';
+import { CONFIG } from './observer-config.js';
+import { inLeaderPanel, isObserverSeat, isWatchedLeader } from './observer-core.js';
 import { PERSPECTIVE_CHANGED_EVENT, perspectivePlayer } from './observer-perspective.js';
 
-const log = createLogger('observer-yields');
+const log = createLogger('observer-yields', CONFIG.debug);
 const BANNER_TAG = 'panel-yield-banner';
 const EXTRA_YIELDS = [
   { type: 'YIELD_FOOD', tooltip: 'LOC_YIELD_FOOD', textClass: 'text-yield-food' },
@@ -51,7 +52,7 @@ const REPAINT_EVENTS = [
 /** The leader whose yields the bar shows: the leader panel's leader, else the Perspective's, else the Observer (the bar's own player id). */
 function shownPlayer() {
   const panelLeader = inLeaderPanel() ? Players.get(DiplomacyManager.selectedPlayerID) : null;
-  if (panelLeader?.isMajor) return panelLeader;   // an independent's panel keeps the current leader's yields
+  if (panelLeader && isWatchedLeader(panelLeader.id)) return panelLeader;   // an independent's panel keeps the current leader's yields
   const viewed = perspectivePlayer();
   return Players.get(viewed ?? GameContext.localObserverID);
 }

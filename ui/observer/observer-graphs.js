@@ -94,31 +94,38 @@ const TabGroup = (props) => createComponent(Tab, {
 });
 
 /**
- * A signal of `read()` refreshed on the window events of `names`: at most
- * once per REFRESH_MS (turns being played send many), and only while
- * `visible()` - a hidden view catches up when it is shown.
+ * A signal of `read()` refreshed on the window events of `names`, at most
+ * once per REFRESH_MS (turns being played send many). With `visible`, only
+ * while it is true: null until first shown, and catching up when shown again.
  */
-function liveSignal(read, names, visible = () => true) {
-  const [value, setValue] = createSignal(read(), { equals: false });
-  let stale = false;
+function liveSignal(read, names, visible) {
+  const [value, setValue] = createSignal(visible ? null : read(), { equals: false });
+  const shown = () => !visible || visible();
+  let stale = !!visible;
   let timer = 0;
   const refresh = () => { timer = 0; stale = false; setValue(read()); };
   const listener = () => {
     stale = true;
-    if (visible() && !timer) timer = setTimeout(refresh, REFRESH_MS);
+    if (shown() && !timer) timer = setTimeout(refresh, REFRESH_MS);
   };
-  createEffect(() => { if (visible() && stale && !timer) refresh(); });
+  createEffect(() => { if (shown() && stale && !timer) refresh(); });
   onMount(() => names.forEach((name) => window.addEventListener(name, listener)));
   onCleanup(() => { clearTimeout(timer); names.forEach((name) => window.removeEventListener(name, listener)); });
   return value;
 }
 
-/** A source's signals ({ kind, read, changeEvents }): all it holds, those in the chosen Age, and (timelines) its leaders. */
-function sourceSignals(source, filters, visible) {
-  const all = liveSignal(source.read, source.changeEvents, visible);
-  const entries = createMemo(() => inAge(all(), filters.age()));
-  const leaders = source.kind === 'timeline' ? createMemo(() => loggedLeaders(all())) : null;
-  return { entries, leaders };
+/**
+ * A source's signals ({ kind, read, changeEvents }): those in the chosen Age
+ * and (timelines) its leaders, read only while its view shows a tab using it
+ * (use(), from that tab's body).
+ */
+function sourceSignals(source, filters, viewShown) {
+  const [users, setUsers] = createSignal(0);
+  const all = liveSignal(source.read, source.changeEvents, () => viewShown() && users() > 0);
+  const entries = createMemo(() => inAge(all() ?? [], filters.age()));
+  const leaders = source.kind === 'timeline' ? createMemo(() => loggedLeaders(all() ?? [])) : null;
+  const use = () => { setUsers((n) => n + 1); onCleanup(() => setUsers((n) => n - 1)); };
+  return { entries, leaders, use };
 }
 
 /**
@@ -138,6 +145,8 @@ function viewTabs(view, filters) {
     return { ...spec, tab, subject: tab.subject ?? view, kind: source.kind, ...sources.get(source) };
   };
   const panel = (tab) => {
+    const used = tab.columns ? tab.columns.map((spec) => sourceOf(tabs.find((t) => t.id === spec.tab))) : [sourceOf(tab)];
+    for (const source of new Set(used)) sources.get(source).use();
     if (tab.columns) return createComponent(SummaryPanel, { tab, columns: tab.columns.map(column), ...filters });
     const source = sourceOf(tab);
     const { entries, leaders } = sources.get(source);

@@ -30,9 +30,8 @@
  */
 import { BATTLE_CATEGORIES } from './observer-battle-log.js';
 import { categoryIndex } from './observer-event-log.js';
-import { byKindThenCount, detailText, leaderIcon, leaderRow, leaderTint, opponentName, playerKind, playerKindColor } from './observer-graph-parts.js';
+import { byKindThenCount, detailText, leaderIcon, leaderRow, leaderTint, opponentName, playerKind, playerKindColor, turnSpanText } from './observer-graph-parts.js';
 import { emptyCard, rankedCells, sumBy } from './observer-graph-timelines.js';
-import { turnText } from './observer-timeline.js';
 
 const CATEGORY = categoryIndex(BATTLE_CATEGORIES);
 const CITY_ICON = 'url(blp:Yield_Cities)';
@@ -88,7 +87,7 @@ const BY_KEYS = {
 };
 
 /** The turns it went on: "Turn 12", "Turns 12–15". */
-const turnsOf = (source) => turnText([source.from, source.until ?? source.from]);
+const turnsOf = (source) => turnSpanText(source.from, source.until ?? source.from);
 
 /**
  * What happened, its section naming the kind: an engagement's turns and tally
@@ -131,7 +130,7 @@ const BATTLES_SUBJECT = {
   dotColor: (source) => (source.other >= 0 ? playerKindColor(source.other) : null),
   name: nameOf,
   detail: battleDetail,
-  sourceOf: (event) => ({ settlement: event.settlement, other: event.other, by: DOERS[event.side] === 'self' ? event.playerId : event.other, from: event.turn, until: event.until?.turn }),
+  sourceOf: (event) => ({ settlement: event.settlement, other: event.other, by: DOERS[event.side] === 'self' ? event.playerId : event.other, from: { age: event.age, turn: event.turn }, until: event.until && { age: event.until.age, turn: event.until.turn } }),
   sumFields: ['attacks', 'pillage'],   // one row per opponent and kind, its engagements' attacks and pillage together
   sourceOrder: (a, b) => playerKind(a.other) - playerKind(b.other),   // a pin leads with a leader, then a city-state, then an independent power
   sections: [

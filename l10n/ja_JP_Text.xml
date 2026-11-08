@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="ja_JP">
 			<Text>自動ターン終了: オフ</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="ja_JP">
+			<Text>アクションを追う: オン</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="ja_JP">
+			<Text>アクションを追う: オフ</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="ja_JP">
 			<Text>産出</Text>
 		</Replace>
@@ -133,7 +139,7 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="ja_JP">
 			<Text>戦争していません。</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="ja_JP">
+		<Replace Tag="LOC_ZOM_OBSERVER_ESTIMATE" Language="ja_JP">
 			<Text>推定</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="ja_JP">
@@ -168,6 +174,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="ja_JP">
 			<Text>ターン{1_First}~{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AGES" Language="ja_JP">
+			<Text>{1_FirstAge} ターン{2_First}~{3_LastAge} ターン{4_Last}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="ja_JP">
 			<Text>{1_Value}%</Text>

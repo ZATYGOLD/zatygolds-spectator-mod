@@ -25,9 +25,10 @@
  * (culture-victory-tab.js): a notch per percent of Age progress, and a pin per
  * group of logged things with a tooltip listing them. Props: subject (see
  * observer-graph-timelines.js), title (the tooltip heading), pins ([{ position,
- * category, lead, count, turns: [first, last], sources }]), notches ([{ position,
+ * category, lead, count, turns (text), sources }]), notches ([{ position,
  * highlight, crisis, divider }]), labels ([{ position, text, color, start, bottom }]),
- * showTopLabels / showBottomLabels, links ([[from, to]] pin positions) and bands.
+ * showTopLabels / showBottomLabels, links ([[from, to]] pin positions), bands and
+ * height (the row's, so the canvases are redrawn when it changes).
  */
 import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js';
 import { createComponent, createEffect, createMemo, For, onCleanup, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
@@ -35,7 +36,8 @@ import { CardFrame } from 'fs://game/core/ui-next/components/card-frame.js';
 import { Divider } from 'fs://game/core/ui-next/components/divider.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
 import { drawDashedQuadraticBezier } from 'fs://game/core/ui-next/utilities/canvas-utilities.js';
-import { drawCrisisMark } from './observer-crisis.js';
+import { scaleColor } from '../shared/zom-util.js';
+import { drawCrisisMark } from './observer-graph-parts.js';
 
 // The Culture tab's notch colours.
 const NOTCH = { color: 'rgba(97, 98, 102, 0.6)', highlight: 'rgba(120, 139, 179, 0.9)', divider: 'rgba(225, 214, 180, 0.6)' };
@@ -66,11 +68,6 @@ const T = {
   sectionTitle: template(`<div class="font-title text-xs uppercase text-secondary ml-3 mt-1"></div>`),
   source: template(`<div class="flex flex-row items-center victories-culture-tooltip-body p-1 my-1 w-96 relative"><div class="size-9 bg-contain bg-no-repeat bg-center ml-2"></div><div class="flex flex-col justify-center min-h-11 w-64"><div class="uppercase text-title"></div><div class="text-xs"></div></div><div class="absolute right-2"></div></div>`)
 };
-
-/** "Turn 12", or "Turns 12–15" for a span. */
-const turnText = ([first, last]) => (first === last
-  ? Locale.compose('LOC_VICTORIES_ITEM_TOOLTIP_TURN', first)
-  : Locale.compose('LOC_ZOM_GRAPH_TURNS', first, last));
 
 /**
  * The pin's sources in sections ({ title, sources, compact }): the subject's
@@ -131,7 +128,7 @@ const PinTooltip = (props) => createComponent(Tooltip.Frame, {
     const heading = T.heading();
     heading.textContent = props.title;
     const turns = T.turns();
-    turns.textContent = turnText(props.pin.turns);
+    turns.textContent = props.pin.turns;
     const sections = pinSections(props.pin, props.subject);
     const panels = sections.map((section, i) => {
       const rows = section.compact ? compactRows(props.subject, section) : section.sources.map((source) => sourceRow(props.subject, source));
@@ -149,14 +146,6 @@ const PIN_ART = 'url(blp:culture_pin_minor)';
 const tint = (element, color) => { if (color) element.style.setProperty('fxs-background-image-tint', color); };
 const GLOW = { scale: 1.3, origin: '50% 45%', opacity: '0.7' };   // a larger copy of the pin behind it, in the glow colour
 
-/** A CSS colour ('#rrggbb' or 'rgb(a)(...)') with its channels scaled by `factor` (capped), else as it is. */
-function brighten(color, factor) {
-  const hex = /^#([0-9a-f]{6})$/i.exec(color);
-  const channels = hex ? [0, 2, 4].map((i) => parseInt(hex[1].slice(i, i + 2), 16)) : /^rgba?\(([^)]+)\)$/.exec(color)?.[1].split(',').slice(0, 3).map(Number);
-  if (!channels || channels.some(Number.isNaN)) return color;
-  return `rgb(${channels.map((c) => Math.min(255, Math.round(c * factor))).join(', ')})`;
-}
-
 /** The pin itself: tinted pin art, the thing's icon (on a dark disc, never tinted), the "+" when grouped and a glow if the category has one. */
 function pinFace(pin, subject) {
   const category = subject.categories[pin.category] ?? {};
@@ -170,7 +159,7 @@ function pinFace(pin, subject) {
     glow.style.transformOrigin = GLOW.origin;
     glow.style.opacity = GLOW.opacity;
   }
-  art.style.setProperty('fxs-background-image-tint', brighten(subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff', PIN_BRIGHTNESS));
+  art.style.setProperty('fxs-background-image-tint', scaleColor(subject.pinColor?.(pin.lead) ?? category.color ?? '#ffffff', PIN_BRIGHTNESS));
   backing.style.backgroundColor = PIN_ICON_BACKING;
   icon.style.backgroundImage = subject.pinIcon(pin.lead);
   if (pin.sources.length > 1) {
@@ -223,12 +212,6 @@ function notchLabel({ position, text, color, start, bottom }) {
   return label;
 }
 
-/** A '#rrggbb' colour darkened by `factor` (0-1). */
-function shade(color, factor) {
-  const n = parseInt(color.slice(1), 16);
-  return `rgb(${[16, 8, 0].map((bit) => Math.round(((n >> bit) & 255) * factor)).join(', ')})`;
-}
-
 /** Parts of a notch for each of `count` colours: one each, the first (by layer) the rest ("3, 1" of quarters). */
 const sharesOf = (count, parts) => (count > 1 && count <= parts ? [parts - count + 1, ...Array(count - 1).fill(1)] : Array(count).fill(1));
 
@@ -245,8 +228,8 @@ function notchMix(bands, position, spacing) {
   for (const b of bands) {
     const layer = b.layer ?? 0;
     if (!(centre - spacing / 2 <= b.to && centre + spacing / 2 > b.from) || layers.has(layer)) continue;   // a span ending on a slot's start (whole progress) fills it
-    if (b.solo) return [{ layer, color: shade(b.color, BAND_SHADE), share: 1, smooth: false }];
-    layers.set(layer, { layer, color: shade(b.color, BAND_SHADE), smooth: !!b.smooth });
+    if (b.solo) return [{ layer, color: scaleColor(b.color, BAND_SHADE), share: 1, smooth: false }];
+    layers.set(layer, { layer, color: scaleColor(b.color, BAND_SHADE), smooth: !!b.smooth });
     parts = b.parts ?? parts;
   }
   const mix = [...layers.values()].sort((x, y) => x.layer - y.layer);
@@ -336,7 +319,7 @@ function drawOverlay(canvas, bar, links) {
 
 /** What a pin shows: an updated pin with the same keeps its element (and an open tooltip) instead of being rebuilt. */
 const pinKey = (pin, subject) => [
-  pin.position, pin.category, pin.count, pin.turns.join('-'), subject.pinIcon(pin.lead), subject.pinColor?.(pin.lead),
+  pin.position, pin.category, pin.count, pin.turns, subject.pinIcon(pin.lead), subject.pinColor?.(pin.lead),
   pin.sources.map((s) => `${s.category}:${s.count}:${subject.name(s)}`).join(',')
 ].join('|');
 
@@ -372,6 +355,7 @@ const Timeline = (props) => {
   createEffect(() => {
     const { notches, links, bands } = props;
     void pins();   // the arcs follow the pins' layout
+    void props.height;   // and the canvases the row's size
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(() => requestAnimationFrame(() => {
       drawNotches(canvas, notches, bands ?? []);
@@ -385,4 +369,4 @@ const Timeline = (props) => {
   return bar;
 };
 
-export { NOTCH_WIDTH, Timeline, turnText };
+export { NOTCH_WIDTH, Timeline };

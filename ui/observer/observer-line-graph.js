@@ -34,7 +34,7 @@
  */
 import { createEffect, onCleanup, onMount } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { Layout } from 'fs://game/core/ui/utilities/utilities-layout.js';
-import { drawCrisisMark } from './observer-crisis.js';
+import { drawCrisisMark } from './observer-graph-parts.js';
 
 /** The body font LineGraph uses for the current language. */
 const LOCALE_FONTS = { ko_KR: 'BodyFont-KR', ja_JP: 'BodyFont-JP', zh_Hans_CN: 'BodyFont-SC', zh_Hant_HK: 'BodyFont-TC' };

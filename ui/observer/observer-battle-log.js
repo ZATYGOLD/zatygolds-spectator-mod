@@ -74,22 +74,15 @@ const CODES = {
   Y: { category: CATEGORY.razed, settlement: true, side: 'razing' },
   W: { category: CATEGORY.razed, settlement: true, side: 'razed' }
 };
-/** Each saved letter of an engagement step (its type the plot the engagement began on): what it adds, and who struck. */
+/** Each saved letter of an engagement step (its type the plot fought at; steps are joined at read, joinEngagements): what it adds, and who struck. */
 const ENGAGEMENT_CODES = {
   A: { measure: 'attacks', by: ['self'] },
   D: { measure: 'attacks', by: ['other'] },
   P: { measure: 'pillage', by: [] }
 };
 
-const events = createEventLog({ keyPrefix: 'ZOM_CONFLICT_LOG_', fieldCount: 3, changeEvent: BATTLE_LOG_EVENT, log });
-
-/**
- * Every logged event: [{ id, after, age, turn, progress, playerId, kind, category, settlement, side, type, other, attacks, pillage, turns, lastTurn, until, count, link }]
- * (an engagement counts once; `link` pairs a skirmish with the battle it became; `until` is the last step
- * of a skirmish, battle or siege ({ age, turn, progress }); `after` is the id of the event it follows from, see chain).
- */
-function battleLog() {
-  const entries = events.read().sort(byTime);
+/** The saved entries as events: sieges joined, engagement steps joined into engagements, each linked to what it follows from. */
+function deriveEvents(entries) {
   const logged = entries.flatMap(({ fields: [code, type, other], ...entry }) => {
     const known = CODES[code];
     return known ? [{ ...entry, kind: 'battles', category: known.category, settlement: !!known.settlement, side: known.side, type, other: Number(other), attacks: 0, pillage: 0, turns: 0 }] : [];
@@ -98,6 +91,14 @@ function battleLog() {
   const sieges = kept.filter((e) => e.category === CATEGORY.siege && e.other >= 0);
   return chain([...kept, ...joinEngagements(entries).flatMap((engagement) => engagementEvents(engagement, sieges))]);
 }
+
+const events = createEventLog({ keyPrefix: 'ZOM_CONFLICT_LOG_', fieldCount: 3, changeEvent: BATTLE_LOG_EVENT, log, derive: deriveEvents });
+/**
+ * Every logged event: [{ id, after, age, turn, progress, playerId, kind, category, settlement, side, type, other, attacks, pillage, turns, lastTurn, until, count, link }]
+ * (an engagement counts once; `link` pairs a skirmish with the battle it became; `until` is the last step
+ * of a skirmish, battle or siege ({ age, turn, progress }); `after` is the id of the event it follows from, see chain).
+ */
+const battleLog = events.read;
 
 /**
  * Sieges of the same settlement by the same enemy, each within CONFLICT_GAP
@@ -135,24 +136,36 @@ const HANDS = [CATEGORY.captured, CATEGORY.lost];
  */
 function chain(all) {
   all.sort(byTime).forEach((e, i) => { e.id = `${e.playerId}:${i}`; });
-  const byPlayer = new Map();
+  const index = new Map();   // "player|bucket" -> its events, oldest first: escalated by link, engagements and sieges by opponent, by settlement
+  const bucketsOf = (e) => [
+    e.category === CATEGORY.escalated && e.link ? `link:${e.link}` : null,
+    ENGAGED.includes(e.category) || e.category === CATEGORY.siege ? `other:${e.other}` : null,
+    e.settlement ? `at:${e.type}` : null
+  ].filter(Boolean);
   for (const e of all) {
-    if (!byPlayer.has(e.playerId)) byPlayer.set(e.playerId, []);
-    byPlayer.get(e.playerId).push(e);
-  }
-  const fighting = (e) => (p) => ENGAGED.includes(p.category) && p.other === e.other && p.age === e.age && p.lastTurn >= e.turn - CONFLICT_GAP;
-  const at = (e, categories) => (p) => p.settlement && p.type === e.type && categories.includes(p.category);
-  const besieging = (e) => (p) => p.category === CATEGORY.siege && p.other === e.other && p.age === e.age && p.lastTurn + 1 >= e.turn;
-  for (const own of byPlayer.values()) {
-    const latest = (e, match) => own.filter((p) => p !== e && byTime(p, e) <= 0 && match(p)).pop();
-    for (const e of own) {
-      const from = e.category === CATEGORY.battle && e.link ? latest(e, (p) => p.link === e.link && p.category === CATEGORY.escalated)
-        : ENGAGED.includes(e.category) ? latest(e, besieging(e))
-          : e.category === CATEGORY.siege ? latest(e, (p) => fighting(e)(p) && byTime(p, e) < 0)   // begun before it (else it follows the siege)
-            : HANDS.includes(e.category) ? latest(e, at(e, [CATEGORY.siege])) ?? latest(e, fighting(e))
-              : e.category === CATEGORY.razed ? latest(e, at(e, HANDS)) ?? latest(e, at(e, [CATEGORY.siege])) : null;
-      if (from) e.after = from.id;
+    for (const name of bucketsOf(e)) {
+      const key = `${e.playerId}|${name}`;
+      if (!index.has(key)) index.set(key, []);
+      index.get(key).push(e);
     }
+  }
+  /** The latest of the leader's events in a bucket that is not after `e` and matches. */
+  const latest = (e, name, match) => {
+    const list = index.get(`${e.playerId}|${name}`) ?? [];
+    for (let i = list.length - 1; i >= 0; i--) if (list[i] !== e && byTime(list[i], e) <= 0 && match(list[i])) return list[i];
+    return undefined;
+  };
+  const fighting = (e) => (p) => ENGAGED.includes(p.category) && p.age === e.age && p.lastTurn >= e.turn - CONFLICT_GAP;
+  const at = (categories) => (p) => categories.includes(p.category);
+  const besieging = (e) => (p) => p.category === CATEGORY.siege && p.age === e.age && p.lastTurn + 1 >= e.turn;
+  const [opponent, settlement] = [(e) => `other:${e.other}`, (e) => `at:${e.type}`];
+  for (const e of all) {
+    const from = e.category === CATEGORY.battle && e.link ? latest(e, `link:${e.link}`, () => true)
+      : ENGAGED.includes(e.category) ? latest(e, opponent(e), besieging(e))
+        : e.category === CATEGORY.siege ? latest(e, opponent(e), (p) => fighting(e)(p) && byTime(p, e) < 0)   // begun before it (else it follows the siege)
+          : HANDS.includes(e.category) ? latest(e, settlement(e), at([CATEGORY.siege])) ?? latest(e, opponent(e), fighting(e))
+            : e.category === CATEGORY.razed ? latest(e, settlement(e), at(HANDS)) ?? latest(e, settlement(e), at([CATEGORY.siege])) : null;
+    if (from) e.after = from.id;
   }
   return all;
 }
@@ -238,38 +251,31 @@ function engagementEvents({ key, playerId, other, steps }, sieges) {
 }
 
 /** An event of a leader (and the other player involved). */
-const record = (playerId, code, type, other = -1, count = 1) => { if (Players.get(playerId)?.isMajor) events.record(playerId, [code, type, other], count); };
+const record = (playerId, code, type, other = -1, count = 1) => events.record(playerId, [code, type, other], count);
 
 // ============================ Engagements ============================
 
-const engagements = new Map();   // "sideA:sideB" -> [{ plot, tiles, lastTurn }]: where each engagement began, every tile fought at, and its last turn
+const lastFought = new Map();   // "sideA:sideB" -> { plot, turn }: where two sides last fought
 
 const locationOf = (id) => Units.get(id)?.location ?? Districts.get(id)?.location;
+/** Where a Combat event happened: the defender's plot, else the attacker's. */
+const combatLocation = (data) => locationOf(data?.defender ?? data?.target) ?? locationOf(data?.attacker);
 
-/**
- * The engagement of two sides at a location: one going on between them
- * (within CONFLICT_GAP turns) within ENGAGEMENT_RANGE of any tile it was
- * fought at, else a new one there; -1 for none.
- */
-function engagementOf(a, b, location) {
+/** Where two sides fight: the location's plot, else (unknown) where they last fought within CONFLICT_GAP turns; -1 for none. */
+function foughtAt(a, b, location) {
   const key = [Math.min(a, b), Math.max(a, b)].join(':');
-  const going = (engagements.get(key) ?? []).filter((e) => e.lastTurn >= Game.turn - CONFLICT_GAP);
-  engagements.set(key, going);
-  const near = location ? going.find((e) => e.tiles.some((t) => GameplayMap.getPlotDistance(t.x, t.y, location.x, location.y) <= ENGAGEMENT_RANGE)) : going[0];
-  if (near) {
-    near.lastTurn = Game.turn;
-    if (location && !near.tiles.some((t) => t.x === location.x && t.y === location.y)) near.tiles.push({ x: location.x, y: location.y });
-    return near.plot;
+  if (location) {
+    const plot = GameplayMap.getIndexFromLocation(location);
+    lastFought.set(key, { plot, turn: Game.turn });
+    return plot;
   }
-  if (!location) return -1;
-  const plot = GameplayMap.getIndexFromLocation(location);
-  going.push({ plot, tiles: [{ x: location.x, y: location.y }], lastTurn: Game.turn });
-  return plot;
+  const last = lastFought.get(key);
+  return last && last.turn >= Game.turn - CONFLICT_GAP ? last.plot : -1;
 }
 
 /** `weight` more in the engagement of two sides at a location, for each with its code: an attack (A by a, D on b), or pillage (P). */
 function engage(a, b, location, [codeA, codeB] = ['A', 'D'], weight = 1) {
-  const plot = engagementOf(a, b, location);
+  const plot = foughtAt(a, b, location);
   if (plot < 0) return;
   record(a, codeA, plot, b, weight);
   record(b, codeB, plot, a, weight);
@@ -294,7 +300,7 @@ function onCombat(data) {
   const attacker = data?.attacker;
   const defender = data?.defender ?? data?.target;
   if (attacker?.owner == null || defender?.owner == null || attacker.owner < 0 || defender.owner < 0 || attacker.owner === defender.owner) return;
-  const location = locationOf(defender) ?? locationOf(attacker);
+  const location = combatLocation(data);
   if (location) struck.set(GameplayMap.getIndexFromLocation(location), { owner: attacker.owner, turn: Game.turn });
   if (canFight(attacker) && canFight(defender)) engage(attacker.owner, defender.owner, location);
 }
@@ -427,4 +433,4 @@ onObserverReady(() => {
   engine.on('TurnBegin', () => checkSieges());
 });
 
-export { BATTLE_CATEGORIES, BATTLE_LOG_EVENT, battleLog };
+export { BATTLE_CATEGORIES, BATTLE_LOG_EVENT, battleLog, combatLocation };

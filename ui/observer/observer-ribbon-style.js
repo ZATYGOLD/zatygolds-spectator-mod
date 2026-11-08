@@ -26,7 +26,7 @@
  * in red), the banner tinted with the player's colour, alliance / war / celebration
  * highlights on portraits, and the leader's faith badges.
  */
-import { ancestorWithClass, setStyle } from '../shared/zom-util.js';
+import { setStyle } from '../shared/zom-util.js';
 import { HIGHLIGHT, PANEL_COLORS, ROW_COLORS } from './observer-config.js';
 import { diplomacySnapshot } from './observer-core.js';
 
@@ -54,7 +54,7 @@ const SIGNATURE_ATTR = 'data-zom-highlight';
 const CONTENT_WIDTH = '4.6666666667rem';   // a little under the base .diplo-ribbon_content-container (4.72rem)
 const CARD_GAP = '0.0555555556rem';        // 1px between neighbouring cards
 
-let statHeightPx = 0;
+let statHeightRem = 0;   // in rem, so it follows UI scale changes
 
 // ============================ Stylesheet ============================
 
@@ -82,7 +82,7 @@ function celebrationRules() {
 /** (Re)write the stylesheet when its content changes. Later rules win: war glow, then the alliance border. */
 function writeStyle() {
   const fixed = (prop) => `${prop}: ${CONTENT_WIDTH} !important; min-${prop}: ${CONTENT_WIDTH} !important; max-${prop}: ${CONTENT_WIDTH} !important;`;
-  const height = statHeightPx > 0 ? `height: ${statHeightPx}px !important; min-height: ${statHeightPx}px !important; max-height: ${statHeightPx}px !important;` : '';
+  const height = statHeightRem > 0 ? `height: ${statHeightRem}rem !important; min-height: ${statHeightRem}rem !important; max-height: ${statHeightRem}rem !important;` : '';
   setStyle(STYLE_ID, [
     `.${SIZED_CLASS} .diplo-ribbon__yields { ${fixed('width')} overflow: hidden !important; ${height} }`,
     `.${SIZED_CLASS} .diplo-ribbon_content-container { ${fixed('width')} }`,
@@ -113,13 +113,19 @@ function writeStyle() {
   ].join('\n'));
 }
 
+/** Pixels per rem at the current UI scale (0 when unreadable). */
+function remPx() {
+  try { return parseFloat(getComputedStyle(document.documentElement).fontSize) || 0; } catch (e) { return 0; }
+}
+
 /** Size the stat area once, measured in the Yields view from a leader card (not the Observer's own). */
 function lockCardSize(panel, measure) {
   panel.classList.add(SIZED_CLASS);
-  if (statHeightPx === 0 && measure) {
+  if (statHeightRem === 0 && measure) {
     const other = [...panel.querySelectorAll('.diplo-ribbon__yields')]
       .find((el) => parseInt(el.getAttribute('data-leader-id'), 10) !== GameContext.localPlayerID);
-    statHeightPx = other?.offsetHeight ?? 0;
+    const px = remPx();
+    if (px > 0) statHeightRem = (other?.offsetHeight ?? 0) / px;
   }
   writeStyle();
 }
@@ -258,13 +264,15 @@ function markFaith(panel, badgesFor, actions = {}) {
  */
 function markRows(panel, best) {
   if (!panel) return;
-  for (const row of panel.querySelectorAll('.diplo-ribbon__yields .yield-item')) {
-    const id = parseInt(ancestorWithClass(row, 'diplo-ribbon__yields')?.getAttribute('data-leader-id') ?? '', 10);
-    const typeClass = [...row.classList].find((c) => c.startsWith(ROW_TYPE_PREFIX));
-    const type = typeClass?.slice(ROW_TYPE_PREFIX.length);
-    row.classList.replace('font-title-base', 'font-body-sm');
-    row.classList.toggle(BEST_CLASS, !!best && !!type && !!best.get(type)?.has(id));
-    row.classList.toggle(NEGATIVE_CLASS, (row.querySelector('.yield-value')?.textContent ?? '').trim().startsWith('-'));
+  for (const stats of panel.querySelectorAll('.diplo-ribbon__yields')) {
+    const id = parseInt(stats.getAttribute('data-leader-id') ?? '', 10);
+    for (const row of stats.querySelectorAll('.yield-item')) {
+      const typeClass = [...row.classList].find((c) => c.startsWith(ROW_TYPE_PREFIX));
+      const type = typeClass?.slice(ROW_TYPE_PREFIX.length);
+      row.classList.replace('font-title-base', 'font-body-sm');
+      row.classList.toggle(BEST_CLASS, !!best && !!type && !!best.get(type)?.has(id));
+      row.classList.toggle(NEGATIVE_CLASS, (row.querySelector('.yield-value')?.textContent ?? '').trim().startsWith('-'));
+    }
   }
 }
 

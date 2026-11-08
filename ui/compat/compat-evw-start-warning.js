@@ -19,9 +19,10 @@
  */
 
 /**
- * Zatygold's Spectator - Multiplayer Map Mod compatibility (in-game scope, every seat).
+ * Zatygold's Spectator - start-warning compatibility (in-game scope, every seat).
  *
- * The Map Mod's turn-1 start check (ui/strict-start-bias-notification.js) counts
+ * The turn-1 start check of Better Balanced Multiplayer's Maps (ui/maps/start-bias-warning.js),
+ * and of the older Multiplayer Map Mod (ui/strict-start-bias-notification.js), counts
  * the Observer as a player and reports its ice start as missing Fresh Water.
  * The Observer's lines are removed from its warning banner and notification
  * icon; a warning left with no failures is removed entirely.
@@ -29,12 +30,12 @@
 import { createLogger, isObserverPlayer } from '../shared/zom-util.js';
 import { CONFIG } from '../observer/observer-config.js';
 
-const BANNER_CLASS = 'evw-strict-bias-banner';
-const ICON_CLASS = 'evw-strict-bias-notification';
+const BANNER_CLASSES = ['bbm-maps-strict-bias-banner', 'mpt-maps-strict-bias-banner', 'evw-strict-bias-banner'];
+const ICON_CLASSES = ['bbm-maps-strict-bias-notification', 'mpt-maps-strict-bias-notification', 'evw-strict-bias-notification'];
 const FAILURE_PREFIX = '- ';
 const ICON_WATCH_MS = 60000;
 
-const log = createLogger('compat-evw', CONFIG.debug);
+const log = createLogger('compat-evw-start-warning', CONFIG.debug);
 
 /** Each Observer as the Map Mod names it: "Leader / Civilization". */
 function observerLabels() {
@@ -72,28 +73,41 @@ function cleanIcon(container, labels) {
 }
 
 function clean(node, labels) {
-  if (node.classList?.contains(BANNER_CLASS)) cleanBanner(node, labels);
-  else if (node.classList?.contains(ICON_CLASS)) cleanIcon(node, labels);
+  if (BANNER_CLASSES.some((c) => node.classList?.contains(c))) cleanBanner(node, labels);
+  else if (ICON_CLASSES.some((c) => node.classList?.contains(c))) cleanIcon(node, labels);
 }
+
+const WARNING_SELECTOR = [...BANNER_CLASSES, ...ICON_CLASSES].map((c) => `.${c}`).join(', ');
+const ICON_SELECTOR = ICON_CLASSES.map((c) => `.${c}`).join(', ');
 
 /**
  * The banner is added to the body (again whenever the icon is selected); the icon
  * is added once, deep in the notification train, within the check's first minute.
+ * The banner watch ends with that minute when no warning icon is left.
  */
 function watchWarnings(labels) {
   const onAdded = (mutations) => {
-    for (const mutation of mutations) for (const node of mutation.addedNodes) clean(node, labels);
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        clean(node, labels);
+        node.querySelectorAll?.(WARNING_SELECTOR).forEach((inner) => clean(inner, labels));
+      }
+    }
   };
-  new MutationObserver(onAdded).observe(document.body, { childList: true });
+  const bannerWatch = new MutationObserver(onAdded);
+  bannerWatch.observe(document.body, { childList: true });
   const iconWatch = new MutationObserver(onAdded);
   iconWatch.observe(document.body, { childList: true, subtree: true });
-  setTimeout(() => iconWatch.disconnect(), ICON_WATCH_MS);
-  document.querySelectorAll(`.${BANNER_CLASS}, .${ICON_CLASS}`).forEach((node) => clean(node, labels));
+  setTimeout(() => {
+    iconWatch.disconnect();
+    if (!document.querySelector(ICON_SELECTOR)) bannerWatch.disconnect();
+  }, ICON_WATCH_MS);
+  document.querySelectorAll(WARNING_SELECTOR).forEach((node) => clean(node, labels));
 }
 
 engine.whenReady.then(() => {
   try {
-    if (Game.turn !== 1) return;   // the Map Mod checks starts on the first turn only
+    if (Game.turn !== 1) return;   // the start check runs on the first turn only
     const labels = observerLabels();
     if (labels.length > 0) watchWarnings(labels);
   } catch (e) { log(`install failed: ${e}`); }

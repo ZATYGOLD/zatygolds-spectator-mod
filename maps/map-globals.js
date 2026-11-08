@@ -4,11 +4,11 @@ import './zom-observer-start.js';   // ZOM: the Observer's start and Eye
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/maps/map-globals.js
  * (build dated 2026-09-15). The only change is marked "ZOM:": an import.
- * Re-apply after game updates; see maps/zom-observer-eye.js.
+ * Re-apply after game updates; see maps/zom-observer-start.js.
  *
- * ZOM: a fallback for maps/zom-observer-start.js, which also loads as a
- * MapGenScript; every map script imports this file (base maps, the Earth maps
- * and custom maps alike).
+ * ZOM: loads maps/zom-observer-start.js wherever this file is imported: every
+ * map script (base maps, the Earth maps and custom maps alike, a fallback for
+ * its MapGenScript) and the Age-transition script (the Observer's new Eye).
  */
 
 if (typeof GameInfo === "undefined") {

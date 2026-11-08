@@ -4,10 +4,8 @@ import { createStore } from '../../../core/vendor/solid-js/store/dist/store.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/policies/policies-support.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
@@ -23,7 +21,7 @@ function getCivIconFromPolicy(card) {
   return "fonticon_tradition";
 }
 function getAdditionalPolicyIcon(card) {
-  const localPlayer = Players.get(zomLocalPlayerID());
+  const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
   const localPlayerCulture = localPlayer.Culture;
   if (!card.TraditionType) {
     return "";

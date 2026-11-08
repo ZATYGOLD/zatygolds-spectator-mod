@@ -24,7 +24,8 @@
  * Observers are never listed on the Victories screens (Summary, each victory
  * path, Score) or in the age rankings: the base VictoryManager's results are
  * filtered after each rebuild. The Victories screen model itself is a base-file
- * override (ui-next/screens/victories/victories-screen-model.js).
+ * override (ui-next/screens/victories/victories-screen-model.js) that reads the
+ * same Observer check through ZOMLeaderView (observer-leader-view.js).
  */
 import VictoryManager from 'fs://game/base-standard/ui/victory-manager/victory-manager.js';
 import { createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';

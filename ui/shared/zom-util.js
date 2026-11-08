@@ -17,7 +17,6 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-registry.js';
 
 /**
  * Zatygold's Spectator - shared helpers (shell and game scope).
@@ -26,6 +25,8 @@ import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-reg
  * lookups used by every feature, plus Observer identity (the Observer is a
  * real player whose leader is LEADER_ZOM_OBSERVER).
  */
+import { ComponentRegistry } from 'fs://game/core/ui-next/services/component-registry.js';
+
 const OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
 const OBSERVER_CIV_PREFIX = 'CIVILIZATION_ZOM_OBSERVER_';
 
@@ -41,11 +42,15 @@ const noop = () => {};
 
 /**
  * Logger that reaches UI.log (console.log output does not); log.debug writes
- * only when debug is on.
+ * only when debug is on, log.once / log.debugOnce once per key for the life of the UI.
  */
 function createLogger(tag, debug = false) {
   const log = (message) => { try { console.warn(`[ZOM ${tag}] ${message}`); } catch (e) { /* ignore */ } };
   log.debug = debug ? log : noop;
+  const seen = new Set();
+  const onceWith = (write) => (key, message) => { if (seen.has(key)) return; seen.add(key); write(message); };
+  log.once = onceWith(log);
+  log.debugOnce = debug ? onceWith(log) : noop;
   return log;
 }
 
@@ -141,12 +146,36 @@ function setStyle(id, css) {
 
 const clamp = (value, lo, hi) => Math.max(lo, Math.min(hi, value));
 
+// ============================ Colours ============================
+
+/** A '#rrggbb' or rgb()/rgba() colour's [r, g, b], or null. */
+function colorChannels(color) {
+  const hex = /^#([0-9a-f]{6})$/i.exec(color ?? '');
+  const channels = hex ? [0, 2, 4].map((i) => parseInt(hex[1].slice(i, i + 2), 16)) : /^rgba?\(([^)]+)\)$/.exec(color ?? '')?.[1].split(',').slice(0, 3).map(Number);
+  return channels && !channels.some(Number.isNaN) ? channels : null;
+}
+
+/** A colour with its channels scaled by `factor` (capped; under 1 darkens), else as it is. */
+function scaleColor(color, factor) {
+  const channels = colorChannels(color);
+  return channels ? `rgb(${channels.map((c) => Math.min(255, Math.round(c * factor))).join(', ')})` : color;
+}
+
+/** A colour as rgba() with this alpha, else as it is. */
+function withAlpha(color, alpha) {
+  const channels = colorChannels(color);
+  return channels ? `rgba(${channels.join(', ')}, ${alpha})` : color;
+}
+
 // ============================ Game data ============================
 
 /** A leader's type name from its hash, or fallback. */
 function leaderTypeOf(leaderHash, fallback = 'UNKNOWN_LEADER') {
   try { return GameInfo.Leaders.lookup(leaderHash)?.LeaderType ?? fallback; } catch (e) { return fallback; }
 }
+
+/** A settlement's plot index. */
+const plotOf = (city) => GameplayMap.getIndexFromLocation(city.location);
 
 /** The current Age's chronology index (0 = Antiquity). */
 function currentAgeChronology() {
@@ -209,7 +238,7 @@ function isObserverPlayer(playerId) {
 }
 
 export {
-  OBSERVER_CIV_PREFIX, OBSERVER_LEADER, ancestorWithClass, clamp, clearChildren, componentOf, configCiv, configLeader, createLogger, currentAgeChronology, deferOnce,
-  filterParamValues, findAncestor, isAgeEnding, isAgeTransitionInProgress, isObserverCiv, isObserverPlayer, isTag, leaderTypeOf,
-  observerCivForAge, onActivate, overrideComponent, paramValue, setStyle, whenDefined, wrapMethod
+  OBSERVER_CIV_PREFIX, OBSERVER_LEADER, ancestorWithClass, clamp, clearChildren, colorChannels, componentOf, configCiv, configLeader, createLogger,
+  currentAgeChronology, deferOnce, filterParamValues, findAncestor, isAgeEnding, isAgeTransitionInProgress, isObserverCiv, isObserverPlayer, isTag, leaderTypeOf,
+  observerCivForAge, onActivate, overrideComponent, paramValue, plotOf, scaleColor, setStyle, whenDefined, withAlpha, wrapMethod
 };

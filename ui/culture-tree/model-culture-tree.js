@@ -7,10 +7,8 @@ import { TreeGridDirection } from '../tree-grid/tree-support.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/culture-tree/model-culture-tree.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
@@ -37,7 +35,7 @@ class CultureTreeModel {
     this.onUpdate = callback;
   }
   get playerId() {
-    return zomLocalPlayerID();
+    return zomLocalPlayerID();   // ZOM: viewed leader
   }
   get trees() {
     return this._trees;
@@ -80,7 +78,7 @@ class CultureTreeModel {
   }
   update() {
     this._trees = [];
-    const localPlayerID = zomLocalPlayerID();
+    const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
     const localPlayer = Players.get(localPlayerID);
     if (!localPlayer) {
       return;
@@ -101,7 +99,7 @@ class CultureTreeModel {
         continue;
       }
       const turnsCallback = (nodeType) => {
-        const player = Players.get(zomLocalPlayerID());
+        const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
         const turnsLeft = player ? player.Culture ? player.Culture.getTurnsForNode(nodeType) : 0 : 0;
         return turnsLeft;
       };

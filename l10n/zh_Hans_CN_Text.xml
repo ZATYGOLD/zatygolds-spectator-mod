@@ -79,6 +79,12 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_AUTO_END_TURN_OFF" Language="zh_Hans_CN">
 			<Text>自动结束回合：关</Text>
 		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_ON" Language="zh_Hans_CN">
+			<Text>跟随动态：开</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_OBSERVER_FOLLOW_ACTION_OFF" Language="zh_Hans_CN">
+			<Text>跟随动态：关</Text>
+		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_YIELDS" Language="zh_Hans_CN">
 			<Text>产量</Text>
 		</Replace>
@@ -133,7 +139,7 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="zh_Hans_CN">
 			<Text>未处于战争状态。</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="zh_Hans_CN">
+		<Replace Tag="LOC_ZOM_OBSERVER_ESTIMATE" Language="zh_Hans_CN">
 			<Text>估算</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="zh_Hans_CN">
@@ -168,6 +174,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="zh_Hans_CN">
 			<Text>第{1_First}–{2_Last}回合</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AGES" Language="zh_Hans_CN">
+			<Text>{1_FirstAge}第{2_First}回合–{3_LastAge}第{4_Last}回合</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="zh_Hans_CN">
 			<Text>{1_Value}%</Text>

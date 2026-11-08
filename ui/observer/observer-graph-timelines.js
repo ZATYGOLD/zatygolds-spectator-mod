@@ -48,8 +48,8 @@ import { Activatable } from 'fs://game/core/ui-next/components/activatable.js';
 import { CardFrame } from 'fs://game/core/ui-next/components/card-frame.js';
 import { ScrollArea } from 'fs://game/core/ui-next/components/scroll-area.js';
 import { currentAgeChronology } from '../shared/zom-util.js';
-import { ageProgress } from './observer-event-log.js';
-import { ageName, BreakdownCard, crisisStages, fillPanel, GraphPanel, HoverTooltip, LeaderRow, LeaderRows, rowHeight, viewAges } from './observer-graph-parts.js';
+import { ageProgress, byTime } from './observer-event-log.js';
+import { ageName, BreakdownCard, crisisStages, fillPanel, GraphPanel, HoverTooltip, LeaderRow, LeaderRows, rowHeight, turnSpanText, viewAges } from './observer-graph-parts.js';
 import { NOTCH_WIDTH, Timeline } from './observer-timeline.js';
 
 const MAX_PINS = 24;   // per bar: nearby things share a pin
@@ -130,7 +130,8 @@ const sliceOf = (at) => Math.min(MAX_PINS - 1, Math.floor((at / 100) * MAX_PINS)
 /**
  * One leader's pins: the bar split into MAX_PINS slices, one pin per slice
  * with logged things, shown as its first thing (by sourceOrder, then the
- * subject's priority, then the most frequent), its things listed the same way.
+ * subject's priority, then the most frequent), its things listed the same way,
+ * with the turns they span (turnSpanText).
  */
 function leaderPins(events, position, view) {
   const buckets = new Map();   // slice -> its events
@@ -141,11 +142,12 @@ function leaderPins(events, position, view) {
   }
   const slices = new Map();
   for (const [index, bucket] of buckets) {
-    const slice = { weighted: 0, count: 0, turns: [Infinity, -Infinity], sources: new Map() };
+    const slice = { weighted: 0, count: 0, first: null, last: null, sources: new Map() };
     for (const event of view.sliceEvents?.(bucket) ?? bucket) {
       slice.weighted += position(event.age, event.progress) * event.count;
       slice.count += event.count;
-      slice.turns = [Math.min(slice.turns[0], event.turn), Math.max(slice.turns[1], event.turn)];
+      if (!slice.first || byTime(event, slice.first) < 0) slice.first = event;
+      if (!slice.last || byTime(event, slice.last) > 0) slice.last = event;
       const extra = view.sourceOf?.(event) ?? {};
       const key = [event.category, event.type, ...Object.values(extra)].join(':');
       const source = slice.sources.get(key) ?? { type: event.type, category: event.category, ...extra, ...Object.fromEntries((view.sumFields ?? []).map((f) => [f, 0])), count: 0 };
@@ -161,7 +163,7 @@ function leaderPins(events, position, view) {
     return {
       position: slice.weighted / slice.count,
       count: slice.count,
-      turns: slice.turns,
+      turns: turnSpanText(slice.first, slice.last),
       sources,
       lead: sources[0],
       category: sources[0].category,
@@ -275,6 +277,7 @@ function timelineRow(id, entry, index, { view, scale, title, height, count }) {
     get bands() { return entry()?.bands ?? []; },
     get notches() { return scale().notches; },
     get labels() { return scale().labels; },
+    get height() { return height(); },
     get showTopLabels() { return index() === 0; },
     get showBottomLabels() { return index() === count() - 1; }
   }));

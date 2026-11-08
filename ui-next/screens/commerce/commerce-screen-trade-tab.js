@@ -23,10 +23,8 @@ import { TRADE_ROUTE_CARD_MARGIN_RIGHT, TradeRouteCard } from './trade-route-car
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/commerce/commerce-screen-trade-tab.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
@@ -189,8 +187,8 @@ const TradeRoutesContainer = (props) => {
       if (leaderA.isMinor && leaderB.isMajor) {
         return 1;
       }
-      const relationshipA = getRelationship(zomLocalPlayerID(), a.leaderId);
-      const relationshipB = getRelationship(zomLocalPlayerID(), b.leaderId);
+      const relationshipA = getRelationship(zomLocalPlayerID(), a.leaderId);   // ZOM: viewed leader
+      const relationshipB = getRelationship(zomLocalPlayerID(), b.leaderId);   // ZOM: viewed leader
       return relationshipB.amount - relationshipA.amount;
     }
     function sortBySettlementName(a, b) {

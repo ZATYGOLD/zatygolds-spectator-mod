@@ -26,7 +26,7 @@
  * upgraded from a town to a city, or gone from the map (razed). Settlements
  * already on the map when the game loads are only noted.
  */
-import { createLogger } from '../shared/zom-util.js';
+import { createLogger, plotOf } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { onObserverReady } from './observer-core.js';
 import { payloadLogger } from './observer-event-log.js';
@@ -35,14 +35,18 @@ import { cityAt } from './observer-settlement-info.js';
 const log = createLogger('observer-settlement-watch', CONFIG.debug);
 const showPayload = payloadLogger(log);
 
-const plotOf = (city) => GameplayMap.getIndexFromLocation(city.location);
 
 /** A settlement as seen now: { plot, owner, name, town, from (who it was taken from, else null) }. */
 const snapshot = (city) => ({ plot: plotOf(city), owner: city.owner, name: city.name, town: city.isTown, from: city.originalOwner !== city.owner ? city.originalOwner : null });
 
 const settlements = new Map();   // plot -> snapshot, for every settlement on the map
 const listeners = { founded: [], transferred: [], upgraded: [], razed: [] };
-const emit = (name, ...args) => listeners[name].forEach((run) => run(...args));
+/** Call every listener of a change; one that throws is logged and the rest still run. */
+function emit(name, ...args) {
+  for (const run of listeners[name]) {
+    try { run(...args); } catch (e) { log(`${name} listener failed: ${e}`); }
+  }
+}
 
 /**
  * Listens to settlement changes: { founded(settlement), transferred(settlement,

@@ -29,9 +29,8 @@
  */
 import { detailText, opponentName, unitFlagIcon, unitTypeName as unitName } from './observer-graph-parts.js';
 import { byCount, categoryRows, emptyCard, sumBy } from './observer-graph-timelines.js';
-import { TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, unitLog } from './observer-unit-log.js';
+import { COMMANDER, TRAIN_METHODS, UNIT_CATEGORIES, UNIT_LOG_EVENT, unitLog } from './observer-unit-log.js';
 
-const COMMANDER = UNIT_CATEGORIES.findIndex((c) => c.id === 'commander');
 const MILITARY = 'bg_victory_military';
 
 const CARD_CELLS = 4;   // commanders, else the most counted other unit

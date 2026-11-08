@@ -24,7 +24,7 @@
  * Makes the Observer leader + civilization one role: a single Observer civ
  * entry (the start Age's), picking either sets the other and clears the team,
  * locked civ / team dropdowns with the eye badge while observing, no Observer
- * team for computers, and no mementos.
+ * team for computers, no mementos, and no Random leader resolving to the Observer.
  */
 import MPLobbyModel, { LobbyUpdateEventName, MPLobbyDataModel } from 'fs://game/core/ui/shell/mp-staging/model-mp-staging-new.js';
 import 'fs://game/core/ui/shell/mp-staging/mp-staging-leader-dropdown.js';
@@ -32,11 +32,12 @@ import 'fs://game/core/ui/shell/mp-staging/mp-staging-new.js';
 import { MPStagingTeamDropdown } from 'fs://game/core/ui/shell/mp-staging/mp-staging-team-dropdown.js';
 import { configCiv, configLeader, createLogger, isObserverCiv, OBSERVER_LEADER, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './setup-config.js';
-import { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, setParam, setTeam, syncSelection } from './setup-observer.js';
+import { isComputerSlot, isLocalObserver, isObserverRow, NO_TEAM, observerCivForStartAge, PARAM_LEADER, queueObserverFlag, resolveRandomLeaders, setParam, setTeam, syncSelection } from './setup-observer.js';
 import { ART } from '../shared/zom-assets.js';
 
 const DROPDOWN_PARAM = 'DROPDOWN_TYPE_PLAYER_PARAM';
 const DROPDOWN_TEAM = 'DROPDOWN_TYPE_TEAM';
+const STARTING_GAME = 'STARTING_GAME';
 const HIDDEN = 'hidden';
 
 const log = createLogger('lobby-observer', CONFIG.debug);
@@ -105,7 +106,6 @@ function shapeTeamDropdown(dropdown, playerID) {
 
 // ============================ Mementos ============================
 
-
 /**
  * An Observer row lists no mementos: its "mementos" attribute is emptied, so the
  * base row and other mods' slots on it (Advanced Settings Pro) hide as they do
@@ -148,7 +148,58 @@ function installMementos(proto) {
   });
 }
 
-// ============================ Installation ============================
+// ============================ Random leaders ============================
+
+/**
+ * The game resolves Random from every leader, the Observer included. When the
+ * all-ready countdown starts, each player settles their own Random leader and
+ * the host settles the computers', so the choices reach every client before
+ * the launch.
+ */
+let countdownResolved = false;
+function installRandomLeaders(proto) {
+  if (!CONFIG.resolveRandomLeaders) return;
+  wrapMethod(proto, 'updateReadyButtonData', function (base, ...args) {
+    const result = base(...args);
+    try {
+      const starting = this.readyStatus === STARTING_GAME;
+      if (starting && !countdownResolved) {
+        const host = MPLobbyDataModel.isLocalHostPlayer();
+        resolveRandomLeaders((id) => id === GameContext.localPlayerID || (host && isComputerSlot(id)));
+      }
+      countdownResolved = starting;
+    } catch (e) { log(`random leaders failed: ${e}`); }
+    return result;
+  });
+}
+
+// ============================ Spectator slot ============================
+
+/**
+ * Better Balanced Multiplayer keeps the last slot of a team match for the Spectator
+ * (game setting BBMSpectatorSlot, MPTSpectatorSlot before 0.7.0; -1 for none): the local player who takes it
+ * becomes the Observer once, and may still pick a leader afterwards.
+ */
+const SPECTATOR_SLOT_SETTINGS = ['BBMSpectatorSlot', 'MPTSpectatorSlot'];
+let claimedSlot = -1;
+function claimSpectatorSlot() {
+  let slot = -1;
+  try {
+    const game = Configuration.getGame();
+    for (const key of SPECTATOR_SLOT_SETTINGS) {
+      const value = game.getValue(key);
+      if (value != null) { slot = Number(value); break; }
+    }
+  } catch (e) { return; }
+  const local = GameContext.localPlayerID;
+  if (slot < 0 || slot !== local) { claimedSlot = -1; return; }
+  if (claimedSlot === slot || !MPLobbyDataModel.isNewGame) return;
+  claimedSlot = slot;
+  if (isLocalObserver()) return;
+  setParam(local, PARAM_LEADER, OBSERVER_LEADER);
+  syncSelection(local, PARAM_LEADER, OBSERVER_LEADER);
+  log.debug(`player ${local} took the Spectator slot -> observer`);
+}
 
 function install() {
   const proto = MPLobbyDataModel.prototype;
@@ -174,7 +225,7 @@ function install() {
     baseParamCallback?.(event);
     try {
       const target = event?.target;
-      const playerID = parseInt(target?.getAttribute?.('data-player-id') ?? '');
+      const playerID = parseInt(target?.getAttribute?.('data-player-id') ?? '', 10);
       const param = target?.getAttribute?.('data-player-param');
       const value = event?.detail?.selectedItem?.paramID;
       if (Number.isInteger(playerID) && param && value) syncSelection(playerID, param, value);
@@ -186,7 +237,7 @@ function install() {
   const baseTeamCallback = MPLobbyModel.dropdownCallbacks.get(DROPDOWN_TEAM);
   MPLobbyModel.dropdownCallbacks.set(DROPDOWN_TEAM, (event) => {
     try {
-      const playerID = parseInt(event?.target?.getAttribute?.('data-player-id') ?? '');
+      const playerID = parseInt(event?.target?.getAttribute?.('data-player-id') ?? '', 10);
       if (Number.isInteger(playerID)) {
         if (event?.detail?.selectedItem?.zomObserver && !isComputerSlot(playerID)) {
           if (configLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
@@ -205,7 +256,7 @@ function install() {
     base(name, oldValue, newValue);
     try {
       if (name !== 'selected-item-index' && name !== 'dropdown-items') return;
-      const index = parseInt(this.Root.getAttribute('selected-item-index') ?? '-1');
+      const index = parseInt(this.Root.getAttribute('selected-item-index') ?? '-1', 10);
       const observing = !!this.dropdownItems?.[index]?.zomObserver;
       if (observing) {
         this.Root.setAttribute('icon-container-innerhtml',
@@ -215,7 +266,13 @@ function install() {
     } catch (e) { /* keep base visuals */ }
   });
 
+  wrapMethod(proto, 'update', function (base, ...args) {
+    try { claimSpectatorSlot(); } catch (e) { log(`spectator slot failed: ${e}`); }
+    return base(...args);
+  });
+
   installMementos(proto);
+  installRandomLeaders(proto);
 
   log.debug('lobby role installed');
 }
