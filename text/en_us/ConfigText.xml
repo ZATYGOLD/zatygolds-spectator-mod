@@ -4,5 +4,11 @@
 		<Row Tag="LOC_ZOM_OBSERVER_IN_GAME">
 			<Text>Spectator in game</Text>
 		</Row>
+		<Row Tag="LOC_ZOM_SPECTATOR_SLOT_NAME">
+			<Text>Spectator Slot</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_SPECTATOR_SLOT_DESC">
+			<Text>Keeps one extra lobby slot for the Spectator. Turn off to play without a Spectator.</Text>
+		</Row>
 	</EnglishText>
 </Database>
