@@ -25,12 +25,15 @@
  * (to an enemy: at war, or an Independent Power), by type, with the other
  * player involved. Commanders count as they arrive on and leave the map, as
  * they are often granted and respawn after defeat. An event log
- * (observer-event-log.js) with the fields "<code>,<UnitType>,<otherPlayerId>" (CODES).
+ * (observer-event-log.js) with the fields "<code>,<UnitType>,<otherPlayerId>,<category>"
+ * (CODES; the UNIT_CATEGORIES index, missing in older entries, as the unit may
+ * leave the database in a later Age).
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG, HIGHLIGHT } from './observer-config.js';
-import { areEnemies, canSave, onObserverReady, readSaved, writeSaved } from './observer-core.js';
+import { areEnemies, onObserverReady, readSaved, writeSaved } from './observer-core.js';
 import { createEventLog, payloadLogger } from './observer-event-log.js';
+import { savedOnce } from './observer-history.js';
 
 const log = createLogger('observer-unit-log', CONFIG.debug);
 const showPayload = payloadLogger(log);
@@ -84,41 +87,40 @@ const FORMATION_CATEGORY = {
   FORMATION_CLASS_COMMAND: COMMANDER
 };
 
+/** A unit type's (name or hash) UNIT_CATEGORIES index; null when not in this Age's database. */
 function unitCategory(unitType) {
   const def = GameInfo.Units.lookup(unitType);
   return def ? (FORMATION_CATEGORY[def.FormationClass] ?? (def.Domain === 'DOMAIN_SEA' ? 1 : 0)) : null;
 }
 
 const typeName = (type) => GameInfo.Units.lookup(type)?.UnitType ?? null;
+/** Whether a unit type (name or hash) is a commander. */
 const isCommander = (type) => unitCategory(type) === COMMANDER;
+/** A unit's id as a key: "owner:id". */
+const unitKey = (id) => `${id.owner}:${id.id}`;
 
 // ============================ Storage ============================
 
-const events = createEventLog({ keyPrefix: KEY_PREFIX, fieldCount: 3, changeEvent: UNIT_LOG_EVENT, log });
-
-/** Every logged event: [{ age, turn, progress, playerId, kind, how, type, other, category, count }]. */
-function unitLog() {
-  return events.read().flatMap(({ fields: [code, type, other], ...entry }) => {
-    const category = unitCategory(type);
-    return category == null || !CODES[code] ? [] : [{ ...entry, ...CODES[code], type, other: Number(other), category }];
-  });
+/** A saved entry as an event, its category as saved (else looked up, else land: an older entry of an earlier Age's unit). */
+function decode({ fields: [code, type, other, saved], ...entry }) {
+  const category = saved ? Number(saved) : unitCategory(type) ?? 0;
+  return !UNIT_CATEGORIES[category] || !CODES[code] ? null : { ...entry, ...CODES[code], type, other: Number(other), category };
 }
 
-let away = null;   // Map<"owner:id", UnitType>: commanders away to respawn, this Age
+const events = createEventLog({ keyPrefix: KEY_PREFIX, fieldCount: 4, minFieldCount: 3, changeEvent: UNIT_LOG_EVENT, log, decode });
 
-/** Commanders away to respawn (saved with the game), so their return is not counted as trained. */
-function awayCommanders() {
-  if (away) return away;
-  if (!canSave()) return new Map();
-  away = new Map();
-  try {
-    for (const entry of String(readSaved(AWAY_KEY) ?? '').split(';')) {
-      const [age, owner, id, type] = entry.split(':');
-      if (type && Number(age) === currentAgeChronology()) away.set(`${owner}:${id}`, type);
-    }
-  } catch (e) { log(`away commanders read failed: ${e}`); }
+/** Every logged event, oldest first: [{ age, turn, progress, playerId, kind, how, type, other, category, count }]. */
+const unitLog = events.read;
+
+/** Commanders away to respawn this Age (saved with the game), so their return is not counted as trained: Map<"owner:id", UnitType>. */
+const awayCommanders = savedOnce(AWAY_KEY, () => {
+  const away = new Map();
+  for (const entry of String(readSaved(AWAY_KEY) ?? '').split(';')) {
+    const [age, owner, id, type] = entry.split(':');
+    if (type && Number(age) === currentAgeChronology()) away.set(`${owner}:${id}`, type);
+  }
   return away;
-}
+}, () => new Map());
 
 function saveAway() {
   const age = currentAgeChronology();
@@ -129,7 +131,7 @@ function saveAway() {
 
 /** A unit's event for a leader, with the other player involved or how it was trained. */
 function record(playerId, kind, unitType, { other = -1, how = null } = {}) {
-  if (unitType && Players.get(playerId)?.isMajor) events.record(playerId, [codeOf(kind, how), unitType, other]);
+  if (unitType) events.record(playerId, [codeOf(kind, how), unitType, other, unitCategory(unitType) ?? '']);
 }
 
 const unitTypes = new Map();      // "owner:id" -> UnitType, for units on the map
@@ -137,7 +139,6 @@ const knownUnits = new Set();     // every unit seen this session, so a returnin
 const defeatedUnits = new Set();  // commanders already counted by a combat event
 const lastCombat = new Map();     // commander "owner:id" -> { by: opponent, turn }
 const cityUnits = new Map();      // "owner:UnitType" -> { how, at }: a commander's production or purchase
-const unitKey = (id) => `${id.owner}:${id.id}`;
 
 /** A unit's type, noted while it is on the map (a defeated unit may be gone when its event arrives). */
 function remember(id) {
@@ -272,4 +273,4 @@ onObserverReady(() => {
   engine.on('CityMadePurchase', (data) => onCityUnit('CityMadePurchase', data?.purchaseType, data?.unitType, 'purchased', data));
 });
 
-export { TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitCategory, unitLog };
+export { COMMANDER, isCommander, TRAIN_METHODS, typeOfUnit, UNIT_CATEGORIES, UNIT_LOG_EVENT, UNIT_LOGS, unitKey, unitLog };

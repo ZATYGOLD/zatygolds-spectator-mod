@@ -24,13 +24,15 @@
  * Each turn, and soon after a settlement grows, builds or changes hands, each
  * watched leader's settlements and citizens: the current Age's breakdown (for
  * the cards) and the population log of each new citizen, put to what brought
- * it (recordGrowth). Breakdown text, one per Age: "<playerId>:<key>=<count>,...;...";
+ * it (recordGrowth), saved in the same step as the settlements it compares.
+ * Breakdown text, one per Age: "<playerId>:<key>=<count>,...;...";
  * settlement text: "<plot>:<owner>:<urban>:<rural>:<specialists>;...".
  */
-import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
+import { createLogger, currentAgeChronology, plotOf } from '../shared/zom-util.js';
 import { CONFIG, HIGHLIGHT } from './observer-config.js';
 import { canSave, isObserverSeat, onObserverReady, readSaved, watchedPlayers, writeSaved } from './observer-core.js';
 import { createEventLog } from './observer-event-log.js';
+import { savedPerAge } from './observer-history.js';
 
 const log = createLogger('observer-empire', CONFIG.debug);
 const DETAILS_PREFIX = 'ZOM_EMPIRE_DETAILS_';
@@ -87,37 +89,31 @@ function decodeDetails(text) {
   return byPlayer;
 }
 
-const breakdowns = new Map();   // age chronology -> Map<playerId, Map<key, count>>
+/** Each Age's breakdown: Map<age chronology, Map<playerId, Map<key, count>>>, the current Age's as last recorded. */
+const breakdowns = savedPerAge(DETAILS_PREFIX, decodeDetails);
 
-function ageDetails(age) {
-  if (!breakdowns.has(age) && canSave()) {
-    try { breakdowns.set(age, decodeDetails(readSaved(DETAILS_PREFIX + age))); } catch (e) { log(`breakdown read failed: ${e}`); }
-  }
-  return breakdowns.get(age) ?? new Map();
-}
-
-/** A leader's details at the end of an Age, as they are now in the current one. */
+/** A leader's details at the end of an Age, as last recorded in the current one (else as they are now). */
 function leaderDetails(playerId, age) {
-  if (age === currentAgeChronology()) {
-    try { return liveDetails(Players.get(playerId)); } catch (e) { /* the saved details below */ }
-  }
-  return ageDetails(age).get(playerId) ?? new Map();
+  const recorded = breakdowns().get(age)?.get(playerId);
+  if (recorded || age !== currentAgeChronology()) return recorded ?? new Map();
+  try { return liveDetails(Players.get(playerId)); } catch (e) { return new Map(); }
 }
 
 // ============================ Population log ============================
 
 /** One entry per citizen: "<code>,<type>,<how>" (POPULATION_KINDS code; how produced or purchased). */
-const events = createEventLog({ keyPrefix: 'ZOM_GROWTH_EVENTS_', fieldCount: 3, changeEvent: EMPIRE_EVENT, log });
+const events = createEventLog({
+  keyPrefix: 'ZOM_GROWTH_EVENTS_',
+  fieldCount: 3,
+  changeEvent: EMPIRE_EVENT,
+  log,
+  decode: ({ fields: [code, type, how], ...entry }) => (KIND_OF_CODE.has(code) ? { ...entry, kind: 'population', category: KIND_OF_CODE.get(code), type, how } : null)
+});
 
-/** Every logged citizen: [{ age, turn, progress, playerId, kind, category, type, how, count }] (type '' when unknown). */
-function populationLog() {
-  return events.read().flatMap(({ fields: [code, type, how], ...entry }) => {
-    const category = KIND_OF_CODE.get(code);
-    return category == null ? [] : [{ ...entry, kind: 'population', category, type, how }];
-  });
-}
+/** Every logged citizen, oldest first: [{ age, turn, progress, playerId, kind, category, type, how, count }] (type '' when unknown). */
+const populationLog = events.read;
 
-const plotOf = (location) => GameplayMap.getIndexFromLocation(location);
+/** A settlement's plot index (its key in the logs). */
 
 // Constructions during the turn, by settlement plot: Map<plot, [[{ type, how, at }], [{ type }]]> (urban, rural)
 const made = new Map();
@@ -135,7 +131,7 @@ function onBuilding(cityID, type, how) {
   const def = GameInfo.Constructibles.lookup(type);
   const city = cityID && Cities.get(cityID);
   if (!isBuilding(def) || !city) return;
-  const plot = plotOf(city.location);
+  const plot = plotOf(city);
   const now = Date.now();
   const urban = made.get(plot)?.[URBAN] ?? [];
   if (how === 'produced' && urban.some((b) => b.type === def.ConstructibleType && b.how === 'purchased' && now - b.at < PURCHASE_MS)) return;
@@ -147,7 +143,7 @@ function onConstructible(data) {
   const def = GameInfo.Constructibles.lookup(data?.constructibleType);
   if (def?.ConstructibleClass !== 'IMPROVEMENT' || !data.location) return;
   const city = Cities.get(GameplayMap.getOwningCityFromXY(data.location.x, data.location.y));
-  if (city) remember(plotOf(city.location), RURAL, { type: def.ConstructibleType });
+  if (city) remember(plotOf(city), RURAL, { type: def.ConstructibleType });
 }
 
 const tileWorkers = new Map();   // settlement plot -> Map<tile plot, specialists>, at the last record (this session)
@@ -207,17 +203,16 @@ function newSpecialists(plot, city) {
 
 let known = null;   // Map<plot, { owner, citizens }>: every settlement at the last record, null before the first
 
+/** The settlements at the last record (this session's, else the saved ones); null before the first. */
 function knownSettlements() {
   if (known) return known;
   const text = readSaved(SETTLEMENTS_KEY);
   if (typeof text !== 'string') return null;
   known = new Map();
-  try {
-    for (const entry of text.split(';')) {
-      const [plot, owner, ...counts] = entry.split(':');
-      if (counts.length === POPULATION_KINDS.length) known.set(Number(plot), { owner: Number(owner), citizens: counts.map(Number) });
-    }
-  } catch (e) { log(`settlements read failed: ${e}`); }
+  for (const entry of text.split(';')) {
+    const [plot, owner, ...counts] = entry.split(':');
+    if (counts.length === POPULATION_KINDS.length) known.set(Number(plot), { owner: Number(owner), citizens: counts.map(Number) });
+  }
   return known;
 }
 
@@ -243,7 +238,7 @@ function recordGrowth(watched) {
   const now = new Map();
   for (const player of Players.getAlive()) {
     for (const city of player.Cities?.getCities?.() ?? []) {
-      const plot = plotOf(city.location);
+      const plot = plotOf(city);
       const counts = citizens(city);
       const specialists = newSpecialists(plot, city);
       now.set(plot, { owner: player.id, citizens: counts });
@@ -256,23 +251,36 @@ function recordGrowth(watched) {
   }
   known = now;
   writeSaved(SETTLEMENTS_KEY, encodeSettlements(now));
+  events.flush();   // the citizens logged against these settlements, saved with them
 }
 
 // ============================ Recording ============================
 
-/** The details and growth now (a new turn drops constructions that added no citizen); the screen refreshes on EMPIRE_EVENT. */
+let savedDetails = '';   // "<age>|<breakdown text>" last written
+
+/**
+ * The details and growth now (a new turn drops constructions that added no
+ * citizen); EMPIRE_EVENT when the details change (the population log announces its own).
+ */
 function recordEmpire(newTurn = false) {
   if (!isObserverSeat() || !canSave()) return;
   const players = watchedPlayers();
   const age = currentAgeChronology();
+  let changed = false;
   try {
     const details = new Map(players.map((player) => [player.id, liveDetails(player)]));
-    breakdowns.set(age, details);
-    writeSaved(DETAILS_PREFIX + age, encodeDetails(details));
+    breakdowns().set(age, details);
+    const encoded = encodeDetails(details);
+    const text = `${age}|${encoded}`;
+    if (text !== savedDetails) {
+      writeSaved(DETAILS_PREFIX + age, encoded);
+      savedDetails = text;
+      changed = true;
+    }
     recordGrowth(players);
     if (newTurn) made.clear();
   } catch (e) { log(`empire record failed: ${e}`); }
-  window.dispatchEvent(new CustomEvent(EMPIRE_EVENT));
+  if (changed) window.dispatchEvent(new CustomEvent(EMPIRE_EVENT));
 }
 
 let recordTimer = 0;

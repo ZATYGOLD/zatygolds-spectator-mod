@@ -139,7 +139,7 @@
 		<Replace Tag="LOC_ZOM_OBSERVER_NO_WARS" Language="pl_PL">
 			<Text>Nie prowadzi wojny.</Text>
 		</Replace>
-		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE" Language="pl_PL">
+		<Replace Tag="LOC_ZOM_OBSERVER_ESTIMATE" Language="pl_PL">
 			<Text>Szacunek</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS" Language="pl_PL">
@@ -174,6 +174,9 @@
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_TURNS" Language="pl_PL">
 			<Text>Tury {1_First}–{2_Last}</Text>
+		</Replace>
+		<Replace Tag="LOC_ZOM_GRAPH_TURNS_AGES" Language="pl_PL">
+			<Text>{1_FirstAge}, tura {2_First} – {3_LastAge}, tura {4_Last}</Text>
 		</Replace>
 		<Replace Tag="LOC_ZOM_GRAPH_PERCENT" Language="pl_PL">
 			<Text>{1_Value}%</Text>

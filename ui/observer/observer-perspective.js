@@ -23,9 +23,11 @@
  *
  * Shows the map as one leader sees it (toggled from the ribbon portraits):
  * unexplored tiles black, seen ones grey, the minimap masked, resources as the
- * fog of war shows them, no map yields on unexplored tiles, and flags, district bars, banners and world texts
- * hidden where the leader cannot see; the UI's revealed-state lookups answer
- * for the viewed leader. Drawing only; never game state.
+ * fog of war shows them and no map yields on unexplored tiles; unit flags,
+ * district bars and world texts hidden where the leader cannot see now, and
+ * banners where they never explored. The UI's revealed-state lookups answer
+ * for the viewed leader; only tiles whose state changed are redrawn. Drawing
+ * only; never game state.
  */
 import LensManager from 'fs://game/core/ui/lenses/lens-manager.js';
 import { ResourceLensLayer } from 'fs://game/base-standard/ui/lenses/layer/resource-layer.js';
@@ -40,7 +42,7 @@ import { OVERLAY_PRIORITY } from 'fs://game/base-standard/ui/utilities/utilities
 import { ancestorWithClass, createLogger, deferOnce, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, ICONS } from './observer-config.js';
 import { inDiplomacyMode, isObserverSeat } from './observer-core.js';
-import { forEachBanner } from './observer-settlement-info.js';
+import { forEachBanner } from './observer-settlement-banners.js';
 
 const PERSPECTIVE_CHANGED_EVENT = 'zom-perspective-changed';
 const REFRESH_EVENTS = ['UnitMoveComplete', 'UnitAddedToMap', 'UnitRemovedFromMap', 'PlayerTurnActivated', 'DistrictAddedToMap', 'DistrictDamageChanged', 'DistrictControlChanged', 'CityTransfered'];
@@ -75,8 +77,10 @@ let filterPushed = false;
 let filterPlots = null;     // explored plots kept clear of the unexplored filter (null: none drawn)
 let unexploredPlots = [];
 let filterRegion = null;    // the region currently pushed
-let suppressedResources = false;
+let suppressedPlots = new Set(); // plots whose real resource icons are hidden (unexplored or seen)
 let shownKey = '';         // the revealed states currently drawn
+let shownUnexploredKey = '';     // the unexplored plots currently drawn
+let shownSeen = new Set();       // plots currently drawn as seen
 let overlayGroup = null;
 let unexploredOverlay = null;
 let seenOverlay = null;
@@ -87,6 +91,11 @@ let yieldlessPlots = new Set();  // plots whose map yields are hidden (the viewe
 const isActive = () => viewed != null && isObserverSeat();
 /** The leader whose view is shown, else null. */
 const perspectivePlayer = () => (isActive() ? viewed : null);
+
+/** Whether a plot is in sight in the shown view: always without a Perspective, else when the viewed leader sees it now. */
+function isVisibleInView(loc) {
+  return !isActive() || (!!loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) === RevealedStates.VISIBLE);
+}
 
 /** Whether the shown view includes this leader: always without a Perspective, else the viewed leader and those they met. */
 function isKnownInPerspective(playerId) {
@@ -115,10 +124,7 @@ function plotsWhere(states, test) {
 function unitState(unitId) {
   if (unitId?.owner === viewed) return RevealedStates.VISIBLE;
   try { return Visibility.isVisible(viewed, unitId) ? RevealedStates.VISIBLE : RevealedStates.HIDDEN; }
-  catch (e) {
-    const loc = Units.get(unitId)?.location;
-    return loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) === RevealedStates.VISIBLE ? RevealedStates.VISIBLE : RevealedStates.HIDDEN;
-  }
+  catch (e) { return isVisibleInView(Units.get(unitId)?.location) ? RevealedStates.VISIBLE : RevealedStates.HIDDEN; }
 }
 
 // ============================ Yields ============================
@@ -188,43 +194,91 @@ function onInterfaceMode() {
   setTimeout(syncFilter, SCENE_SETTLE_MS);
 }
 
+/** The plots of `after` not in `before`, and of `before` not in `after`. */
+function plotChanges(before, after) {
+  const added = [];
+  const removed = [];
+  for (const plot of after) if (!before.has(plot)) added.push(plot);
+  for (const plot of before) if (!after.has(plot)) removed.push(plot);
+  return { added, removed };
+}
+
+/**
+ * The resource layer's real icons hidden on these plots (the seen ones get fog-of-war icons
+ * instead): only the plots that changed are touched, through the layer's own per-plot steps.
+ */
+function syncResources(plots) {
+  const layer = ResourceLensLayer.instance;
+  const { added, removed } = plotChanges(suppressedPlots, plots);
+  suppressedPlots = plots;
+  try {
+    if (!layer.suppressedPlots || !layer.clearResourceSpritesFromPlot) {   // the layer changed: whole-set fallback
+      layer.clearSuppressedPlots();
+      if (plots.size) layer.suppressPlots([...plots]);
+      return;
+    }
+    for (const plot of added) { layer.clearResourceSpritesFromPlot(plot); layer.suppressedPlots.add(plot); }
+    if (!removed.length) return;
+    const restore = layer.suppressedPlots;
+    layer.suppressedPlots = new Set(removed);
+    layer.clearSuppressedPlots();   // redraws exactly the removed plots
+    for (const plot of removed) restore.delete(plot);
+    layer.suppressedPlots = restore;
+  } catch (e) { log(`resource icons not updated: ${e}`); }
+}
+
+/** The seen plots' fog-of-war resource icons, only the changed plots redrawn. */
+function syncSeenResources(seen) {
+  const { added, removed } = plotChanges(shownSeen, seen);
+  shownSeen = seen;
+  for (const plot of removed) { seenResources?.clearPlot(plot); seenResourceTypes?.clearPlot(plot); }
+  drawSeenResources(added);
+}
+
 function clearMap() {
   filterPlots = null;
   unexploredPlots = [];
   syncFilter();
   overlayGroup?.clearAll();
   syncYields(new Set());
+  syncResources(new Set());
   seenResources?.clear();
   seenResourceTypes?.clear();
-  if (suppressedResources) {
-    try { ResourceLensLayer.instance.clearSuppressedPlots(); } catch (e) { log(`resource restore failed: ${e}`); }
-    suppressedResources = false;
-  }
+  shownSeen = new Set();
   shownKey = '';
+  shownUnexploredKey = '';
 }
 
-/** Fog for the viewed leader; redrawn only when their revealed tiles changed. */
+/**
+ * Fog for the viewed leader, redrawn only when their revealed tiles changed. Tiles going in
+ * and out of sight (every unit move) only update the seen overlay and the resource icons of
+ * the tiles that changed; the unexplored overlay, filter and yields follow newly explored tiles.
+ */
 function drawMap() {
   const states = revealedStates(viewed);
   if (!states.length) { clearMap(); clearMinimap(); return; }
   const key = Array.prototype.join.call(states, '');
   drawMinimap(states, key);
   if (key === shownKey) return;
-  clearMap();
   const unexplored = plotsWhere(states, (s) => s === RevealedStates.HIDDEN);
   const seen = plotsWhere(states, (s) => s === RevealedStates.REVEALED);
-  unexploredPlots = unexplored;
-  filterPlots = plotsWhere(states, (s) => s !== RevealedStates.HIDDEN);
-  syncFilter();
   overlayGroup ??= WorldUI.createOverlayGroup('ZOMPerspectiveOverlayGroup', OVERLAY_PRIORITY.HEX_GRID);
   unexploredOverlay ??= overlayGroup.addPlotOverlay();
-  unexploredOverlay.addPlots(unexplored, { fillColor: CONFIG.perspectiveUnexploredFill });
   seenOverlay ??= overlayGroup.addPlotOverlay();
+  const unexploredKey = unexplored.join(',');
+  if (unexploredKey !== shownUnexploredKey) {
+    unexploredPlots = unexplored;
+    filterPlots = plotsWhere(states, (s) => s !== RevealedStates.HIDDEN);
+    syncFilter();
+    unexploredOverlay.clear();
+    unexploredOverlay.addPlots(unexplored, { fillColor: CONFIG.perspectiveUnexploredFill });
+    syncYields(new Set(unexplored));
+    shownUnexploredKey = unexploredKey;
+  }
+  seenOverlay.clear();
   seenOverlay.addPlots(seen, { fillColor: CONFIG.perspectiveSeenFill });
-  ResourceLensLayer.instance.suppressPlots([...unexplored, ...seen]);
-  suppressedResources = true;
-  syncYields(new Set(unexplored));
-  drawSeenResources(seen);
+  syncResources(new Set([...unexplored, ...seen]));
+  syncSeenResources(new Set(seen));
   shownKey = key;
   log.debug(`perspective of player ${viewed} drawn`);
 }
@@ -302,7 +356,7 @@ function clearMinimap() {
   Array.prototype.forEach.call(document.querySelectorAll('.' + MINIMAP_CLASS), (canvas) => canvas.remove());
 }
 
-/** The game's greyed fog-of-war resource icons on the given plots. */
+/** The game's greyed fog-of-war resource icons added on the given plots. */
 function drawSeenResources(plots) {
   seenResources ??= WorldUI.createSpriteGrid('ZOMPerspectiveResources_SpriteGroup', SpriteMode.FixedBillboard);
   seenResourceTypes ??= WorldUI.createSpriteGrid('ZOMPerspectiveResourceTypes_SpriteGroup', SpriteMode.FixedBillboard);
@@ -355,7 +409,7 @@ function refreshFlagsAndBanners() {
 /** Hide a district health bar on tiles the viewed leader does not see (the base only dims it); returns whether hidden. */
 function applyBarFog(bar) {
   const loc = barLocation(bar);
-  const hidden = isActive() && !!loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) !== RevealedStates.VISIBLE;
+  const hidden = isActive() && !!loc && !isVisibleInView(loc);
   bar.Root?.classList.toggle(FOG_CLASS, hidden);
   return hidden;
 }
@@ -401,7 +455,7 @@ function patchFlagsAndBanners() {
   });
   wrapMethod(WorldAnchorTextManager.prototype, 'onWorldTextMessage', function (base, data, ...rest) {
     const loc = data?.location;
-    if (isActive() && loc && GameplayMap.getRevealedState(viewed, loc.x, loc.y) !== RevealedStates.VISIBLE) return;
+    if (loc && !isVisibleInView(loc)) return;
     return base(data, ...rest);
   });
 }
@@ -439,7 +493,9 @@ function apply() {
 
 /** Show the player's view, or return to the Observer's own when it is already shown. Returns whether it is now shown. */
 function togglePerspective(playerId) {
+  const previous = viewed;
   viewed = viewed === playerId ? null : playerId;
+  if (previous != null && viewed != null) clearMap();   // another leader: their fog-of-war icons differ too
   const fog = apply();
   log(viewed != null ? `perspective on: player ${viewed} (in fog: ${fog.banners} banners, ${fog.bars} district bars)` : 'perspective off');
   return viewed != null;
@@ -480,4 +536,7 @@ function install() {
 
 try { install(); } catch (e) { log(`install failed: ${e}`); }
 
-export { PERSPECTIVE_CHANGED_EVENT, endPerspective, isActive as isPerspectiveActive, isKnownInPerspective, markPerspectiveCard, perspectivePlayer, togglePerspective };
+export {
+  PERSPECTIVE_CHANGED_EVENT, endPerspective, isActive as isPerspectiveActive, isKnownInPerspective, isVisibleInView, markPerspectiveCard, perspectivePlayer,
+  togglePerspective
+};

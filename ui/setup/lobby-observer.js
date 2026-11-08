@@ -106,7 +106,6 @@ function shapeTeamDropdown(dropdown, playerID) {
 
 // ============================ Mementos ============================
 
-
 /**
  * An Observer row lists no mementos: its "mementos" attribute is emptied, so the
  * base row and other mods' slots on it (Advanced Settings Pro) hide as they do
@@ -226,7 +225,7 @@ function install() {
     baseParamCallback?.(event);
     try {
       const target = event?.target;
-      const playerID = parseInt(target?.getAttribute?.('data-player-id') ?? '');
+      const playerID = parseInt(target?.getAttribute?.('data-player-id') ?? '', 10);
       const param = target?.getAttribute?.('data-player-param');
       const value = event?.detail?.selectedItem?.paramID;
       if (Number.isInteger(playerID) && param && value) syncSelection(playerID, param, value);
@@ -238,7 +237,7 @@ function install() {
   const baseTeamCallback = MPLobbyModel.dropdownCallbacks.get(DROPDOWN_TEAM);
   MPLobbyModel.dropdownCallbacks.set(DROPDOWN_TEAM, (event) => {
     try {
-      const playerID = parseInt(event?.target?.getAttribute?.('data-player-id') ?? '');
+      const playerID = parseInt(event?.target?.getAttribute?.('data-player-id') ?? '', 10);
       if (Number.isInteger(playerID)) {
         if (event?.detail?.selectedItem?.zomObserver && !isComputerSlot(playerID)) {
           if (configLeader(playerID) !== OBSERVER_LEADER) setParam(playerID, PARAM_LEADER, OBSERVER_LEADER);
@@ -257,7 +256,7 @@ function install() {
     base(name, oldValue, newValue);
     try {
       if (name !== 'selected-item-index' && name !== 'dropdown-items') return;
-      const index = parseInt(this.Root.getAttribute('selected-item-index') ?? '-1');
+      const index = parseInt(this.Root.getAttribute('selected-item-index') ?? '-1', 10);
       const observing = !!this.dropdownItems?.[index]?.zomObserver;
       if (observing) {
         this.Root.setAttribute('icon-container-innerhtml',

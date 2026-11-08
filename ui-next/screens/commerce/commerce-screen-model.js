@@ -18,13 +18,13 @@ import { ConstructibleHasTagType } from '../../../ui/utilities/utilities-tags.js
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/commerce/commerce-screen-model.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; a viewed leader's screen is
+ * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomReadOnly = () => globalThis.ZOMLeaderView?.isViewingOther() ?? false;   // ZOM: a viewed leader's screen sends no requests
 
 const DEBUG_RESOURCE_SWAPPING = false;
 const DEBUG_GAMEPAD = false;
@@ -141,7 +141,7 @@ function createCommerceScreenModel() {
       if (updateGate.callTriggers.includes("resource_unassigned")) {
         pendingUnassignments.forEach((data) => {
           const resourceValue = data.offMapId === INVALID_OFF_MAP_ID ? GameplayMap.getIndexFromLocation(data.location) : data.offMapId;
-          const playerCities = Players.get(zomLocalPlayerID())?.Cities?.getCities();
+          const playerCities = Players.get(zomLocalPlayerID())?.Cities?.getCities();   // ZOM: viewed leader
           if (!playerCities) {
             console.error("commerce-screen-model: Unable to get list of player cities for local player");
             return;
@@ -169,7 +169,7 @@ function createCommerceScreenModel() {
           } else {
             sectionIndex = 0;
           }
-          const localPlayerResources2 = Players.get(zomLocalPlayerID())?.Resources;
+          const localPlayerResources2 = Players.get(zomLocalPlayerID())?.Resources;   // ZOM: viewed leader
           if (!localPlayerResources2) {
             console.error("commerce-screen-model: failed to get local player resources");
             return;
@@ -227,7 +227,7 @@ function createCommerceScreenModel() {
       if (!resourceCapChangedEventData) {
         return;
       }
-      if (resourceCapChangedEventData.cityID && Cities.get(resourceCapChangedEventData.cityID)?.owner != zomLocalPlayerID()) {
+      if (resourceCapChangedEventData.cityID && Cities.get(resourceCapChangedEventData.cityID)?.owner != zomLocalPlayerID()) {   // ZOM: viewed leader
         return;
       }
       if (resourceCapChanged()) {
@@ -240,7 +240,7 @@ function createCommerceScreenModel() {
       if (!resourceAssignedEventData) {
         return;
       }
-      if (resourceAssignedEventData.player != zomLocalPlayerID()) {
+      if (resourceAssignedEventData.player != zomLocalPlayerID()) {   // ZOM: viewed leader
         return;
       }
       untrack(() => {
@@ -359,7 +359,7 @@ function createCommerceScreenModel() {
       if (!resourceUnassignedEventData) {
         return;
       }
-      if (resourceUnassignedEventData.player != zomLocalPlayerID()) {
+      if (resourceUnassignedEventData.player != zomLocalPlayerID()) {   // ZOM: viewed leader
         return;
       }
       untrack(() => {
@@ -689,7 +689,7 @@ function createCommerceScreenModel() {
     setSelectedSettlementId(newID);
   }
   let canSlot = true;
-  const localPlayerResources = Players.get(zomLocalPlayerID())?.Resources;
+  const localPlayerResources = Players.get(zomLocalPlayerID())?.Resources;   // ZOM: viewed leader
   canSlot = localPlayerResources ? !localPlayerResources.isResourceAssignmentLocked() : false;
   let hasSlottedConnectedResources = false;
   let hasSlottedDisconnectedResources = false;
@@ -712,7 +712,7 @@ function createCommerceScreenModel() {
     return newYieldDeltas;
   }
   function updateIsSlottingAvailable() {
-    const localPlayerResources2 = Players.get(zomLocalPlayerID())?.Resources;
+    const localPlayerResources2 = Players.get(zomLocalPlayerID())?.Resources;   // ZOM: viewed leader
     if (localPlayerResources2 && !localPlayerResources2.isResourceAssignmentLocked()) {
       model.isSlottingAvailable = true;
     } else {
@@ -809,6 +809,7 @@ function createCommerceScreenModel() {
     return false;
   }
   function canStartPlayerOperation(operationType, args) {
+    if (zomReadOnly()) return false;   // ZOM: read-only for a viewed leader
     const result = Game.PlayerOperations.canStart(
       GameContext.localPlayerID,
       operationType,
@@ -839,7 +840,7 @@ function createCommerceScreenModel() {
     return canStartPlayerOperation(PlayerOperationTypes.SWAP_RESOURCES, args);
   }
   function isOffMapResourceValue(resourceValue) {
-    return Players.get(zomLocalPlayerID())?.Resources?.getResources().find((resource) => resource.value === resourceValue)?.isOffMap ?? false;
+    return Players.get(zomLocalPlayerID())?.Resources?.getResources().find((resource) => resource.value === resourceValue)?.isOffMap ?? false;   // ZOM: viewed leader
   }
   function getResourcePropsFromDefinition(resourceDefinition, originCityId, resourcePlotIsDamaged) {
     const originCity = originCityId ? Cities.get(originCityId) : null;
@@ -848,14 +849,14 @@ function createCommerceScreenModel() {
     let classType = resourceDefinition.ResourceClassType;
     if (originCity) {
       if (classType === "RESOURCECLASS_TREASURE") {
-        const localPlayer = Players.get(zomLocalPlayerID());
+        const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
         if (localPlayer) {
           if (localPlayer.isDistantLands(originCity.location)) {
             classType = "RESOURCECLASS_TREASURE_FLEET";
           }
         }
       }
-      if (originCity.owner !== zomLocalPlayerID()) {
+      if (originCity.owner !== zomLocalPlayerID()) {   // ZOM: viewed leader
         const playerColors = UI.Color.getPlayerColors(originCity.originalOwner);
         if (playerColors) {
           const colorVariants = UI.Color.createPlayerColorVariants(playerColors);
@@ -903,7 +904,7 @@ function createCommerceScreenModel() {
     if (selectedResourceValue === INVALID_RESOURCE_VALUE) {
       return;
     }
-    const uniqueResource = Players.get(zomLocalPlayerID())?.Resources?.getResources().find((uniqueResourceValue) => {
+    const uniqueResource = Players.get(zomLocalPlayerID())?.Resources?.getResources().find((uniqueResourceValue) => {   // ZOM: viewed leader
       return uniqueResourceValue.value === selectedResourceValue;
     });
     if (!uniqueResource) {
@@ -918,7 +919,7 @@ function createCommerceScreenModel() {
     if (!city) {
       return false;
     }
-    if (city.owner != zomLocalPlayerID()) {
+    if (city.owner != zomLocalPlayerID()) {   // ZOM: viewed leader
       return true;
     }
     if (city.Trade?.isInTradeNetwork()) {
@@ -953,7 +954,7 @@ function createCommerceScreenModel() {
       clearResourcesFromCity(cityID);
       return;
     }
-    const localPlayer = Players.get(zomLocalPlayerID());
+    const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     localPlayer?.Cities?.getCities().forEach((city) => clearResourcesFromCity(city.id));
   }
   function getGamepadTrayItems() {
@@ -1153,7 +1154,7 @@ function createCommerceScreenModel() {
     return city.Resources.getAssignedResources().length > 0;
   }
   function updateSlottedResources() {
-    const localPlayer = Players.get(zomLocalPlayerID());
+    const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     const localPlayerCities = localPlayer?.Cities?.getCities();
     hasSlottedConnectedResources = hasSlottedDisconnectedResources = false;
     if (!localPlayerCities) {
@@ -1215,11 +1216,11 @@ function createCommerceScreenModel() {
     Camera.lookAtPlot(location);
   }
   function handleClickTreasureFleet(cityID) {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!player) {
       return;
     }
-    const treasureFleet = Players.get(zomLocalPlayerID())?.Units?.getUnits().find((unit) => {
+    const treasureFleet = Players.get(zomLocalPlayerID())?.Units?.getUnits().find((unit) => {   // ZOM: viewed leader
       return unit.originCityId == cityID.id && unit.type == player.Units?.getBuildUnit("UNIT_TREASURE_FLEET");
     });
     if (treasureFleet) {
@@ -1428,7 +1429,7 @@ function createCommerceScreenModel() {
     if (!cityResources) {
       return slottedResourceData;
     }
-    const localPlayerResources2 = Players.get(zomLocalPlayerID())?.Resources;
+    const localPlayerResources2 = Players.get(zomLocalPlayerID())?.Resources;   // ZOM: viewed leader
     cityResources.getAssignedResources().forEach((resource) => {
       if (!localPlayerResources2) {
         return;
@@ -1544,7 +1545,7 @@ function createCommerceScreenModel() {
     });
     const unslottedBonuses = [];
     GameInfo.Yields.forEach((yieldDefinition) => {
-      const unassignedBonus = Players.get(zomLocalPlayerID())?.Resources?.getUnassignedResourceYieldBonus(
+      const unassignedBonus = Players.get(zomLocalPlayerID())?.Resources?.getUnassignedResourceYieldBonus(   // ZOM: viewed leader
         Database.makeHash(yieldDefinition.YieldType)
       );
       if (unassignedBonus === void 0 || unassignedBonus == 0) {
@@ -1775,7 +1776,7 @@ function createCommerceScreenModel() {
   }
   function populateEmpireResources() {
     const empireResources = [];
-    Players.get(zomLocalPlayerID())?.Resources?.getResources().forEach((resource) => {
+    Players.get(zomLocalPlayerID())?.Resources?.getResources().forEach((resource) => {   // ZOM: viewed leader
       const playerResource = GameInfo.Resources.lookup(resource.uniqueResource.resource);
       if (!playerResource || playerResource.ResourceClassType != "RESOURCECLASS_EMPIRE" && playerResource.ResourceClassType != "RESOURCECLASS_TREASURE") {
         return;
@@ -1898,7 +1899,7 @@ function createCommerceScreenModel() {
       emptyResourcesDescription: "LOC_COMMERCE_NO_DISCONNECTED_SETTLEMENTS"
     };
     hasSlottedConnectedResources = hasSlottedDisconnectedResources = false;
-    const localPlayer = Players.get(zomLocalPlayerID());
+    const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     const localPlayerCities = localPlayer?.Cities?.getCities();
     if (localPlayerCities != void 0 && localPlayer != null) {
       const availableFactoryResources = [];
@@ -1937,7 +1938,7 @@ function createCommerceScreenModel() {
         for (let i = 0; i < city.Resources.getAssignedResourcesCap() - city.Resources.getAssignedResources().length; i++) {
           availableSlots.push(i);
         }
-        const localPlayer2 = Players.get(zomLocalPlayerID());
+        const localPlayer2 = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
         if (!localPlayer2) {
           return;
         }
@@ -2078,7 +2079,7 @@ function createCommerceScreenModel() {
   function populateTreasureFleetData() {
     const generatingFleets = [];
     const notGeneratingFleets = [];
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!player) {
       console.error("createCommerceScreenModel::populateTreasureFleetData: No player found");
       return { sections: [] };
@@ -2344,7 +2345,7 @@ function createCommerceScreenModel() {
       // TODO: We don't have a way from here to know if the distance criteria is met, unlike capacity and war
       appliesToCurrentCiv: true
     });
-    const atWar = targetPlayerDiplomacy.isAtWarWith(zomLocalPlayerID());
+    const atWar = targetPlayerDiplomacy.isAtWarWith(zomLocalPlayerID());   // ZOM: viewed leader
     const statusIncludesAtWar = route.status?.includes(TradeRouteStatus.AT_WAR) ?? false;
     const atPeaceCriteriaAppliesToCurrentCiv = !atWar || statusIncludesAtWar;
     tradeRouteData.statuses.push({
@@ -2386,7 +2387,7 @@ function createCommerceScreenModel() {
       },
       emptyDescription: "LOC_COMMERCE_UNAVAILABLE_TRADE_ROUTES_EMPTY_DESCRIPTION"
     };
-    const localPlayerTrade = Players.get(zomLocalPlayerID())?.Trade;
+    const localPlayerTrade = Players.get(zomLocalPlayerID())?.Trade;   // ZOM: viewed leader
     if (!localPlayerTrade) {
       console.error("commerce-screen-model: Unable to get trade object for local player");
       return tradeRouteTabData;
@@ -2448,7 +2449,7 @@ function createCommerceScreenModel() {
     });
     const unslottedBonuses = [];
     GameInfo.Yields.forEach((yieldDefinition) => {
-      const unassignedBonus = Players.get(zomLocalPlayerID())?.Resources?.getUnassignedResourceYieldBonus(
+      const unassignedBonus = Players.get(zomLocalPlayerID())?.Resources?.getUnassignedResourceYieldBonus(   // ZOM: viewed leader
         Database.makeHash(yieldDefinition.YieldType)
       );
       if (unassignedBonus === void 0 || unassignedBonus == 0) {
@@ -2473,7 +2474,7 @@ function createCommerceScreenModel() {
       id: "commerce-screen",
       isFullscreen: isMobile()
     };
-    const localPlayer = Players.get(zomLocalPlayerID());
+    const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (localPlayer != null) {
       const civDefinition = GameInfo.Civilizations.lookup(localPlayer.civilizationType);
       if (civDefinition) {
@@ -2483,7 +2484,7 @@ function createCommerceScreenModel() {
         const civImage = civImagePath ? `url(${civImagePath})` : "";
         ornatePanelData.backgroundImageSrc = civImage;
       }
-      const playerColor = UI.Color.getPlayerColors(zomLocalPlayerID());
+      const playerColor = UI.Color.getPlayerColors(zomLocalPlayerID());   // ZOM: viewed leader
       if (playerColor) {
         const variants = UI.Color.createPlayerColorVariants(playerColor);
         ornatePanelData.topIconBackgroundTint = variants.primaryColor.tintColor;

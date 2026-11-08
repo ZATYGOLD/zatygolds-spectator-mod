@@ -17,11 +17,11 @@ import style from './screen-policies.scss.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/policies/government-hub.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": for the
- * Observer, a row of leader portraits above the tabs picks the leader shown,
- * and the open tab is kept when another leader is picked.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": a leader picker
+ * above the tabs, which keep the open tab across a pick.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
+const zomTabProps = (screenTag, props) => globalThis.ZOMLeaderView?.tabProps(screenTag, props) ?? props;   // ZOM: the open tab kept across a leader pick
 
 const GovermentScreenComponent = (_props) => {
   const policiesModel = PoliciesModel.get();
@@ -56,13 +56,8 @@ const GovermentScreenComponent = (_props) => {
               return isMobile();
             },
             get children() {
-              return [globalThis.ZOMLeaderView?.playerBar('screen-policies') ?? null, createComponent(Tab, {   // ZOM: the Observer's leader picker
-                activeTab: () => {   // ZOM: same tab after a leader switch
-                  const tab = activePolicyTab();
-                  return globalThis.ZOMLeaderView?.restoredTab('screen-policies') ?? tab;
-                },
-                get defaultTab() { return globalThis.ZOMLeaderView?.restoredTab('screen-policies'); },   // ZOM: applied as the tabs register
-                onTabChanged: globalThis.ZOMLeaderView?.trackTab('screen-policies'),   // ZOM: remember the open tab
+              return [globalThis.ZOMLeaderView?.playerBar('screen-policies') ?? null, createComponent(Tab, zomTabProps('screen-policies', {   // ZOM: leader picker, tab kept
+                activeTab: activePolicyTab,
                 "class": "w-full relative flex flex-col flex-auto pointer-events-auto",
                 get children() {
                   return [createComponent(Tab.TabList, {
@@ -102,7 +97,7 @@ const GovermentScreenComponent = (_props) => {
                     }
                   })];
                 }
-              })];
+              }))];   // ZOM: closes zomTabProps and the picker row
             }
           });
         }

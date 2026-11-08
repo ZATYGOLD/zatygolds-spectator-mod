@@ -21,13 +21,14 @@
 /**
  * Zatygold's Spectator - Observer histories (in-game scope).
  *
- * A history records, at the start of every turn, a few numbers for each
- * watched leader (createSampleHistory). One sample per turn is kept in the
+ * A history records each turn, shortly after it starts, a few numbers for
+ * each watched leader (createSampleHistory). One sample per turn is kept in the
  * Observer's own player properties - the store the game's UI catalogs use
  * (utility-serialize.js) - which are saved with the game and carried across
  * Age transitions, so the graphs cover the whole game. The yield history
  * records each leader's per-turn yields (HISTORY_YIELDS: gold, science,
- * culture, happiness, influence, food, production).
+ * culture, happiness, influence, food, production) and gives each Age's turns
+ * (ageTurns, ageTurn). savedOnce and savedPerAge read the Chronicle's saved data.
  *
  * Sample text: "<age chronology>|<turn>|<playerId>:<v1>,<v2>,...;<playerId>:...".
  */
@@ -37,6 +38,33 @@ import { canSave, isObserverSeat, onObserverReady, readSaved, watchedPlayers, wr
 
 const log = createLogger('observer-history', CONFIG.debug);
 const HISTORY_EVENT = 'zom-yield-history-changed';
+
+// ============================ Saved data ============================
+
+/** A value read from the save once it is available: load() once, empty() until then (and if it fails). */
+function savedOnce(name, load, empty) {
+  let value;
+  let loaded = false;
+  return () => {
+    if (loaded) return value;
+    if (!canSave()) return empty();
+    loaded = true;
+    try { value = load(); } catch (e) { log(`${name} read failed: ${e}`); value = empty(); }
+    return value;
+  };
+}
+
+/** Every Age's saved text under `prefix` + Age, decoded once: () => Map<age chronology, decode(text)>. */
+const savedPerAge = (prefix, decode) => savedOnce(prefix, () => {
+  const byAge = new Map();
+  for (const age of GameInfo.Ages) {
+    const text = readSaved(prefix + age.ChronologyIndex);
+    if (typeof text === 'string' && text) byAge.set(age.ChronologyIndex, decode(text));
+  }
+  return byAge;
+}, () => new Map());
+
+// ============================ Histories ============================
 
 /**
  * Recorded yields in display order; `slot` is the value's position in a
@@ -71,29 +99,23 @@ function decode(text) {
 
 /**
  * A history saved under `keyPrefix`: measure(player) gives a leader's numbers
- * (by slot) at the start of each turn (and again, replacing the turn's sample,
- * after any of `liveEvents`), `changeEvent` announces each new sample. Returns the reader of every sample:
- * [{ age, turn, values: Map<playerId, number[]> }], oldest first.
+ * (by slot) each turn, again after any of `liveEvents` (replacing the turn's
+ * sample); `changeEvent` announces each sample. Returns the reader of every
+ * sample, oldest first: [{ age, turn, values: Map<playerId, number[]> }].
  */
 function createSampleHistory({ keyPrefix, changeEvent, measure, liveEvents = [] }) {
   const countKey = `${keyPrefix}COUNT`;
-  let samples = null;
   let nextIndex = 0;   // property index of the next new sample
 
-  /** Every recorded sample (read from the save once per session). */
-  function read() {
-    if (samples) return samples;
-    if (!canSave()) return [];   // not cached: the save is read once it is available
-    samples = [];
-    try {
-      nextIndex = Number(readSaved(countKey)) || 0;
-      for (let i = 0; i < nextIndex; i++) {
-        const text = readSaved(keyPrefix + i);
-        if (typeof text === 'string' && text) samples.push(decode(text));
-      }
-    } catch (e) { log(`${keyPrefix} read failed: ${e}`); }
+  const read = savedOnce(keyPrefix, () => {
+    const samples = [];
+    nextIndex = Number(readSaved(countKey)) || 0;
+    for (let i = 0; i < nextIndex; i++) {
+      const text = readSaved(keyPrefix + i);
+      if (typeof text === 'string' && text) samples.push(decode(text));
+    }
     return samples;
-  }
+  }, () => []);
 
   /** Records this turn's sample; a turn already recorded (e.g. after a reload) is replaced. */
   function recordTurn() {
@@ -131,4 +153,28 @@ const yieldHistory = createSampleHistory({
   measure: (player) => YIELD_SLOTS.map((y) => player.Stats?.getNetYield?.(YieldTypes[y.yieldType]))
 });
 
-export { createSampleHistory, HISTORY_EVENT, HISTORY_YIELDS, yieldHistory };
+// ============================ Age turns ============================
+
+let ageSpans = { samples: -1, byAge: new Map() };   // each Age's recorded turns, until the history grows
+
+/** An Age's first and last recorded turns (the yield history's): [first, last], else null. */
+function ageTurns(age) {
+  const history = yieldHistory();
+  if (ageSpans.samples !== history.length) {
+    const byAge = new Map();
+    for (const { age: a, turn } of history) {
+      const span = byAge.get(a);
+      byAge.set(a, span ? [Math.min(span[0], turn), Math.max(span[1], turn)] : [turn, turn]);
+    }
+    ageSpans = { samples: history.length, byAge };
+  }
+  return ageSpans.byAge.get(age) ?? null;
+}
+
+/** A game turn as the Chronicle shows it: counted from 1 in its Age (the game's turn while the Age has no sample). */
+function ageTurn(age, turn) {
+  const first = ageTurns(age)?.[0];
+  return first == null ? turn : Math.max(1, turn - first + 1);
+}
+
+export { ageTurn, ageTurns, createSampleHistory, HISTORY_EVENT, HISTORY_YIELDS, savedOnce, savedPerAge, yieldHistory };

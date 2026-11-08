@@ -7,10 +7,8 @@ import { TreeGridDirection } from '../tree-grid/tree-support.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/tech-tree/model-tech-tree.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
@@ -36,7 +34,7 @@ class TechTreeModel {
     this.onUpdate = callback;
   }
   get playerId() {
-    return zomLocalPlayerID();
+    return zomLocalPlayerID();   // ZOM: viewed leader
   }
   get tree() {
     return this._tree;
@@ -71,7 +69,7 @@ class TechTreeModel {
   }
   update() {
     this._tree = null;
-    const localPlayerID = zomLocalPlayerID();
+    const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
     const localPlayer = Players.get(localPlayerID);
     if (!localPlayer) {
       return;
@@ -88,7 +86,7 @@ class TechTreeModel {
         continue;
       }
       const turnsCallback = (nodeType) => {
-        const player = Players.get(zomLocalPlayerID());
+        const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
         const turnsLeft = player ? player.Techs ? player.Techs.getTurnsForNode(nodeType) : 0 : 0;
         return turnsLeft;
       };

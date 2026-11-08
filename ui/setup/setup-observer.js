@@ -42,8 +42,6 @@ const RANDOM = 'RANDOM';
 const NO_TEAM = -1;
 
 const log = createLogger('setup-observer', CONFIG.debug);
-const logged = new Set();
-const debugOnce = (key, message) => { if (!logged.has(key)) { logged.add(key); log.debug(message); } };
 
 // ============================ Game state ============================
 
@@ -150,8 +148,8 @@ function canWriteGameOptions() {
 }
 
 /** A computer player left on the Observer (a human slot that became a computer one) goes back to Random. */
-function releaseComputerObservers(slots) {
-  for (let id = 0; id < slots; id++) {
+function releaseComputerObservers(ids) {
+  for (const id of ids) {
     if (!isComputerSlot(id) || !isObserverRow(id)) continue;
     setParam(id, PARAM_LEADER, RANDOM);
     setParam(id, PARAM_CIV, RANDOM);
@@ -159,14 +157,17 @@ function releaseComputerObservers(slots) {
   }
 }
 
-/** The hidden game option follows whether any player is the Observer. */
+/**
+ * The hidden game option follows whether any player is the Observer. Every participating
+ * player counts, including a slot past the map size's own limit (Better Balanced
+ * Multiplayer keeps one for the Spectator on Tiny and Small maps).
+ */
 function syncObserverFlag() {
   if (!canWriteGameOptions()) return;
   try {
-    const slots = Configuration.getMap().maxMajorPlayers ?? 0;
-    releaseComputerObservers(slots);
-    let anyObserver = false;
-    for (let id = 0; id < slots && !anyObserver; id++) anyObserver = configLeader(id) === OBSERVER_LEADER;
+    const ids = [...(Configuration.getGame().participatingPlayerIDs ?? [])];
+    releaseComputerObservers(ids);
+    const anyObserver = ids.some((id) => configLeader(id) === OBSERVER_LEADER);
     const current = !!GameSetup.findGameParameter(PARAM_OBSERVER_IN_GAME)?.value?.value;
     if (current !== anyObserver) {
       GameSetup.setGameParameterValue(PARAM_OBSERVER_IN_GAME, anyObserver);
@@ -181,12 +182,12 @@ const queueObserverFlag = deferOnce(syncObserverFlag);
 
 function shapeParameter(playerID, paramName, param) {
   if (paramName === PARAM_LEADER && isComputerSlot(playerID)) {
-    debugOnce(`leader-${playerID}`, `Spectator hidden from computer player ${playerID}`);
+    log.debugOnce(`leader-${playerID}`, `Spectator hidden from computer player ${playerID}`);
     return filterParamValues(param, (v) => v !== OBSERVER_LEADER);
   }
   if (paramName === PARAM_LEADER && playerID === GameContext.localPlayerID) {
     const entry = param?.domain?.possibleValues?.find((v) => paramValue(v) === OBSERVER_LEADER);
-    debugOnce('leader-local', entry ? `Spectator offered to the local player (invalidReason ${entry.invalidReason})` : 'Spectator missing from the local leader list');
+    log.debugOnce('leader-local', entry ? `Spectator offered to the local player (invalidReason ${entry.invalidReason})` : 'Spectator missing from the local leader list');
   }
   if (paramName !== PARAM_CIV || isMultiplayerSetup()) return param;
   if (configLeader(playerID) === OBSERVER_LEADER) {

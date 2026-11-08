@@ -35,7 +35,7 @@ const ICON_CLASSES = ['bbm-maps-strict-bias-notification', 'mpt-maps-strict-bias
 const FAILURE_PREFIX = '- ';
 const ICON_WATCH_MS = 60000;
 
-const log = createLogger('compat-evw', CONFIG.debug);
+const log = createLogger('compat-evw-start-warning', CONFIG.debug);
 
 /** Each Observer as the Map Mod names it: "Leader / Civilization". */
 function observerLabels() {
@@ -77,19 +77,32 @@ function clean(node, labels) {
   else if (ICON_CLASSES.some((c) => node.classList?.contains(c))) cleanIcon(node, labels);
 }
 
+const WARNING_SELECTOR = [...BANNER_CLASSES, ...ICON_CLASSES].map((c) => `.${c}`).join(', ');
+const ICON_SELECTOR = ICON_CLASSES.map((c) => `.${c}`).join(', ');
+
 /**
  * The banner is added to the body (again whenever the icon is selected); the icon
  * is added once, deep in the notification train, within the check's first minute.
+ * The banner watch ends with that minute when no warning icon is left.
  */
 function watchWarnings(labels) {
   const onAdded = (mutations) => {
-    for (const mutation of mutations) for (const node of mutation.addedNodes) clean(node, labels);
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        clean(node, labels);
+        node.querySelectorAll?.(WARNING_SELECTOR).forEach((inner) => clean(inner, labels));
+      }
+    }
   };
-  new MutationObserver(onAdded).observe(document.body, { childList: true });
+  const bannerWatch = new MutationObserver(onAdded);
+  bannerWatch.observe(document.body, { childList: true });
   const iconWatch = new MutationObserver(onAdded);
   iconWatch.observe(document.body, { childList: true, subtree: true });
-  setTimeout(() => iconWatch.disconnect(), ICON_WATCH_MS);
-  document.querySelectorAll([...BANNER_CLASSES, ...ICON_CLASSES].map((c) => `.${c}`).join(', ')).forEach((node) => clean(node, labels));
+  setTimeout(() => {
+    iconWatch.disconnect();
+    if (!document.querySelector(ICON_SELECTOR)) bannerWatch.disconnect();
+  }, ICON_WATCH_MS);
+  document.querySelectorAll(WARNING_SELECTOR).forEach((node) => clean(node, labels));
 }
 
 engine.whenReady.then(() => {

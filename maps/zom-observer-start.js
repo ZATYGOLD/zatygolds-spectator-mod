@@ -19,19 +19,21 @@
  */
 
 /**
- * Zatygold's Spectator - Observer start during map generation (gameplay scripts).
+ * Zatygold's Spectator - Observer start and Eye (gameplay scripts).
  *
  * Loaded into every map generation as a MapGenScript, and imported by the
- * map-globals override as a fallback. While a new map is generated:
+ * map-globals override (which every map script and the Age-transition script
+ * import). While a new map is generated:
  * - the Observer is hidden from the Players lists, so any map script or
  *   placement mod (East vs West, FFA balancers...) counts, regions and spaces
  *   only the real players;
  * - the Observer's start and Eye are set here, once, on the ice;
  * - a script that still sets the Observer's start directly gets the same ice
  *   start back and creates no second Eye.
- * Age transitions are untouched (RequestMapInitData does not fire there).
+ * An Age transition resets units, so each Observer gets a new Eye once the
+ * transition's own pass is done (RequestMapInitData does not fire there).
  */
-import { createObserverEye, hasEye, isObserverPlayerId, observerPlots } from './zom-observer-eye.js';
+import { createObserverEye, hasEye, isObserverPlayerId, observerPlots, placeObserverEyes } from './zom-observer-eye.js';
 
 const HIDDEN_LISTS = ['getAliveMajorIds', 'getAliveIds', 'getAlive', 'getEverAlive'];
 
@@ -41,6 +43,7 @@ const log = (m) => console.log('[ZOM observer-start] ' + m);
 const state = globalThis.zomObserverStart ??= {
   installed: false,
   generating: false,
+  finalPass: false,         // the GenerateMap final pass is registered
   raw: {},
   observerIds: null,
   starts: new Map(),
@@ -119,22 +122,43 @@ function beginMapGeneration() {
   state.observerIds = null;
   state.starts = new Map();
   state.usedPlots = new Set();
-  // Registered now, after the map script's own GenerateMap listener: a final pass once every start is placed.
+  // Registered now, after the map script's own GenerateMap listener: a final pass once every start is placed (once per context).
+  if (state.finalPass) return;
+  state.finalPass = true;
   engine.on('GenerateMap', ensureObserverStarts);
 }
 
+/** A new Eye for each Observer after an Age transition (one that still has its Eye keeps it). */
+function placeEyesAfterTransition() {
+  try { placeObserverEyes(); } catch (e) { log(`age transition eye placement failed: ${e}`); }
+}
+
+/**
+ * The game's initialization after the map (or an Age transition's): map generation is over,
+ * and the Age-transition pass is registered again, so it always comes after the transition
+ * script's own GenerateAgeTransition listener and runs once units are reset.
+ */
+function onAgeInitialization() {
+  state.generating = false;
+  if (typeof engine.off === 'function') engine.off('GenerateAgeTransition', placeEyesAfterTransition);   // a repeat is harmless: an Eye is never placed twice
+  engine.on('GenerateAgeTransition', placeEyesAfterTransition);
+}
+
+/**
+ * Map generation (where StartPositioner exists): the Observer hidden from the player lists
+ * and its start routed to the ice. Every context: the Age initialization hook.
+ */
 function installObserverStarts() {
-  if (state.installed) return;
-  if (typeof StartPositioner === 'undefined' || typeof Players === 'undefined' || typeof engine === 'undefined') return;
+  if (state.installed || typeof engine === 'undefined' || typeof Players === 'undefined') return;
   state.installed = true;
   try {
+    // Hidden until the game's initialization after the map, so every placement step sees only the real players.
+    engine.on('RequestAgeInitializationParameters', onAgeInitialization);
+    if (typeof StartPositioner === 'undefined') return;
     hideObserversFromLists();
     routeStartPositions();
     engine.on('RequestMapInitData', beginMapGeneration);
-    engine.on('RequestAgeInitializationParameters', () => { state.generating = false; });
   } catch (e) { log('could not install: ' + e); }
 }
 
 installObserverStarts();
-
-export { installObserverStarts };

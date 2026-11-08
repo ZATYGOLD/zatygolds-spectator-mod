@@ -28,11 +28,12 @@
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import PopupSequencer from 'fs://game/base-standard/ui/popup-sequencer/popup-sequencer.js';
 import { createLogger, wrapMethod } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
 import { isObserverSeat, onScreenDock, SCREEN_PROPS } from './observer-core.js';
 import { CHOOSER_TAGS, openFullTree } from './observer-leader-screens.js';
 import { OVERVIEW_PANEL_TAG, setOverviewSource } from './observer-overview.js';
 
-const log = createLogger('observer-screens');
+const log = createLogger('observer-screens', CONFIG.debug);
 const RELIGION_SCREEN = 'panel-belief-picker';
 const RELIGION_UI = 'CAPABILITY_RELIGION_UI';
 const RELIGION_BUTTON_CLASS = 'tut-religion';   // the game's own button class
@@ -42,7 +43,7 @@ const BLOCKED = new Set(['screen-advisor-council', 'advisor-council-popup', 'scr
 const REDIRECTS = {
   'screen-pantheon-chooser': { overview: 'pantheons' },
   'panel-pantheon-complete': { overview: 'pantheons' },
-  'panel-religion-picker': { screen: 'panel-belief-picker' }
+  'panel-religion-picker': { screen: RELIGION_SCREEN }
 };
 
 wrapMethod(ContextManager, 'push', (base, target, ...rest) => {

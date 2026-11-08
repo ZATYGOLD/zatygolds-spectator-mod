@@ -82,7 +82,7 @@
 		<Row Tag="LOC_ZOM_OBSERVER_NO_WARS">
 			<Text>Not at war.</Text>
 		</Row>
-		<Row Tag="LOC_ZOM_OBSERVER_COMBAT_ESTIMATE">
+		<Row Tag="LOC_ZOM_OBSERVER_ESTIMATE">
 			<Text>Estimate</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_OBSERVER_COMBAT_UNIT_BONUS">
@@ -117,6 +117,9 @@
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_TURNS">
 			<Text>Turns {1_First}–{2_Last}</Text>
+		</Row>
+		<Row Tag="LOC_ZOM_GRAPH_TURNS_AGES">
+			<Text>{1_FirstAge} turn {2_First} – {3_LastAge} turn {4_Last}</Text>
 		</Row>
 		<Row Tag="LOC_ZOM_GRAPH_PERCENT">
 			<Text>{1_Value}%</Text>

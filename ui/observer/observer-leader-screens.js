@@ -30,20 +30,19 @@
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
 import { componentOf, createLogger, isTag, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
 import { SCREEN_PROPS } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
 import { BAR_CLASS, playerBar, releaseLeader, setRefresh, viewedPlayerID } from './observer-leader-view.js';
+import { activeNode } from './observer-ribbon-data.js';
 
-const log = createLogger('observer-leader-screens');
+const log = createLogger('observer-leader-screens', CONFIG.debug);
 const RELIGION_TAG = 'panel-belief-picker';
 const GREAT_WORKS_TAG = 'screen-great-works';
 const ATTRIBUTES_TAG = 'screen-attribute-trees';
 
-/** The node being researched in a player's tree, else undefined. */
-function activeNode(player, treeType) {
-  const tree = treeType === undefined ? null : Game.ProgressionTrees.getTree(player.id, treeType);
-  return tree && tree.activeNodeIndex >= 0 ? tree.nodes?.[tree.activeNodeIndex]?.nodeType : undefined;
-}
+/** The node type being researched in a player's tree, else undefined. */
+const activeNodeType = (player, treeType) => activeNode(player.id, treeType)?.nodeType;
 
 /**
  * Tree screens, their chooser, and the event (with the detail the chooser's
@@ -55,7 +54,7 @@ const TREES = [
     detail: (player) => {
       const treeType = player.Techs?.getTreeType();
       return treeType === undefined ? null
-        : { treeCSV: String(treeType), targetNode: activeNode(player, treeType), iconCallback: Icon.getTechIconFromProgressionTreeNodeDefinition };
+        : { treeCSV: String(treeType), targetNode: activeNodeType(player, treeType), iconCallback: Icon.getTechIconFromProgressionTreeNodeDefinition };
     }
   },
   {
@@ -66,7 +65,7 @@ const TREES = [
       const main = GameInfo.Ages.lookup(Game.age)?.MainCultureProgressionTreeType;
       if (main && !trees.some((t) => GameInfo.ProgressionTrees.lookup(t)?.ProgressionTreeType === main)) trees.unshift(main);
       return !trees.length ? null
-        : { treeCSV: trees.join(','), targetNode: activeNode(player, player.Culture?.getActiveTree?.()), iconCallback: Icon.getCultureIconFromProgressionTreeNodeDefinition };
+        : { treeCSV: trees.join(','), targetNode: activeNodeType(player, player.Culture?.getActiveTree?.()), iconCallback: Icon.getCultureIconFromProgressionTreeNodeDefinition };
     }
   }
 ];
@@ -112,7 +111,7 @@ function beliefItem(node) {
   return item;
 }
 
-/** The leader's pantheons as the last section of the belief list, titled like the others (any Age; all game with the Multiplayer Balance Mod). */
+/** The leader's pantheons as the last section of the belief list, titled like the others (in Antiquity, and every later Age with Better Balanced Multiplayer). */
 function addPantheonSection(root, player) {
   const choices = root.querySelector('.belief-picker_belief-choices');
   const list = pantheons(player);

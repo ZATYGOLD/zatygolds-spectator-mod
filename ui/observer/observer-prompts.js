@@ -45,6 +45,7 @@ const ADVISOR_WARNING_NOTIFICATIONS = /^NOTIFICATION_ADVISOR_WARNING_/;
 const CHOOSE_CIV_NOTIFICATION = 'NOTIFICATION_CHOOSE_CIVILIZATION';
 const AGE_TRANSITION_MODE = 'INTERFACEMODE_AGE_TRANSITION';
 const STORY_RETRY_MS = 1500;
+const STORY_ANSWER_TTL_MS = 10000;   // a story still pending this long after its answer is answered again (the engine dropped it)
 const SWEEP_DELAY_MS = 500;
 
 /** Send a player operation for the Observer if the engine allows it. */
@@ -60,7 +61,7 @@ const skipDisplay = (request) => setTimeout(() => DisplayQueueManager.close(requ
 
 // ============================ Narrative stories ============================
 
-let lastAnsweredStory = null;   // key of the story last answered
+let lastAnswered = null;   // { key, at }: the story last answered, not answered again until STORY_ANSWER_TTL_MS has passed
 
 /** A story id's value key (the engine hands out a new id object per call). */
 const storyKey = (id) => `${id.owner}/${id.id}/${id.type}`;
@@ -81,11 +82,12 @@ function answerPendingStory() {
   try {
     const stories = Players.get(GameContext.localPlayerID)?.Stories;
     const storyId = stories?.getFirstPendingMetId?.() || stories?.getFirstPendingDiscoveryLastMetID?.();
-    if (!storyId || storyKey(storyId) === lastAnsweredStory) return;
+    const key = storyId && storyKey(storyId);
+    if (!key || (key === lastAnswered?.key && Date.now() - lastAnswered.at < STORY_ANSWER_TTL_MS)) return;
     const answered = storyChoices(stories, storyId).find((key) =>
       tryOperation(PlayerOperationTypes.CHOOSE_NARRATIVE_STORY_DIRECTION, { TargetType: key, Target: storyId, Action: PlayerOperationParameters.Activate }));
     if (!answered) { log(`story ${JSON.stringify(storyId)}: no available choice`); return; }
-    lastAnsweredStory = storyKey(storyId);
+    lastAnswered = { key, at: Date.now() };
     log.debug(`story ${JSON.stringify(storyId)} answered with ${answered}`);
     setTimeout(answerPendingStory, STORY_RETRY_MS);   // the next pending story, if any
   } catch (e) { log(`story answer failed: ${e}`); }

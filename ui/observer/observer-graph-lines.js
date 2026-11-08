@@ -39,6 +39,7 @@ import { template, insert } from 'fs://game/core/vendor/solid-js/web/dist/web.js
 import { createComponent, createMemo, Show } from 'fs://game/core/vendor/solid-js/dist/solid.js';
 import { ScrollArea } from 'fs://game/core/ui-next/components/scroll-area.js';
 import { ageName, BreakdownCard, crisisStages, emptyText, fillPanel, GraphPanel, leaderColor, LeaderRow, LeaderRows, OVERALL, rowHeight } from './observer-graph-parts.js';
+import { ageTurn } from './observer-history.js';
 import { TurnLineGraph } from './observer-line-graph.js';
 
 const LINE_WIDTH = 6;   // the Economic tab's
@@ -68,14 +69,12 @@ const ranking = (samples, slot) => leaderIds(samples).map((id) => {
 
 /**
  * The graph's x axis. x is a sample's place in the view (1..n), shown as its
- * turn counted from 1 in its Age, with ticks every few turns of each Age, a
+ * turn counted from 1 in its Age (ageTurn), with ticks every few turns of each Age, a
  * divider at each Age's start (Overall) and a flag where each crisis stage
  * began.
  */
 function turnAxis(samples, crises, overall) {
-  const firstTurn = new Map();
-  for (const s of samples) if (!firstTurn.has(s.age)) firstTurn.set(s.age, s.turn);
-  const ageTurn = (s) => s.turn - firstTurn.get(s.age) + 1;
+  const turnOf = (s) => ageTurn(s.age, s.turn);
   const step = TICK_STEPS.find(([most]) => samples.length <= most)[1];
   const ticks = [];
   const dividers = [];
@@ -83,12 +82,13 @@ function turnAxis(samples, crises, overall) {
   samples.forEach((s, i) => {
     const x = i + 1;
     const ageStart = i === 0 || samples[i - 1].age !== s.age;
-    if (ageStart || (ageTurn(s) % step === 0 && ageTurn(s) > step / 2)) ticks.push(x);
+    if (ageStart || (turnOf(s) % step === 0 && turnOf(s) > step / 2)) ticks.push(x);
     if (ageStart && overall) dividers.push({ x, label: ageName(s.age) });
-    for (const stage of crisisStages(crises, s.age)) if (stage.turn === s.turn) flags.push({ x, color: stage.color });
+    // A stage begun before the Age was first recorded is flagged at its first sample.
+    for (const stage of crisisStages(crises, s.age)) if (stage.turn === s.turn || (stage.begun && ageStart)) flags.push({ x, color: stage.color });
   });
   if (samples.length - ticks[ticks.length - 1] > step / 2) ticks.push(samples.length);
-  return { ticks, dividers, flags, label: (x) => (samples[x - 1] ? `${ageTurn(samples[x - 1])}` : '') };
+  return { ticks, dividers, flags, label: (x) => (samples[x - 1] ? `${turnOf(samples[x - 1])}` : '') };
 }
 
 /** Graph lines (x = place in the view, 1..n), hidden leaders left out. */

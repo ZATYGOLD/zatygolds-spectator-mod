@@ -36,12 +36,10 @@
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
 import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { isObserverSeat, onObserverReady, readSavedFlag, writeSavedFlag } from './observer-core.js';
+import { isObserverSeat, onObserverReady, savedToggle } from './observer-core.js';
 import { resolveNotification } from './observer-prompts.js';
 
-const log = createLogger('observer-turn');
-const SAVE_KEY = 'ZOM_AUTO_END_TURN';
-const AUTO_END_TURN_CHANGED_EVENT = 'zom-auto-end-turn-changed';
+const log = createLogger('observer-turn', CONFIG.debug);
 const PAUSE_MENU_MODE = 'INTERFACEMODE_PAUSE_MENU';
 const BEGIN_POLL_MS = 250;
 const BEGIN_TIMEOUT_MS = 120000;   // stop waiting for the loading screen's Continue
@@ -53,12 +51,9 @@ const STYLE = [
   `.${HIDE_CLASS} panel-action { transform: translateY(120%); opacity: 0; pointer-events: none; }`
 ].join('\n');
 
-const BLOCK_PATIENCE = 3;   // blocked retries before the blocker is reported
-const STUCK_PATIENCE = 10;  // blocked retries before the End Turn button is shown again
-const WATCHDOG_MS = 10000;  // a turn still open this long after it began is ended again
-
-let autoEnd = CONFIG.autoEndTurn;
+const autoEnd = savedToggle('ZOM_AUTO_END_TURN', CONFIG.autoEndTurn);
 let transitionStarted = false;   // the Observer ended the Age's last turn: the transition runs by itself
+let sentAutomatically = false;   // this turn's completion came from Auto End Turn (not the player's click)
 let stuck = false;               // a blocker that could not be answered: the End Turn button is shown
 let retryTimer = null;
 let blockedRetries = 0;
@@ -67,6 +62,8 @@ let watchdog = null;
 const enumName = (values, value) => Object.keys(values).find((k) => values[k] === value) ?? value;
 const isPaused = () => !!Configuration.getGame().isPaused;
 const turnActive = () => !!Players.get(GameContext.localPlayerID)?.isTurnActive;
+/** Whether the local player's leader is known yet (isObserverSeat is false until it is). */
+const seatKnown = () => !!GameInfo.Leaders.lookup(Players.get(GameContext.localPlayerID)?.leaderType);
 const blocked = () => Game.Notifications.getEndTurnBlockingType(GameContext.localPlayerID) !== EndTurnBlockingTypes.NONE;
 
 /** The notification blocking the turn: answered or dismissed when possible, logged on the first report. */
@@ -92,27 +89,36 @@ function describeTurn() {
 /** A turn still open long after it began: logged, then ended again (or retried). */
 function checkStuckTurn() {
   watchdog = null;
-  if (!endsAutomatically() || !isObserverSeat() || isPaused()) return;
-  try {
-    if (!turnActive()) return;
-    log(`turn ${Game.turn} still open: ${describeTurn()}`);
-    if (GameContext.hasSentTurnComplete()) sendTurnComplete();
-    else tryEndTurn();
-  } catch (e) { log(`watchdog failed: ${e}`); }
-  armWatchdog();
+  if (!endsAutomatically() || !isObserverSeat()) return;
+  if (!isPaused()) {
+    try {
+      if (!turnActive()) return;
+      log(`turn ${Game.turn} still open: ${describeTurn()}`);
+      if (GameContext.hasSentTurnComplete()) resendTurnComplete();
+      else tryEndTurn();
+    } catch (e) { log(`watchdog failed: ${e}`); }
+  }
+  armWatchdog();   // kept running while paused: a pause is when completions get dropped
 }
 
 function armWatchdog() {
   clearTimeout(watchdog);
-  watchdog = setTimeout(checkStuckTurn, WATCHDOG_MS);
+  watchdog = setTimeout(checkStuckTurn, CONFIG.autoEndTurnWatchdogMs);
 }
 
 /** On and the Age still running, or the transition the Observer started is under way. */
-const endsAutomatically = () => (autoEnd && !isAgeEnding()) || transitionStarted || isAgeTransitionInProgress();
+const endsAutomatically = () => (autoEnd.get() && !isAgeEnding()) || transitionStarted || isAgeTransitionInProgress();
 
-function sendTurnComplete() {
+/** Send the turn's completion again (the engine dropped it); who sent it first is kept. */
+function resendTurnComplete() {
   UI.Player.deselectAllUnits();
   GameContext.sendTurnComplete();
+}
+
+/** End the turn for the player (Auto End Turn). */
+function sendTurnComplete() {
+  sentAutomatically = true;
+  resendTurnComplete();
 }
 
 function setStuck(on) {
@@ -131,8 +137,8 @@ function tryEndTurn() {
     if (!turnActive() || GameContext.hasSentTurnComplete() || GameContext.hasSentTurnUnreadyThisTurn()) return;
     if (isPaused() || blocked()) {
       if (!isPaused()) {
-        clearBlocker(++blockedRetries === BLOCK_PATIENCE);
-        if (blockedRetries >= STUCK_PATIENCE) setStuck(true);
+        clearBlocker(++blockedRetries === CONFIG.autoEndTurnReportRetries);
+        if (blockedRetries >= CONFIG.autoEndTurnStuckRetries) setStuck(true);
       }
       retryTimer = setTimeout(tryEndTurn, CONFIG.autoEndTurnRetryMs);
       return;
@@ -149,10 +155,11 @@ function recoverAfterPause() {
   try {
     if (turnActive() && GameContext.hasSentTurnComplete()) {
       log('re-sending turn completion after unpause');
-      sendTurnComplete();
+      resendTurnComplete();
     }
   } catch (e) { log(`turn recovery failed: ${e}`); }
   tryEndTurn();
+  if (endsAutomatically()) armWatchdog();
 }
 
 const later = (fn) => () => setTimeout(fn, CONFIG.autoEndTurnDelayMs);
@@ -173,9 +180,15 @@ function onTurnState() {
   if (endsAutomatically()) armWatchdog();
 }
 
-/** The Age's last turn ended by the Observer (Transition to Next Age): the rest of the transition runs by itself. */
+/**
+ * The Age's last turn ended by the player's click (Transition to Next Age): the
+ * rest of the transition runs by itself. A turn Auto End Turn ended while the
+ * Age filled up is not that click.
+ */
 function onTurnEnd() {
-  if (transitionStarted || !isAgeEnding()) return;
+  const clicked = !sentAutomatically;
+  sentAutomatically = false;
+  if (transitionStarted || !clicked || !isAgeEnding()) return;
   transitionStarted = true;
   log('age transition started');
   updateEndTurnButton();
@@ -189,9 +202,10 @@ function onTurnEnd() {
 function beginNextAge(waitedMs = 0) {
   try {
     const game = Configuration.getGame();
-    if (game.isNetworkMultiplayer || game.isHotseat || !isAgeTransitionInProgress() || !isObserverSeat()) return;
+    if (game.isNetworkMultiplayer || game.isHotseat || !isAgeTransitionInProgress()) return;
+    if (seatKnown() && !isObserverSeat()) return;
     const state = UI.getGameLoadingState();
-    if (state === UIGameLoadingState.WaitingForUIReady) {
+    if (state === UIGameLoadingState.WaitingForUIReady && isObserverSeat()) {
       log('next age loaded: continuing');
       UI.notifyUIReady();
       return;
@@ -208,20 +222,18 @@ const openedForPause = () => !!Configuration.getGame().isNetworkMultiplayer && i
 
 /** The pause menu the player opens switches Auto End Turn off. */
 function onInterfaceMode() {
-  if (autoEnd && isObserverSeat() && InterfaceMode.isInInterfaceMode(PAUSE_MENU_MODE) && !openedForPause()) {
+  if (autoEnd.get() && isObserverSeat() && InterfaceMode.isInInterfaceMode(PAUSE_MENU_MODE) && !openedForPause()) {
     log('pause menu: auto end turn switched off');
     setAutoEndTurn(false);
   }
 }
 
-function isAutoEndTurn() { return autoEnd; }
+const isAutoEndTurn = autoEnd.get;
 
 function setAutoEndTurn(on) {
-  autoEnd = !!on;
-  try { writeSavedFlag(SAVE_KEY, autoEnd); } catch (e) { log(`auto end turn save failed: ${e}`); }
-  window.dispatchEvent(new CustomEvent(AUTO_END_TURN_CHANGED_EVENT));
+  autoEnd.set(on);
   updateEndTurnButton();
-  if (autoEnd) {
+  if (autoEnd.get()) {
     tryEndTurn();
     armWatchdog();
     return;
@@ -230,13 +242,14 @@ function setAutoEndTurn(on) {
   clearTimeout(watchdog);
   retryTimer = null;
   watchdog = null;
+  sentAutomatically = false;   // the turn is un-readied: the player ends it from here
   try { if (Players.get(GameContext.localPlayerID)?.canUnreadyTurn) GameContext.sendUnreadyTurn(); }
   catch (e) { log(`unready failed: ${e}`); }
 }
 
 try { Loading.runWhenLoaded(() => beginNextAge()); } catch (e) { log(`begin next age not watched: ${e}`); }
 onObserverReady(() => {
-  try { autoEnd = readSavedFlag(SAVE_KEY, CONFIG.autoEndTurn); } catch (e) { log(`auto end turn not restored: ${e}`); }
+  engine.on('LocalPlayerTurnBegin', () => { sentAutomatically = false; });
   for (const event of ['LocalPlayerTurnBegin', 'GameAgeEnded']) engine.on(event, later(onTurnState));
   engine.on('LocalPlayerTurnEnd', onTurnEnd);
   window.addEventListener('interface-mode-changed', onInterfaceMode);
@@ -244,4 +257,4 @@ onObserverReady(() => {
   later(onTurnState)();
 });
 
-export { AUTO_END_TURN_CHANGED_EVENT, isAutoEndTurn, setAutoEndTurn };
+export { isAutoEndTurn, setAutoEndTurn };

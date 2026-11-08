@@ -11,13 +11,13 @@ import PopupSequencer from '../popup-sequencer/popup-sequencer.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/syncretism/syncretism-screen-model.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; a viewed leader's screen is
+ * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomReadOnly = () => globalThis.ZOMLeaderView?.isViewingOther() ?? false;   // ZOM: a viewed leader's screen sends no requests
 
 const attributeFilters = [
   "ALL ATTRIBUTES",
@@ -58,7 +58,7 @@ const cachedCivDatabase = new DatabaseCache("config");
 function createSyncretismScreenModel() {
   const [activeSyncretismTab, setActiveSyncretismTab] = createSignal("screen-syncretism");
   function populateInfrastructure() {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!player) {
       console.error("Syncretism query returns no infrastructure because player not found");
       return [];
@@ -190,7 +190,7 @@ function createSyncretismScreenModel() {
     return cardSet;
   }
   function populateUnits() {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!player) {
       console.error("Syncretism query returns no units because player not found");
       return [];
@@ -277,7 +277,7 @@ function createSyncretismScreenModel() {
     return cardSet;
   }
   function populateSelf() {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!player) {
       console.error("Syncretism query returns nothing because player not found");
       return [];
@@ -395,11 +395,11 @@ function createSyncretismScreenModel() {
     }
   ];
   function getPlaceHolderCiv() {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     return player.civilizationType;
   }
   function getSyncretizedInfo() {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     const chosenCard = {
       civ: "",
       flagType: SyncreticChoiceTypes.SYNCRETIC_CHOICE_SELF
@@ -411,6 +411,7 @@ function createSyncretismScreenModel() {
     return chosenCard;
   }
   function syncretizeSelection(civ, flag) {
+    if (zomReadOnly()) return;   // ZOM: read-only for a viewed leader
     let opType = PlayerOperationTypes.CHOOSE_SYNCRETISM_UNITS;
     if (flag === SyncreticChoiceTypes.SYNCRETIC_CHOICE_INFRASTRUCTURE) {
       opType = PlayerOperationTypes.CHOOSE_SYNCRETISM_INFRASTRUCTURE;
@@ -471,7 +472,7 @@ function getAge() {
   return currentAge ? currentAge.Name : "";
 }
 function getCivNameString() {
-  const player = Players.get(zomLocalPlayerID());
+  const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
   if (!player) {
     return "";
   }

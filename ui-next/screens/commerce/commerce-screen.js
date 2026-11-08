@@ -17,19 +17,20 @@ import style from './commerce-screen.scss.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/commerce/commerce-screen.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": for the
- * Observer, a row of leader portraits above the tabs picks the leader shown,
- * and the open tab is kept when another leader is picked.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": a leader picker
+ * above the tabs, which keep the open tab across a pick; the title's civ name
+ * follows the viewed leader.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
+const zomTabProps = (screenTag, props) => globalThis.ZOMLeaderView?.tabProps(screenTag, props) ?? props;   // ZOM: the open tab kept across a leader pick
 
 const CommerceScreenComponent = (_props) => {
   const model = createCommerceScreenModel();
   const audioTrigger = useAudio("CommerceScreenPopup");
-  const realLocalPlayerId = useLocalPlayerId();   // ZOM: renamed
-  const localPlayerId = () => globalThis.ZOMLeaderView?.playerID() ?? realLocalPlayerId();   // ZOM: the viewed leader
+  const localPlayerId = useLocalPlayerId();
+  const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? localPlayerId();   // ZOM: viewed leader, else the local player
   const civName = createMemo(() => {
-    const player = Players.get(localPlayerId());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!player) {
       return "";
     }
@@ -72,12 +73,11 @@ const CommerceScreenComponent = (_props) => {
         },
         onContextChanged,
         get children() {
-          return [globalThis.ZOMLeaderView?.playerBar('screen-resource-allocation') ?? null, createComponent(Tab, {   // ZOM: the Observer's leader picker
+          return [globalThis.ZOMLeaderView?.playerBar('screen-resource-allocation') ?? null, createComponent(Tab, zomTabProps('screen-resource-allocation', {   // ZOM: leader picker, tab kept
             "class": "w-full flex flex-col flex-auto pointer-events-auto relative",
             get onTabChanged() {
-              return globalThis.ZOMLeaderView?.trackTab('screen-resource-allocation', model.onTabChanged) ?? model.onTabChanged;   // ZOM: remember the open tab
+              return model.onTabChanged;
             },
-            get defaultTab() { return globalThis.ZOMLeaderView?.restoredTab('screen-resource-allocation'); },   // ZOM: same tab after a leader switch
             get children() {
               return [createComponent(Tab.TabList, {
                 get ["class"]() {
@@ -110,7 +110,7 @@ const CommerceScreenComponent = (_props) => {
                 }
               })];
             }
-          })];
+          }))];   // ZOM: closes zomTabProps and the picker row
         }
       });
     }

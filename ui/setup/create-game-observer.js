@@ -59,7 +59,6 @@ const HIDDEN_STYLE = { 'display': 'none' };
 
 const log = createLogger('create-game-observer', CONFIG.debug);
 
-
 /** As the base screens: no XP rings when mementos work offline (no 2K account). */
 function isOfflineMemento() {
   try { return !Network.supportsSSO() && Online.Metaprogression.supportsMemento(); } catch (e) { return false; }

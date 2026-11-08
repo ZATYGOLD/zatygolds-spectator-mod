@@ -30,9 +30,10 @@
  */
 import { ancestorWithClass, onActivate } from '../shared/zom-util.js';
 import { ICONS, OBSERVER_VIEW } from './observer-config.js';
+import { SAVED_TOGGLE_EVENT } from './observer-core.js';
 import { isFollowing, setFollowing } from './observer-follow.js';
 import { isDetailsHidden, markOwnCard } from './observer-ribbon-style.js';
-import { AUTO_END_TURN_CHANGED_EVENT, isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
+import { isAutoEndTurn, setAutoEndTurn } from './observer-turn.js';
 
 const BUTTONS_CLASS = 'zom-observer-view-buttons';
 const BANNER_CLASS = 'zom-observer-banner-toggles';
@@ -195,6 +196,6 @@ function placeViewButtons(panel, currentView, onSelect) {
   markOwnCard(card);
 }
 
-window.addEventListener(AUTO_END_TURN_CHANGED_EVENT, () => refreshToggles(document.querySelector('panel-diplo-ribbon')));
+window.addEventListener(SAVED_TOGGLE_EVENT, () => refreshToggles(document.querySelector('panel-diplo-ribbon')));
 
 export { placeViewButtons, setPortraitTooltips };

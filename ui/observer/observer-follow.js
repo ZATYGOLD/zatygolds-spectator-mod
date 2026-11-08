@@ -22,8 +22,8 @@
  * Zatygold's Spectator - Follow the Action (in-game scope).
  *
  * A ribbon toggle (off by default, saved with the game) that moves the camera
- * to what happens between leaders: settlements captured or razed, then battles,
- * then settlements founded. At most one move per CONFIG.followDwellMs, to the
+ * to what happens on the map: settlements captured, razed or incorporated, then
+ * battles (Independent Powers included), then settlements founded. At most one move per CONFIG.followDwellMs, to the
  * most important event since the last move; none while a screen is open or for
  * CONFIG.followIdleMs after the player's own input. In a Perspective, only what
  * the viewed leader can see.
@@ -32,57 +32,49 @@ import { ContextManager } from 'fs://game/core/ui/context-manager/context-manage
 import { createLogger } from '../shared/zom-util.js';
 import { combatLocation } from './observer-battle-log.js';
 import { CONFIG } from './observer-config.js';
-import { onObserverReady, readSavedFlag, writeSavedFlag } from './observer-core.js';
-import { perspectivePlayer } from './observer-perspective.js';
+import { onObserverReady, savedToggle } from './observer-core.js';
+import { isVisibleInView } from './observer-perspective.js';
 import { watchSettlements } from './observer-settlement-watch.js';
 
-const log = createLogger('observer-follow');
-const SAVE_KEY = 'ZOM_FOLLOW_ACTION';
+const log = createLogger('observer-follow', CONFIG.debug);
 const PRIORITY = { founded: 1, battle: 2, captured: 3 };
 
-let following = CONFIG.followAction;
+const following = savedToggle('ZOM_FOLLOW_ACTION', CONFIG.followAction);
 let pending = null;   // { location, priority }: where the next move goes
 let timer = null;
 let lastMoveAt = 0;
 let lastInputAt = 0;
 
 const plotLocation = (plot) => GameplayMap.getLocationFromIndex(plot);
-/** In sight of the shown view: anywhere for the Observer, the viewed leader's sight in a Perspective. */
-function inView(location) {
-  const viewer = perspectivePlayer();
-  return viewer == null || GameplayMap.getRevealedState(viewer, location.x, location.y) === RevealedStates.VISIBLE;
-}
-const canMove = () => following && ContextManager.isEmpty && Date.now() - lastInputAt >= CONFIG.followIdleMs;
+const canMove = () => following.get() && ContextManager.isEmpty && Date.now() - lastInputAt >= CONFIG.followIdleMs;
 
 function move() {
   timer = null;
   const target = pending;
   pending = null;
-  if (!target || !canMove() || !inView(target.location)) return;
+  if (!target || !canMove() || !isVisibleInView(target.location)) return;
   try { Camera.lookAtPlot(target.location); } catch (e) { log(`camera move failed: ${e}`); }
   lastMoveAt = Date.now();
 }
 
 /** Queue a camera move; a more important event since the last move wins, an equal one replaces it. */
 function follow(location, priority) {
-  if (!following || !location || (pending && pending.priority > priority) || !inView(location)) return;
+  if (!following.get() || !location || (pending && pending.priority > priority) || !isVisibleInView(location)) return;
   pending = { location, priority };
   timer ??= setTimeout(move, Math.max(0, lastMoveAt + CONFIG.followDwellMs - Date.now()));
 }
 
-function isFollowing() { return following; }
+const isFollowing = following.get;
 
 function setFollowing(on) {
-  following = !!on;
-  try { writeSavedFlag(SAVE_KEY, following); } catch (e) { log(`follow save failed: ${e}`); }
-  if (following) return;
+  following.set(on);
+  if (following.get()) return;
   clearTimeout(timer);
   timer = null;
   pending = null;
 }
 
 onObserverReady(() => {
-  try { following = readSavedFlag(SAVE_KEY, CONFIG.followAction); } catch (e) { log(`follow not restored: ${e}`); }
   window.addEventListener('engine-input', () => { lastInputAt = Date.now(); }, true);
   engine.on('Combat', (data) => follow(combatLocation(data), PRIORITY.battle));
   watchSettlements({

@@ -21,9 +21,9 @@
 /**
  * Zatygold's Spectator - Observer territory history (in-game scope).
  *
- * At the start of every turn, each watched leader's territory: the tiles of
- * all its settlements, and of them the urban and the rural (observer-empire.js),
- * recorded as a history (observer-history.js) for the graphs.
+ * Each turn, and as borders and development change, each watched leader's
+ * territory: the tiles of all its settlements, and of them the urban and the
+ * rural (observer-empire.js), recorded as a history (observer-history.js) for the graphs.
  */
 import { territoryOf } from './observer-empire.js';
 import { createSampleHistory } from './observer-history.js';

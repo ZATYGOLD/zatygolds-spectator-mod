@@ -24,15 +24,15 @@
  * The Military view's Wars tab (observer-graph-military.js) of the war log
  * (observer-war-log.js): each leader's wars, the notches coloured while each
  * goes on (aggression red, defense yellow; a peace made green), a pin of the
- * enemy where each began and ended naming who attacked whom; its turns at war
- * as the Total and the enemy it was at war with longest on the card.
+ * enemy where each began and where peace was made naming who attacked whom; its
+ * turns at war as the Total and the enemy it was at war with longest on the card.
  */
 import { currentAgeChronology } from '../shared/zom-util.js';
 import { byTime } from './observer-event-log.js';
-import { detailText, leaderIcon, leaderName } from './observer-graph-parts.js';
+import { detailText, leaderIcon, leaderName, turnSpanText } from './observer-graph-parts.js';
 import { emptyCard } from './observer-graph-timelines.js';
-import { yieldHistory } from './observer-history.js';
-import { PEACE, WAR_CATEGORIES } from './observer-war-log.js';
+import { ageTurns } from './observer-history.js';
+import { ENDED, PEACE, WAR_CATEGORIES } from './observer-war-log.js';
 
 const WAR_ICON = 'url(blp:fi_war_64)';
 /** The order wars share a notch in, the first taking most: aggression, defense, a war already going (a peace made fills its own). */
@@ -41,15 +41,15 @@ const LAYERS = WAR_CATEGORIES.map((c) => LAYER_ORDER.indexOf(c.id));
 const WAR_PARTS = 3;   // a shared notch in thirds
 
 /**
- * Each war of the leader: [{ other, start, end }] (end the peace, null while
- * it goes on), going on into later Ages until peace.
+ * Each war of the leader: [{ other, start, end }] (end the peace or the
+ * elimination, null while it goes on), going on into later Ages until it ends.
  */
 function wars(events) {
   const open = new Map();
   const all = [];
   for (const e of [...events].sort(byTime)) {
     const war = open.get(e.other);
-    if (e.category === PEACE) {
+    if (e.category === PEACE || e.category === ENDED) {
       if (war) war.end = e;
       open.delete(e.other);
     } else if (!war) {
@@ -61,24 +61,9 @@ function wars(events) {
   return all;
 }
 
-let ageSpans = { samples: -1, byAge: new Map() };   // each Age's recorded turns, until the history grows
-/** An Age's first and last recorded turns: [first, last], else null. */
-function ageTurns(age) {
-  const history = yieldHistory();
-  if (ageSpans.samples !== history.length) {
-    const byAge = new Map();
-    for (const { age: a, turn } of history) {
-      const span = byAge.get(a);
-      byAge.set(a, span ? [Math.min(span[0], turn), Math.max(span[1], turn)] : [turn, turn]);
-    }
-    ageSpans = { samples: history.length, byAge };
-  }
-  return ageSpans.byAge.get(age) ?? null;
-}
-
 /**
  * A war's turns in each Age it spans up to `lastAge` (the view's):
- * [{ age, from, to }] (to exclusive: the peace, now, or the Age's end).
+ * [{ age, from, to }] (to exclusive: its end, now, or the Age's end).
  */
 function warSpans(war, lastAge = currentAgeChronology()) {
   const current = currentAgeChronology();
@@ -107,14 +92,16 @@ const categoryRow = (category, value) => ({ color: WAR_CATEGORIES[category].colo
 /** Who attacked whom, from the leader's side: "Declared on Augustus", "Attacked by Augustus". */
 const against = (category, other) => Locale.compose(WAR_CATEGORIES[category]?.against ?? '', leaderName(other));
 
+const isPeace = (war) => war.end?.category === PEACE;
+
 /** A war's row: the enemy, who attacked whom, its turns and peace if made ("Turns 12–20 · Peace Made"), and its length. */
 function warRow(war, lastAge) {
-  const spans = warSpans(war, lastAge);
-  const turns = Locale.compose('LOC_ZOM_GRAPH_TURNS', war.start.turn, spans[spans.length - 1].to);
+  const last = warSpans(war, lastAge).pop();
+  const turns = turnSpanText(war.start, { age: last.age, turn: last.to });
   return {
     icon: leaderIcon(war.other),
     label: against(war.start.category, war.other),
-    detail: detailText(turns, war.end ? Locale.compose(WAR_CATEGORIES[PEACE].label) : ''),
+    detail: detailText(turns, isPeace(war) ? Locale.compose(WAR_CATEGORIES[PEACE].label) : ''),
     value: warTurns(war, lastAge)
   };
 }
@@ -128,11 +115,12 @@ const WARS_SUBJECT = {
   name: (source) => against(source.category, source.other),
   detail: (source) => Locale.compose(WAR_CATEGORIES[source.category]?.label ?? ''),
   sourceOf: (event) => ({ other: event.other }),
+  sliceEvents: (events) => events.filter((e) => e.category !== ENDED),
   bands: (events, { position, now }) => {
     const band = (category, from, to) => ({ from, to, color: WAR_CATEGORIES[category].color, layer: LAYERS[category], smooth: true, parts: WAR_PARTS });
     return wars(events).flatMap((war) => {
       const end = war.end && position(war.end.age, war.end.progress);
-      return [band(war.start.category, position(war.start.age, war.start.progress), end ?? now ?? 100), ...(war.end ? [{ ...band(PEACE, end, end), solo: true }] : [])];   // else to the bar's end; peace made fills its notch
+      return [band(war.start.category, position(war.start.age, war.start.progress), end ?? now ?? 100), ...(isPeace(war) ? [{ ...band(PEACE, end, end), solo: true }] : [])];   // else to the bar's end; peace made fills its notch
     });
   },
   value: (playerId, { events, lastAge }) => turnsAtWar(wars(events), lastAge),

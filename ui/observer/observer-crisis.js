@@ -23,19 +23,21 @@
  *
  * Each Age's crisis stages for the graphs (CRISIS_STAGES: begins, intensifies,
  * culminates): the Age progress (%) at which each stage starts and, once it
- * has, the turn it started. Recorded at the start of every turn and kept in
- * the Observer's own player properties, like the yield history
- * (observer-history.js), so past Ages keep their marks.
+ * has, the turn it started (unknown for a stage already begun when the Age was
+ * first recorded). Recorded each turn and kept in the Observer's own player
+ * properties, like the yield history (observer-history.js), so past Ages keep their marks.
  *
- * Property text, one per Age: "<stage>:<progress %>:<turn or -1>,...".
+ * Property text, one per Age: "<stage>:<progress %>:<turn, -1 not yet, -2 begun before recorded>,...".
  */
 import { createLogger, currentAgeChronology } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
-import { canSave, isObserverSeat, onObserverReady, readSaved, writeSaved } from './observer-core.js';
+import { canSave, isObserverSeat, onObserverReady, writeSaved } from './observer-core.js';
+import { savedPerAge } from './observer-history.js';
 
 const log = createLogger('observer-crisis', CONFIG.debug);
 const KEY_PREFIX = 'ZOM_CRISIS_STAGES_';
 const CRISIS_EVENT = 'zom-crisis-changed';
+const [NOT_YET, BEFORE] = [-1, -2];
 /** Each stage's colour, and a darker, richer one for its notch on the timelines (visible over the Wars tab's colours). */
 const CRISIS_STAGES = [
   { label: 'LOC_UI_POLICIES_CRISIS_BEGINS', color: '#e8a33c', notch: '#9a5a08' },
@@ -43,50 +45,16 @@ const CRISIS_STAGES = [
   { label: 'LOC_UI_POLICIES_CRISIS_CULMINATES', color: '#d8402e', notch: '#6e1010' }
 ];
 
-/** A crisis stage's marker: a shallow triangle (half width `size`) with a glow and a black outline. */
-const CRISIS_MARK = { tip: 1.6, glow: 6, outline: 'rgba(0, 0, 0, 0.9)' };
-
-/** Draws a crisis stage's marker from `base` (y) pointing `direction` (1 down, -1 up) at `x`. */
-function drawCrisisMark(ctx, x, base, direction, color, size) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(x - size, base);
-  ctx.lineTo(x + size, base);
-  ctx.lineTo(x, base + direction * size * CRISIS_MARK.tip);
-  ctx.closePath();
-  ctx.shadowColor = color;
-  ctx.shadowBlur = CRISIS_MARK.glow;
-  ctx.fillStyle = color;
-  ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.strokeStyle = CRISIS_MARK.outline;
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  ctx.restore();
-}
-
-let crises = null;   // Map<age chronology, [{ stage, progress, turn | null }]>
-
+/** A stage: { stage, progress, turn (null unknown), begun (before the Age was first recorded) }. */
 const decode = (text) => text.split(',').map((entry) => {
   const [stage, progress, turn] = entry.split(':').map(Number);
-  return { stage, progress, turn: turn >= 0 ? turn : null };
+  return { stage, progress, turn: turn >= 0 ? turn : null, begun: turn === BEFORE };
 }).filter((s) => CRISIS_STAGES[s.stage] && s.progress >= 0);
 
-const encode = (stages) => stages.map((s) => `${s.stage}:${s.progress}:${s.turn ?? -1}`).join(',');
+const encode = (stages) => stages.map((s) => `${s.stage}:${s.progress}:${s.turn ?? (s.begun ? BEFORE : NOT_YET)}`).join(',');
 
-/** Every Age's crisis stages (read from the save once per session). */
-function ageCrises() {
-  if (crises) return crises;
-  if (!canSave()) return new Map();   // not cached: the save is read once it is available
-  crises = new Map();
-  try {
-    for (const age of GameInfo.Ages) {
-      const text = readSaved(KEY_PREFIX + age.ChronologyIndex);
-      if (typeof text === 'string' && text) crises.set(age.ChronologyIndex, decode(text));
-    }
-  } catch (e) { log(`crisis read failed: ${e}`); }
-  return crises;
-}
+/** Every Age's crisis stages: Map<age chronology, [{ stage, progress, turn, begun }]> (read from the save once per session). */
+const ageCrises = savedPerAge(KEY_PREFIX, decode);
 
 /** The current Age's stages: where each starts (under 100%), and the turn it started once it has. */
 function recordCrisis() {
@@ -100,11 +68,11 @@ function recordCrisis() {
   } catch (e) { log(`crisis unavailable: ${e}`); return; }
   const age = currentAgeChronology();
   const known = ageCrises().get(age) ?? [];
-  const stages = progress.map((p, stage) => ({
-    stage,
-    progress: p,
-    turn: known.find((s) => s.stage === stage)?.turn ?? (current >= stage ? Game.turn : null)
-  })).filter((s) => s.progress >= 0 && s.progress < 100);
+  const stages = progress.map((p, stage) => {
+    const before = known.find((s) => s.stage === stage);
+    const started = current >= stage && before?.turn == null && !before?.begun;
+    return { stage, progress: p, turn: before?.turn ?? (started && known.length ? Game.turn : null), begun: !!before?.begun || (started && !known.length) };
+  }).filter((s) => s.progress >= 0 && s.progress < 100);
   const text = encode(stages);
   if (text === encode(known)) return;
   ageCrises().set(age, stages);
@@ -119,4 +87,4 @@ onObserverReady(() => {
   scheduleRecord();
 });
 
-export { ageCrises, CRISIS_EVENT, CRISIS_STAGES, drawCrisisMark };
+export { ageCrises, CRISIS_EVENT, CRISIS_STAGES };

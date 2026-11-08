@@ -22,15 +22,15 @@
  * Zatygold's Spectator - Observer ribbon stat rows (in-game scope).
  *
  * Builds each leader card's rows for every view in the base ribbon's
- * displayItems shape (the Yields view extends the base rows and remembers the
- * values for the best-in-category highlight). Meters and score rows live in the
+ * displayItems shape (the Yields and Victories views remember their values for
+ * the best-in-category highlight). Meters and score rows live in the
  * item's `img` HTML so they fit the narrow card column; they use only markup
  * the Gameface renderer supports (plain <img>, width-based bars).
  */
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
 import { clamp, isAgeTransitionInProgress } from '../shared/zom-util.js';
 import { ICONS, METER_COLORS, PANEL_COLORS } from './observer-config.js';
-import { unitStrength } from './observer-core.js';
+import { militaryStrength } from './observer-core.js';
 
 const TEXT_COLOR = PANEL_COLORS.ribbonText;
 
@@ -56,16 +56,18 @@ function meterHTML(iconUrl, label, pct, barColor) {
 
 const SIGNED_TYPES = new Set(['gold', 'science', 'culture', 'happiness', 'diplomacy', 'food', 'production']);
 
-/** Full numbers with thousands separators; one decimal under 100. */
+/** Full numbers with thousands separators; one decimal under 100 (no sign on a value shown as 0). */
 function formatCompact(value) {
   const abs = Math.abs(value);
-  const sign = value < 0 ? '-' : '';
-  if (abs < 100) return sign + String(Math.trunc(abs * 10) / 10);
-  if (abs < 1000) return sign + String(Math.trunc(abs));
-  return sign + Locale.compose('LOC_ZOM_GROUPED_DIGITS', Math.trunc(abs));
+  const shown = abs < 100 ? Math.trunc(abs * 10) / 10 : Math.trunc(abs);
+  const sign = value < 0 && shown > 0 ? '-' : '';
+  return sign + (shown < 1000 ? String(shown) : Locale.compose('LOC_ZOM_GROUPED_DIGITS', shown));
 }
 
-const formatSigned = (value) => (value >= 0 ? '+' : '') + formatCompact(value);
+function formatSigned(value) {
+  const text = formatCompact(value);
+  return text.startsWith('-') ? text : '+' + text;
+}
 
 /** A plain value row in the base ribbon's look. */
 function valueRow(type, labelLoc, iconUrl, rawValue) {
@@ -74,26 +76,6 @@ function valueRow(type, labelLoc, iconUrl, rawValue) {
 }
 
 const yieldValue = (player, yieldType) => player.Stats?.getNetYield?.(YieldTypes[yieldType]) ?? 0;
-
-const strengthCache = new Map();   // player id -> military strength, dropped when one of its units changes
-const STRENGTH_EVENTS = ['UnitAddedToMap', 'UnitRemovedFromMap', 'UnitDamageChanged', 'UnitPromoted'];
-
-/** Sum of every unit's current base strength (cached until a unit changes). */
-function militaryStrength(player) {
-  if (strengthCache.has(player.id)) return strengthCache.get(player.id);
-  let total = 0;
-  try { for (const unit of player.Units?.getUnits?.() ?? []) total += unitStrength(unit); } catch (e) { /* keep the partial sum */ }
-  strengthCache.set(player.id, total);
-  return total;
-}
-
-for (const event of STRENGTH_EVENTS) {
-  engine.on(event, (data) => {
-    const owner = data?.unit?.owner;
-    if (owner == null) strengthCache.clear(); else strengthCache.delete(owner);
-  });
-}
-engine.on('LocalPlayerTurnBegin', () => strengthCache.clear());
 
 /** Civics completed, each mastery level counted. */
 function civicsCompleted(player) {
@@ -115,8 +97,11 @@ const EXTRA_ROWS = [
   { type: 'wonders', label: 'LOC_ZOM_OBSERVER_WONDERS_BUILT', icon: () => ICONS.wonders, value: wondersBuilt }
 ];
 
-/** Latest value per row type and player, for the best-in-category highlight. */
+/** Latest value per row type and player, for the best-in-category highlight (cleared each ribbon update). */
 const rowValues = new Map();
+
+/** Forget every recorded value: the next update records only the cards it builds. */
+const clearRowValues = () => rowValues.clear();
 
 function recordValues(playerId, items) {
   for (const item of items) {
@@ -161,19 +146,24 @@ function bestByType(playerIds) {
 
 // ============================ Research ============================
 
+/** The node being researched in a player's progression tree, else null. */
+function activeNode(playerId, treeType) {
+  if (treeType == null) return null;
+  const tree = Game.ProgressionTrees.getTree(playerId, treeType);
+  return tree?.activeNodeIndex >= 0 ? tree.nodes?.[tree.activeNodeIndex] ?? null : null;
+}
+
 /**
  * The node a player is researching in a tree, mirroring the sub-system dock:
  * { name, turns, icon, progress 0..1 } or null.
  */
 function activeResearch(playerID, treeType, tree, isTech) {
   try {
-    if (treeType == null) return null;
-    const treeObject = Game.ProgressionTrees.getTree(playerID, treeType);
-    const activeNode = treeObject?.activeNodeIndex >= 0 ? treeObject.nodes[treeObject.activeNodeIndex] : null;
-    const nodeInfo = activeNode ? GameInfo.ProgressionTreeNodes.lookup(activeNode.nodeType) : null;
+    const node = activeNode(playerID, treeType);
+    const nodeInfo = node ? GameInfo.ProgressionTreeNodes.lookup(node.nodeType) : null;
     if (!nodeInfo) return null;
     let name = Locale.compose(nodeInfo.Name ?? nodeInfo.ProgressionTreeNodeType);
-    const nodeData = Game.ProgressionTrees.getNode(playerID, activeNode.nodeType);
+    const nodeData = Game.ProgressionTrees.getNode(playerID, node.nodeType);
     const numeral = nodeData?.depthUnlocked >= 1 ? Locale.toRomanNumeral(nodeData.depthUnlocked + 1) : '';
     if (numeral) name += ' ' + numeral;
     // getNodeCost is only safe with a valid researching type (as the dock guards it).
@@ -263,7 +253,7 @@ function scoreRow(victoryClass, score) {
   return displayItem(type, name, img, name, score);
 }
 
-/** Points per victory class from player.Victories (the active Age's definition wins). */
+/** Points per victory class from player.Victories (the highest over every Age's definition of the class). */
 function scoreItems(player) {
   const points = new Map();
   try {
@@ -279,4 +269,4 @@ function scoreItems(player) {
   return items.length ? items : [scoreRow({ label: 'LOC_ZOM_OBSERVER_NONE' }, 0)];
 }
 
-export { bestByType, yieldsItems, researchItems, productionItems, scoreItems };
+export { activeNode, bestByType, clearRowValues, yieldsItems, researchItems, productionItems, scoreItems };

@@ -39,13 +39,17 @@ const CONFIG = {
   autoEndTurn: false,                   // initial state of the auto end turn toggle
   autoEndTurnDelayMs: 1000,             // wait after the turn starts (prompts are answered first)
   autoEndTurnRetryMs: 1000,             // retry while something still blocks the turn
+  autoEndTurnReportRetries: 3,          // blocked retries before the blocker is logged
+  autoEndTurnStuckRetries: 10,          // blocked retries before the End Turn button is shown again
+  autoEndTurnWatchdogMs: 10000,         // a turn still open this long after it began is ended again
   followAction: false,                  // initial state of the Follow the Action toggle
   followDwellMs: 3000,                  // Follow the Action: least time between camera moves
   followIdleMs: 5000,                   // Follow the Action: paused this long after the player's own input
-  historyRecordDelayMs: 500,            // wait after a turn starts before recording yields (graphs)
+  historyRecordDelayMs: 500,            // wait after a turn starts before recording the Chronicle's samples
   ribbonSeedAttempts: 30,               // tries to populate the ribbon once the HUD exists
   ribbonSeedIntervalMs: 500,
   combatPreviewLift: 'translateY(-4.5rem)',  // keeps the combat preview above the unit panel
+  townFocusEstimates: { fortHealth: 25, tradeRange: 5, productionPerImprovement: 2 },   // settlement details: the base game's Town Focus bonuses (shown as estimates)
   zoomIn: 0.3,                          // closest zoom: 30% less of the map than the game's closest
   zoomOut: 0.55,                        // furthest zoom: 55% more of the map than the game's furthest
   zoomStepScale: 0.5,                   // zoom step per input vs. the game's (smaller = smoother)

@@ -33,9 +33,10 @@ import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes
 import { InputHandlerState } from 'fs://game/core/ui/input/input-support.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
 import { createLogger, findAncestor, isObserverPlayer, setStyle, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { CONFIG } from './observer-config.js';
 import { isObserverSeat, onObserverReady } from './observer-core.js';
 
-const log = createLogger('observer-units');
+const log = createLogger('observer-units', CONFIG.debug);
 const PROMOTE = 'UNITCOMMAND_PROMOTE';
 const READ_ONLY_CLASS = 'zom-observer-read-only';
 const STYLE_ID = 'zom-observer-units-style';

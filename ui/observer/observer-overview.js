@@ -27,13 +27,11 @@
  * the entries; screen routing (observer-screens.js) picks the source.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import Panel from 'fs://game/core/ui/panel-support.js';
-import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
-import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
 import { clearChildren } from '../shared/zom-util.js';
 import { PANEL_COLORS } from './observer-config.js';
 import { leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
+import { ObserverOverlayPanel } from './observer-overlay-panel.js';
 
 const PANEL_TAG = 'zom-observer-overview';
 const PANTHEON_STYLES = 'fs://game/base-standard/ui/pantheon-complete/panel-pantheon-complete.css';
@@ -48,7 +46,7 @@ const CONTENT = `
 
 // ============================ Sources ============================
 
-/** A leader's pantheons (Antiquity; every Age with the Multiplayer Balance Mod). */
+/** A leader's pantheons (Antiquity; every Age with Better Balanced Multiplayer). */
 function pantheonEntries(player) {
   return pantheons(player).map((p) => ({ icon: UI.getIconCSS(p.type, 'PANTHEONS'), title: p.name, description: p.description }));
 }
@@ -61,36 +59,10 @@ let requestedSource = 'pantheons';
 
 // ============================ Panel ============================
 
-class ObserverOverviewPanel extends Panel {
-  engineInputListener = this.onEngineInput.bind(this);
-  closeListener = () => this.close();
-
+class ObserverOverviewPanel extends ObserverOverlayPanel {
   onAttach() {
     super.onAttach();
-    this.frame = this.Root.querySelector('fxs-subsystem-frame');
-    this.Root.addEventListener(InputEngineEventName, this.engineInputListener);
-    this.frame?.addEventListener('subsystem-frame-close', this.closeListener);
     this.render(SOURCES[requestedSource] ?? SOURCES.pantheons);
-  }
-
-  onDetach() {
-    this.Root.removeEventListener(InputEngineEventName, this.engineInputListener);
-    this.frame?.removeEventListener('subsystem-frame-close', this.closeListener);
-    super.onDetach();
-  }
-
-  onReceiveFocus() {
-    super.onReceiveFocus();
-    FocusManager.get().setFocus(this.Root);
-  }
-
-  onEngineInput(ev) {
-    if (ev.detail.status !== InputActionStatuses.FINISH) return;
-    if (ev.isCancelInput() || ev.detail.name === 'sys-menu') {
-      this.close();
-      ev.stopPropagation();
-      ev.preventDefault();
-    }
   }
 
   render(source) {

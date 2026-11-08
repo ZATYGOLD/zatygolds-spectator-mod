@@ -104,7 +104,8 @@ Age choices.
 - During map generation the Spectator is hidden from player lists, so any map
   or placement mod counts and places only the real players; the Spectator's
   start and Eye are then set on the ice (`maps/zom-observer-start.js`, loaded
-  as a MapGenScript and through `map-globals.js`).
+  as a MapGenScript and through `map-globals.js`). After an Age transition the
+  same script gives the Spectator a new Eye.
 - Base-game overrides are verbatim copies with changes marked `ZOM:`, loaded
   only in games with a Spectator. Everything else patches the UI at runtime.
 
@@ -126,7 +127,7 @@ zatygolds-observer-mode.modinfo   # manifest
 ├─ config/                        # setup database
 ├─ data/                          # gameplay database (leader, civs, the Eye)
 ├─ text/en_us/, l10n/             # English text, translations
-├─ maps/, scripts/, ui-next/, ui/<base folders>/   # base-game overrides
+├─ maps/, ui-next/, ui/<base folders>/            # base-game overrides
 ├─ ui/shared/, ui/setup/, ui/observer/             # the mod's UI modules
 └─ ui/compat/                                      # fixes for other mods
 ```
@@ -155,7 +156,19 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   never explored.
 - **Spectator slot** — in a Better Balanced Multiplayer team match (1v1 to 3v3) the
   last lobby slot is kept for the Spectator; whoever takes it becomes the
-  Observer.
+  Observer, including the extra slot on Tiny and Small maps.
+- **Leader views** — every viewed leader's screen is read-only (trees, Great
+  Works, Syncretism, Commerce as well as Policies); Victories no longer gives
+  the Spectator a chart colour; Legacies shows race winners by name.
+- **Chronicle** — a war with an eliminated leader ends there; earlier Ages'
+  unique units stay in the Units tabs; turn numbers match across graphs,
+  timelines and wars; crisis marks keep their turns; only the open tab
+  updates; long games save and redraw faster.
+- **Performance** — the ribbon, settlement banners, the settlement panel and
+  Perspective redraw only what changed.
+- **Fixes** — Auto End Turn no longer starts an Age transition on its own when
+  the Age fills up during your turn, and keeps its stuck-turn recovery after a
+  pause; the Age-transition loading screen shows the Spectator's background.
 
 ### 1.1.2
 

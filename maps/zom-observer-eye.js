@@ -21,11 +21,12 @@
 /**
  * Zatygold's Spectator - Observer's Eye placement (gameplay scripts).
  *
- * Used by zom-observer-start.js (map generation) and the Age-transition
- * override: creates each Observer's Eye on open water by the ocean ice nearest
- * the bottom-center of the map, then moves it onto the ice (the engine refuses
- * to create units on ice but allows the move).
+ * Used by zom-observer-start.js (map generation and Age transitions): creates
+ * each Observer's Eye on open water by the ocean ice nearest the bottom-center
+ * of the map, then moves it onto the ice (the engine refuses to create units on
+ * ice but allows the move).
  */
+// Gameplay scripts cannot import ui/shared/zom-util.js, so the Observer check is repeated here.
 const OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
 const EYE_UNIT = 'UNIT_ZOM_OBSERVER_EYE';
 

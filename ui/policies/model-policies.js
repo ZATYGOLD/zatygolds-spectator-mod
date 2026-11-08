@@ -10,13 +10,13 @@ import { activeTraditionCards, activePolicyCards, activeCrisisCards, availablePo
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/policies/model-policies.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; a viewed leader's screen is
+ * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomReadOnly = () => globalThis.ZOMLeaderView?.isViewingOther() ?? false;   // ZOM: a viewed leader's screen sends no requests
 
 var PolicyCardIdeology = /* @__PURE__ */ ((PolicyCardIdeology2) => {
   PolicyCardIdeology2[PolicyCardIdeology2["NONE"] = 0] = "NONE";
@@ -45,7 +45,7 @@ function createPoliciesModel() {
   let _policySlots = 0;
   let _tradSlots = 0;
   let _crisisSlots = 0;
-  const localPlayer = Players.get(zomLocalPlayerID());
+  const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
   const localPlayerCulture = localPlayer.Culture;
   const unlockedPolicies = localPlayerCulture.getUnlockedTraditions(
     CultureSlotTypes.POLICY_CULTURE_SLOT
@@ -394,6 +394,7 @@ function createPoliciesModel() {
     applyNextPolicy();
   }
   function handleConsideredPolicies() {
+    if (zomReadOnly()) return;   // ZOM: read-only for a viewed leader
     const result = Game.PlayerOperations.canStart(
       GameContext.localPlayerID,
       PlayerOperationTypes.CONSIDER_ASSIGN_TRADITIONS,
@@ -459,7 +460,6 @@ function createPoliciesModel() {
   function handleOnClose() {
     ContextManager.pop("screen-policies");
   }
-  const zomReadOnly = zomLocalPlayerID() !== GameContext.localPlayerID;   // ZOM: a viewed leader's policies cannot be changed
   const model = createMutable({
     activePolicies: getActivePolicies(),
     availablePolicies: getAvailablePolicies(),
@@ -472,15 +472,15 @@ function createPoliciesModel() {
     policySlots: _policySlots,
     tradSlots: _tradSlots,
     crisisSlots: _crisisSlots,
-    canSwapPolicies: !zomReadOnly && canSwapNormalPolicies,   // ZOM: read-only for the Observer
-    canSwapCrisis: !zomReadOnly && canSwapCrisisPolicies,   // ZOM: read-only for the Observer
+    canSwapPolicies: !zomReadOnly() && canSwapNormalPolicies,   // ZOM: read-only for a viewed leader
+    canSwapCrisis: !zomReadOnly() && canSwapCrisisPolicies,   // ZOM: read-only for a viewed leader
     confirmDisable: false,
     isSmallScreen: isSmallScreenSize,
-    onCardClick: zomReadOnly ? () => {} : handleOnCardClick,   // ZOM: read-only for the Observer
-    onConfirmClick: zomReadOnly ? handleOnClose : handleOnConfirmClick,   // ZOM: read-only for the Observer
+    onCardClick: zomReadOnly() ? () => {} : handleOnCardClick,   // ZOM: read-only for a viewed leader
+    onConfirmClick: zomReadOnly() ? handleOnClose : handleOnConfirmClick,   // ZOM: read-only for a viewed leader
     onCloseClick: handleOnClose,
     clearArrays,
-    canSlotCard: zomReadOnly ? () => false : handleCanSlotCard,   // ZOM: read-only for the Observer
+    canSlotCard: zomReadOnly() ? () => false : handleCanSlotCard,   // ZOM: read-only for a viewed leader
     autoFocusCard: getAvailablePolicies()[0] != void 0 ? getAvailablePolicies()[0].$index : -1
   });
   return model;

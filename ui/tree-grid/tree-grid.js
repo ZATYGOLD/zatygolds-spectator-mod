@@ -9,13 +9,13 @@ import { getUnlockTargetIconUrl } from '../../ui-next/screens/choosers/helpers.j
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/tree-grid/tree-grid.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; a viewed leader's screen is
+ * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomReadOnly = () => globalThis.ZOMLeaderView?.isViewingOther() ?? false;   // ZOM: a viewed leader's screen sends no requests
 
 var TreeGridSourceType = /* @__PURE__ */ ((TreeGridSourceType2) => {
   TreeGridSourceType2[TreeGridSourceType2["ATTRIBUTES"] = 0] = "ATTRIBUTES";
@@ -66,7 +66,7 @@ class TreeGrid {
       this.flipRows = configuration.flipRows;
       this.treeType = configuration.treeType ?? 0 /* ATTRIBUTES */;
     }
-    this._player = zomLocalPlayerID();
+    this._player = zomLocalPlayerID();   // ZOM: viewed leader
     this._treeData = {
       rows: 0,
       columns: 0,
@@ -146,8 +146,8 @@ class TreeGrid {
     graph.setDefaultEdgeLabel(function() {
       return {};
     });
-    const localPlayerID = zomLocalPlayerID();
-    const treeObject = Game.ProgressionTrees.getTree(zomLocalPlayerID(), this._sourceProgressionTree);
+    const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
+    const treeObject = Game.ProgressionTrees.getTree(zomLocalPlayerID(), this._sourceProgressionTree);   // ZOM: viewed leader
     if (!treeObject) {
       console.warn("tree-grid: No tree-object for tree with id: ", this._sourceProgressionTree);
     }
@@ -271,7 +271,7 @@ class TreeGrid {
           const unlockInfo = GameInfo.ProgressionTreeNodeUnlocks[i];
           if (unlockInfo && !unlockInfo.Hidden) {
             if (unlockInfo.TargetKind == "KIND_UNIT") {
-              const player = Players.get(zomLocalPlayerID());
+              const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
               if (player && player.Units?.isBuildPermanentlyDisabled(unlockInfo.TargetType)) {
                 continue;
               }
@@ -774,11 +774,12 @@ class TreeGrid {
     return false;
   }
   queueCardItems(nodeIndex) {
+    if (zomReadOnly()) return;   // ZOM: read-only for a viewed leader
     this.queueItems(nodeIndex);
     this.activateQueueItems();
   }
   setHoverItem(nodeIndex) {
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     const AI = player?.AI;
     let highlightNodes;
     if (!AI) {
@@ -827,7 +828,7 @@ class TreeGrid {
   queueItems(nodeIndex) {
     this.prerequisiteQueue.length = 0;
     this.queuedElements = 0;
-    const player = Players.get(zomLocalPlayerID());
+    const player = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     const AI = player?.AI;
     if (!AI) {
       console.error(`model-rectangular-grid: Can't get AI for player ${player?.id}`);
@@ -859,6 +860,7 @@ class TreeGrid {
    * Activates by sendRequest the next queue item
    */
   activateQueueItems() {
+    if (zomReadOnly()) return;   // ZOM: read-only for a viewed leader
     if (this.prerequisiteQueue.length > 0 && this.queuedElements > 0) {
       this.updateQueuePriorities();
       this.currentResearching = this.prerequisiteQueue.shift() || null;
@@ -893,7 +895,7 @@ class TreeGrid {
    *  If true notifications for ChooseTech handler can be added and not automatically dismissed
    */
   canAddChooseNotification() {
-    const player = GameContext.localPlayerID;   // ZOM: game logic stays the local player's
+    const player = GameContext.localPlayerID;
     if (this.currentResearching) {
       const nodeState = Game.ProgressionTrees.getNodeState(
         player,

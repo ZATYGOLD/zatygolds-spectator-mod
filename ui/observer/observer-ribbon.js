@@ -32,15 +32,15 @@ import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-man
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
 import { clamp, componentOf, createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
-import { inDiplomacyMode, inLeaderPanel, isObserverSeat, watchedPlayers } from './observer-core.js';
+import { inDiplomacyMode, inLeaderPanel, isObserverSeat, isWatchedLeader, onObserverReady, watchedPlayers } from './observer-core.js';
 import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
 import { faithBadges } from './observer-faith.js';
 import { openOverview } from './observer-overview.js';
-import { bestByType, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
+import { bestByType, clearRowValues, productionItems, researchItems, scoreItems, yieldsItems } from './observer-ribbon-data.js';
 import { DETAILS_CHANGED_EVENT, isDetailsHidden, lockCardSize, markCards, markFaith, markRows, setRibbonHidden } from './observer-ribbon-style.js';
 import { placeViewButtons, setPortraitTooltips } from './observer-ribbon-toolbar.js';
 
-const log = createLogger('observer-ribbon');
+const log = createLogger('observer-ribbon', CONFIG.debug);
 const RIGHT_EDGE_CLASS = 'right-4';   // the base panel uses right-24; the Observer's ribbon sits at the edge
 const VIEW_ITEMS = {
   [OBSERVER_VIEW.YIELDS]: yieldsItems,
@@ -55,9 +55,10 @@ const FAITH_ACTIONS = { pantheon: () => openOverview('pantheons') };
 const METER_VIEWS = new Set([OBSERVER_VIEW.RESEARCH, OBSERVER_VIEW.PRODUCTION]);
 
 let viewMode = CONFIG.defaultView;
-const meterRows = new Map(); // player id -> meter markup of the latest model update
+const meterRows = new Map(); // player id -> meter markup of the latest model update (cleared each update)
 let shownMeters = '';        // meters the ribbon was last rebuilt with
 let refreshing = false;      // refreshRibbon rebuilds itself after the model update
+let rebuilding = false;      // rebuildRibbon decorates once, after populateFlags
 
 // ============================ Moods ============================
 
@@ -98,7 +99,7 @@ function decorateRibbon(panel) {
   markPerspectiveCard(panel);
 }
 
-/** Per-card state that changes during play: highlights, faith badges, best rows (after every rebuild and in-place update). */
+/** Per-card state that changes during play: highlights, faith badges, best rows (once per rebuild or in-place update). */
 function markCardState(panel) {
   markCards(panel, isCelebrating);
   markFaith(panel, faithBadges, FAITH_ACTIONS);
@@ -122,12 +123,13 @@ function rebuildRibbon() {
     if (!component) return;
     shownMeters = meterSignature();
     const first = component.firstLeaderIndex;
-    component.populateFlags?.();   // decorated by the populateFlags wrapper
+    rebuilding = true;
+    try { component.populateFlags?.(); } catch (e) { log(`ribbon populate failed: ${e}`); } finally { rebuilding = false; }   // decorated below even then
     if (first != null && component.firstLeaderIndex !== first) {
       component.firstLeaderIndex = first;
       component.refreshRibbonVis?.();
-      decorateRibbon(panel);
     }
+    decorateRibbon(panel);
   } catch (e) { log(`ribbon rebuild failed: ${e}`); }
 }
 
@@ -150,12 +152,9 @@ const meterSignature = () => [...meterRows].join('|');
 
 /**
  * Research / Production meters live in each row's `img`, which the base
- * incremental refresh never repaints; rebuild when a meter changed.
+ * incremental refresh never repaints: a meter change needs a rebuild.
  */
-function refreshMeters() {
-  if (refreshing || !METER_VIEWS.has(viewMode) || meterSignature() === shownMeters) return;
-  rebuildRibbon();
-}
+const metersChanged = () => METER_VIEWS.has(viewMode) && meterSignature() !== shownMeters;
 
 // ============================ Model ============================
 
@@ -183,39 +182,32 @@ function patchModel() {
     }
   });
 
-  // The base turn-end handler writes through an index captured 250ms earlier, which our rebuilt list can invalidate: look the card up by id instead.
-  try {
-    const proto = Object.getPrototypeOf(DiploRibbonData);
-    engine.off('PlayerTurnDeactivated', proto.onPlayerTurnDeactivated, DiploRibbonData);
-    engine.on('PlayerTurnDeactivated', (data) => {
-      setTimeout(() => {
-        const card = DiploRibbonData._playerData?.find?.((o) => o.id === data.player);
-        if (card) card.isTurnActive = false;
-      }, 250);
-      DiploRibbonData.onUpdate?.(DiploRibbonData);
-    });
-  } catch (e) { log(`turn handler not replaced: ${e}`); }
-
   // Every living major (in a Perspective: those the viewed leader met), the Observer's own card last.
   wrapMethod(DiploRibbonData, 'updateAll', function (base) {
     if (!isObserverSeat()) return withoutObservers(base);
     try {
       this.getRibbonDisplayTypesFromUserOptions?.();
+      clearRowValues();
+      meterRows.clear();
       const cards = [];
       let own = null;
       for (const player of Players.getAlive()) {
-        if (!player?.isMajor || (player.id !== GameContext.localPlayerID && !isKnownInPerspective(player.id))) continue;
+        const isOwn = player?.id === GameContext.localPlayerID;
+        if (!player || (!isOwn && !(isWatchedLeader(player.id) && isKnownInPerspective(player.id)))) continue;
         const data = this.createPlayerData(player, player.Diplomacy, true);
         if (!data) continue;
         data.portraitContext = moodContext(player);
-        if (player.id === GameContext.localPlayerID) own = data; else cards.push(data);
+        if (isOwn) own = data; else cards.push(data);
       }
       if (own) cards.push(own);
       this._playerData = cards;
       this.onUpdate?.(this);
       this._eventNotificationRefresh?.trigger?.();
-      for (const panel of document.querySelectorAll('panel-diplo-ribbon')) markCardState(panel);
-      if (!inDiplomacyMode()) refreshMeters();
+      // A rebuild that follows decorates the HUD ribbon itself.
+      const rebuild = !inDiplomacyMode() && (refreshing || metersChanged());
+      const hud = hudPanel();
+      for (const panel of document.querySelectorAll('panel-diplo-ribbon')) if (!(rebuild && panel === hud)) markCardState(panel);
+      if (rebuild && !refreshing) rebuildRibbon();
     } catch (e) {
       log(`observer update failed (${e}); using the base ribbon`);
       base();
@@ -261,7 +253,12 @@ function patchPanel() {
   wrapMethod(proto, 'populateFlags', function (base, ...args) {
     try { return base(...args); }
     finally {
-      try { if (isObserverSeat()) { pinOwnCard(this); decorateRibbon(this.Root); } } catch (e) { log(`ribbon decoration failed: ${e}`); }
+      try {
+        if (isObserverSeat()) {
+          pinOwnCard(this);
+          if (!rebuilding) decorateRibbon(this.Root);
+        }
+      } catch (e) { log(`ribbon decoration failed: ${e}`); }
     }
   });
   for (const method of ['refreshRibbonVis', 'onModelUpdate']) {
@@ -272,6 +269,24 @@ function patchPanel() {
       }
     });
   }
+}
+
+/**
+ * The base turn-end handler writes through an index captured 250ms earlier,
+ * which the Observer's rebuilt list can invalidate: it is removed, and kept a
+ * no-op should the engine still call it, and the card is looked up by id instead.
+ */
+function replaceTurnEndHandler() {
+  const proto = Object.getPrototypeOf(DiploRibbonData);
+  try { engine.off('PlayerTurnDeactivated', proto.onPlayerTurnDeactivated, DiploRibbonData); } catch (e) { log(`base turn handler not removed: ${e}`); }
+  DiploRibbonData.onPlayerTurnDeactivated = () => {};
+  engine.on('PlayerTurnDeactivated', (data) => {
+    setTimeout(() => {
+      const card = DiploRibbonData._playerData?.find?.((o) => o.id === data.player);
+      if (card) card.isTurnActive = false;
+    }, 250);
+    DiploRibbonData.onUpdate?.(DiploRibbonData);
+  });
 }
 
 /**
@@ -288,4 +303,5 @@ patchModel();
 patchPanel();
 for (const event of ['DiplomacyDeclareWar', 'DiplomacyMakePeace']) engine.on(event, refreshRibbon);
 for (const event of [DETAILS_CHANGED_EVENT, PERSPECTIVE_CHANGED_EVENT]) window.addEventListener(event, refreshRibbon);
+onObserverReady(replaceTurnEndHandler);
 engine.whenReady.then(() => seedRibbon(CONFIG.ribbonSeedAttempts));

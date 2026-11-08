@@ -27,13 +27,11 @@
  * never enters. The arrows step through the owner's settlements.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import { InputEngineEventName } from 'fs://game/core/ui/input/input-support.js';
-import Panel from 'fs://game/core/ui/panel-support.js';
 import { ComponentID } from 'fs://game/core/ui/utilities/utilities-component-id.js';
-import { FocusManager } from 'fs://game/core/ui-next/services/focus-manager.js';
-import { clearChildren, componentOf, createLogger, deferOnce, onActivate } from '../shared/zom-util.js';
-import { CONFIG, HIGHLIGHT, PANEL_COLORS } from './observer-config.js';
+import { clearChildren, componentOf, createLogger, deferOnce, onActivate, withAlpha } from '../shared/zom-util.js';
+import { CONFIG, HIGHLIGHT, PANEL_COLORS, ROW_COLORS } from './observer-config.js';
 import { isObserverSeat, SCREEN_PROPS } from './observer-core.js';
+import { ObserverOverlayPanel } from './observer-overlay-panel.js';
 import { townFocus } from './observer-settlement-info.js';
 
 const HOST_TAG = 'zom-observer-settlement';
@@ -43,25 +41,30 @@ const DETAILS_STYLES = 'fs://game/base-standard/ui/city-details/panel-city-detai
 const ROW_HEIGHT = '1.5rem';
 const ROW_RADIUS = '0.75rem';
 const ODD_ROW_BG = PANEL_COLORS.oddRow;
-const HIGHLIGHT_BG = 'rgba(128, 179, 77, 0.4)';   // the current town focus (food green)
+const HIGHLIGHT_ALPHA = 0.4;   // the current town focus and the growth row, in the food colour
 const DAMAGED_COLOR = HIGHLIGHT.negative;
 const ICON_SIZE = '1.5rem';
 const ICON_SMALL = '1.25rem';
 const FRAME_WIDTH = '27rem';
 const SPECIALIST_ICON = "url('specialist_tile_pip_full')";
 const TIMER_ICON = "url('hud_turn-timer')";
-const REFRESH_EVENTS = ['CityPopulationChanged', 'CityGrowthModeChanged', 'CityProductionCompleted', 'ConstructibleAddedToMap', 'PlayerTurnActivated'];
-/** Warehouse ordering by bonus yield. */
-const WAREHOUSE_ORDER = {
-  LOC_IMPROVEMENT_FARM_NAME: 0, LOC_IMPROVEMENT_PASTURE_NAME: 0.1, LOC_IMPROVEMENT_PLANTATION_NAME: 0.1,
-  LOC_IMPROVEMENT_FISHING_BOAT_NAME: 0.2, LOC_IMPROVEMENT_MINE_NAME: 1, LOC_IMPROVEMENT_CLAY_PIT_NAME: 1.1,
-  LOC_IMPROVEMENT_QUARRY_NAME: 1.2, LOC_IMPROVEMENT_WOODCUTTER_NAME: 1.3, LOC_IMPROVEMENT_CAMP_NAME: 1.4,
-  LOC_IMPROVEMENT_OIL_RIG_NAME: 1.5
-};
+/** Settlement events (matched to the shown settlement by city, plot or owner); the panel also refreshes each turn. */
+const REFRESH_EVENTS = ['CityPopulationChanged', 'CityGrowthModeChanged', 'CityProductionCompleted', 'ConstructibleAddedToMap'];
+/** Improvements with a warehouse bonus, in display order: [name, yield added, counted by the town's food / production focus]. */
+const WAREHOUSES = [
+  ['LOC_IMPROVEMENT_FARM_NAME', 'YIELD_FOOD', true], ['LOC_IMPROVEMENT_PASTURE_NAME', 'YIELD_FOOD', true],
+  ['LOC_IMPROVEMENT_PLANTATION_NAME', 'YIELD_FOOD', true], ['LOC_IMPROVEMENT_FISHING_BOAT_NAME', 'YIELD_FOOD', true],
+  ['LOC_IMPROVEMENT_MINE_NAME', 'YIELD_PRODUCTION', true], ['LOC_IMPROVEMENT_CLAY_PIT_NAME', 'YIELD_PRODUCTION', true],
+  ['LOC_IMPROVEMENT_QUARRY_NAME', 'YIELD_PRODUCTION', true], ['LOC_IMPROVEMENT_WOODCUTTER_NAME', 'YIELD_PRODUCTION', true],
+  ['LOC_IMPROVEMENT_CAMP_NAME', 'YIELD_PRODUCTION', true], ['LOC_IMPROVEMENT_OIL_RIG_NAME', 'YIELD_PRODUCTION', false]
+].map(([name, yieldType, focus], order) => ({ name, yieldType, focus, order }));
+const WAREHOUSE_BY_NAME = new Map(WAREHOUSES.map((w) => [w.name, w]));
 
 const log = createLogger('observer-settlement', CONFIG.debug);
 
 let shown = null;   // the settlement whose details are open
+
+const HIGHLIGHT_BG = withAlpha(ROW_COLORS.food, HIGHLIGHT_ALPHA);
 
 const nameSort = (a, b) => Locale.compose(a ?? '').localeCompare(Locale.compose(b ?? ''));
 
@@ -117,6 +120,19 @@ const valueDiv = (text) => {
 
 const cityOf = () => (shown ? Cities.get(shown) : null);
 
+/** Whether an engine event concerns the shown settlement: its city id, a plot it owns, else its owner (no player named: yes). */
+function concernsShown(data) {
+  if (data?.cityID) return ComponentID.isMatch(data.cityID, shown);
+  const city = cityOf();
+  if (!city) return false;
+  const loc = data?.location;
+  if (loc) {
+    const owning = GameplayMap.getOwningCityFromXY?.(loc.x, loc.y);
+    return owning ? ComponentID.isMatch(owning, shown) : GameplayMap.getOwner(loc.x, loc.y) === city.owner;
+  }
+  return data?.player == null || data.player === city.owner;
+}
+
 function religionIcon(religionId) {
   const def = GameInfo.Religions.lookup(religionId);
   return def ? def.ReligionType : null;
@@ -160,11 +176,12 @@ function warehouses(city) {
     if (info?.ConstructibleClass !== 'IMPROVEMENT') continue;
     const baseType = Districts.getFreeConstructible?.(item.location, city.owner);
     const def = GameInfo.Constructibles.lookup(baseType) ?? info;
+    const warehouse = WAREHOUSE_BY_NAME.get(def.Name);
     const group = groups.get(def.Name) ?? {
       name: def.Name,
       icon: def.ConstructibleType,
-      order: WAREHOUSE_ORDER[def.Name] ?? 99,
-      bonusIcon: GameInfo.Yields[Math.floor(WAREHOUSE_ORDER[def.Name] ?? -1)]?.YieldType ?? null,
+      order: warehouse?.order ?? WAREHOUSES.length,
+      bonusIcon: warehouse?.yieldType ?? null,
       count: 0
     };
     group.count += 1;
@@ -198,29 +215,31 @@ function districtCounts(city) {
       });
       if (fortified) counts.fortified += 1;
     }
-    counts.resources = (city.Constructibles?.getIds?.() ?? []).filter((id) => {
+    const resourcePlots = new Set();   // a plot counts once, however many constructibles stand on it
+    for (const id of city.Constructibles?.getIds?.() ?? []) {
       const loc = Constructibles.getByComponentID(id)?.location;
-      return loc && GameplayMap.getResourceType(loc.x, loc.y) !== ResourceTypes.NO_RESOURCE;
-    }).length;
+      if (loc && GameplayMap.getResourceType(loc.x, loc.y) !== ResourceTypes.NO_RESOURCE) resourcePlots.add(GameplayMap.getIndexFromLocation(loc));
+    }
+    counts.resources = resourcePlots.size;
   } catch (e) { log.debug(`district counts failed: ${e}`); }
   return counts;
 }
 
 /** Each focus project's estimated bonuses: [{ icon, bonus }]. */
 function focusDetails(projectType, city, counts, groups) {
-  const warehouseCount = (...names) => groups.filter((g) => names.includes(g.name)).reduce((sum, g) => sum + g.count, 0);
+  const warehouseCount = (yieldType) => groups.filter((g) => WAREHOUSE_BY_NAME.get(g.name)?.focus && g.bonusIcon === yieldType).reduce((sum, g) => sum + g.count, 0);
   switch (projectType) {
-    case 'PROJECT_TOWN_FORT': return [{ icon: 'ACTION_FORTIFY', bonus: 25 }, { icon: 'YIELD_GOLD', bonus: counts.fortified }];
+    case 'PROJECT_TOWN_FORT': return [{ icon: 'ACTION_FORTIFY', bonus: CONFIG.townFocusEstimates.fortHealth }, { icon: 'YIELD_GOLD', bonus: counts.fortified }];
     case 'PROJECT_TOWN_URBAN_CENTER': return [{ icon: 'YIELD_SCIENCE', bonus: counts.quarters }, { icon: 'YIELD_CULTURE', bonus: counts.quarters }];
     case 'PROJECT_TOWN_RESORT': return [{ icon: 'YIELD_GOLD', bonus: counts.appeal }, { icon: 'YIELD_HAPPINESS', bonus: counts.appeal }];
     case 'PROJECT_TOWN_GRANARY':
     case 'PROJECT_TOWN_FISHING':
-      return [{ icon: 'YIELD_FOOD', bonus: warehouseCount('LOC_IMPROVEMENT_FARM_NAME', 'LOC_IMPROVEMENT_PASTURE_NAME', 'LOC_IMPROVEMENT_PLANTATION_NAME', 'LOC_IMPROVEMENT_FISHING_BOAT_NAME') }];
+      return [{ icon: 'YIELD_FOOD', bonus: warehouseCount('YIELD_FOOD') }];
     case 'PROJECT_TOWN_PRODUCTION':
-      return [{ icon: 'YIELD_PRODUCTION', bonus: 2 * warehouseCount('LOC_IMPROVEMENT_CAMP_NAME', 'LOC_IMPROVEMENT_WOODCUTTER_NAME', 'LOC_IMPROVEMENT_CLAY_PIT_NAME', 'LOC_IMPROVEMENT_MINE_NAME', 'LOC_IMPROVEMENT_QUARRY_NAME') }];
-    case 'PROJECT_TOWN_TRADE': return [{ icon: 'YIELD_TRADES', bonus: 5 }, { icon: 'YIELD_HAPPINESS', bonus: counts.resources }];
+      return [{ icon: 'YIELD_PRODUCTION', bonus: CONFIG.townFocusEstimates.productionPerImprovement * warehouseCount('YIELD_PRODUCTION') }];
+    case 'PROJECT_TOWN_TRADE': return [{ icon: 'YIELD_TRADES', bonus: CONFIG.townFocusEstimates.tradeRange }, { icon: 'YIELD_HAPPINESS', bonus: counts.resources }];
     case 'PROJECT_TOWN_INN': return [{ icon: 'YIELD_DIPLOMACY', bonus: city.getConnectedCities?.()?.length ?? 0 }];
-    case 'PROJECT_TOWN_FACTORY': return [{ icon: 'YIELD_TRADES', bonus: 5 }];
+    case 'PROJECT_TOWN_FACTORY': return [{ icon: 'YIELD_TRADES', bonus: CONFIG.townFocusEstimates.tradeRange }];
     default: return [];
   }
 }
@@ -273,45 +292,26 @@ function constructibleGroups(city, wantedClass) {
 
 // ============================ Panel ============================
 
-class ObserverSettlementPanel extends Panel {
-  engineInputListener = this.onEngineInput.bind(this);
-  closeListener = () => this.close();
+class ObserverSettlementPanel extends ObserverOverlayPanel {
   renderSoon = deferOnce(() => { if (shown) this.renderCity(); });
-  refreshListener = (data) => { if (shown && (!data?.cityID || ComponentID.isMatch(data.cityID, shown))) this.renderSoon(); };   // another settlement's change is not shown
+  refreshListener = (data) => { if (shown && concernsShown(data)) this.renderSoon(); };   // another settlement's change is not shown
 
   onAttach() {
     super.onAttach();
-    this.frame = this.Root.querySelector('fxs-subsystem-frame');
-    this.Root.addEventListener(InputEngineEventName, this.engineInputListener);
-    this.frame?.addEventListener('subsystem-frame-close', this.closeListener);
     for (const [selector, step] of [['.zom-settlement-prev', -1], ['.zom-settlement-next', 1]]) {
       const arrow = this.Root.querySelector(selector);
       if (arrow) onActivate(arrow, () => this.step(step));
     }
     for (const event of REFRESH_EVENTS) engine.on(event, this.refreshListener);
+    engine.on('TurnBegin', this.renderSoon);
     this.renderCity();
   }
 
   onDetach() {
     for (const event of REFRESH_EVENTS) engine.off(event, this.refreshListener);
-    this.Root.removeEventListener(InputEngineEventName, this.engineInputListener);
-    this.frame?.removeEventListener('subsystem-frame-close', this.closeListener);
+    engine.off('TurnBegin', this.renderSoon);
     shown = null;
     super.onDetach();
-  }
-
-  onReceiveFocus() {
-    super.onReceiveFocus();
-    FocusManager.get().setFocus(this.Root);
-  }
-
-  onEngineInput(ev) {
-    if (ev.detail.status !== InputActionStatuses.FINISH) return;
-    if (ev.isCancelInput() || ev.detail.name === 'sys-menu') {
-      this.close();
-      ev.stopPropagation();
-      ev.preventDefault();
-    }
   }
 
   /** The owner's previous / next settlement. */
@@ -424,7 +424,9 @@ class ObserverSettlementPanel extends Panel {
     const rows = townFocusTable(city, groups);
     if (!rows?.length) return;
     list.appendChild(divider());
-    list.appendChild(heading('LOC_UI_TOWN_FOCUS'));
+    const title = el('flex flex-row items-end justify-between');   // the bonuses are estimates
+    title.append(heading('LOC_UI_TOWN_FOCUS'), textDiv('LOC_ZOM_OBSERVER_ESTIMATE', 'font-body-sm text-accent-3 mb-1'));
+    list.appendChild(title);
     const table = el('flex flex-col self-stretch');
     rows.forEach((item, i) => {
       const tail = item.details.flatMap((detail) => [iconDiv(detail.icon, ICON_SIZE, ICON_SMALL), valueDiv(`+${detail.bonus}`)]);

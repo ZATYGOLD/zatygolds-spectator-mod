@@ -6,13 +6,13 @@ import UpdateGate from '../../../core/ui/utilities/utilities-update-gate.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/great-works/model-great-works.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's; a viewed leader's screen is
+ * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
+const zomReadOnly = () => globalThis.ZOMLeaderView?.isViewingOther() ?? false;   // ZOM: a viewed leader's screen sends no requests
 
 class GreatWorksModel {
   onUpdate;
@@ -66,7 +66,7 @@ class GreatWorksModel {
       this.greatWorkSlotCreatedListener();
     });
     window.addEventListener("hotkey-open-greatworks", this.greatWorksHotkeyListener);
-    const localPlayerID = zomLocalPlayerID();
+    const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
     this.LocalPlayer = Players.get(localPlayerID);
     if (!this.LocalPlayer) {
       return;
@@ -76,7 +76,7 @@ class GreatWorksModel {
     this.onUpdate = callback;
   }
   get playerId() {
-    return zomLocalPlayerID();
+    return zomLocalPlayerID();   // ZOM: viewed leader
   }
   get allGreatWorks() {
     return this.GreatWorks;
@@ -120,7 +120,7 @@ class GreatWorksModel {
     this.YieldTotals.push({ type: YieldTypes.YIELD_SCIENCE, amount: 0 });
     this.YieldTotals.push({ type: YieldTypes.YIELD_HAPPINESS, amount: 0 });
     const nextGreatWorks = [];
-    const localPlayerID = zomLocalPlayerID();
+    const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
     this.LocalPlayer = Players.get(localPlayerID);
     if (!this.LocalPlayer) {
       console.error("model-great-works: update() - no local player found!");
@@ -287,6 +287,7 @@ class GreatWorksModel {
     }
   }
   selectEmptySlot(cityID, buildingID) {
+    if (zomReadOnly()) return this.clearSelectedGreatWork();   // ZOM: read-only for a viewed leader
     if (this.hasSelectedGreatWork()) {
       if (this.selectedGreatWorkLocation != -1) {
         const args = {

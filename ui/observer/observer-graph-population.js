@@ -139,11 +139,13 @@ const POPULATION_SUBJECT = {
   totalGroups: (entry) => [POPULATION_KINDS.map((k, i) => ({ icon: k.icon, label: Locale.compose(k.label), value: entry?.card.counts[i] ?? 0 }))],
   card: (playerId, { events, lastAge }) => {
     const counts = citizenCounts(playerId, lastAge);
-    const groups = specialistGroups(playerId, events, lastAge === currentAgeChronology());
     return {
       counts,
       cells: [{ icon: SPECIALIST_KIND.icon, count: counts[SPECIALIST] }],
-      groups: groups.some((g) => g.rows.length) ? groups : [[{ icon: SPECIALIST_KIND.icon, label: Locale.compose(SPECIALIST_KIND.label), value: counts[SPECIALIST] }]]
+      get groups() {   // read on hover only
+        const groups = specialistGroups(playerId, events, lastAge === currentAgeChronology());
+        return groups.some((g) => g.rows.length) ? groups : [[{ icon: SPECIALIST_KIND.icon, label: Locale.compose(SPECIALIST_KIND.label), value: counts[SPECIALIST] }]];
+      }
     };
   },
   tieBreak: (entry) => entry.card.counts[SPECIALIST]

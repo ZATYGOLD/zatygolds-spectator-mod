@@ -22,10 +22,8 @@ import { useCommerceScreenContext } from './commerce-screen-model.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/commerce/commerce-screen-empire-tab.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:", plus every
- * GameContext.localPlayerID read as zomLocalPlayerID(): for the Observer the
- * leader picked in the screen's leader row. Game actions keep the real local
- * player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's data in place of the local player's.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? GameContext.localPlayerID;   // ZOM: viewed leader, else the local player
@@ -142,7 +140,7 @@ const EmpireResourceContainer = (props) => {
     return focusedResourceCard() === resourceValue;
   }
   function getResourceDefinitonFromResourceValue(resourceValue) {
-    const uniqueResource = Players.get(zomLocalPlayerID())?.Resources?.getResources().find((uniqueResourceValue) => {
+    const uniqueResource = Players.get(zomLocalPlayerID())?.Resources?.getResources().find((uniqueResourceValue) => {   // ZOM: viewed leader
       return uniqueResourceValue.value === resourceValue;
     });
     if (!uniqueResource) {

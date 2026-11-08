@@ -9,9 +9,8 @@ import { addAvailableCard, removeAvailableCard, getLegacyCardStyling, parseCardT
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/legacies/dedications-model.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": for the
- * Observer the dedications shown are the viewed leader's; game actions keep the
- * real local player.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * leader's dedications; game actions keep the real local player.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
 
@@ -37,8 +36,8 @@ const CreateDedicationsModel = () => {
     const layoutModel = LayoutModel.get();
     return isMobileViewExperience || layoutModel.screenHeight() <= Layout.pixelsToScreenPixels(SMALL_SCREEN_MODE_MAX_HEIGHT) || layoutModel.screenWidth() <= Layout.pixelsToScreenPixels(SMALL_SCREEN_MODE_MAX_WIDTH);
   });
-  const realLocalPlayerID = useLocalPlayerId();   // ZOM: renamed
-  const localPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? realLocalPlayerID();   // ZOM: the viewed leader
+  const localPlayerID = useLocalPlayerId();
+  const zomLocalPlayerID = () => globalThis.ZOMLeaderView?.playerID() ?? localPlayerID();   // ZOM: viewed leader, else the local player
   const playerLegacyCompleted = createEngineEvent("PlayerLegacyCompleted");
   const [selectedDedicationFilter, setSelectedDedicationFilter] = createSignal(
     "ALL" /* ALL */
@@ -81,7 +80,7 @@ const CreateDedicationsModel = () => {
     }
   });
   createEffect(() => {
-    if (localPlayerID() != PlayerIds.NO_PLAYER) {
+    if (zomLocalPlayerID() != PlayerIds.NO_PLAYER) {   // ZOM: viewed leader
       setState("items", populateDedicationData());
       setState("legacies", populateLegaciesData());
       setState("selectedItems", getSelectedItems());
@@ -99,7 +98,7 @@ const CreateDedicationsModel = () => {
         );
         return;
       }
-      if (data.player != localPlayerID()) {
+      if (data.player != zomLocalPlayerID()) {   // ZOM: viewed leader
         return;
       }
       setState("legacies", populateLegaciesData());
@@ -196,14 +195,14 @@ const CreateDedicationsModel = () => {
     if (GameContext.localObserverID == PlayerIds.NO_PLAYER || GameContext.localObserverID == PlayerIds.OBSERVER_ID || Autoplay.isActive) {
       return null;
     }
-    const localPlayer = Players.get(localPlayerID());
+    const localPlayer = Players.get(zomLocalPlayerID());   // ZOM: viewed leader
     if (!localPlayer) {
-      console.error(`dedications-model: Failed to retrieve PlayerLibrary for Player ${localPlayerID()}`);
+      console.error(`dedications-model: Failed to retrieve PlayerLibrary for Player ${zomLocalPlayerID()}`);   // ZOM: viewed leader
       return null;
     }
     const playerAdvancedStart = localPlayer.AdvancedStart;
     if (!playerAdvancedStart) {
-      console.error(`dedications-model: Failed to retrieve PlayerAdvancedStart for Player ${localPlayerID()}`);
+      console.error(`dedications-model: Failed to retrieve PlayerAdvancedStart for Player ${zomLocalPlayerID()}`);   // ZOM: viewed leader
       return null;
     }
     return playerAdvancedStart;
@@ -221,7 +220,7 @@ const CreateDedicationsModel = () => {
   }
   function populateLegaciesData() {
     const allLegacyData = [];
-    const playerLegacies = Players.get(localPlayerID())?.Legacies;
+    const playerLegacies = Players.get(zomLocalPlayerID())?.Legacies;   // ZOM: viewed leader
     if (!playerLegacies) {
       return [];
     }
@@ -407,14 +406,14 @@ const CreateDedicationsModel = () => {
         for (let i = 0; i < effect.amount; i++) {
           const args = { ID: effect.id };
           const result = Game.PlayerOperations.canStart(
-            realLocalPlayerID(),   // ZOM: real local player
+            localPlayerID(),
             PlayerOperationTypes.ADVANCED_START_USE_EFFECT,
             args,
             false
           );
           if (result.Success) {
             Game.PlayerOperations.sendRequest(
-              realLocalPlayerID(),   // ZOM: real local player
+              localPlayerID(),
               PlayerOperationTypes.ADVANCED_START_USE_EFFECT,
               args
             );
@@ -433,7 +432,7 @@ const CreateDedicationsModel = () => {
     return advancedStart.getPlacementComplete();
   }
   function getAllCapitals() {
-    const playerCities = Players.get(localPlayerID())?.Cities;
+    const playerCities = Players.get(zomLocalPlayerID())?.Cities;   // ZOM: viewed leader
     if (!playerCities) {
       return [];
     }
@@ -447,7 +446,7 @@ const CreateDedicationsModel = () => {
     return currentCapital ? Cities.get(currentCapital) : getCapital();
   }
   function getCapital() {
-    const playerCities = Players.get(localPlayerID())?.Cities;
+    const playerCities = Players.get(zomLocalPlayerID())?.Cities;   // ZOM: viewed leader
     if (!playerCities) {
       return null;
     }

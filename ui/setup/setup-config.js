@@ -19,12 +19,12 @@
  */
 
 /**
- * Zatygold's Spectator - Observer setup configuration & constants (lobby and single player).
+ * Zatygold's Spectator - Observer setup configuration & constants (shell scope: lobby and single-player setup).
  */
 
 /** Tunable settings. */
 const CONFIG = {
-  observerRole: true,               // Observer leader/civ act as one locked role in the lobby
+  observerRole: true,               // Observer leader/civ act as one locked role (lobby, single-player and create-game setup)
   resolveRandomLeaders: true,       // a Random leader never becomes the Observer (single player at start, lobby at the all-ready countdown)
   debug: false                      // extra UI.log diagnostics
 };

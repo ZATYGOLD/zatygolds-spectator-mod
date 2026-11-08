@@ -22,21 +22,23 @@
  * Zatygold's Spectator - Observer navigation (in-game scope).
  *
  * Ribbon portraits: left click toggles that leader's Perspective and moves the
- * camera, right click opens their leader panel; on the Observer's own portrait
- * they end a Perspective / find the Eye and toggle every card's details.
+ * camera, right click moves the camera and opens their leader panel; on the
+ * Observer's own portrait they end a Perspective / find the Eye and toggle
+ * every card's details.
  * Settlement banners and city centers open the settlement's details; right
  * click on a banner opens its owner's panel.
  */
 import { RaiseDiplomacyEvent } from 'fs://game/base-standard/ui/diplomacy/diplomacy-events.js';
 import WorldInput from 'fs://game/base-standard/ui/world-input/world-input.js';
 import { ancestorWithClass, createLogger, findAncestor, isObserverPlayer, isTag, wrapMethod } from '../shared/zom-util.js';
-import { isObserverSeat } from './observer-core.js';
+import { CONFIG } from './observer-config.js';
+import { isObserverSeat, isWatchedLeader, onObserverReady } from './observer-core.js';
 import { endPerspective, togglePerspective } from './observer-perspective.js';
 import { isDetailsHidden, setDetailsHidden } from './observer-ribbon-style.js';
 import { showSettlement } from './observer-settlement.js';
-import { bannerOf, bannerSubject } from './observer-settlement-info.js';
+import { bannerOf, bannerSubject } from './observer-settlement-banners.js';
 
-const log = createLogger('observer-navigation');
+const log = createLogger('observer-navigation', CONFIG.debug);
 
 const openLeaderPanel = (playerId) => window.dispatchEvent(new RaiseDiplomacyEvent(playerId));
 
@@ -55,7 +57,7 @@ function lookAtPlayer(playerId) {
 function settlementOfBanner(banner) {
   const subject = bannerSubject(banner);
   const owner = subject?.city ? Players.get(subject.owner) : null;
-  return owner?.isMajor && !isObserverPlayer(owner.id) ? subject.city : null;
+  return owner && isWatchedLeader(owner.id) ? subject.city : null;
 }
 
 /** The ribbon portrait (and its player id) under an event target, or null. */
@@ -109,4 +111,4 @@ function patchCityCenterClicks() {
 }
 
 patchCityCenterClicks();
-window.addEventListener('engine-input', onEngineInput, true);
+onObserverReady(() => window.addEventListener('engine-input', onEngineInput, true));

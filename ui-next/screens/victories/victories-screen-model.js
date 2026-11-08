@@ -15,26 +15,13 @@ import { createEngineEvent } from '../../../../core/ui-next/utilities/game-core-
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/victories/victories-screen-model.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": Observer
- * players (LEADER_ZOM_OBSERVER) are left out of every player list on the
- * Victories screens, and an Observer sees every leader's real name instead of
- * "An unmet Player" (diplomacy.hasMet read as zomHasMet).
- * Re-apply after game updates; see ui/observer/observer-victory.js.
+ * (build dated 2026-09-16). The only changes are marked "ZOM:": Observers are
+ * left out of every player list, chart colour and dominant player, and see
+ * every leader's real name.
+ * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
-// ZOM: begin
-const ZOM_OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
-function zomIsObserver(playerId) {
-  try {
-    const p = Players.get(playerId);
-    return !!p && GameInfo.Leaders.lookup(p.leaderType)?.LeaderType === ZOM_OBSERVER_LEADER;
-  } catch (e) { return false; }
-}
-/** An Observer has "met" everyone; otherwise the normal diplomacy check. */
-function zomHasMet(diplomacy, playerId) {
-  if (zomIsObserver(GameContext.localPlayerID)) return true;
-  return diplomacy.hasMet(playerId);
-}
-// ZOM: end
+const zomIsObserver = (playerId) => globalThis.ZOMLeaderView?.isObserver(playerId) ?? false;   // ZOM: Observers are left out
+const zomHasMet = (diplomacy, playerId) => globalThis.ZOMLeaderView?.hasMet(diplomacy, playerId) ?? diplomacy?.hasMet(playerId);   // ZOM: the Observer has met everyone
 
 var VictoryTabType = /* @__PURE__ */ ((VictoryTabType2) => {
   VictoryTabType2[VictoryTabType2["Military"] = 0] = "Military";
@@ -78,7 +65,8 @@ const primaryColors = [
   { r: 180, g: 180, b: 180, a: 1 }
   // light grey
 ];
-const playerColors = calcPlayerColors();
+let zomPlayerColors;   // ZOM: built on first use, once ZOMLeaderView is loaded
+const playerColors = { get: (playerId) => (zomPlayerColors ??= calcPlayerColors()).get(playerId) };   // ZOM: built on first use, once ZOMLeaderView is loaded
 function calcPlayerColors() {
   const colorMap = /* @__PURE__ */ new Map();
   const colorChoices = [];
@@ -86,7 +74,7 @@ function calcPlayerColors() {
     colorChoices.push(color);
   }
   Players.getAlive().forEach((player) => {
-    if (player && player.isMajor) {
+    if (player && player.isMajor && !zomIsObserver(player.id)) {   // ZOM: Observers are left out
       const ourPrimary = UI.Player.getPrimaryColorValue(player.id);
       let minDistance = 999999;
       let winningColor = { r: 255, g: 255, b: 255, a: 255 };
@@ -517,8 +505,8 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
     applyUnFocusPlayer(playerId, tabType);
   }
   function getPlayerList() {
-    const PlayerList = Players.getAlive().filter((player) => !zomIsObserver(player.id));   // ZOM: no observers
-    if (!zomIsObserver(GameContext.localPlayerID) && !PlayerList.find((player) => player.id == GameContext.localPlayerID)) {   // ZOM
+    const PlayerList = Players.getAlive().filter((player) => !zomIsObserver(player.id));   // ZOM: Observers are left out
+    if (!zomIsObserver(GameContext.localPlayerID) && !PlayerList.find((player) => player.id == GameContext.localPlayerID)) {   // ZOM: the Observer is not added
       const localPlayer = Players.get(GameContext.localPlayerID);
       if (localPlayer) {
         PlayerList.push(localPlayer);
@@ -695,7 +683,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
     const PlayerList = Players.getAlive();
     const playerList = [];
     PlayerList.forEach((player) => {
-      if (player && player.Victories) {
+      if (player && player.Victories && !zomIsObserver(player.id)) {   // ZOM: Observers are left out
         const countdown = player.Victories.getVictoryCountdownStatus(victoryType);
         if (countdown && countdown.isDominant) {
           const dominantPlayer = {
@@ -830,7 +818,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
           if (localPlayer) {
             const localPlayerDiplomacy = localPlayer.Diplomacy;
             if (localPlayerDiplomacy) {
-              const hasMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM
+              const hasMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM: the Observer has met everyone
               tempSheet.metPlayer = hasMet;
               if (tempSheet.items.length > 0 || tempSheet.prereqs.length > 0) {
                 if (!hasMet) {
@@ -893,13 +881,13 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
           turnsProgress,
           turnsTotal,
           dominant,
-          hasMet: zomHasMet(localDiplo, player.id) || player.id == GameContext.localPlayerID,   // ZOM
+          hasMet: zomHasMet(localDiplo, player.id) || player.id == GameContext.localPlayerID,   // ZOM: the Observer has met everyone
           winner: isWinner
         });
       }
     });
     playerScores.sort((a, b) => b.score - a.score);
-    const numTopPlayers = zomIsObserver(GameContext.localPlayerID) ? playerScores.length : Math.min(playerScores.length, 3);   // ZOM: Observer sees all
+    const numTopPlayers = zomIsObserver(GameContext.localPlayerID) ? playerScores.length : Math.min(playerScores.length, 3);   // ZOM: the Observer sees every leader
     let userInTop3 = false;
     for (let i = 0; i < numTopPlayers; i++) {
       if (playerScores[i].player.id == GameContext.localPlayerID) {
@@ -987,7 +975,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
         }
       }
       if (localPlayerDiplomacy) {
-        playerInfo.playerIsMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM
+        playerInfo.playerIsMet = zomHasMet(localPlayerDiplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM: the Observer has met everyone
       }
     }
     if (player.Diplomacy) {
@@ -1153,7 +1141,7 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
             }
             const localPlayer = Players.get(GameContext.localPlayerID);
             if (localPlayer && localPlayer.Diplomacy) {
-              structureInfo.hasMet = zomHasMet(localPlayer.Diplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM
+              structureInfo.hasMet = zomHasMet(localPlayer.Diplomacy, player.id) || player.id == GameContext.localPlayerID;   // ZOM: the Observer has met everyone
             }
             playerMilDetail.structures.push(structureInfo);
           }
