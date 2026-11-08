@@ -142,7 +142,8 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
   in Technology or Civics): they are marked as seen. A turn that stays
   blocked shows the End Turn button again instead of waiting unseen. The
   toggle is saved with the game, kept across Age transitions, and switched
-  off when you open the pause menu.
+  off when you open the pause menu (not when a Better Balanced Multiplayer
+  pause opens it for everyone).
 - **Age transition** — one click on Transition to Next Age: the Observers'
   civilization is chosen and the transition goes on by itself, through the
   loading screen's Continue (single player).

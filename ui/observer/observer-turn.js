@@ -27,10 +27,11 @@
  * is logged and the End Turn button shown again. A turn still open long after
  * it began is ended again (a watchdog), and after an unpause an ended turn is
  * sent again (the engine drops completions sent while paused). Opening the
- * pause menu switches it off. A complete Age waits for one click on the End
- * Turn button (Transition to Next Age); the transition then runs by itself,
- * including the loading screen's Continue (single player). The End Turn button
- * hides while turns end automatically.
+ * pause menu switches it off, unless a multiplayer pause opened it (Better
+ * Balanced Multiplayer opens it for everyone). A complete Age waits for one
+ * click on the End Turn button (Transition to Next Age); the transition then
+ * runs by itself, including the loading screen's Continue (single player).
+ * The End Turn button hides while turns end automatically.
  */
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
 import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle } from '../shared/zom-util.js';
@@ -202,9 +203,12 @@ function beginNextAge(waitedMs = 0) {
   } catch (e) { log(`begin next age failed: ${e}`); }
 }
 
-/** The pause menu switches Auto End Turn off. */
+/** A pause menu opened for a multiplayer pause, not by the player (Better Balanced Multiplayer opens it for everyone). */
+const openedForPause = () => !!Configuration.getGame().isNetworkMultiplayer && isPaused();
+
+/** The pause menu the player opens switches Auto End Turn off. */
 function onInterfaceMode() {
-  if (autoEnd && isObserverSeat() && InterfaceMode.isInInterfaceMode(PAUSE_MENU_MODE)) {
+  if (autoEnd && isObserverSeat() && InterfaceMode.isInInterfaceMode(PAUSE_MENU_MODE) && !openedForPause()) {
     log('pause menu: auto end turn switched off');
     setAutoEndTurn(false);
   }
