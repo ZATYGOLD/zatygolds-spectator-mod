@@ -21,7 +21,7 @@
 /**
  * Zatygold's Spectator - start-warning compatibility (in-game scope, every seat).
  *
- * The turn-1 start check of Better Balanced Multiplayer's Maps (maps/ui/start-bias-warning.js),
+ * The turn-1 start check of Better Balanced Multiplayer's Maps (ui/maps/start-bias-warning.js),
  * and of the older Multiplayer Map Mod (ui/strict-start-bias-notification.js), counts
  * the Observer as a player and reports its ice start as missing Fresh Water.
  * The Observer's lines are removed from its warning banner and notification
@@ -30,8 +30,8 @@
 import { createLogger, isObserverPlayer } from '../shared/zom-util.js';
 import { CONFIG } from '../observer/observer-config.js';
 
-const BANNER_CLASSES = ['mpt-maps-strict-bias-banner', 'evw-strict-bias-banner'];
-const ICON_CLASSES = ['mpt-maps-strict-bias-notification', 'evw-strict-bias-notification'];
+const BANNER_CLASSES = ['bbm-maps-strict-bias-banner', 'mpt-maps-strict-bias-banner', 'evw-strict-bias-banner'];
+const ICON_CLASSES = ['bbm-maps-strict-bias-notification', 'mpt-maps-strict-bias-notification', 'evw-strict-bias-notification'];
 const FAILURE_PREFIX = '- ';
 const ICON_WATCH_MS = 60000;
 

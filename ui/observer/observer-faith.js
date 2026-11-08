@@ -26,7 +26,7 @@
  * read from the carried narrative tags of Better Balanced Multiplayer's Game
  * Balance (or the older Multiplayer Balance Mod), when present.
  */
-const CARRIED_PANTHEON_TAG = /^(?:MPT_BALANCE|MBM)_NARRATIVE_TAG_PANTHEON_(\d+)$/;
+const CARRIED_PANTHEON_TAG = /^(?:BBM_BALANCE|MPT_BALANCE|MBM)_NARRATIVE_TAG_PANTHEON_(\d+)$/;
 let carriedTags = null;   // [{ tag, belief }] for every carried-pantheon narrative tag (read once)
 
 function carriedPantheonTags() {

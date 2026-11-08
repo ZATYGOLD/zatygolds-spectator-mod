@@ -178,14 +178,20 @@ function installRandomLeaders(proto) {
 
 /**
  * Better Balanced Multiplayer keeps the last slot of a team match for the Spectator
- * (game setting MPTSpectatorSlot, -1 for none): the local player who takes it
+ * (game setting BBMSpectatorSlot, MPTSpectatorSlot before 0.7.0; -1 for none): the local player who takes it
  * becomes the Observer once, and may still pick a leader afterwards.
  */
-const SPECTATOR_SLOT_SETTING = 'MPTSpectatorSlot';
+const SPECTATOR_SLOT_SETTINGS = ['BBMSpectatorSlot', 'MPTSpectatorSlot'];
 let claimedSlot = -1;
 function claimSpectatorSlot() {
   let slot = -1;
-  try { slot = Number(Configuration.getGame().getValue(SPECTATOR_SLOT_SETTING) ?? -1); } catch (e) { return; }
+  try {
+    const game = Configuration.getGame();
+    for (const key of SPECTATOR_SLOT_SETTINGS) {
+      const value = game.getValue(key);
+      if (value != null) { slot = Number(value); break; }
+    }
+  } catch (e) { return; }
   const local = GameContext.localPlayerID;
   if (slot < 0 || slot !== local) { claimedSlot = -1; return; }
   if (claimedSlot === slot || !MPLobbyDataModel.isNewGame) return;
