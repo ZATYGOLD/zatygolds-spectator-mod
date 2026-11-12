@@ -178,7 +178,7 @@ function tabProps(screenTag, props) {
   return props;
 }
 
-globalThis.ZOMLeaderView = { hasMet, isObserver: isObserverPlayer, isViewingOther, playerBar, playerID, tabProps };
+globalThis.ZOMLeaderView = { hasMet, isObserver: isObserverPlayer, isViewingOther, perspectivePlayer, playerBar, playerID, tabProps };
 
 // The overrides load only in a game flagged as having an Observer (modinfo criteria); report the flag for diagnosis.
 engine.whenReady.then(() => {

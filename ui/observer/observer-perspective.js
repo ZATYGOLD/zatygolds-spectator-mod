@@ -39,9 +39,10 @@ import { UnitFlagManager } from 'fs://game/base-standard/ui/unit-flags/unit-flag
 import { GenericUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags.js';
 import { IndependentPowersUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags-independent-powers.js';
 import { OVERLAY_PRIORITY } from 'fs://game/base-standard/ui/utilities/utilities-overlay.js';
+import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { ancestorWithClass, createLogger, deferOnce, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, ICONS } from './observer-config.js';
-import { inDiplomacyMode, isObserverSeat } from './observer-core.js';
+import { inDiplomacyMode, isObserverSeat, onObserverReady } from './observer-core.js';
 import { forEachBanner } from './observer-settlement-banners.js';
 
 const PERSPECTIVE_CHANGED_EVENT = 'zom-perspective-changed';
@@ -435,11 +436,20 @@ function recomputeBannerFlags() {
   window.dispatchEvent(new CustomEvent('ui-show-city-banners'));
 }
 
+/** The Unit List is the Observer's only while Perspective shows a leader, and then lists that leader's units. */
+function syncUnitListButton() {
+  if (!isObserverSeat()) return;
+  const button = document.querySelector(`.mini-map__lens-button[data-tooltip-content="${Locale.compose('LOC_UI_TOGGLE_UNIT_LIST_PANEL')}"]`);
+  if (button) button.style.display = isActive() ? '' : 'none';
+  if (!isActive() && ContextManager.hasInstanceOf('panel-unit-list')) ContextManager.pop('panel-unit-list');
+}
+
 /** The UI's visibility lookups for the local seat answer for the viewed leader while active. */
 function patchVisibilityLookups() {
   try {
     wrapMethod(GameplayMap, 'getRevealedState', (base, playerId, ...rest) => base(seatFor(playerId), ...rest));
     wrapMethod(GameplayMap, 'getRevealedStates', (base, playerId, ...rest) => base(seatFor(playerId), ...rest));
+    wrapMethod(Visibility, 'isVisible', (base, playerId, ...rest) => base(seatFor(playerId), ...rest));
   } catch (e) { log(`visibility lookups not patched: ${e}`); }
 }
 
@@ -487,6 +497,7 @@ function apply() {
   } catch (e) { log(`perspective map failed: ${e}`); }
   try { fog = refreshFlagsAndBanners(); recomputeBannerFlags(); } catch (e) { log(`perspective banners failed: ${e}`); }
   try { markPerspectiveCard(); } catch (e) { log(`perspective ribbon failed: ${e}`); }
+  try { syncUnitListButton(); } catch (e) { log(`unit list button failed: ${e}`); }
   window.dispatchEvent(new CustomEvent(PERSPECTIVE_CHANGED_EVENT));
   return fog;
 }
@@ -535,6 +546,8 @@ function install() {
 }
 
 try { install(); } catch (e) { log(`install failed: ${e}`); }
+engine.on('minimap-panel-initialized', syncUnitListButton);   // the mini-map (and its Unit List button) is built after load
+onObserverReady(syncUnitListButton);
 
 export {
   PERSPECTIVE_CHANGED_EVENT, endPerspective, isActive as isPerspectiveActive, isKnownInPerspective, isVisibleInView, markPerspectiveCard, perspectivePlayer,

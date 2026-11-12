@@ -15,7 +15,7 @@ import { createEngineEvent } from '../../../../core/ui-next/utilities/game-core-
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/victories/victories-screen-model.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": Observers are
+ * (build dated 2026-11-10). The only changes are marked "ZOM:": Observers are
  * left out of every player list, chart colour and dominant player, and see
  * every leader's real name.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
@@ -1090,7 +1090,13 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
           const sortOrder = scoreData?.SortOrder ?? 100;
           if (dupe) {
             dupe.points += score.points;
-            dupe.breakdown.push({ name, points: score.points, sortOrder });
+            dupe.breakdown.push({
+              name,
+              points: score.points,
+              sortOrder,
+              age: score.age,
+              ageName: city ? void 0 : GameInfo.Ages.lookup(score.age)?.Name ?? "AGE_UNKNOWN"
+            });
           } else {
             if (city) {
               if (city.isTown) {
@@ -1136,7 +1142,9 @@ function createVictoriesScreenModel(isEndGame, allowOneMoreTurn, showNextTurnBut
               structureInfo.breakdown.push({
                 name: scoreData ? scoreData.Name : "LOC_UI_TRIUMPH",
                 points: score.points,
-                sortOrder: 0
+                sortOrder: 0,
+                age: score.age,
+                ageName: GameInfo.Ages.lookup(score.age)?.Name ?? "AGE_UNKNOWN"
               });
             }
             const localPlayer = Players.get(GameContext.localPlayerID);

@@ -9,7 +9,7 @@ import { getUnlockTargetIconUrl } from '../../ui-next/screens/choosers/helpers.j
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/tree-grid/tree-grid.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * (build dated 2026-11-10). The only changes are marked "ZOM:": the viewed
  * leader's data in place of the local player's; a viewed leader's screen is
  * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
@@ -641,7 +641,7 @@ class TreeGrid {
         this._lines.push({
           from: nodeId,
           to: nodeType,
-          locked: childCard.isLocked,
+          locked: card.isLocked || childCard.isLocked,
           dummy: isDummyFrom || childCard.isDummy,
           level: fromLevel,
           position: toPosition,

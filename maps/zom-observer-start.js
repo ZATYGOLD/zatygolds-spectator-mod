@@ -43,6 +43,7 @@ const log = (m) => console.log('[ZOM observer-start] ' + m);
 const state = globalThis.zomObserverStart ??= {
   installed: false,
   generating: false,
+  showObservers: false,     // this map indexes its starts by player ID: the Observer stays listed
   finalPass: false,         // the GenerateMap final pass is registered
   raw: {},
   observerIds: null,
@@ -97,7 +98,7 @@ function hideObserversFromLists() {
     try {
       Players[name] = (...args) => {
         const list = original.apply(Players, args);
-        if (!state.generating || !Array.isArray(list)) return list;
+        if (!state.generating || state.showObservers || !Array.isArray(list)) return list;
         const hidden = observerIds();
         return hidden.size ? list.filter((entry) => !hidden.has(listId(entry))) : list;
       };
@@ -117,8 +118,21 @@ function routeStartPositions() {
   };
 }
 
+/**
+ * True Start Location starts (the Earth maps) are kept in arrays indexed by player ID:
+ * a hidden Observer below the last real player leaves a hole there that stops generation.
+ * The Observer stays listed for them; its start is still routed to the ice.
+ */
+function startsIndexedByPlayerId() {
+  try {
+    const value = Configuration.getMapValue('StartPosition');
+    return value != null && Number(BigInt.asIntN(32, BigInt(value))) === Database.makeHash('START_POSITION_HISTORICAL');
+  } catch (e) { return false; }
+}
+
 function beginMapGeneration() {
   state.generating = true;
+  state.showObservers = startsIndexedByPlayerId();
   state.observerIds = null;
   state.starts = new Map();
   state.usedPlots = new Set();
