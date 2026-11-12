@@ -23,7 +23,7 @@ import { TRADE_ROUTE_CARD_MARGIN_RIGHT, TradeRouteCard } from './trade-route-car
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui-next/screens/commerce/commerce-screen-trade-tab.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * (build dated 2026-11-10). The only changes are marked "ZOM:": the viewed
  * leader's data in place of the local player's.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
@@ -42,7 +42,7 @@ const TradeRoutesContainer = (props) => {
   const [hasCheckedForWrap, setHasCheckedForWrap] = createSignal(false);
   const [numCardsInFirstRow, setNumCardsInFirstRow] = createSignal(0);
   const defaultCardWidth = createMemo(() => {
-    return isMobile() ? Layout.pixelsToScreenPixels(isSmallScreen() ? 612 : 680) : Layout.pixelsToScreenPixels(512);
+    return isMobile() ? Layout.pixelsToScreenPixels(isSmallScreen() ? 572 : 630) : Layout.pixelsToScreenPixels(512);
   });
   const applyMeasuredWidths = (applyFunction) => {
     isApplyingMeasuredWidths = true;

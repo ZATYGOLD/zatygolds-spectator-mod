@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.3**.
+multiplayer. Current version: **1.1.4**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -136,6 +136,13 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 (`debug: true` logs diagnostics to `UI.log`).
 
 ## Changelog
+
+### 1.1.4
+
+- **Civ VII 1.5.1** — the base-game screens the mod copies (commerce, victories, government, great works, and the tech/civic tree grid) are updated to the 1.5.1 code, with the Spectator's changes kept.
+- **True Start Location Earth** — a game with a Spectator on the Earth maps with historical starts now generates; the Spectator keeps its ice start and Eye.
+- **Unit List** — shown to the Observer only while Perspective is on, and then lists the viewed leader's units (read-only).
+- **Perspective** — unit visibility (including Map Search) follows the viewed leader's fog of war.
 
 ### 1.1.3
 

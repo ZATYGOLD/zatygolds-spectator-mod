@@ -6,7 +6,7 @@ import UpdateGate from '../../../core/ui/utilities/utilities-update-gate.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/great-works/model-great-works.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": the viewed
+ * (build dated 2026-11-10). The only changes are marked "ZOM:": the viewed
  * leader's data in place of the local player's; a viewed leader's screen is
  * read-only.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
@@ -123,7 +123,9 @@ class GreatWorksModel {
     const localPlayerID = zomLocalPlayerID();   // ZOM: viewed leader
     this.LocalPlayer = Players.get(localPlayerID);
     if (!this.LocalPlayer) {
-      console.error("model-great-works: update() - no local player found!");
+      if (!Autoplay.isActive) {
+        console.error("model-great-works: update() - no local player found!");
+      }
       return;
     }
     const { Culture } = this.localPlayer ?? {};

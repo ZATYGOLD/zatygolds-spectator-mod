@@ -17,7 +17,7 @@ import style from './screen-policies.scss.js';
 /*
  * Zatygold's Spectator - base-game override.
  * Copied verbatim from the game's base-standard/ui/policies/government-hub.js
- * (build dated 2026-09-16). The only changes are marked "ZOM:": a leader picker
+ * (build dated 2026-11-10). The only changes are marked "ZOM:": a leader picker
  * above the tabs, which keep the open tab across a pick.
  * Re-apply after game updates; see ui/observer/observer-leader-view.js.
  */
@@ -26,7 +26,7 @@ const zomTabProps = (screenTag, props) => globalThis.ZOMLeaderView?.tabProps(scr
 const GovermentScreenComponent = (_props) => {
   const policiesModel = PoliciesModel.get();
   const model = GovtScreenModel.get();
-  const audio = useAudio("GovernmentOverview1");
+  const audio = useAudio("GovernmentOverview");
   onMount(() => {
     audio("popup-open");
   });
