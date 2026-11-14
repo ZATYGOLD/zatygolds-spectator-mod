@@ -32,12 +32,18 @@ import { onObserverReady } from './observer-core.js';
 const CARRIED_PANTHEON_TAG = /^(?:BBM_BALANCE|MPT_BALANCE|MBM)_NARRATIVE_TAG_PANTHEON_(\d+)$/;
 let carriedTags = null;   // [{ tag, belief }] for every carried-pantheon narrative tag (read once)
 
+/** The game's pantheon of that number, or Game Balance's own (BBM_BALANCE_PANTHEON_BONUS_19 and 20). */
+function carriedBelief(n) {
+  const base = `PANTHEON_BONUS_${n}`;
+  return GameInfo.Beliefs.lookup(base) ? base : `BBM_BALANCE_${base}`;
+}
+
 function carriedPantheonTags() {
   if (!carriedTags) {
     carriedTags = [];
     for (const row of GameInfo.NarrativeTags ?? []) {
       const n = CARRIED_PANTHEON_TAG.exec(row.NarrativeTagType ?? '')?.[1];
-      if (n) carriedTags.push({ tag: row.NarrativeTagType, belief: `PANTHEON_BONUS_${n}` });
+      if (n) carriedTags.push({ tag: row.NarrativeTagType, belief: carriedBelief(n) });
     }
   }
   return carriedTags;
