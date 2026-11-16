@@ -30,7 +30,7 @@ import { DiploRibbonData } from 'fs://game/base-standard/ui/diplo-ribbon/model-d
 import { PanelDiploRibbon } from 'fs://game/base-standard/ui/diplo-ribbon/panel-diplo-ribbon.js';
 import DiplomacyManager from 'fs://game/base-standard/ui/diplomacy/diplomacy-manager.js';
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { clamp, componentOf, createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
+import { clamp, componentOf, createLogger, isObserverPlayer, withReplaced, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, OBSERVER_VIEW } from './observer-config.js';
 import { inDiplomacyMode, inLeaderPanel, isObserverSeat, isWatchedLeader, onObserverReady, watchedPlayers } from './observer-core.js';
 import { isKnownInPerspective, markPerspectiveCard, PERSPECTIVE_CHANGED_EVENT } from './observer-perspective.js';
@@ -52,12 +52,12 @@ const VIEW_ITEMS = {
 /** A pantheon badge opens every leader's pantheons (in any Age). */
 const FAITH_ACTIONS = { pantheon: () => openOverview('pantheons') };
 
-const METER_VIEWS = new Set([OBSERVER_VIEW.RESEARCH, OBSERVER_VIEW.PRODUCTION]);
+const RIBBON_YIELDS = 1;   // the base model's Yields display type
 
 let viewMode = CONFIG.defaultView;
-const meterRows = new Map(); // player id -> meter markup of the latest model update (cleared each update)
-let shownMeters = '';        // meters the ribbon was last rebuilt with
-let refreshing = false;      // refreshRibbon rebuilds itself after the model update
+const rowLayouts = new Map(); // player id -> row types of the latest model update (cleared each full update)
+let shownLayout = '';         // layout the HUD ribbon was last built with
+let refreshing = false;       // refreshRibbon rebuilds itself after the model update
 let rebuilding = false;      // rebuildRibbon decorates once, after populateFlags
 
 // ============================ Moods ============================
@@ -121,10 +121,12 @@ function rebuildRibbon() {
     const panel = hudPanel();
     const component = componentOf(panel);
     if (!component) return;
-    shownMeters = meterSignature();
     const first = component.firstLeaderIndex;
+    component.prevNumLeadersShown = -1;   // populateFlags skips the build while the shown count is unchanged (since 1.5.1)
     rebuilding = true;
     try { component.populateFlags?.(); } catch (e) { log(`ribbon populate failed: ${e}`); } finally { rebuilding = false; }   // decorated below even then
+    shownLayout = layoutSignature();
+    repaintRowImages(panel, false);   // just built from these images
     if (first != null && component.firstLeaderIndex !== first) {
       component.firstLeaderIndex = first;
       component.refreshRibbonVis?.();
@@ -148,24 +150,46 @@ function setView(view) {
   refreshRibbon();
 }
 
-const meterSignature = () => [...meterRows].join('|');
+const layoutSignature = () => [...rowLayouts].join('|');
+
+/** The base incremental refresh repaints rows by index: a row added, removed or reordered needs a rebuild. */
+const layoutChanged = () => layoutSignature() !== shownLayout;
 
 /**
- * Research / Production meters live in each row's `img`, which the base
- * incremental refresh never repaints: a meter change needs a rebuild.
+ * The base incremental refresh repaints only a row's value text; meters and
+ * scores live in its `img`, repainted here in place (a rebuild would flicker).
+ * paint false only records what a fresh build drew.
  */
-const metersChanged = () => METER_VIEWS.has(viewMode) && meterSignature() !== shownMeters;
+function repaintRowImages(panel, paint = true) {
+  for (const player of DiploRibbonData.playerData ?? []) {
+    const rows = panel.querySelector(`.diplo-ribbon__yields[data-leader-id="${player.id}"]`)?.children;
+    (player.displayItems ?? []).forEach((item, i) => {
+      const label = rows?.[i]?.querySelector('.yield-label');
+      if (!label || label.zomImg === item.img) return;
+      if (paint) label.innerHTML = item.img;
+      label.zomImg = item.img;
+    });
+  }
+}
+
+/** Run fn with the base Yields rows on: on the map the Observer's view never depends on the ribbon option or a diplomacy screen's reset. */
+function withBaseYields(model, fn) {
+  const types = model._ribbonDisplayTypes;
+  if (inDiplomacyMode() || !Array.isArray(types) || types.includes(RIBBON_YIELDS)) return fn();
+  model._ribbonDisplayTypes = [...types, RIBBON_YIELDS];
+  try { return fn(); } finally { model._ribbonDisplayTypes = types; }
+}
 
 // ============================ Model ============================
 
 function patchModel() {
   // Every refresh path builds a card's rows here; the selected view swaps them.
-  wrapMethod(DiploRibbonData, 'createPlayerYieldsData', (base, player, ...rest) => {
+  wrapMethod(DiploRibbonData, 'createPlayerYieldsData', function (base, player, ...rest) {
     if (!isObserverSeat() || !player) return base(player, ...rest);
     if (player.id === GameContext.localPlayerID) return [];   // the Observer's card holds the view buttons
     try {
-      const items = VIEW_ITEMS[viewMode](player, () => base(player, ...rest));
-      if (METER_VIEWS.has(viewMode)) meterRows.set(player.id, items.map((item) => item.img).join(''));
+      const items = VIEW_ITEMS[viewMode](player, () => withBaseYields(this, () => base(player, ...rest)));
+      rowLayouts.set(player.id, items.map((item) => item.type).join(','));
       return items;
     } catch (e) { return base(player, ...rest); }
   });
@@ -188,7 +212,7 @@ function patchModel() {
     try {
       this.getRibbonDisplayTypesFromUserOptions?.();
       clearRowValues();
-      meterRows.clear();
+      rowLayouts.clear();
       const cards = [];
       let own = null;
       for (const player of Players.getAlive()) {
@@ -204,7 +228,7 @@ function patchModel() {
       this.onUpdate?.(this);
       this._eventNotificationRefresh?.trigger?.();
       // A rebuild that follows decorates the HUD ribbon itself.
-      const rebuild = !inDiplomacyMode() && (refreshing || metersChanged());
+      const rebuild = !inDiplomacyMode() && (refreshing || layoutChanged());
       const hud = hudPanel();
       for (const panel of document.querySelectorAll('panel-diplo-ribbon')) if (!(rebuild && panel === hud)) markCardState(panel);
       if (rebuild && !refreshing) rebuildRibbon();
@@ -218,9 +242,7 @@ function patchModel() {
 /** Run fn while Players.getAlive leaves out Spectators: the base ribbon lists every human, met or not. */
 function withoutObservers(fn) {
   const getAlive = Players.getAlive;
-  try { Players.getAlive = (...args) => getAlive.apply(Players, args).filter((p) => !isObserverPlayer(p.id)); }
-  catch (e) { return fn(); }   // a read-only engine object: keep the base list
-  try { return fn(); } finally { Players.getAlive = getAlive; }
+  return withReplaced(Players, 'getAlive', (...args) => getAlive.apply(Players, args).filter((p) => !isObserverPlayer(p.id)), fn);
 }
 
 /**
@@ -260,6 +282,16 @@ function patchPanel() {
         }
       } catch (e) { log(`ribbon decoration failed: ${e}`); }
     }
+  });
+  // A changed row layout rebuilds the HUD ribbon (refreshRibbon rebuilds on its own); otherwise row images are repainted in place.
+  wrapMethod(proto, 'onModelUpdate', function (base, ...args) {
+    const observing = isObserverSeat() && !inDiplomacyMode() && this.Root === hudPanel();
+    if (observing && !refreshing && !rebuilding && layoutChanged()) {
+      rebuildRibbon();
+      return undefined;
+    }
+    try { return base(...args); }
+    finally { if (observing && !rebuilding) repaintRowImages(this.Root); }
   });
   for (const method of ['refreshRibbonVis', 'onModelUpdate']) {
     wrapMethod(proto, method, function (base, ...args) {

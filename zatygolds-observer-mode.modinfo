@@ -7,8 +7,8 @@
         <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
-        <Version>1.1.4</Version>
-        <LastUpdated>2026-11-12</LastUpdated>
+        <Version>1.1.6</Version>
+        <LastUpdated>2026-11-16</LastUpdated>
         <ShowInBrowser>1</ShowInBrowser>
     </Properties>
 
@@ -30,6 +30,16 @@
                 <ConfigurationId>ZOM_OBSERVER_IN_GAME</ConfigurationId>
                 <Value>1</Value>
             </ConfigurationValueMatches>
+        </Criteria>
+
+        <!-- A game with a Spectator and Leonardfactory's Policy Yield Previews in use. -->
+        <Criteria id="zom-observer-lf-yields-preview">
+            <ConfigurationValueMatches>
+                <Group>Game</Group>
+                <ConfigurationId>ZOM_OBSERVER_IN_GAME</ConfigurationId>
+                <Value>1</Value>
+            </ConfigurationValueMatches>
+            <ModInUse>lf-policies-yields-preview</ModInUse>
         </Criteria>
     </ActionCriteria>
 
@@ -210,6 +220,18 @@
                     <Item>ui/observer/observer-eye.js</Item>
                     <Item>ui/observer/observer-prompts.js</Item>
                     <Item>ui/compat/compat-evw-start-warning.js</Item>
+                </UIScripts>
+            </Actions>
+        </ActionGroup>
+
+<!--*************************** GAME: OTHER MODS' COMPATIBILITY ***************************************-->
+
+        <!-- Previews for the leader the Spectator is shown (imports that mod's scripts, so only with it in use). -->
+        <ActionGroup id="zom-game-compat-lf-yields-preview" scope="game" criteria="zom-observer-lf-yields-preview">
+            <Properties><LoadOrder>1000</LoadOrder></Properties>
+            <Actions>
+                <UIScripts>
+                    <Item>ui/compat/compat-lf-yields-preview.js</Item>
                 </UIScripts>
             </Actions>
         </ActionGroup>

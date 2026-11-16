@@ -31,10 +31,12 @@
  * Balanced Multiplayer opens it for everyone). A complete Age waits for one
  * click on the End Turn button (Transition to Next Age); the transition then
  * runs by itself, including the loading screen's Continue (single player).
- * The End Turn button hides while turns end automatically.
+ * The End Turn button hides and the action panel stays quiet while turns end
+ * automatically.
  */
+import { PanelAction } from 'fs://game/base-standard/ui/action/panel-action.js';
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle } from '../shared/zom-util.js';
+import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle, withReplaced, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, onObserverReady, savedToggle } from './observer-core.js';
 import { resolveNotification } from './observer-prompts.js';
@@ -164,6 +166,27 @@ function recoverAfterPause() {
 
 const later = (fn) => () => setTimeout(fn, CONFIG.autoEndTurnDelayMs);
 
+const silent = () => {};
+const silently = (fn) => withReplaced(Audio, 'playSound', silent, () => withReplaced(UI, 'sendAudioEvent', silent, fn));
+
+/**
+ * While turns end automatically the action panel's blocker and next-action
+ * sounds (played each time a prompt is answered) are muted. "Waiting on you"
+ * (played on every leader's turn end once the Observer is the last human in
+ * the turn) never shows once the Observer's turn is ended or ends by itself.
+ */
+function patchActionPanel() {
+  const proto = PanelAction.prototype;
+  const quiet = () => isObserverSeat() && endsAutomatically();
+  for (const method of ['refreshActionButton', 'playNextActionAnimation', 'playBlockerAnimation']) {
+    wrapMethod(proto, method, (base, ...args) => (quiet() ? silently(() => base(...args)) : base(...args)));
+  }
+  wrapMethod(proto, 'lastPlayerMessageShow', function (base, ...args) {
+    if (quiet() || (isObserverSeat() && GameContext.hasSentTurnComplete())) return this.lastPlayerMessageHide?.();
+    return base(...args);
+  });
+}
+
 /** Hide the End Turn button while the turn ends automatically (shown again when paused, stuck or off). */
 function updateEndTurnButton() {
   if (!isObserverSeat()) return;
@@ -247,6 +270,7 @@ function setAutoEndTurn(on) {
   catch (e) { log(`unready failed: ${e}`); }
 }
 
+patchActionPanel();
 try { Loading.runWhenLoaded(() => beginNextAge()); } catch (e) { log(`begin next age not watched: ${e}`); }
 onObserverReady(() => {
   engine.on('LocalPlayerTurnBegin', () => { sentAutomatically = false; });

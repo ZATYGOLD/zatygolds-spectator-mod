@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.4**.
+multiplayer. Current version: **1.1.6**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -136,6 +136,18 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 (`debug: true` logs diagnostics to `UI.log`).
 
 ## Changelog
+
+### 1.1.6
+
+- **Ribbon views** — the Research, Production and Victories buttons switch the cards again (since Civ VII 1.5.1 they stayed on the last view until the pause menu was opened), and those views no longer flicker during turn rollover.
+- **Policy Yield Previews** — viewing another leader's screens with that mod in use costs less.
+
+### 1.1.5
+
+- **Ribbon** — Yields rows no longer go missing or show under the wrong icon: the card is rebuilt whenever its rows change, and the base yields show whatever the game's ribbon option. Victory scores and Production meters also update between turns.
+- **Auto End Turn** — the action panel's sounds stay quiet while turns end by themselves, and "Waiting on you" no longer plays (or shows) once the Spectator's turn is ended.
+- **Names** — other humans show their online names instead of `[PlayerName:n]` (portraits, Overview, graphs, timelines, diplomacy).
+- **Policy Yield Previews** — with Leonardfactory's mod in use, its previews (policies, attributes, tech and civic trees) are computed for the leader shown in Perspective or a leader view.
 
 ### 1.1.4
 

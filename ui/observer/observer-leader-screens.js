@@ -29,7 +29,7 @@
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
 import { Icon } from 'fs://game/core/ui/utilities/utilities-image.js';
-import { componentOf, createLogger, isTag, whenDefined, wrapMethod } from '../shared/zom-util.js';
+import { componentOf, createLogger, isTag, playerName, whenDefined, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { SCREEN_PROPS } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
@@ -100,7 +100,7 @@ function showNoReligion(root, player) {
   choices.classList.remove('opacity-0');
   const note = document.createElement('p');
   note.classList.value = `${NOTE_CLASS} font-body-base text-accent-2 text-center self-center mt-6 mb-6`;
-  note.textContent = Locale.compose('LOC_ZOM_OBSERVER_NO_RELIGION', player.name);
+  note.textContent = Locale.compose('LOC_ZOM_OBSERVER_NO_RELIGION', playerName(player));
   choices.insertBefore(note, choices.firstChild);
 }
 
