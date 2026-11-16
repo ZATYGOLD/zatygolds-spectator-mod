@@ -55,7 +55,7 @@ const FAITH_ACTIONS = { pantheon: () => openOverview('pantheons') };
 const RIBBON_YIELDS = 1;   // the base model's Yields display type
 
 let viewMode = CONFIG.defaultView;
-const rowLayouts = new Map(); // player id -> row types and markup of the latest model update (cleared each full update)
+const rowLayouts = new Map(); // player id -> row types of the latest model update (cleared each full update)
 let shownLayout = '';         // layout the HUD ribbon was last built with
 let refreshing = false;       // refreshRibbon rebuilds itself after the model update
 let rebuilding = false;      // rebuildRibbon decorates once, after populateFlags
@@ -122,8 +122,11 @@ function rebuildRibbon() {
     const component = componentOf(panel);
     if (!component) return;
     const first = component.firstLeaderIndex;
+    component.prevNumLeadersShown = -1;   // populateFlags skips the build while the shown count is unchanged (since 1.5.1)
     rebuilding = true;
     try { component.populateFlags?.(); } catch (e) { log(`ribbon populate failed: ${e}`); } finally { rebuilding = false; }   // decorated below even then
+    shownLayout = layoutSignature();
+    repaintRowImages(panel, false);   // just built from these images
     if (first != null && component.firstLeaderIndex !== first) {
       component.firstLeaderIndex = first;
       component.refreshRibbonVis?.();
@@ -149,12 +152,25 @@ function setView(view) {
 
 const layoutSignature = () => [...rowLayouts].join('|');
 
-/**
- * The base incremental refresh repaints rows by index and only their value
- * text: a row added, removed or reordered, or a change in a row's `img`
- * (meters, scores), needs a rebuild.
- */
+/** The base incremental refresh repaints rows by index: a row added, removed or reordered needs a rebuild. */
 const layoutChanged = () => layoutSignature() !== shownLayout;
+
+/**
+ * The base incremental refresh repaints only a row's value text; meters and
+ * scores live in its `img`, repainted here in place (a rebuild would flicker).
+ * paint false only records what a fresh build drew.
+ */
+function repaintRowImages(panel, paint = true) {
+  for (const player of DiploRibbonData.playerData ?? []) {
+    const rows = panel.querySelector(`.diplo-ribbon__yields[data-leader-id="${player.id}"]`)?.children;
+    (player.displayItems ?? []).forEach((item, i) => {
+      const label = rows?.[i]?.querySelector('.yield-label');
+      if (!label || label.zomImg === item.img) return;
+      if (paint) label.innerHTML = item.img;
+      label.zomImg = item.img;
+    });
+  }
+}
 
 /** Run fn with the base Yields rows on: on the map the Observer's view never depends on the ribbon option or a diplomacy screen's reset. */
 function withBaseYields(model, fn) {
@@ -173,7 +189,7 @@ function patchModel() {
     if (player.id === GameContext.localPlayerID) return [];   // the Observer's card holds the view buttons
     try {
       const items = VIEW_ITEMS[viewMode](player, () => withBaseYields(this, () => base(player, ...rest)));
-      rowLayouts.set(player.id, items.map((item) => `${item.type}:${item.img}`).join(''));
+      rowLayouts.set(player.id, items.map((item) => item.type).join(','));
       return items;
     } catch (e) { return base(player, ...rest); }
   });
@@ -261,20 +277,21 @@ function patchPanel() {
     finally {
       try {
         if (isObserverSeat()) {
-          if (this.Root === hudPanel()) shownLayout = layoutSignature();
           pinOwnCard(this);
           if (!rebuilding) decorateRibbon(this.Root);
         }
       } catch (e) { log(`ribbon decoration failed: ${e}`); }
     }
   });
-  // A changed row layout rebuilds the HUD ribbon instead of repainting rows by index (refreshRibbon rebuilds on its own).
+  // A changed row layout rebuilds the HUD ribbon (refreshRibbon rebuilds on its own); otherwise row images are repainted in place.
   wrapMethod(proto, 'onModelUpdate', function (base, ...args) {
-    if (isObserverSeat() && !refreshing && !rebuilding && !inDiplomacyMode() && this.Root === hudPanel() && layoutChanged()) {
+    const observing = isObserverSeat() && !inDiplomacyMode() && this.Root === hudPanel();
+    if (observing && !refreshing && !rebuilding && layoutChanged()) {
       rebuildRibbon();
       return undefined;
     }
-    return base(...args);
+    try { return base(...args); }
+    finally { if (observing && !rebuilding) repaintRowImages(this.Root); }
   });
   for (const method of ['refreshRibbonVis', 'onModelUpdate']) {
     wrapMethod(proto, method, function (base, ...args) {
