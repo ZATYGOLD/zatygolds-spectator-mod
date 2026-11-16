@@ -68,6 +68,13 @@ function wrapMethod(target, name, wrapper) {
   return true;
 }
 
+/** Run fn with target[name] replaced for its duration; fn runs as it is when the property can't be replaced (a read-only engine object). */
+function withReplaced(target, name, replacement, fn) {
+  const original = target[name];
+  try { target[name] = replacement; } catch (e) { return fn(); }
+  try { return fn(); } finally { try { target[name] = original; } catch (e) { /* ignore */ } }
+}
+
 /**
  * Register wrap(current factory) as a ui-next component's factory. A
  * component is resolved when each instance is created, so the override
@@ -174,6 +181,25 @@ function leaderTypeOf(leaderHash, fallback = 'UNKNOWN_LEADER') {
   try { return GameInfo.Leaders.lookup(leaderHash)?.LeaderType ?? fallback; } catch (e) { return fallback; }
 }
 
+/**
+ * A player's name as shown: a human's online name, else the composed name
+ * (for a human that is a [PlayerName:n] token only stylized text resolves,
+ * so the leader's name stands in when no online name is known).
+ */
+function playerName(player) {
+  if (!player) return '';
+  if (player.isHuman) {
+    try {
+      const config = Configuration.getPlayer(player.id);
+      const online = config?.nickName_T2GP || config?.nickName_1P;
+      if (online) return online;
+    } catch (e) { /* fall back to the composed name */ }
+  }
+  const name = Locale.compose(player.name ?? '');
+  if (!name.startsWith('[PlayerName')) return name;
+  try { return Locale.compose(GameInfo.Leaders.lookup(player.leaderType)?.Name ?? name); } catch (e) { return name; }
+}
+
 /** A settlement's plot index. */
 const plotOf = (city) => GameplayMap.getIndexFromLocation(city.location);
 
@@ -240,5 +266,5 @@ function isObserverPlayer(playerId) {
 export {
   OBSERVER_CIV_PREFIX, OBSERVER_LEADER, ancestorWithClass, clamp, clearChildren, colorChannels, componentOf, configCiv, configLeader, createLogger,
   currentAgeChronology, deferOnce, filterParamValues, findAncestor, isAgeEnding, isAgeTransitionInProgress, isObserverCiv, isObserverPlayer, isTag, leaderTypeOf,
-  observerCivForAge, onActivate, overrideComponent, paramValue, plotOf, scaleColor, setStyle, whenDefined, withAlpha, wrapMethod
+  observerCivForAge, onActivate, overrideComponent, paramValue, playerName, plotOf, scaleColor, setStyle, whenDefined, withAlpha, withReplaced, wrapMethod
 };

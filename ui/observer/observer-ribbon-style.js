@@ -26,7 +26,7 @@
  * in red), the banner tinted with the player's colour, alliance / war / celebration
  * highlights on portraits, and the leader's faith badges.
  */
-import { setStyle } from '../shared/zom-util.js';
+import { playerName, setStyle } from '../shared/zom-util.js';
 import { HIGHLIGHT, PANEL_COLORS, ROW_COLORS } from './observer-config.js';
 import { diplomacySnapshot } from './observer-core.js';
 
@@ -194,7 +194,7 @@ function warPips(cardEl, wars, playerId) {
     const pip = document.createElement('div');
     pip.classList.add('pointer-events-auto');
     pip.style.cssText = `width: 0.6rem; height: 0.6rem; margin: 0 0.1rem; border-radius: 0.3rem; background-color: ${HIGHLIGHT.wars[war.color]}; border: 0.0555555556rem solid ${PANEL_COLORS.shadow};`;
-    if (enemy) pip.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_AT_WAR_WITH', enemy.name));
+    if (enemy) pip.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_AT_WAR_WITH', playerName(enemy)));
     pips.appendChild(pip);
   }
   (cardEl.querySelector('.diplo-ribbon__relation-container') ?? cardEl).appendChild(pips);

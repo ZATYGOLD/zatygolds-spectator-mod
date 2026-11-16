@@ -37,7 +37,7 @@ import { Dropdown, DropdownItem } from 'fs://game/core/ui-next/components/dropdo
 import { L10n } from 'fs://game/core/ui-next/components/l10n.js';
 import { Tooltip, TooltipHorizontalPosition, TooltipVerticalPosition } from 'fs://game/core/ui-next/components/tooltip.js';
 import { LeaderWithRibbon } from 'fs://game/base-standard/ui-next/components/leader-with-ribbon.js';
-import { ancestorWithClass, createLogger, currentAgeChronology, leaderTypeOf } from '../shared/zom-util.js';
+import { ancestorWithClass, createLogger, currentAgeChronology, leaderTypeOf, playerName } from '../shared/zom-util.js';
 import { isWatchedLeader, watchedPlayers } from './observer-core.js';
 import { CRISIS_STAGES } from './observer-crisis.js';
 import { ageTurn } from './observer-history.js';
@@ -141,7 +141,7 @@ function leaderTint(playerId) {
 function leaderName(playerId) {
   const player = Players.get(playerId);
   if (!player) return '';
-  if (player.isMajor) return Locale.compose(player.name);
+  if (player.isMajor) return playerName(player);
   const settlement = player.isMinor ? player.Cities?.getCities?.()?.[0]?.name : null;
   return Locale.compose(settlement ?? player.civilizationFullName ?? player.name ?? '');
 }
@@ -354,7 +354,7 @@ const LeaderRow = (props) => {
   const portrait = leader.firstChild.nextSibling.firstChild.firstChild;
   const name = portrait.nextSibling.firstChild;
   banner.style.backgroundImage = `url(blp:${leaderBanner(props.id)})`;
-  name.textContent = Locale.compose(Players.get(props.id)?.name ?? '');
+  name.textContent = playerName(Players.get(props.id));
   scoreBar.style.backgroundColor = leaderColor(props.id);
   createRenderEffect(() => { rank.textContent = `${props.rank()}`; });
   createRenderEffect(() => { scoreText.textContent = formatValue(props.value()); });

@@ -29,7 +29,7 @@
  * Also the Observer checks the Victories and Legacies screens share.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import { createLogger, isObserverPlayer, onActivate, setStyle } from '../shared/zom-util.js';
+import { createLogger, isObserverPlayer, onActivate, playerName, setStyle } from '../shared/zom-util.js';
 import { CONFIG, PANEL_COLORS } from './observer-config.js';
 import { isObserverSeat, leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { perspectivePlayer } from './observer-perspective.js';
@@ -44,6 +44,7 @@ const BAR_CLASS = 'zom-leader-bar';
 const SWITCHING_CLASS = 'zom-leader-switching';
 const STYLE_ID = 'zom-leader-view-style';
 const SETTLE_MS = 100;   // after two frames: the reopened screen has rendered
+const LEADER_VIEW_CHANGED_EVENT = 'zom-leader-view-changed';   // a pick changed the shown leader (sent before the screen rebuilds)
 
 let viewedId = null;
 let shownId = null;              // a leader a screen was opened for (showLeader), over the Perspective's, until it closes
@@ -117,6 +118,7 @@ function reopen(screenTag, id) {
   if (id === playerID()) return;
   viewedId = id;
   if (shownId != null) shownId = id;
+  window.dispatchEvent(new CustomEvent(LEADER_VIEW_CHANGED_EVENT));
   if (refreshers.get(screenTag)?.()) return;   // rebuilt in place
   if (openTabs.has(screenTag)) restoreTabs.set(screenTag, openTabs.get(screenTag));
   writeSwitchStyle();
@@ -135,7 +137,7 @@ function portraitButton(screenTag, player, selected) {
   const btn = document.createElement('fxs-activatable');
   btn.classList.value = 'size-14 mx-1 rounded-full pointer-events-auto';
   btn.style.cssText = selected ? SELECTED_STYLE : OTHER_STYLE;
-  btn.setAttribute('data-tooltip-content', Locale.compose(player.name));
+  btn.setAttribute('data-tooltip-content', playerName(player));
   btn.appendChild(leaderPortrait(player, 'size-full'));
   onActivate(btn, () => reopen(screenTag, player.id));
   return btn;
@@ -188,4 +190,4 @@ engine.whenReady.then(() => {
   log.debug(`observer-in-game option: ${flag}`);
 });
 
-export { BAR_CLASS, playerBar, releaseLeader, setRefresh, showLeader, playerID as viewedPlayerID };
+export { BAR_CLASS, LEADER_VIEW_CHANGED_EVENT, playerBar, releaseLeader, setRefresh, showLeader, playerID as viewedPlayerID };

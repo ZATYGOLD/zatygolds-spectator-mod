@@ -32,7 +32,7 @@ import LeaderModelManager from 'fs://game/base-standard/ui/diplomacy/leader-mode
 import { DiplomacyActionPanel } from 'fs://game/base-standard/ui/diplomacy-actions/panel-diplomacy-actions.js';
 import 'fs://game/base-standard/ui/diplomacy-actions/panel-other-diplomacy.js';   // defines PANEL_TAG
 import { installAssetAliases } from '../shared/zom-assets.js';
-import { clamp, clearChildren, createLogger, isObserverPlayer, onActivate, wrapMethod } from '../shared/zom-util.js';
+import { clamp, clearChildren, createLogger, isObserverPlayer, onActivate, playerName, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG, PANEL_COLORS, RELATIONSHIP_COLORS } from './observer-config.js';
 import { isObserverSeat, isWatchedLeader, leaderPortrait, onObserverReady, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { showLeader } from './observer-leader-view.js';
@@ -170,7 +170,7 @@ function identitySection(power) {
   const suzerain = suzerainId != null ? Players.get(suzerainId) : null;
   const line = document.createElement('p');
   line.classList.value = 'font-body-sm text-accent-2 text-center mb-2';
-  line.innerHTML = suzerain ? Locale.stylize('LOC_DIPLOMACY_SUZERAIN_OTHER', Locale.compose(suzerain.name)) : Locale.compose('LOC_DIPLOMACY_NO_SUZERAIN');
+  line.innerHTML = suzerain ? Locale.stylize('LOC_DIPLOMACY_SUZERAIN_OTHER', playerName(suzerain)) : Locale.compose('LOC_DIPLOMACY_NO_SUZERAIN');
   section.appendChild(line);
   const bonus = cityStateBonus(power.id);
   if (bonus) {
@@ -194,7 +194,7 @@ function relationshipRow(power, leader, isSuzerain, project) {
   line.classList.value = 'flex flex-row items-center justify-between';
   const name = document.createElement('div');
   name.classList.value = `font-title-sm ${isSuzerain ? 'text-secondary' : 'text-accent-2'}`;
-  name.textContent = Locale.compose(leader.name);
+  name.textContent = playerName(leader);
   line.appendChild(name);
   const statuses = document.createElement('div');
   statuses.classList.value = 'flex flex-row items-center';

@@ -28,7 +28,7 @@
  * Action (observer-follow.js) - above a smaller civ symbol. Its portrait's
  * tooltip names the right-click (observer-navigation.js).
  */
-import { ancestorWithClass, onActivate } from '../shared/zom-util.js';
+import { ancestorWithClass, onActivate, playerName } from '../shared/zom-util.js';
 import { ICONS, OBSERVER_VIEW } from './observer-config.js';
 import { SAVED_TOGGLE_EVENT } from './observer-core.js';
 import { isFollowing, setFollowing } from './observer-follow.js';
@@ -168,11 +168,11 @@ function setPortraitTooltips(panel) {
   for (const portrait of panel?.querySelectorAll('.diplo-ribbon__portrait[data-player-id]') ?? []) {
     const hitbox = portrait.querySelector('.diplo-ribbon__portrait-hitbox');
     const id = parseInt(portrait.getAttribute('data-player-id'), 10);
-    const name = Players.get(id)?.name;
+    const name = playerName(Players.get(id));
     if (!hitbox || !name) continue;
     const own = id === GameContext.localPlayerID;
     const action = own ? (isDetailsHidden() ? 'LOC_ZOM_OBSERVER_SHOW_DETAILS' : 'LOC_ZOM_OBSERVER_HIDE_DETAILS') : 'LOC_DIPLOMACY_OPEN_DIPLOMACY';
-    hitbox.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_PORTRAIT_TT', Locale.compose(name), Locale.compose(action)));
+    hitbox.setAttribute('data-tooltip-content', Locale.compose('LOC_ZOM_OBSERVER_PORTRAIT_TT', name, Locale.compose(action)));
   }
 }
 

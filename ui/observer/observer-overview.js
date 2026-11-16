@@ -27,7 +27,7 @@
  * the entries; screen routing (observer-screens.js) picks the source.
  */
 import { ContextManager } from 'fs://game/core/ui/context-manager/context-manager.js';
-import { clearChildren } from '../shared/zom-util.js';
+import { clearChildren, playerName } from '../shared/zom-util.js';
 import { PANEL_COLORS } from './observer-config.js';
 import { leaderPortrait, SCREEN_PROPS, watchedPlayers } from './observer-core.js';
 import { pantheons } from './observer-faith.js';
@@ -86,7 +86,7 @@ function leaderHeader(player) {
   const portrait = leaderPortrait(player, 'size-12 mr-2');
   const name = document.createElement('p');
   name.classList.value = 'font-title-base text-accent-2';
-  name.textContent = Locale.compose(player.name);
+  name.textContent = playerName(player);
   row.append(portrait, name);
   return row;
 }
