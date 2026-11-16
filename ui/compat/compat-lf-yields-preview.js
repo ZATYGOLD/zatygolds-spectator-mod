@@ -46,7 +46,13 @@ const openScreens = new Set();
 let restore = null;      // undoes the localPlayerID override while installed
 let resolving = false;   // reads made while resolving the shown leader get the real id
 
-const fromPreviewMod = () => (new Error().stack ?? '').includes(PREVIEW_MOD);
+const STACK_FRAMES = 6;   // the reader sits a few frames above the getter; a short trace stays cheap
+
+function fromPreviewMod() {
+  const limit = Error.stackTraceLimit;
+  Error.stackTraceLimit = STACK_FRAMES;
+  try { return (new Error().stack ?? '').includes(PREVIEW_MOD); } finally { Error.stackTraceLimit = limit; }
+}
 
 /** The property's descriptor on GameContext or its prototypes, and the object holding it. */
 function findProperty(target) {
