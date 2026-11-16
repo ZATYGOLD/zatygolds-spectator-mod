@@ -140,6 +140,7 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 ### 1.1.5
 
 - **Ribbon** — Yields rows no longer go missing or show under the wrong icon: the card is rebuilt whenever its rows change, and the base yields show whatever the game's ribbon option. Victory scores and Production meters also update between turns.
+- **Ribbon views** — the Research, Production and Victories buttons switch the cards again (since Civ VII 1.5.1 they stayed on the last view until the pause menu was opened), and those views no longer flicker during turn rollover.
 - **Auto End Turn** — the action panel's sounds stay quiet while turns end by themselves, and "Waiting on you" no longer plays (or shows) once the Spectator's turn is ended.
 - **Names** — other humans show their online names instead of `[PlayerName:n]` (portraits, Overview, graphs, timelines, diplomacy).
 - **Policy Yield Previews** — with Leonardfactory's mod in use, its previews (policies, attributes, tech and civic trees) are computed for the leader shown in Perspective or a leader view.
