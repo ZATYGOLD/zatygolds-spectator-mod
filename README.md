@@ -139,7 +139,7 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 
 ### 1.1.7
 
-- **Turn sounds** — the End Turn button's sounds (turn complete, blockers appearing, "Waiting on you") notification sounds and turn-timer warnings (the game's and Better Balanced Multiplayer's) are muted for the Spectator, with or without Auto End Turn.
+- **Turn sounds** — the End Turn button's sounds (turn complete, blockers appearing, "Waiting on you"), notification sounds and turn-timer warnings (the game's and Better Balanced Multiplayer's) are muted for the Spectator, with or without Auto End Turn. The game's own turn-start sound is played by the engine and still plays.
 - **Auto End Turn** — fixes the action panel erroring on every refresh while Auto End Turn was on (1.1.5 and 1.1.6).
 - **Spectator's Eye** — placed on the deepest ice near the bottom of the map, away from tiles units can reach, so other players no longer come across it; its flag is hidden for every player.
 - **Discoveries** — after a relobby or reconnection the Spectator no longer sees discoveries long gone (Discovery lens, minimap, tooltips and map search read the live map outside a Perspective).
