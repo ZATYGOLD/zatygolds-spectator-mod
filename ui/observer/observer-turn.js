@@ -31,12 +31,13 @@
  * Balanced Multiplayer opens it for everyone). A complete Age waits for one
  * click on the End Turn button (Transition to Next Age); the transition then
  * runs by itself, including the loading screen's Continue (single player).
- * The End Turn button hides and the action panel stays quiet while turns end
- * automatically.
+ * The End Turn button hides while turns end automatically. Turn and
+ * notification sounds are muted for the Observer.
  */
 import { PanelAction } from 'fs://game/base-standard/ui/action/panel-action.js';
+import { Audio } from 'fs://game/core/ui/audio-base/audio-support.js';
 import { InterfaceMode } from 'fs://game/core/ui/interface-modes/interface-modes.js';
-import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle, withReplaced, wrapMethod } from '../shared/zom-util.js';
+import { createLogger, isAgeEnding, isAgeTransitionInProgress, setStyle, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, onObserverReady, savedToggle } from './observer-core.js';
 import { resolveNotification } from './observer-prompts.js';
@@ -166,24 +167,26 @@ function recoverAfterPause() {
 
 const later = (fn) => () => setTimeout(fn, CONFIG.autoEndTurnDelayMs);
 
-const silent = () => {};
-const silently = (fn) => withReplaced(Audio, 'playSound', silent, () => withReplaced(UI, 'sendAudioEvent', silent, fn));
-
 /**
- * While turns end automatically the action panel's blocker and next-action
- * sounds (played each time a prompt is answered) are muted. "Waiting on you"
- * (played on every leader's turn end once the Observer is the last human in
- * the turn) never shows once the Observer's turn is ended or ends by itself.
+ * Sound events muted for the Observer: the End Turn button's (turn complete,
+ * blockers appearing, the next-action chime, "Waiting on you"), every
+ * notification's and the train's slide-in (answered or dismissed for it) and turn timers' warnings
+ * (the game's and Better Balanced Multiplayer's). Its own clicks keep theirs.
  */
-function patchActionPanel() {
-  const proto = PanelAction.prototype;
-  const quiet = () => isObserverSeat() && endsAutomatically();
-  for (const method of ['refreshActionButton', 'playNextActionAnimation', 'playBlockerAnimation']) {
-    wrapMethod(proto, method, (base, ...args) => (quiet() ? silently(() => base(...args)) : base(...args)));
-  }
-  wrapMethod(proto, 'lastPlayerMessageShow', function (base, ...args) {
-    if (quiet() || (isObserverSeat() && GameContext.hasSentTurnComplete())) return this.lastPlayerMessageHide?.();
-    return base(...args);
+const MUTED_SOUND = /^(?:notif-|turn-action-complete$|generic-turn-action-appear$|next-action-animate-in$|turn-action-notif-\d+$|mp-waiting-on-you$|notification-start-slide$|turn-timer-(?:countdown|warning)$)/;
+const isMuted = (event) => typeof event === 'string' && MUTED_SOUND.test(event);
+
+/** Both sound entry points drop the muted events (Audio.playSound resolves its id to the event first). */
+function muteTurnSounds() {
+  const audio = wrapMethod(Audio, 'playSound', (base, id, group, ...rest) => (isMuted(Audio.getSoundTag(id, group)) ? undefined : base(id, group, ...rest)));
+  const ui = wrapMethod(UI, 'sendAudioEvent', (base, event, ...rest) => (isMuted(event) ? undefined : base(event, ...rest)));
+  if (!audio || !ui) log(`turn sounds partly muted (Audio.playSound ${audio}, UI.sendAudioEvent ${ui})`);
+}
+
+/** "Waiting on you" (each leader's turn end once the Observer is the last human in the turn) never shows. */
+function hideWaitingOnYou() {
+  wrapMethod(PanelAction.prototype, 'lastPlayerMessageShow', function (base, ...args) {
+    return isObserverSeat() ? this.lastPlayerMessageHide?.() : base(...args);
   });
 }
 
@@ -270,9 +273,10 @@ function setAutoEndTurn(on) {
   catch (e) { log(`unready failed: ${e}`); }
 }
 
-patchActionPanel();
+hideWaitingOnYou();
 try { Loading.runWhenLoaded(() => beginNextAge()); } catch (e) { log(`begin next age not watched: ${e}`); }
 onObserverReady(() => {
+  muteTurnSounds();
   engine.on('LocalPlayerTurnBegin', () => { sentAutomatically = false; });
   for (const event of ['LocalPlayerTurnBegin', 'GameAgeEnded']) engine.on(event, later(onTurnState));
   engine.on('LocalPlayerTurnEnd', onTurnEnd);

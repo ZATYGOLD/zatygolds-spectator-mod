@@ -1,7 +1,7 @@
 # Zatygold's Spectator
 
 A playable **Spectator** for **Sid Meier's Civilization VII**, single player and
-multiplayer. Current version: **1.1.6**.
+multiplayer. Current version: **1.1.7**.
 
 Pick **Spectator** as your leader to watch the game as a real player with no
 empire: whole-map vision, every leader's stats, screens and a Chronicle, the
@@ -136,6 +136,15 @@ Settings: `ui/setup/setup-config.js`, `ui/observer/observer-config.js`
 (`debug: true` logs diagnostics to `UI.log`).
 
 ## Changelog
+
+### 1.1.7
+
+- **Turn sounds** — the End Turn button's sounds (turn complete, blockers appearing, "Waiting on you") notification sounds and turn-timer warnings (the game's and Better Balanced Multiplayer's) are muted for the Spectator, with or without Auto End Turn.
+- **Auto End Turn** — fixes the action panel erroring on every refresh while Auto End Turn was on (1.1.5 and 1.1.6).
+- **Spectator's Eye** — placed on the deepest ice near the bottom of the map, away from tiles units can reach, so other players no longer come across it; its flag is hidden for every player.
+- **Discoveries** — after a relobby or reconnection the Spectator no longer sees discoveries long gone (Discovery lens, minimap, tooltips and map search read the live map outside a Perspective).
+- **Settler lens** — works in Antiquity: in a Perspective it shows where the viewed leader may settle, with their recommended sites; otherwise where any leader may settle.
+- **Pantheons** — carried into later Ages by Better Balanced Multiplayer, they keep their names and ribbon badge after an Age transition.
 
 ### 1.1.6
 

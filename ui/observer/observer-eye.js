@@ -23,13 +23,18 @@
  *
  * The Observer's only unit is the Eye (data/units.xml), made on marine ice by
  * the map script: its sight covers the whole map, so every unit shows live.
- * For the Observer seat its flag is hidden and it is kept asleep (with 1 move
- * it would ask for orders every turn); it is never selected (observer-units.js).
+ * Its flag is hidden for every seat (other players may still come in sight of
+ * it), and the Observer seat keeps it asleep (with 1 move it would ask for
+ * orders every turn); it is never selected (observer-units.js).
+ * The Eye sees every plot all game, so the Observer's remembered constructibles
+ * are never refreshed: after a reload they show discoveries long gone. Outside
+ * a Perspective the Observer's lookups read the live map instead.
  */
 import { GenericUnitFlag } from 'fs://game/base-standard/ui/unit-flags/unit-flags.js';
 import { createLogger, isObserverPlayer, wrapMethod } from '../shared/zom-util.js';
 import { CONFIG } from './observer-config.js';
 import { isObserverSeat, onObserverReady } from './observer-core.js';
+import { isPerspectiveActive } from './observer-perspective.js';
 
 const log = createLogger('observer-eye', CONFIG.debug);
 const SLEEP_OPERATION = 'UNITOPERATION_SLEEP';
@@ -45,13 +50,22 @@ function sleepUnits() {
   }
 }
 
-function hideOwnFlags() {
-  wrapMethod(GenericUnitFlag.prototype, 'onAttach', function (base, ...args) {
+const isEyeFlag = (flag) => { try { return isObserverPlayer(flag.componentID?.owner); } catch (e) { return false; } };
+
+function hideEyeFlags() {
+  const proto = GenericUnitFlag.prototype;
+  wrapMethod(proto, 'onAttach', function (base, ...args) {
     const result = base(...args);
-    try { if (isObserverSeat() && this.componentID?.owner === GameContext.localPlayerID) this.hide(); }
-    catch (e) { /* keep the flag */ }
+    if (isEyeFlag(this)) this.hide();
     return result;
   });
+  wrapMethod(proto, 'show', function (base, ...args) { return isEyeFlag(this) ? this.hide() : base(...args); });
+}
+
+function readLiveConstructibles() {
+  const live = MapConstructibles.getConstructibles;
+  if (!wrapMethod(MapConstructibles, 'getHiddenFilteredConstructibles', (base, x, y, ...rest) =>
+    (isPerspectiveActive() ? base(x, y, ...rest) : live.call(MapConstructibles, x, y)))) log('constructible lookups not patched');
 }
 
 /** Debug: where the Eye is, and how many other units are on visible plots. */
@@ -70,8 +84,9 @@ function logVision() {
   log.debug(`eye at [${eyes}], units on visible plots: ${visible}/${total}`);
 }
 
-hideOwnFlags();
+hideEyeFlags();
 onObserverReady(() => {
+  readLiveConstructibles();
   engine.on('LocalPlayerTurnBegin', sleepUnits);
   engine.on('UnitAddedToMap', (data) => { if (data?.unit?.owner === GameContext.localPlayerID) sleepUnits(); });
   sleepUnits();

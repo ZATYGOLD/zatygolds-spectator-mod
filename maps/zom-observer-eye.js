@@ -24,11 +24,13 @@
  * Used by zom-observer-start.js (map generation and Age transitions): creates
  * each Observer's Eye on open water by the ocean ice nearest the bottom-center
  * of the map, then moves it onto the ice (the engine refuses to create units on
- * ice but allows the move).
+ * ice but allows the move): the ocean ice farthest from any other plot nearby,
+ * since a stealthed unit still shows to units next to it.
  */
 // Gameplay scripts cannot import ui/shared/zom-util.js, so the Observer check is repeated here.
 const OBSERVER_LEADER = 'LEADER_ZOM_OBSERVER';
 const EYE_UNIT = 'UNIT_ZOM_OBSERVER_EYE';
+const ICE_DEPTH = 3;   // rings of ice wanted around the Eye
 
 const log = (m) => console.log('[ZOM observer-eye] ' + m);
 
@@ -56,6 +58,39 @@ function neighbors(p, test) {
   return found;
 }
 
+const plotKey = (p) => `${p.x},${p.y}`;
+
+/** Rings of ice around p, up to max (0: next to a plot units can reach). */
+function iceDepth(p, max) {
+  const seen = new Set([plotKey(p)]);
+  let frontier = [p];
+  for (let ring = 1; ring <= max; ring++) {
+    const next = [];
+    for (const q of frontier) {
+      for (const n of neighbors(q, () => true)) {
+        if (seen.has(plotKey(n))) continue;
+        seen.add(plotKey(n));
+        if (!isIce(n)) return ring - 1;
+        next.push(n);
+      }
+    }
+    frontier = next;
+  }
+  return max;
+}
+
+/** The deepest ocean ice (nearest the bottom-center among equals), or null. */
+function deepestIce(plots) {
+  let best = null, bestDepth = -1;
+  for (const p of plots) {
+    if (!isOceanIce(p)) continue;
+    const depth = iceDepth(p, ICE_DEPTH);
+    if (depth > bestDepth) { best = p; bestDepth = depth; }
+    if (depth >= ICE_DEPTH) break;
+  }
+  return best;
+}
+
 /** Every plot not in usedPlots, nearest the bottom-center of the map first (row 0 is the bottom). */
 function plotsFromBottomCenter(usedPlots) {
   const w = GameplayMap.getGridWidth(), h = GameplayMap.getGridHeight();
@@ -72,7 +107,7 @@ function plotsFromBottomCenter(usedPlots) {
 function observerPlots(usedPlots) {
   const plots = plotsFromBottomCenter(usedPlots);
   const ice = plots.find((p) => isOceanIce(p) && neighbors(p, isOpenWater).length > 0);
-  const start = ice ?? plots.find(isOpenWater);
+  const start = ice ? deepestIce(plots) ?? ice : plots.find(isOpenWater);
   if (!start) return null;
   usedPlots.add(start.index);
   return { start, water: ice ? neighbors(ice, isOpenWater)[0] : start };

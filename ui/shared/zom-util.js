@@ -56,23 +56,32 @@ function createLogger(tag, debug = false) {
 
 // ============================ Patching ============================
 
+/** Set target[name], redefining a property that refuses assignment (engine objects); returns whether it took. */
+function setProperty(target, name, value) {
+  try { target[name] = value; } catch (e) { /* redefined below */ }
+  if (target[name] !== value) {
+    try { Object.defineProperty(target, name, { value, writable: true, configurable: true }); } catch (e) { return false; }
+  }
+  return target[name] === value;
+}
+
 /**
  * Replace target[name] with wrapper(base, ...args). The wrapper runs with the
  * call's receiver as `this`, and base calls the original on that receiver, so
- * it works for singletons and prototypes alike.
+ * it works for singletons and prototypes alike. A property that refuses
+ * assignment (engine objects) is redefined; returns whether the wrapper took.
  */
 function wrapMethod(target, name, wrapper) {
   const base = target?.[name];
   if (typeof base !== 'function') return false;
-  target[name] = function (...args) { return wrapper.call(this, (...a) => base.apply(this, a), ...args); };
-  return true;
+  return setProperty(target, name, function (...args) { return wrapper.call(this, (...a) => base.apply(this, a), ...args); });
 }
 
 /** Run fn with target[name] replaced for its duration; fn runs as it is when the property can't be replaced (a read-only engine object). */
 function withReplaced(target, name, replacement, fn) {
   const original = target[name];
-  try { target[name] = replacement; } catch (e) { return fn(); }
-  try { return fn(); } finally { try { target[name] = original; } catch (e) { /* ignore */ } }
+  if (!setProperty(target, name, replacement)) return fn();
+  try { return fn(); } finally { setProperty(target, name, original); }
 }
 
 /**

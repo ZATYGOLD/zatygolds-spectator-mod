@@ -32,10 +32,17 @@ import { onObserverReady } from './observer-core.js';
 const CARRIED_PANTHEON_TAG = /^(?:BBM_BALANCE|MPT_BALANCE|MBM)_NARRATIVE_TAG_PANTHEON_(\d+)$/;
 let carriedTags = null;   // [{ tag, belief }] for every carried-pantheon narrative tag (read once)
 
-/** The game's pantheon of that number, or Game Balance's own (BBM_BALANCE_PANTHEON_BONUS_19 and 20). */
+/**
+ * The game's pantheon of that number, or Game Balance's own (BBM_BALANCE_PANTHEON_BONUS_19 and 20).
+ * Pantheon beliefs exist only in Antiquity's database; later, Game Balance's own are told by their text.
+ */
 function carriedBelief(n) {
   const base = `PANTHEON_BONUS_${n}`;
-  return GameInfo.Beliefs.lookup(base) ? base : `BBM_BALANCE_${base}`;
+  const own = `BBM_BALANCE_${base}`;
+  if (GameInfo.Beliefs.lookup(own)) return own;
+  if (GameInfo.Beliefs.lookup(base)) return base;
+  const ownName = `LOC_${own}_NAME`;
+  return Locale.compose(ownName) !== ownName ? own : base;
 }
 
 function carriedPantheonTags() {

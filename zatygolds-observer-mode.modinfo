@@ -7,7 +7,7 @@
         <SpecialThanks>LOC_MOD_ZOM_SPECIAL_THANKS</SpecialThanks>
         <Package>Mod</Package>
         <AffectsSavedGames>0</AffectsSavedGames>
-        <Version>1.1.6</Version>
+        <Version>1.1.7</Version>
         <LastUpdated>2026-11-16</LastUpdated>
         <ShowInBrowser>1</ShowInBrowser>
     </Properties>
@@ -218,6 +218,7 @@
                     <Item>ui/observer/observer-units.js</Item>
                     <Item>ui/observer/observer-combat.js</Item>
                     <Item>ui/observer/observer-eye.js</Item>
+                    <Item>ui/observer/observer-settler-lens.js</Item>
                     <Item>ui/observer/observer-prompts.js</Item>
                     <Item>ui/compat/compat-evw-start-warning.js</Item>
                 </UIScripts>
